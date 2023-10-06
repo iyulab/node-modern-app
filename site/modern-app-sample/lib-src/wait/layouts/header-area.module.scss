@@ -1,0 +1,161 @@
+@import '~@css/variables.scss';
+@import '~@css/utils.scss';
+
+$secondary-panel-header-height: 48px;
+
+.header-area {
+  padding: $space-s $space-m;
+  html[data-supports-mobile=true] & {
+    @media (max-width: $phone-screen-max) {
+      padding: ($space-xm * 0.5) $space-s;
+      &.has-back-button {
+        .text-area {
+          padding: $space-xs 0;
+          margin: -$space-xs 0; // Get out of the way of the back button tap target
+        }
+      }
+    }
+  }
+}
+
+.bar {
+  display: flex;
+  align-items: flex-start;
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+.back {
+  margin-bottom: -$space-xxs;
+  display: none;
+  position: relative;
+  @extend .unanchor;
+  html[data-supports-mobile=true] & {
+    @media (max-width: $phone-screen-max) {
+      display: inline-flex;
+    }
+  }
+}
+
+.divided-header {
+  @extend .bottom-divider-inset;
+}
+
+// Paddings
+// Propagated by context from Block
+
+.padding-panel {
+  padding: $space-xm $primary-padding-sm;
+  @media (min-width: $medium-screen) { padding: $space-xm $primary-padding-md; }
+  @media (min-width: $large-screen) { padding: $space-xm $primary-padding-lg; }
+  &.in-secondary {
+    padding-left: ($space-s - $space-xxs);
+    padding-right: ($space-s - $space-xxs);
+    // Do positioning for the "back" button in secondary nav header
+    // Vertically center
+    display: flex;
+    align-items: center;
+    // Override padding settings and do a fixed height
+    padding-top: 0;
+    padding-bottom: 0;
+    height: $secondary-panel-header-height;
+  }
+  html[data-supports-mobile=true] & {
+    @media (max-width: $phone-screen-max) {
+      padding: $space-s;
+    }
+  }
+}
+
+.padding-modal {
+  padding: $space-xm $modal-padding-sm;
+  @media (min-width: $medium-screen) { padding: $space-xm $modal-padding-md; }
+  @media (min-width: $large-screen) { padding: $space-xm $modal-padding-lg; }
+  html[data-supports-mobile=true] & {
+    @media (max-width: $phone-screen-max) {
+      padding: $space-s;
+    }
+  }
+}
+
+.stick-wizard-menu {
+  padding-bottom: 0;
+}
+.stick-wizard-menu .title-area {
+  flex-direction: column;
+}
+
+// Text Area
+// Left-aligned space for the title and subtitle
+
+.text-area {
+  flex: 1 1 auto;
+  max-width: 100%;
+  overflow: hidden;
+  padding: $focus-spread + 1px;
+  margin: -#{$focus-spread + 1px}; // Allow secondary panel back button focus ring to extend outside
+}
+
+.inline > .bar > .text-area {
+  display: flex;
+  align-items: baseline;
+  > .title-area {
+    margin-right: $space-xs;
+  }
+}
+
+.title-area {
+  display: flex;
+  box-sizing: border-box;
+  > * {
+    max-width: 100%;
+  }
+
+  h2 {
+    margin: 0;
+  }
+}
+
+[data-panel-position=secondary] .title-area {
+  height: 48px;
+  max-height: none;
+}
+
+[data-panel-position=secondary] .text-area {
+  overflow: visible;
+}
+
+.icon {
+  display: flex;
+  margin-right: $space-xs;
+  align-self: center;
+}
+
+.small > .bar > .text-area > .title-area {
+  padding-top: $space-xxs;
+  padding-bottom: $space-xxs;
+}
+
+.medium > .bar > .text-area > .title-area {
+  padding-top: ($space-l - $space-xm) * 0.5;
+  padding-bottom: ($space-l - $space-xm) * 0.5;
+}
+
+
+// Toolbar
+// Right-aligned space for interactive elements
+
+.toolbar {
+  @extend .vertically-center;
+  height: $space-l;
+  flex: 0 0 auto;
+  margin-left: $space-xs;
+  // @shiftsRightAsLastChildInToolbar
+  > .shift-right:last-child {
+    margin-right: -$space-xxs;
+  }
+}
+
+[data-panel-position=secondary] .toolbar {
+  display: none;
+}

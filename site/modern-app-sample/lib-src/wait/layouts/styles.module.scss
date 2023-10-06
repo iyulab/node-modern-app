@@ -1,0 +1,166 @@
+@import '~@css/variables.scss';
+
+.full-height-column {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.scroll-container {
+  flex-grow: 1;
+  overflow: auto;
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  transition: border-color .2s linear;
+  -webkit-overflow-scrolling: touch;
+  // Only do this when there’s a PageHeader, because that’s when the content doesn’t have a padding-top
+  &.has-header-area, .has-header-area & {
+    padding-top: $focus-spread + 1px;
+    margin-top: -#{$focus-spread + 1px}; // Leave a little space for focus ring of an element near the top to extend outside (the 1px is for “safeline”)
+  }
+  @media (max-width: $phone-screen-max) {
+    html[data-supports-mobile=true] & {
+      overflow: unset; // Pages don’t scroll on mobile
+      height: auto;    // Only required for mobile Safari on iOS 10
+    }
+    html[data-supports-mobile=true] .in-modal & { overflow: auto; } // except in modals
+  }
+}
+
+.page {
+  display: flex;
+  z-index: 1;
+  flex: 1 0 auto;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  width: $secondary-width-sm;
+  @media (min-width: $medium-screen) {
+    width: $secondary-width-md;
+  }
+  @media (min-width: $large-screen) {
+    width: $secondary-width-lg;
+  }
+
+  // Omg, this is awful
+  > :first-child, > :last-child:not(.scroll-container):not(.vertical-tabs-container):not(.full-height-column) { // TopBar, BottomBar
+    flex: 0 0 auto;
+  }
+
+  &.in-primary.disabled {
+    > .vertical-tabs-container:after,
+    > .scroll-container:after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background-color: var(--gray-light3);
+      opacity: 0.7;
+    }
+  }
+}
+
+.vertical-tabs-container {
+  flex-grow: 1;
+}
+
+.notification {
+  display: none;
+  .in-primary & { display: block; }
+}
+
+.in-primary {
+  width: 100%;
+
+  .scroll-container.disabled {
+    > .page-content {
+      position: relative;
+    }
+  }
+}
+
+.in-secondary {
+  background-color: var(--secondary-panel);
+  html[data-supports-mobile=true] & {
+    @media (max-width: $phone-screen-max) {
+      display: none;
+    }
+  }
+}
+
+.in-modal {
+  overflow: hidden; // Keeps the sharp corners of TopBar’s fake background from showing
+}
+
+.page-content {
+  flex: 1 0 auto;
+  width: inherit;
+  display: flex;
+  flex-direction: column;
+  box-sizing: content-box;
+  transition: transform $panel-slide-duration $ease-out-quart;
+  transform: translateX(-$primary-padding-sm);
+  &.in-secondary {
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+  &.in-primary {
+    transform: translateX(0);
+    box-sizing: border-box;
+  }
+  .in-modal & {
+    transform: none;
+  }
+}
+
+.page-content-constrained {
+  max-width: $page-width-constrained;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body[data-outline] .scroll-container:focus {
+  outline: none;
+  border-color: $azure-light1;
+}
+
+.in-primary .white {
+  background-color: var(--surface-card);
+}
+
+// Fix scrollbar stuff (see panel.scss for git history)
+.in-secondary .scroll-container {
+  transform: translateZ(1px);
+  overflow-x: hidden;
+  overflow-y: visible;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+.in-primary .scroll-container {
+  transform: none;
+  overflow-x: hidden;
+  overflow-y: visible;
+  -ms-overflow-style: auto;
+}
+
+// Prevent right boundary of secondary panel from being clipped during transition
+body.transitioning-to-secondary {
+  .in-secondary .scroll-container { padding-right: 100vw; }
+  .in-primary .scroll-container { padding-right: 0; }
+}
+
+@media (max-width: $phone-screen-max) {
+  html[data-supports-mobile=true] {
+    .in-hidden {
+      display: none;
+    }
+    .in-modal {
+      border-radius: 0;
+    }
+  }
+}

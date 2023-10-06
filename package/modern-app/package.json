@@ -1,0 +1,59 @@
+{
+  "name": "@iyulab/modern-app",
+  "description": "web-framework iyu, react and lit-element",
+  "version": "0.0.1",
+  "author": {
+    "name": "iyulab",
+    "url": "https://www.iyulab.com"
+  },
+  "homepage": "https://www.iyulab.com",
+  "license": "MIT",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint .",
+    "init" : "rimraf dist node_modules package-lock.json && npm install",
+    "build": "rimraf dist && rollup --config --bundleConfigAsCjs",
+    "publish": "npm publish --access public"
+  },
+  "dependencies": {
+    "@adobe/lit-mobx": "^2.2.0",
+    "@lit-labs/react": "^2.1.0",
+    "@microsoft/fast-components": "^2.30.6",
+    "axios": "^1.5.1",
+    "lit": "^2.8.0",
+    "mobx": "^6.10.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.16.0",
+    "reflect-metadata": "^0.1.13"
+  },
+  "devDependencies": {
+    "@rollup/plugin-alias": "^5.0.1",
+    "@rollup/plugin-commonjs": "^25.0.5",
+    "@rollup/plugin-image": "^3.0.3",
+    "@rollup/plugin-json": "^6.0.1",
+    "@rollup/plugin-node-resolve": "^15.2.2",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@types/node": "^20.8.2",
+    "@types/react": "^18.2.25",
+    "@types/react-dom": "^18.2.10",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "autoprefixer": "^10.4.16",
+    "glob": "^10.3.10",
+    "node-sass": "^9.0.0",
+    "postcss": "^8.4.31",
+    "postcss-nesting": "^12.0.1",
+    "rollup": "^4.0.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "rollup-plugin-typescript2": "^0.36.0",
+    "sass": "^1.69.0",
+    "tailwindcss": "3.3.3",
+    "typescript": "^5.2.2"
+  }
+}

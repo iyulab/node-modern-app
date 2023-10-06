@@ -1,0 +1,150 @@
+import { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import { autorun } from "mobx";
+
+import { useLayout, useLocator } from '@iyulab/modern-app/hooks/UseStores';
+import { Themes } from "@iyulab/modern-app/stores/LayoutStore";
+
+import logo from "@iyulab/modern-app/assets/app-logo.svg";
+import { question, sun, moon, notification } from './IconVector';
+import styles from "@iyulab/modern-app/styles/layouts/TopBar.module.scss";
+
+function TopBar() {
+  const locator = useLocator();
+  const layout = useLayout();
+
+  const progressbar = useRef<HTMLSpanElement>(null);
+  const themeIcon = useRef<SVGPathElement>(null);
+  const [paths, setPaths] = useState<string[]>([]);
+
+  // 테마 설정(아이콘 변경)
+  useEffect(() => {
+    const setTheme = autorun(() => {
+      const path = themeIcon.current;
+      if(!path) return;
+      
+      if(layout.theme === Themes.dark) {
+        path.setAttribute('d', sun);
+      } else {
+        path.setAttribute('d', moon);
+      }
+    });
+    
+    return () => {
+      setTheme();
+    }
+  });
+
+  // 로딩 설정
+  useEffect(() => {
+
+    // 로딩 중
+    const setProgress = autorun(() => {
+      const bar = progressbar.current;
+      if(!bar) return;
+
+      const progress = locator.progress;
+      if(progress === 1) {
+        bar.style.opacity = "0";
+        bar.style.transform = `scaleX(1)`;
+        setTimeout(() => clearProgress(), 350);
+      } else {
+        bar.style.opacity = "1";
+        bar.style.transitionDuration = "350ms, 350ms, 350ms";
+        bar.style.transform = `scaleX(${progress})`;
+      }
+    });
+
+    // 로딩 초기화
+    const clearProgress = () => {
+      if(locator.isLoading) return;
+
+      const bar = progressbar.current;
+      if(!bar) return;
+
+      bar.style.opacity = "1";
+      bar.style.transitionDuration = "0ms, 350ms, 350ms";
+      bar.style.transform = `scaleX(0)`;
+    }
+
+    return () => {
+      setProgress();
+    }
+  });
+
+  // 브레드 크럼 설정
+  useEffect(() => {
+    const setBread = autorun(() => {
+      setPaths(locator.currentlocation?.fullPaths ?? []);
+    });
+
+    return () => {
+      setBread();
+    }
+  });
+
+  return (
+    <>
+        {/* 헤더부 본문 */}
+        <div className={styles.container}>
+
+            {/* 로고 */}
+            <Link className={styles.logo} to={locator.baseUrl}>
+                <div className={styles.icon}>
+                    <img className={styles.img} src={layout.logo ?? logo}/>
+                </div>
+                <div className={styles.title}>{layout.title}</div>
+            </Link>
+
+            {/* 네비게이션 브레드 바 */}
+            <div className={styles.breadCrumb}>
+                {paths.map((path, index) => {
+                    const toPath = paths.slice(0, index + 1).join('/');
+                    return (
+                        <div className={styles.bread} key={toPath}>
+                            <Link to={toPath} className={styles.path}>{path[0].toUpperCase() + path.slice(1)}</Link>
+                            {index !== (paths.length -1) ? <div className={styles.slash}>/</div> : null}
+                        </div>
+                )})}
+            </div>
+            
+            {/* 중간 채움 */}
+            <div className={styles.flex}></div>
+
+            {/* User 버튼 */}
+            <div className={styles.userButtons}>
+                {/* Help 버튼 */}
+                <div className={styles.hoverButton} onClick={() => locator.go(locator.helpUrl)}>
+                    <svg className={styles.icon} viewBox="0 0 24 24">
+                        <path d={question}/>
+                    </svg>
+                    <div className={styles.tooltip}>HELP</div>
+                </div>
+                {/* Theme 버튼 */}
+                <div className={styles.hoverButton} onClick={() => layout.toggleTheme()}>
+                    <svg className={styles.icon} viewBox="0 0 24 24">
+                        <path ref={themeIcon}/>
+                    </svg>
+                    <div className={styles.tooltip}>THEME</div>
+                </div>
+                {/* Notification 버튼 */}
+                <div className={styles.hoverButton} onClick={() => layout.toggleTheme()}>
+                    <svg className={styles.icon} viewBox="0 0 24 24">
+                        <path d={notification}/>
+                    </svg>
+                    <span className={styles.badge}>3</span>
+                    <div className={styles.tooltip}>NOTIFICATION</div>
+                </div>
+            </div>
+
+        </div>
+
+        {/* 페이징 프로그레스바 */}
+        <span className={styles.progressbar}>
+            <span className={styles.bar} ref={progressbar}></span>
+        </span>
+    </>
+  );
+}
+
+export { TopBar };
