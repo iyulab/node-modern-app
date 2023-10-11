@@ -16,6 +16,7 @@ function TopBar() {
   const progressbar = useRef<HTMLSpanElement>(null);
   const themeIcon = useRef<SVGPathElement>(null);
   const [paths, setPaths] = useState<string[]>([]);
+  const [notiCount, setNotiCount] = useState<number>(0);
 
   // 테마 설정(아이콘 변경)
   useEffect(() => {
@@ -83,6 +84,12 @@ function TopBar() {
     }
   });
 
+  // 알림 설정
+  useEffect(() => {
+    console.log("알림");
+    setNotiCount(2);
+  }, []);
+
   return (
     <>
         {/* 헤더부 본문 */}
@@ -128,11 +135,11 @@ function TopBar() {
                     <div className={styles.tooltip}>THEME</div>
                 </div>
                 {/* Notification 버튼 */}
-                <div className={styles.hoverButton} onClick={() => layout.toggleTheme()}>
+                <div className={styles.hoverButton} onClick={() => console.log("알림")}>
                     <svg className={styles.icon} viewBox="0 0 24 24">
                         <path d={notification}/>
                     </svg>
-                    <span className={styles.badge}>3</span>
+                    {notiCount > 0 ? <span className={styles.badge}>{notiCount}</span> : null}
                     <div className={styles.tooltip}>NOTIFICATION</div>
                 </div>
             </div>

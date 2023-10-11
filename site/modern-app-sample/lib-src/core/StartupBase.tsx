@@ -1,7 +1,7 @@
 import React from 'react';
 import { Router } from '@remix-run/router';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider } from 'react-router-dom';
+import { RouterProvider, RouteObject } from 'react-router-dom';
 
 import { DI } from './DI';
 import {
@@ -9,9 +9,9 @@ import {
   IMenuItem,
   MenuStore,
   LocatorStore,
-  RouteExt,
   LayoutStore,
-  UIStore
+  UIStore,
+  RouteExt
 } from '@iyulab/modern-app/stores';
 
 export abstract class StartupBase {
@@ -21,7 +21,7 @@ export abstract class StartupBase {
   abstract basePath?: string;
   abstract baseElement?: React.ReactNode;
   abstract errorElement?: React.ReactNode;
-  abstract otherShells?: RouteExt[];
+  abstract otherShells?: RouteObject[];
 
   abstract initMainMenuItems(): IMenuItem[];
   abstract initRoutes(): RouteExt[];

@@ -10,7 +10,7 @@ import { ErrorPage } from '@iyulab/modern-app/layouts/ErrorPage';
 export type RouteExt = RouteObject & {
   key: string;
   useParam?: boolean;
-  // display?: string;
+  children?: RouteExt[];
 }
 
 export type CurrentLocation = {
@@ -108,9 +108,9 @@ export class LocatorStore {
       basePath?: string,
       baseElement?: React.ReactNode,
       errorElement?: React.ReactNode,
-      otherShells?: RouteExt[],
+      otherShells?: RouteObject[],
     ) : Router {
-    
+
     // 1. base/help Path 설정
     this.basePath = basePath ?? this.basePath;
     if(!this.basePath.startsWith("/")) {
@@ -122,14 +122,14 @@ export class LocatorStore {
     }
 
     // 2. routes 설정
-    routes.map((x:RouteExt) => {
-      const { key, useParam, ...route } = x;
+    routes.map((r:RouteExt) => {
+      const { key, useParam, ...route } = r;
 
+      if(!key) throw new Error("id is required");
       if(!route.path) throw new Error("path is required");
-      if(!key) throw new Error("key is required");
 
       // 2.1 path validation
-      if(route.path === '/' || route.index === true) {
+      if(route.path === '/') {
         route.path = '';
         route.index = true;
       }
@@ -154,7 +154,7 @@ export class LocatorStore {
         }
 
         const url = new URL(request.url);
-        const fullPaths = url.pathname.replace(this.basePath, "").split("/").filter(x => x.length > 0);
+        const fullPaths = decodeURIComponent(url.pathname).replace(this.basePath, "").split("/").filter(x => x.length > 0);
         const paths = params.id?.split("/").filter(x => x.length > 0);
         const query = Object.fromEntries(url.searchParams.entries());
 
@@ -187,6 +187,7 @@ export class LocatorStore {
     });
 
     // 3. router 설정
+    // 3.1 기본 레이아웃 routes 설정
     const baseRoutes: RouteObject[] = [
       {
         path: this.basePath,
@@ -196,10 +197,12 @@ export class LocatorStore {
       }
     ]
 
+    // 3.2 다른 레이아웃 엘리먼트 설정
     if(otherShells) {
       baseRoutes.push(...otherShells);
     }
 
+    // 3.3 base path가 '/'가 아닌 경우, 잘못된 url을 처리
     if(this.basePath !== "/") {
       baseRoutes.push({
         path: '',

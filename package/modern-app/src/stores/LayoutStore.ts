@@ -73,10 +73,8 @@ export class LayoutStore {
   private onWindowResized() {
     const medium = window.innerWidth < Breakpoint.Medium;
     if (!this.isMediumScreen && medium) {
-      // console.log('isMediumScreen');
       this.isMediumScreen = true;
     } else if (this.isMediumScreen && !medium) {
-      // console.log('not isMediumScreen');
       this.isMediumScreen = false;
     }
   }

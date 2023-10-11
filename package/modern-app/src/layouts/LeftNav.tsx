@@ -13,7 +13,7 @@ function LeftNav() {
   
   const [expand, setExpand] = useState(true);
   const [isSmallWindow, setIsSmallWindow] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<string>("");
+  const [selectedGroup, setSelectedGroup] = useState("");
 
   // 다중 메뉴 선택시
   const groupChanged = (key: string) => {
@@ -49,13 +49,13 @@ function LeftNav() {
         {/* 네비게이션 메뉴: 단일메뉴, 다중메뉴, 메뉴분리간격조정 */}
         <div className={styles.navMenus}>
 
-          {menu.mainMenuItems.map((menu, index) => {
+          {menu.menuItems.map((menu, index) => {
 
-            if(menu.type === "seperator") {
+            if(menu.type === "blank") {
 
               // 1. 메뉴 구분선
               return (<div className={styles.seperator} key={index}></div>)
-            } else if(menu.children === undefined || menu.children.length === 0) {
+            } else if(menu.subMenu === undefined || menu.subMenu.length === 0) {
 
               // 2. 단일 메뉴
               return (
@@ -81,7 +81,7 @@ function LeftNav() {
                     </svg>
                     <div className={styles.text}>{menu.display}</div>
                   </NavLink>
-                  {selectedGroup === menu.key ? menu.children.map((child) => {
+                  {selectedGroup === menu.key ? menu.subMenu.map((child) => {
                     return (
                       <NavLink to={child.path!} key={child.key} className={({isActive}) => {
                         if(isActive) groupChanged(menu.key!);
