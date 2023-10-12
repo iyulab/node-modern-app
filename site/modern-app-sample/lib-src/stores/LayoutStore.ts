@@ -17,19 +17,18 @@ export enum Themes {
 export class LayoutStore {
 
   title?: string = "IYULAB APP";
-  logo?: string = undefined;
+  logo?: any = undefined;
   theme: Themes = Themes.light;
-  isMediumScreen: boolean = false;
+  isMediumScreen: boolean = window.innerWidth < Breakpoint.Medium;
 
   constructor() {
     makeAutoObservable(this);
     window.addEventListener("resize",this.onWindowResized.bind(this));
-    this.isMediumScreen = window.innerWidth < Breakpoint.Medium;
     this.theme = localStorage.theme === 'dark' ? Themes.dark : Themes.light;
     this.updateTheme(this.theme);
   }
 
-  initLayout(title?: string, logo?: string) {
+  initLayout(title?: string, logo?: any) {
     this.title = title ?? this.title;
     this.logo = logo;
   }

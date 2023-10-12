@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { RouteObject } from "react-router-dom";
+import { RouteObject, IndexRouteObject, NonIndexRouteObject } from "react-router-dom";
 import type { Router } from "@remix-run/router";
 
 import { makeAutoObservable } from "mobx";
@@ -7,15 +7,25 @@ import { makeAutoObservable } from "mobx";
 import { AppShell } from '@iyulab/modern-app/layouts/AppShell';
 import { ErrorPage } from '@iyulab/modern-app/layouts/ErrorPage';
 
-export type RouteExt = RouteObject & {
+// index route => children이 undefined
+interface IndexRouteExt extends IndexRouteObject {
+  key: string;
+  useParam?: boolean;
+}
+
+// children을 오버라이드 했기때문에 router 세팅시 추가된 필드를 제거(라우터 오류 방지 차원)
+interface NonIndexRouteExt extends NonIndexRouteObject {
   key: string;
   useParam?: boolean;
   children?: RouteExt[];
 }
 
-export type CurrentLocation = {
+export type RouteExt = IndexRouteExt | NonIndexRouteExt;
+
+export interface CurrentLocation {
   key: string;
   request: Request;
+  url: URL;
   fullPaths?: string[];
   paths?: string[];
   query?: object;
@@ -29,10 +39,10 @@ export class LocatorStore {
   
   private helpPath: string = "/help";
   private basePath: string = "/";
-  private routes: Map<string, RouteObject> = new Map<string, RouteObject>();
+  private keyPath: Map<string, string> = new Map<string, string>();
   private router?: Router = undefined;
   
-  currentlocation?: CurrentLocation = undefined;
+  private currentlocation?: CurrentLocation = undefined;
   private eventHandler: Map<string, callback> = new Map<string, callback>();
   private _progress: number = 0;
   private loading: boolean = false;
@@ -45,20 +55,8 @@ export class LocatorStore {
     return this.basePath;
   }
 
-  get url() {
-    if(this.currentlocation) {
-      return new URL(this.currentlocation?.request.url);
-    } else {
-      return new URL(window.location.href);
-    }
-  }
-
-  get path() {
-    return this.url.pathname;
-  }
-
-  get query() {
-    return Object.fromEntries(this.url.searchParams.entries());
+  get current() {
+    return this.currentlocation;
   }
 
   set progress(value: number) {
@@ -82,22 +80,6 @@ export class LocatorStore {
     return this.loading;
   }
 
-  private onLocationChanged(current: CurrentLocation): void {
-    window.dispatchEvent(new CustomEvent(LocatorStore.LOCATION_CHANGED_NAME, {
-      detail: current,
-    }));
-  }
-
-  // 설정한 key값과 일치하는 로케이션 체인지 이벤트가 발생하면 callback을 실행한다.
-  addChangedEvent(key:string, callback: callback): void {
-    this.eventHandler.set(key, callback);
-  }
-
-  // 설정한 key값과 일치하는 로케이션 체인지 이벤트를 제거한다.
-  removeChangedEvent(key:string): void {
-    this.eventHandler.delete(key);
-  }
-
   constructor() {
     makeAutoObservable(this);
   }
@@ -109,7 +91,7 @@ export class LocatorStore {
       baseElement?: React.ReactNode,
       errorElement?: React.ReactNode,
       otherShells?: RouteObject[],
-    ) : Router {
+    ) : [Map<string,string>, Router] {
 
     // 1. base/help Path 설정
     this.basePath = basePath ?? this.basePath;
@@ -122,102 +104,13 @@ export class LocatorStore {
     }
 
     // 2. routes 설정
-    routes.map((r:RouteExt) => {
-      const { key, useParam, ...route } = r;
+    const baseRoutes = this.setRoute(routes);
 
-      if(!key) throw new Error("id is required");
-      if(!route.path) throw new Error("path is required");
+    // 3. router 생성
+    const router = this.setRouter(baseRoutes, baseElement, errorElement, otherShells);
+    this.router = router;
 
-      // 2.1 path validation
-      if(route.path === '/') {
-        route.path = '';
-        route.index = true;
-      }
-
-      if (route.path.startsWith("/") && route.path.length > 1) {
-        route.path = route.path.substring(1, route.path.length);
-      }
-
-      if (route.path.endsWith("/") && route.path.length > 1) {
-        route.path = route.path.substring(0, route.path.length - 1);
-      }
-
-      if (useParam) {
-        route.path = `${route.path}/:id?`;
-      }
-
-      // 2.2 url get 요청시 이벤트 핸들러 설정
-      route.loader = ({ request, params }) => {
-        // 2.2.0 페이지 로딩 시작
-        if(request.url !== this.currentlocation?.request.url) {
-          this.progress = 20;
-        }
-
-        const url = new URL(request.url);
-        const fullPaths = decodeURIComponent(url.pathname).replace(this.basePath, "").split("/").filter(x => x.length > 0);
-        const paths = params.id?.split("/").filter(x => x.length > 0);
-        const query = Object.fromEntries(url.searchParams.entries());
-
-        this.currentlocation = {
-          key: key,
-          request: request,
-          fullPaths: fullPaths,
-          paths: paths,
-          query: query,
-        }
-
-        // 2.2.1 윈도우 이벤트 발생
-        this.onLocationChanged(this.currentlocation);
-
-        // 2.2.2 이벤트 핸들러 실행
-        if(this.eventHandler.has(key)) {
-          const callback = this.eventHandler.get(key);
-          if(callback) callback(this.currentlocation);
-        }
-
-        return new Response(null, { status: 200 });
-      }
-
-      // 2.3 key 중복 체크
-      if(this.routes.has(key)) {
-        console.error(`route key '${key}' is duplicated. route will be overwritten.`);
-      }
-
-      this.routes.set(key, route);
-    });
-
-    // 3. router 설정
-    // 3.1 기본 레이아웃 routes 설정
-    const baseRoutes: RouteObject[] = [
-      {
-        path: this.basePath,
-        element: baseElement ?? <AppShell />,
-        errorElement: this.basePath === '/' ? errorElement ?? <ErrorPage /> : undefined,
-        children: Array.from(this.routes.values() ?? []),
-      }
-    ]
-
-    // 3.2 다른 레이아웃 엘리먼트 설정
-    if(otherShells) {
-      baseRoutes.push(...otherShells);
-    }
-
-    // 3.3 base path가 '/'가 아닌 경우, 잘못된 url을 처리
-    if(this.basePath !== "/") {
-      baseRoutes.push({
-        path: '',
-        element: (<><pre>  WRONG URL! Base Path: [{this.basePath}]  </pre></>),
-        errorElement: errorElement ?? <ErrorPage />,
-      });
-    }
-
-    // 4. router 생성
-    this.router = createBrowserRouter([
-      ...baseRoutes
-    ]);
-
-    // 5. router 반환
-    return this.router;
+    return [this.keyPath, this.router];
   }
 
   go(path: string) {
@@ -234,6 +127,131 @@ export class LocatorStore {
 
   reload() {
     this.router?.navigate(0);
+  }
+
+  // 설정한 key값과 일치하는 로케이션 체인지 이벤트가 발생하면 callback을 실행한다.
+  addChangedEvent(key:string, callback: callback): void {
+    this.eventHandler.set(key, callback);
+  }
+
+  // 설정한 key값과 일치하는 로케이션 체인지 이벤트를 제거한다.
+  removeChangedEvent(key:string): void {
+    this.eventHandler.delete(key);
+  }
+
+  private onLocationChanged(current: CurrentLocation): void {
+    window.dispatchEvent(new CustomEvent(LocatorStore.LOCATION_CHANGED_NAME, {
+      detail: current,
+    }));
+  }
+
+  private setRoute(routes: RouteExt[], parentPath?: string) : RouteObject[] {
+
+    return routes.map((r:RouteExt) => {
+      
+      // 중요!! 커스텀 프로퍼티 제거
+      const { key, useParam, children, ...route } = r;
+
+      if(!key) throw new Error("key is required");
+      if(!route.path) throw new Error("path is required");
+
+      // 1 path validation(앞뒤 '/' 제거, 상대경로)
+      if(route.path === '/') {
+        route.path = '';
+        route.index = true;
+      }
+      if (route.path.startsWith("/") && route.path.length > 1) {
+        route.path = route.path.substring(1, route.path.length);
+      }
+      if (route.path.endsWith("/") && route.path.length > 1) {
+        route.path = route.path.substring(0, route.path.length - 1);
+      }
+      this.keyPath.set(key, parentPath ? `${parentPath}/${route.path}` : route.path);
+
+      if (useParam) {
+        route.path = `${route.path}/:id?`;
+      }
+
+      // 2 url 요청시 미들웨어 설정
+      route.loader = ({ request, params }) => {
+        // 2.1 페이지 로딩 시작 (20% 부터 시작)
+        if(request.url !== this.currentlocation?.request.url && !params.id) {
+          this.progress = 20;
+        }
+
+        // 2.2 현재 로케이션 설정
+        const url = new URL(request.url);
+        const fullPaths = decodeURIComponent(url.pathname).replace(this.basePath, "").split("/").filter(x => x.length > 0);
+        const paths = params.id?.split("/").filter(x => x.length > 0);
+        const query = Object.fromEntries(url.searchParams.entries());
+        
+        this.currentlocation = {
+          key: key,
+          request: request,
+          url: url,
+          fullPaths: fullPaths,
+          paths: paths,
+          query: query,
+        }
+
+        // 2.3 윈도우 이벤트 발생
+        this.onLocationChanged(this.currentlocation);
+
+        // 2.4 등록된 이벤트 핸들러 실행
+        if(this.eventHandler.has(key)) {
+          const callback = this.eventHandler.get(key);
+          if(callback) callback(this.currentlocation);
+        }
+
+        return new Response(null, { status: 200 });
+      }
+
+      // 3 children 있을경우 재귀호출(완전 분해후 재조립)
+      if(children) {
+        (route as RouteObject).children = this.setRoute(children, this.keyPath.get(key));
+      }
+
+      // 4 설정된 route 반환
+      return route as RouteObject;
+    });
+  }
+
+  private setRouter(
+    routes: RouteObject[], 
+    base?: React.ReactNode, 
+    error?: React.ReactNode, 
+    other?: RouteObject[]
+  ) : Router {
+    
+    // 1 기본 레이아웃 routes 설정
+    const baseRoutes: RouteObject[] = [
+      {
+        path: this.basePath,
+        element: base ?? <AppShell />,
+        errorElement: this.basePath === '/' ? error ?? <ErrorPage /> : undefined,
+        children: routes
+      }
+    ]
+
+    // 2 다른 레이아웃 엘리먼트 설정
+    if(other) {
+      baseRoutes.push(...other);
+    }
+
+    // 3 base path가 '/'가 아닌 경우, 잘못된 url을 처리
+    if(this.basePath !== "/") {
+      baseRoutes.push({
+        path: '',
+        element: (<><pre>  WRONG URL! Base Path: [{this.basePath}]  </pre></>),
+        errorElement: error ?? <ErrorPage />,
+      });
+    }
+
+    // 4 router 생성
+    return createBrowserRouter([
+      ...baseRoutes
+    ]);
+
   }
 
 }

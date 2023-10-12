@@ -55,7 +55,7 @@ function LeftNav() {
 
               // 1. 메뉴 구분선
               return (<div className={styles.seperator} key={index}></div>)
-            } else if(menu.subMenu === undefined || menu.subMenu.length === 0) {
+            } else if(menu.type === "single") {
 
               // 2. 단일 메뉴
               return (
@@ -67,12 +67,12 @@ function LeftNav() {
                   </svg>
                   <div className={styles.text}>{menu.display}</div>
                 </NavLink>)
-            } else {
+            } else if(menu.type === "group") {
 
-              // 3. 다중 메뉴 (하위 메뉴가 있는 메뉴)
+              // 3. 그룹 메뉴 (하위 메뉴가 있는 메뉴)
               return (
-                <div key={menu.key} className={`${styles.groupMenu} ${!expand ? styles.collapsed : ''}
-                  ${selectedGroup === menu.key ? styles.selected : ''}`} >
+                <div key={index} className={`${styles.groupMenu} ${!expand ? styles.collapsed : ''}
+                  ${selectedGroup === "hello" ? styles.selected : ''}`} >
                   <NavLink to={menu.path!} className={({isActive}) => {
                     if(isActive) groupChanged(menu.key!);
                     return `${styles.mainMenu} ${isActive ? styles.selected : ''}`}} end>
@@ -90,6 +90,8 @@ function LeftNav() {
                       </NavLink>)
                   }) : null}
                 </div>);
+            } else {
+              return null;
             }
 
           })}

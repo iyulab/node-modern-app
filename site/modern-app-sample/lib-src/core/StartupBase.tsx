@@ -6,7 +6,7 @@ import { RouterProvider, RouteObject } from 'react-router-dom';
 import { DI } from './DI';
 import {
   AppInfoStore,
-  IMenuItem,
+  MenuItem,
   MenuStore,
   LocatorStore,
   LayoutStore,
@@ -23,10 +23,8 @@ export abstract class StartupBase {
   abstract errorElement?: React.ReactNode;
   abstract otherShells?: RouteObject[];
 
-  abstract initMainMenuItems(): IMenuItem[];
+  abstract initMainMenuItems(): MenuItem[];
   abstract initRoutes(): RouteExt[];
-
-  abstract callback?: () => void;
 
   init() : Router {
 
@@ -41,24 +39,21 @@ export abstract class StartupBase {
     ui.initUI();
 
     // appInfo 초기화
-    appInfo.initAppInfo(this.title, this.logo);
+    appInfo.initAppInfo();
 
     // layout 초기화
     layout.initLayout(this.title, this.logo);
 
     // locator 초기화
     const routes = this.initRoutes();
-    const router = locator.initLocator(
+    const [keyPath, router] = locator.initLocator(
       routes, this.helpPath, this.basePath,
       this.baseElement, this.errorElement, this.otherShells
     );
 
     // menu 초기화
     const menuItems = this.initMainMenuItems();
-    menu.initMenu(menuItems, routes);
-
-    // callback
-    if(this.callback) this.callback();
+    menu.initMenu(menuItems, keyPath);
 
     return router;
   }
