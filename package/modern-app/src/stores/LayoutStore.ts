@@ -16,21 +16,37 @@ export enum Themes {
 
 export class LayoutStore {
 
-  title?: string = "IYULAB APP";
-  logo?: any = undefined;
-  theme: Themes = Themes.light;
-  isMediumScreen: boolean = window.innerWidth < Breakpoint.Medium;
+  private _title?: string = "IYULAB APP";
+  private _logo?: any = undefined;
+  private _theme: Themes = Themes.light;
+  private _isMediumScreen: boolean = window.innerWidth < Breakpoint.Medium;
+
+  get title() {
+    return this._title;
+  }
+
+  get logo() {
+    return this._logo;
+  }
+
+  get theme() {
+    return this._theme;
+  }
+
+  get isMediumScreen() {
+    return this._isMediumScreen;
+  }
 
   constructor() {
     makeAutoObservable(this);
     window.addEventListener("resize",this.onWindowResized.bind(this));
-    this.theme = localStorage.theme === 'dark' ? Themes.dark : Themes.light;
+    this._theme = localStorage.theme === 'dark' ? Themes.dark : Themes.light;
     this.updateTheme(this.theme);
   }
 
   initLayout(title?: string, logo?: any) {
-    this.title = title ?? this.title;
-    this.logo = logo;
+    this._title = title ?? this.title;
+    this._logo = logo;
   }
 
   toggleTheme(targetElement?: any) {
@@ -39,7 +55,7 @@ export class LayoutStore {
   }
   
   private updateTheme(theme: Themes, targetElement?: any) {
-    this.theme = theme;
+    this._theme = theme;
     localStorage.theme = theme === Themes.dark ? 'dark' : 'light';
     
     if (theme == Themes.dark) {
@@ -72,9 +88,9 @@ export class LayoutStore {
   private onWindowResized() {
     const medium = window.innerWidth < Breakpoint.Medium;
     if (!this.isMediumScreen && medium) {
-      this.isMediumScreen = true;
+      this._isMediumScreen = true;
     } else if (this.isMediumScreen && !medium) {
-      this.isMediumScreen = false;
+      this._isMediumScreen = false;
     }
   }
 }

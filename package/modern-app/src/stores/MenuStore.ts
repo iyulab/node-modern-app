@@ -1,7 +1,9 @@
 import { makeAutoObservable } from "mobx";
 
-interface BlackMenu {
-  type: "blank";
+interface Seperator {
+  type: "separator";
+  line?: boolean;
+  height?: number;
 }
 
 interface SingleMenu {
@@ -35,11 +37,15 @@ interface ActionMenu {
   iconData?: string;
 }
 
-export type MenuItem = BlackMenu | SingleMenu | GroupMenu | ActionMenu;
+export type MenuItem = Seperator | SingleMenu | GroupMenu | ActionMenu;
 
 export class MenuStore {
   
-  menuItems: MenuItem[] = [];
+  private menuItems: MenuItem[] = [];
+
+  get menus() {
+    return this.menuItems;
+  }
 
   constructor() {
     makeAutoObservable(this);

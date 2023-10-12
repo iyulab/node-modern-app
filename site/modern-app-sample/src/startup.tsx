@@ -6,7 +6,7 @@ import { MenuItem } from "@iyulab/modern-app/stores/MenuStore";
 import { RouteExt } from "@iyulab/modern-app/stores/LocatorStore";
 
 import App from "./App";
-import { HomePage } from "./pages";
+import { HomePage, LitPage, ReactPage } from "./pages";
 
 class Startup extends StartupBase {
   
@@ -40,19 +40,19 @@ class Startup extends StartupBase {
         display: "Home",
       },
       {
-        type: "blank"
+        type: "separator"
       },
       {
         type: "group",
         display: "Group Menu",
         subMenu: [
           {
-            key: "group-menu",
-            display: "Group Menu",
+            key: "lit",
+            display: "Lit Element",
           },
           {
-            key: "group-menu-1",
-            display: "Group Menu 1",
+            key: "react",
+            display: "React Component",
           }
         ]
       }
@@ -68,13 +68,14 @@ class Startup extends StartupBase {
         element: <HomePage />,
       },
       {
-        key: "group-menu",
-        path: "/group",
-        element: <HomePage />,
+        key: "lit",
+        path: "/lit",
+        element: <LitPage />,
         children: [
           {
-            key: "group-menu-1",
-            path: "1",
+            key: "react",
+            path: "react",
+            element: <ReactPage />,
             useParam: true,
           },
         ],

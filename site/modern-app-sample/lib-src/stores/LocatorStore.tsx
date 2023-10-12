@@ -156,9 +156,8 @@ export class LocatorStore {
       if(!route.path) throw new Error("path is required");
 
       // 1 path validation(앞뒤 '/' 제거, 상대경로)
-      if(route.path === '/') {
-        route.path = '';
-        route.index = true;
+      if(route.path === '') {
+        route.path = '/';
       }
       if (route.path.startsWith("/") && route.path.length > 1) {
         route.path = route.path.substring(1, route.path.length);

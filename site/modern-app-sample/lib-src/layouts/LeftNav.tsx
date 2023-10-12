@@ -49,17 +49,22 @@ function LeftNav() {
         {/* 네비게이션 메뉴: 단일메뉴, 다중메뉴, 메뉴분리간격조정 */}
         <div className={styles.navMenus}>
 
-          {menu.menuItems.map((menu, index) => {
+          {menu.menus.map((menu, index) => {
 
-            if(menu.type === "blank") {
-
-              // 1. 메뉴 구분선
-              return (<div className={styles.seperator} key={index}></div>)
-            } else if(menu.type === "single") {
-
-              // 2. 단일 메뉴
+            // 1. 구분선
+            if(menu.type === "separator") {
+              const height = {height: menu.height ? menu.height : undefined};
               return (
-                <NavLink to={menu.path!} key={menu.key} className={({isActive}) => {
+                <div key={index} className={styles.separator} style={height}>
+                  {menu.line && <div className={styles.line}></div>}
+                </div>
+              );
+            }
+            // 2. 단일 메뉴
+            else if(menu.type === "single") { 
+              return (
+                <NavLink key={menu.key} to={menu.path!} className={({isActive}) => {
+                  console.log(isActive);
                   if(isActive) groupChanged('');
                   return `${styles.singleMenu} ${isActive ? styles.selected : ''}`}} end>
                   <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 20} ${menu.iconSize ?? 20}`}>
@@ -67,28 +72,28 @@ function LeftNav() {
                   </svg>
                   <div className={styles.text}>{menu.display}</div>
                 </NavLink>)
-            } else if(menu.type === "group") {
-
-              // 3. 그룹 메뉴 (하위 메뉴가 있는 메뉴)
+            }
+            // 3. 그룹 메뉴
+            else if(menu.type === "group") {
+              const selected = menu.subMenu.find(s => s.key === selectedGroup) !== undefined;
               return (
-                <div key={index} className={`${styles.groupMenu} ${!expand ? styles.collapsed : ''}
-                  ${selectedGroup === "hello" ? styles.selected : ''}`} >
-                  <NavLink to={menu.path!} className={({isActive}) => {
-                    if(isActive) groupChanged(menu.key!);
-                    return `${styles.mainMenu} ${isActive ? styles.selected : ''}`}} end>
+                <div key={index} className={`${styles.groupMenu} ${selected ? styles.selected : ''}`}>
+                  <div className={styles.groupHeader}>
                     <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 20} ${menu.iconSize ?? 20}`}>
                       <path d={menu.iconData ?? overview}></path>
                     </svg>
                     <div className={styles.text}>{menu.display}</div>
-                  </NavLink>
-                  {selectedGroup === menu.key ? menu.subMenu.map((child) => {
-                    return (
-                      <NavLink to={child.path!} key={child.key} className={({isActive}) => {
-                        if(isActive) groupChanged(menu.key!);
-                        return `${styles.subMenu} ${isActive ? styles.selected : ''}`}}>
-                          <div className={styles.text}>{child.display}</div>
-                      </NavLink>)
-                  }) : null}
+                  </div>
+                  <div className={styles.groupBody}>
+                    {menu.subMenu.map((child) => {
+                      return (
+                        <NavLink key={child.key} to={child.path!} className={({isActive}) => {
+                          if(isActive) groupChanged(child.key);
+                          return `${styles.subMenu} ${isActive ? styles.selected : ''}`}} end>
+                            <div className={styles.text}>{child.display}</div>
+                        </NavLink>)
+                    })}
+                  </div>
                 </div>);
             } else {
               return null;

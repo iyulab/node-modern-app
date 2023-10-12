@@ -88,7 +88,7 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
         .groupMenu {
             position: relative;
 
-            .mainMenu {
+            .groupHeader {
                 position: relative;
                 display: flex;
                 flex-direction: row;
@@ -127,85 +127,57 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
                 &:hover {
                     background-color: var(--ui-subtle-hover);
                 }
-    
-                &.selected {
-                    background-color: var(--ui-subtle-active);
-    
-                    .text {
-                        font-weight: bold;
-                    }
-    
-                    &:before {
-                        position: absolute;
-                        content: '';
-                        top: 8px;
-                        left: 0;
-                        width: 4px;
-                        height: calc(100% - 16px);
-                        background: darken(#0078D7, 3%);
-                    }
-                }
             }
 
-            .subMenu {
-                position: relative;
-                display: block;
-                padding: 5px 15px 5px 50px;
-                margin: 4px 0;
-                cursor: pointer;
-    
-                .text {
-                    color: var(--primary-text);
-                    font-weight: normal;            
-                    font-size: 14px;
-                    line-height: 20px;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                }
-
-                &:hover {
-                    background-color: var(--ui-subtle-hover);
-                }
-
-                &.selected {
-                    background-color: var(--ui-subtle-active);
-
-                    .text {
-                        font-weight: bold;
-                    }
-
-                    &:before {
-                        position: absolute;
-                        content: '';
-                        top: 5px;
-                        left: 0;
-                        width: 4px;
-                        height: calc(100% - 10px);
-                        background: darken(#0078D7, 3%);
-                    }
-                }
-            }
-
-            &.collapsed {
+            .groupBody {
                 .subMenu {
-                    display: none;
-                }
-
-                &.selected {
-                    &:after {
-                        position: absolute;
-                        content: '';
-                        top: 8px;
-                        left: 0;
-                        width: 4px;
-                        height: calc(100% - 16px);
-                        background-color: darken(#0078D7, 3%);
+                    position: relative;
+                    display: block;
+                    padding: 5px 15px 5px 50px;
+                    margin: 4px 0;
+                    cursor: pointer;
+        
+                    .text {
+                        color: var(--primary-text);
+                        font-weight: normal;            
+                        font-size: 14px;
+                        line-height: 20px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+    
+                    &:hover {
+                        background-color: var(--ui-subtle-hover);
+                    }
+    
+                    &.selected {
+                        background-color: var(--ui-subtle-active);
+    
+                        .text {
+                            font-weight: bold;
+                        }
+    
+                        &:before {
+                            position: absolute;
+                            content: '';
+                            top: 5px;
+                            left: 0;
+                            width: 4px;
+                            height: calc(100% - 10px);
+                            background: darken(#0078D7, 3%);
+                        }
                     }
                 }
             }
 
             &.selected {
+                .groupHeader {
+                    .text {
+                        font-weight: bold;
+                    }
+                }
+
                 &:after {
                     position: absolute;
                     content: '';
@@ -218,11 +190,19 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
             }
         }
     
-        .seperator {
+        .separator {
             display: block;
             width: 100%;
             height: 20px;
             background-color: inherit;
+
+            .line {
+                position: relative;
+                top: 50%;
+                width: 100%;
+                height: 1px;
+                background-color: var(--alpha-20);
+            }
         }
     }
     
