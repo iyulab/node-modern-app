@@ -6,7 +6,8 @@ import { MenuItem } from "@iyulab/modern-app/stores/MenuStore";
 import { RouteExt } from "@iyulab/modern-app/stores/LocatorStore";
 
 import App from "./App";
-import { HomePage, LitPage, ReactPage } from "./pages";
+import { HomePage, LitPage, ReactPage, MixPage, SettingPage, UserPage } from "./pages";
+import { setting } from "@iyulab/modern-app/layouts/IconVector";
 
 class Startup extends StartupBase {
   
@@ -37,15 +38,20 @@ class Startup extends StartupBase {
       {
         type: "single",
         key: "home",
-        display: "Home",
+        display: "Single Menu",
       },
       {
-        type: "separator"
+        type: "separator",
+        height: 5,
       },
       {
         type: "group",
         display: "Group Menu",
         subMenu: [
+          {
+            key: "mix",
+            display: "Mix Component",
+          },
           {
             key: "lit",
             display: "Lit Element",
@@ -53,6 +59,25 @@ class Startup extends StartupBase {
           {
             key: "react",
             display: "React Component",
+          }
+        ]
+      },
+      {
+        type: "separator",
+        line: true,
+      },
+      {
+        type: "group",
+        display: "Setting",
+        iconData: setting,
+        subMenu: [
+          {
+            key: "settingIndex",
+            display: "General",
+          },
+          {
+            key: "user",
+            display: "User",
           }
         ]
       }
@@ -64,14 +89,24 @@ class Startup extends StartupBase {
     return [
       {
         key: "home",
-        path: "/",
         element: <HomePage />,
+        index: true,
       },
       {
-        key: "lit",
-        path: "/lit",
-        element: <LitPage />,
+        key: "component",
+        path: "/component",
         children: [
+          {
+            key: "mix",
+            index: true,
+            element: <MixPage />,
+          },
+          {
+            key: "lit",
+            path: "lit",
+            element: <LitPage />,
+            useParam: true,
+          },
           {
             key: "react",
             path: "react",
@@ -80,6 +115,22 @@ class Startup extends StartupBase {
           },
         ],
       },
+      {
+        key: "setting",
+        path: "/setting",
+        children: [
+          {
+            key: "settingIndex",
+            index: true,
+            element: <SettingPage />
+          },
+          {
+            key: "user",
+            path: "user",
+            element: <UserPage />,
+          },
+        ]
+      }
     ];
   }
 

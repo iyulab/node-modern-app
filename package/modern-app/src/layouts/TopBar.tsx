@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { autorun } from "mobx";
 
-import { useLayout, useLocator } from '@iyulab/modern-app/hooks/UseStores';
+import { useLayout, useLocator, useUI } from '@iyulab/modern-app/hooks/UseStores';
 import { Themes } from "@iyulab/modern-app/stores/LayoutStore";
 
 import logo from "@iyulab/modern-app/assets/app-logo.svg";
@@ -12,6 +12,7 @@ import styles from "@iyulab/modern-app/styles/layouts/TopBar.module.scss";
 function TopBar() {
   const locator = useLocator();
   const layout = useLayout();
+  const ui = useUI();
 
   const progressbar = useRef<HTMLSpanElement>(null);
   const themeIcon = useRef<SVGPathElement>(null);
@@ -135,7 +136,7 @@ function TopBar() {
                     <div className={styles.tooltip}>THEME</div>
                 </div>
                 {/* Notification 버튼 */}
-                <div className={styles.hoverButton} onClick={() => console.log("알림")}>
+                <div className={styles.hoverButton} onClick={(e) => ui.toggleNotificationAsync(e)}>
                     <svg className={styles.icon} viewBox="0 0 24 24">
                         <path d={notification}/>
                     </svg>

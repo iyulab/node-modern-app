@@ -1,3 +1,10 @@
+
+import { 
+  FlyoutElement 
+} from "@iyulab/modern-app/layouts/FlyoutElement";
+import { 
+  NotificationMenu 
+} from "@iyulab/modern-app/layouts/NotificationMenu";
 import { 
   ContentDialog, 
   InputDialog, 
@@ -5,7 +12,9 @@ import {
   MessageDialog,
   BlankDialog 
 } from "@iyulab/modern-app/components/lit/dialogs";
-import { BusyIndicator } from "@iyulab/modern-app/components/lit/BusyIndicator";
+import { 
+  BusyIndicator 
+} from "@iyulab/modern-app/components/lit/BusyIndicator";
 import {
   IMenuItem, 
   PopupMenu 
@@ -15,13 +24,23 @@ export class UIStore {
   
   pageBusyIndicator: BusyIndicator = new BusyIndicator();
   messageBoxDialog: MessageDialog = new MessageDialog();
-  
+  flyout: FlyoutElement = new FlyoutElement();
+  notificationMenu: NotificationMenu = new NotificationMenu();
+
   private busyStack: number = 0;
 
   initUI() {
     document.body.appendChild(this.pageBusyIndicator);
     document.body.appendChild(this.messageBoxDialog);
+    document.body.appendChild(this.flyout);
     this.pageBusyIndicator.hidden = true;
+    this.messageBoxDialog.hidden = true;
+    this.flyout.hidden = true;
+  }
+
+  async toggleNotificationAsync(event: any) {
+    const target = event.currentTarget;
+    this.flyout.showAsync(target, this.notificationMenu);
   }
 
   async showMessageAsync(title: string, message: string) : Promise<boolean> {

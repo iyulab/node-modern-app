@@ -4,16 +4,17 @@ import { autorun } from "mobx";
 
 import { useLayout, useMenu } from "@iyulab/modern-app/hooks/UseStores";
 
-import { overview, leftChevron, rightChevron } from './IconVector';
+import { single, group, leftChevron, rightChevron, angleUp, angleDown } from './IconVector';
 import styles from "@iyulab/modern-app/styles/layouts/LeftNav.module.scss";
 
 function LeftNav() {
   const menu = useMenu();
   const layout = useLayout();
   
-  const [expand, setExpand] = useState(true);
-  const [isSmallWindow, setIsSmallWindow] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState("");
+  const [expand, setExpand] = useState<boolean>(true);
+  const [isSmallWindow, setIsSmallWindow] = useState<boolean>(false);
+  const [toggleGroup, setToggleGroup] = useState<{ [key: number]: boolean }>({});
+  const [selectedGroup, setSelectedGroup] = useState<string>("");
 
   // 다중 메뉴 선택시
   const groupChanged = (key: string) => {
@@ -21,6 +22,18 @@ function LeftNav() {
       setSelectedGroup(key);
     }, 0);
   }
+
+  // 그룹 메뉴 펼침/접힘
+  const toggleShowGroup = (key: number) => {
+    if(expand) {
+      setToggleGroup(prevState => ({
+        ...prevState,
+        [key]: !prevState[key]
+      }));
+    } else {
+      console.log("그룹 메뉴 펼침/접힘은 펼침 상태에서만 가능합니다.");
+    }
+  };
 
   // 브라우저 사이즈 변경시
   useEffect(() => {
@@ -46,7 +59,7 @@ function LeftNav() {
       {/* 네비게이션 본문 */}
       <div className={`${styles.leftNavContainer} ${isSmallWindow ? styles.small : ''} ${expand ? styles.expand : ''}`}>
         
-        {/* 네비게이션 메뉴: 단일메뉴, 다중메뉴, 메뉴분리간격조정 */}
+        {/* 네비게이션 메뉴: 단일메뉴, 그룹메뉴, 메뉴구분선 */}
         <div className={styles.navMenus}>
 
           {menu.menus.map((menu, index) => {
@@ -54,6 +67,7 @@ function LeftNav() {
             // 1. 구분선
             if(menu.type === "separator") {
               const height = {height: menu.height ? menu.height : undefined};
+              
               return (
                 <div key={index} className={styles.separator} style={height}>
                   {menu.line && <div className={styles.line}></div>}
@@ -61,14 +75,16 @@ function LeftNav() {
               );
             }
             // 2. 단일 메뉴
-            else if(menu.type === "single") { 
+            else if(menu.type === "single") {
+              const hasParm = menu.path?.endsWith("/:id?");
+              const path = hasParm ? menu.path?.replace("/:id?","") : menu.path;
+
               return (
-                <NavLink key={menu.key} to={menu.path!} className={({isActive}) => {
-                  console.log(isActive);
+                <NavLink key={menu.key} to={path!} className={({isActive}) => {
                   if(isActive) groupChanged('');
-                  return `${styles.singleMenu} ${isActive ? styles.selected : ''}`}} end>
-                  <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 20} ${menu.iconSize ?? 20}`}>
-                    <path d={menu.iconData ?? overview}></path>
+                  return `${styles.singleMenu} ${isActive ? styles.selected : ''}`}} end={!hasParm}>
+                  <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 24} ${menu.iconSize ?? 24}`}>
+                    <path d={menu.iconData ?? single}></path>
                   </svg>
                   <div className={styles.text}>{menu.display}</div>
                 </NavLink>)
@@ -76,20 +92,31 @@ function LeftNav() {
             // 3. 그룹 메뉴
             else if(menu.type === "group") {
               const selected = menu.subMenu.find(s => s.key === selectedGroup) !== undefined;
+              const showMenu = toggleGroup[index] ?? false;
+
               return (
                 <div key={index} className={`${styles.groupMenu} ${selected ? styles.selected : ''}`}>
-                  <div className={styles.groupHeader}>
-                    <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 20} ${menu.iconSize ?? 20}`}>
-                      <path d={menu.iconData ?? overview}></path>
+                  { /* 그룹 메뉴 헤더 */ }
+                  <div className={styles.groupHeader} onClick={() => toggleShowGroup(index)}>
+                    <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 24} ${menu.iconSize ?? 24}`}>
+                      <path d={menu.iconData ?? group}></path>
                     </svg>
                     <div className={styles.text}>{menu.display}</div>
+                    <div className={styles.flex}></div>
+                    <svg className={styles.toggle} viewBox="0 0 24 24">
+                      <path d={showMenu ? angleDown : angleUp}></path>
+                    </svg>
                   </div>
-                  <div className={styles.groupBody}>
+                  { /* 그룹 메뉴 본문 */ }
+                  <div className={styles.groupBody} hidden={!showMenu || !expand}>
                     {menu.subMenu.map((child) => {
+                      const hasParm = child.path?.endsWith("/:id?");
+                      const path = hasParm ? child.path?.replace("/:id?","") : child.path;
+                      
                       return (
-                        <NavLink key={child.key} to={child.path!} className={({isActive}) => {
+                        <NavLink key={child.key} to={path!} className={({isActive}) => {
                           if(isActive) groupChanged(child.key);
-                          return `${styles.subMenu} ${isActive ? styles.selected : ''}`}} end>
+                          return `${styles.subMenu} ${isActive ? styles.selected : ''}`}} end={!hasParm}>
                             <div className={styles.text}>{child.display}</div>
                         </NavLink>)
                     })}

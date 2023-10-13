@@ -12,6 +12,7 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    user-select: none;
 
     height: 100%;
     width: $condensed-nav-width;
@@ -122,6 +123,27 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
+                }
+
+                .flex {
+                    display: block;
+                    flex-grow: 1;
+                }
+
+                .toggle {
+                    display: inline-block;
+                    padding: 2px;
+                    margin: 0;
+                    width: 20px;
+                    height: 20px;
+                    vertical-align: top;
+                    min-width: 20px;
+                    max-width: 20px;
+
+                    path {
+                        fill: var(--primary-text);
+                        fill-rule: evenodd;
+                    }
                 }
     
                 &:hover {
