@@ -6,7 +6,7 @@ import { MenuItem } from "@iyulab/modern-app/stores/MenuStore";
 import { RouteExt } from "@iyulab/modern-app/stores/LocatorStore";
 
 import App from "./App";
-import { HomePage, LitPage, ReactPage, MixPage, SettingPage, UserPage } from "./pages";
+import { HomePage, LitPage, ReactPage, MixPage, SettingPage, UserPage, TestPage } from "./pages";
 import { setting } from "@iyulab/modern-app/layouts/IconVector";
 
 class Startup extends StartupBase {
@@ -80,6 +80,14 @@ class Startup extends StartupBase {
             display: "User",
           }
         ]
+      },
+      {
+        type: "separator",
+      },
+      {
+        type: "single",
+        key: "test",
+        display: "Test Page",
       }
     ];
   }
@@ -130,7 +138,12 @@ class Startup extends StartupBase {
             element: <UserPage />,
           },
         ]
-      }
+      },
+      {
+        key: "test",
+        path: "/test",
+        element: <TestPage />,
+      },
     ];
   }
 

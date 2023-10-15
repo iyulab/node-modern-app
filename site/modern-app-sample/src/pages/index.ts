@@ -4,3 +4,4 @@ export * from './LitPage';
 export * from './ReactPage';
 export * from './SettingPage';
 export * from './UserPage';
+export * from './TestPage';

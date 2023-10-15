@@ -23,7 +23,6 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
     .navMenus {
         display: block;
         overflow: hidden;
-        overflow-y: auto;
         height: 100%;
         margin: 10px 0;
 
@@ -80,7 +79,7 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
                     top: 8px;
                     left: 0;
                     width: 4px;
-                    height: calc(100% - 16px);
+                    height: calc(100% - 13px);
                     background: darken(#0078D7, 3%);
                 }
             }
@@ -197,7 +196,7 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
                 .groupHeader {
                     .text {
                         font-weight: bold;
-                    }
+                    }   
                 }
 
                 &:after {
@@ -208,6 +207,22 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
                     width: 4px;
                     height: calc(100% - 13px);
                     background-color: var(--alpha-20);
+                }
+
+                &.collapsed {
+                    .groupHeader {
+                        background-color: var(--ui-subtle-active);
+                    }
+
+                    &:before {
+                        position: absolute;
+                        content: '';
+                        top: 8px;
+                        left: 0;
+                        width: 4px;
+                        height: calc(100% - 13px);
+                        background: darken(#0078D7, 3%);
+                    }   
                 }
             }
         }
@@ -225,6 +240,10 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);;
                 height: 1px;
                 background-color: var(--alpha-20);
             }
+        }
+
+        &:hover {
+            overflow-y: auto;
         }
     }
     

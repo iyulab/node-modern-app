@@ -1,3 +1,5 @@
+@import '../cssvars.scss';
+
 .shell {
     display: flex;
     flex-direction: column;
@@ -38,6 +40,37 @@
                 margin-left: 50px;
                 width: calc(100% - 50px);
                 position: absolute;
+            }
+        }
+
+        .scrollTop {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            right: 30px;
+            z-index: 2;
+            background-color: var(--gray-light3);
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            cursor: pointer;
+
+            .icon {
+                width: 25px;
+                height: 25px;
+
+                path {
+                    fill: var(--primary-text);
+                    fill-rule: evenodd;
+                }
+            }
+
+            &:hover {
+                background-color: var(--gray-6);
+            }
+
+            &:active {
+                scale: 0.9;
             }
         }
     }

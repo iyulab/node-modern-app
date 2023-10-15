@@ -114,7 +114,11 @@ export class LocatorStore {
   }
 
   go(path: string) {
-    this.router?.navigate(path);
+    if(path.startsWith("/")) {
+      this.router?.navigate(path);
+    } else {
+      this.router?.navigate(`/${path}`);
+    }
   }
 
   goBack() {

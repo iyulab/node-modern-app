@@ -1,11 +1,10 @@
-
-import { 
-  FlyoutElement 
-} from "@iyulab/modern-app/layouts/FlyoutElement";
-import { 
-  NotificationMenu 
-} from "@iyulab/modern-app/layouts/NotificationMenu";
-import { 
+import { GroupMenu } from "@iyulab/modern-app/stores/MenuStore";
+import {
+  NotificationMenu,
+  SubNavMenu,
+  SubNavTooltip
+} from "@iyulab/modern-app/layouts/components";
+import {
   ContentDialog, 
   InputDialog, 
   InputDialogOptions, 
@@ -24,23 +23,36 @@ export class UIStore {
   
   pageBusyIndicator: BusyIndicator = new BusyIndicator();
   messageBoxDialog: MessageDialog = new MessageDialog();
-  flyout: FlyoutElement = new FlyoutElement();
+  
   notificationMenu: NotificationMenu = new NotificationMenu();
+  subNavMenu: SubNavMenu = new SubNavMenu();
+  subNavTooltip: SubNavTooltip = new SubNavTooltip();
 
   private busyStack: number = 0;
 
   initUI() {
     document.body.appendChild(this.pageBusyIndicator);
     document.body.appendChild(this.messageBoxDialog);
-    document.body.appendChild(this.flyout);
     this.pageBusyIndicator.hidden = true;
     this.messageBoxDialog.hidden = true;
-    this.flyout.hidden = true;
+
+    document.body.appendChild(this.notificationMenu);
+    document.body.appendChild(this.subNavMenu);
+    document.body.appendChild(this.subNavTooltip);
   }
 
   async toggleNotificationAsync(event: any) {
-    const target = event.currentTarget;
-    this.flyout.showAsync(target, this.notificationMenu);
+    this.notificationMenu.toggleAsync(event);
+  }
+
+  async toggleSubNavAsync(event: any, menu: GroupMenu) {
+    this.subNavMenu.item = menu;
+    this.subNavMenu.toggleAsync(event);
+  }
+
+  async hoverNavTooltipAsync(event: any, display: string) {
+    this.subNavTooltip.display = display;
+    this.subNavTooltip.hoverAsync(event);
   }
 
   async showMessageAsync(title: string, message: string) : Promise<boolean> {
@@ -177,7 +189,7 @@ export class UIStore {
       };
       
       const r = await popupMenu.showAsync();
-      return r;    
+      return r;
     } catch (ex) {
       return {
         success: false,
@@ -193,7 +205,6 @@ export class UIStore {
   busy() {
     // busy 스택에 추가
     this.busyStack++;
-
     this.updateBusyIndicator();
   }
 
@@ -203,29 +214,24 @@ export class UIStore {
     if (this.busyStack < 0) {
       this.busyStack = 0;
     }
-    
     this.updateBusyIndicator();
   }
 
   updateBusyIndicator() {
-    if (this.pageBusyIndicator) {
-      this.pageBusyIndicator.hidden = this.busyStack > 0 ? false : true;
-    }
+    this.pageBusyIndicator.hidden = this.busyStack > 0 ? false : true;
   }
   
   async invokeInBusy<T>(action: () => Promise<T>): Promise<T|undefined> {
-    
     this.busy();
 
     try {
       return await action();
     } catch (e) {
       console.error(e);
+      return undefined;
     } finally {
       this.unbusy();
     }
-    
-    return undefined;
   }
   
   //#endregion

@@ -15,7 +15,7 @@ interface SingleMenu {
   iconData?: string;
 }
 
-interface GroupMenu {
+export interface GroupMenu {
   type: "group";
   display: string;
   iconSize?: number;

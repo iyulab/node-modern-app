@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { autorun } from "mobx";
 
-import { useLayout, useMenu } from "@iyulab/modern-app/hooks/UseStores";
+import { useLayout, useMenu, useUI } from "@iyulab/modern-app/hooks/UseStores";
+import { GroupMenu } from "@iyulab/modern-app/stores/MenuStore";
 
 import { single, group, leftChevron, rightChevron, angleUp, angleDown } from './IconVector';
 import styles from "@iyulab/modern-app/styles/layouts/LeftNav.module.scss";
@@ -10,6 +11,7 @@ import styles from "@iyulab/modern-app/styles/layouts/LeftNav.module.scss";
 function LeftNav() {
   const menu = useMenu();
   const layout = useLayout();
+  const ui = useUI();
   
   const [expand, setExpand] = useState<boolean>(true);
   const [isSmallWindow, setIsSmallWindow] = useState<boolean>(false);
@@ -24,16 +26,22 @@ function LeftNav() {
   }
 
   // 그룹 메뉴 펼침/접힘
-  const toggleShowGroup = (key: number) => {
+  const onToggleGroupMenu = (e:any, key: number, menu:GroupMenu) => {
     if(expand) {
       setToggleGroup(prevState => ({
         ...prevState,
         [key]: !prevState[key]
       }));
     } else {
-      console.log("그룹 메뉴 펼침/접힘은 펼침 상태에서만 가능합니다.");
+      ui.toggleSubNavAsync(e, menu);
     }
   };
+
+  // 메뉴 접힘 상태에서 메뉴 디스플레이
+  const onHoverMenuDisplay = (e:any, display:string) => {
+    if(expand) return;
+    ui.hoverNavTooltipAsync(e, display);
+  }
 
   // 브라우저 사이즈 변경시
   useEffect(() => {
@@ -46,6 +54,7 @@ function LeftNav() {
       } else {
         setIsSmallWindow(false);
         setExpand(true);
+        ui.subNavMenu.hideClickAsync();
       }
     });
 
@@ -82,7 +91,9 @@ function LeftNav() {
               return (
                 <NavLink key={menu.key} to={path!} className={({isActive}) => {
                   if(isActive) groupChanged('');
-                  return `${styles.singleMenu} ${isActive ? styles.selected : ''}`}} end={!hasParm}>
+                  return `${styles.singleMenu} ${isActive ? styles.selected : ''}`}}
+                  onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}
+                  end={!hasParm}>
                   <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 24} ${menu.iconSize ?? 24}`}>
                     <path d={menu.iconData ?? single}></path>
                   </svg>
@@ -95,9 +106,12 @@ function LeftNav() {
               const showMenu = toggleGroup[index] ?? false;
 
               return (
-                <div key={index} className={`${styles.groupMenu} ${selected ? styles.selected : ''}`}>
+                <div key={index} className={`${styles.groupMenu}
+                  ${selected ? styles.selected : ''} ${expand ? '' : styles.collapsed}`}>
                   { /* 그룹 메뉴 헤더 */ }
-                  <div className={styles.groupHeader} onClick={() => toggleShowGroup(index)}>
+                  <div className={`${styles.groupHeader}`} 
+                    onClick={(e) => onToggleGroupMenu(e, index, menu)}
+                    onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}>
                     <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 24} ${menu.iconSize ?? 24}`}>
                       <path d={menu.iconData ?? group}></path>
                     </svg>

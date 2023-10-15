@@ -109,13 +109,13 @@
             position: relative;
             max-width: 100%;
             user-select: none;
+            cursor: pointer;
 
             .icon {
                 display: block;
                 width: 38px;
                 height: 38px;
                 padding: 10px;
-                cursor: pointer;
 
                 path {
                     width: 16px;
