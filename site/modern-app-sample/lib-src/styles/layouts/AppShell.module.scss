@@ -20,7 +20,6 @@
         position: relative;
         z-index: 1;
         width: 100%;
-        // flex: 1;
         
         .nav {
             position: relative;
@@ -29,17 +28,20 @@
         }
 
         .content {
-            width: 100%;
-            height: calc(100vh - 48px);
-            margin-left: 0px;
             position: relative;
+            width: 100%;
+            margin-left: 0px;
+            height: calc(100vh - 48px);
             display: block;
             overflow: auto;
 
             @media (max-width: 1300px) {
-                margin-left: 50px;
-                width: calc(100% - 50px);
                 position: absolute;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                width: calc(100% - 50px);
+                margin-left: 50px;
             }
         }
 
@@ -48,7 +50,7 @@
             position: absolute;
             bottom: 20px;
             right: 30px;
-            z-index: 2;
+            z-index: 1;
             background-color: var(--gray-light3);
             border-radius: 50%;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);

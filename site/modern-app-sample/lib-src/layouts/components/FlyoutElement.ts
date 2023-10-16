@@ -156,8 +156,6 @@ export abstract class FlyoutElement extends LitElement {
   // 컨텐츠의 위치를 조정합니다.
   private async adjustPosition() {
 
-    console.log("adjustPosition");
-
     // 1. 현재 브라우저의 크기를 구한다.
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;

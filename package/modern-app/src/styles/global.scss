@@ -2,6 +2,7 @@
 @import 'variables';
 @import 'tailwind';
 
+// link styles
 a, :visited {
   color: $link-text;
 
@@ -10,12 +11,14 @@ a, :visited {
   }
 }
 
+// font styles
 html, body {
   margin: 0px;
   font-family: $font-stack-primary;
   overflow: hidden;
 }
 
+// dark theme
 html[data-dark-theme=true][data-prefers-color-scheme="dark"] {
   body {
     background-color: $gray-light3;
@@ -29,6 +32,7 @@ html[data-dark-theme=true][data-prefers-color-scheme="dark"] {
   }
 }
 
+// scrollbar styles
 ::-webkit-scrollbar {
   width: 16px;
 }

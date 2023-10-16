@@ -24,7 +24,7 @@ export function TestPage() {
     }
 
     return (
-        <PageBase title='This is Test'>
+        <PageBase docTitle='This is Test'>
             <div className={styles.container}>
                 <div className={styles.line}>
                     <button onClick={handleFlyout}>Test</button>

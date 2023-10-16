@@ -1,18 +1,25 @@
 @import '../cssvars.scss';
 
 .container {
-    position: absolute;
-    z-index: 1;
-    
     display: flex;
-    flex-flow: column;
-    top: 0;
+    flex-flow: column nowrap;
     width: 100%;
-    // height: auto;
+    // height: 100%;
 
     background: var(--gray-8);
     box-shadow: -1px 0px 0 0 var(--box-shadow);
-    transition-property: transform, opacity;
     box-sizing: border-box;
-    
+
+    .header {
+        display: block;
+        flex: 0 0 auto;
+        padding: 24px 32px;
+        font-size: 21px;
+        font-weight: 600;
+        line-height: 32px;
+        color: var(--primary-text);
+        overflow: hidden;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
 }

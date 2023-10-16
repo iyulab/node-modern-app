@@ -7,7 +7,7 @@ import { RouteExt } from "@iyulab/modern-app/stores/LocatorStore";
 
 import App from "./App";
 import { HomePage, LitPage, ReactPage, MixPage, SettingPage, UserPage, TestPage } from "./pages";
-import { setting } from "@iyulab/modern-app/layouts/IconVector";
+import { setting, labs } from "@iyulab/modern-app/layouts/IconVector";
 
 class Startup extends StartupBase {
   
@@ -64,7 +64,6 @@ class Startup extends StartupBase {
       },
       {
         type: "separator",
-        line: true,
       },
       {
         type: "group",
@@ -83,11 +82,13 @@ class Startup extends StartupBase {
       },
       {
         type: "separator",
+        line: true,
       },
       {
         type: "single",
         key: "test",
         display: "Test Page",
+        iconData: labs,
       }
     ];
   }
