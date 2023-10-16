@@ -12,7 +12,7 @@
       "@/*": [ "src/*" ],
       "@iyulab/modern-app/*": [ "lib-src/*" ],
     },
-
+    
     /* Bundler mode */
     "moduleResolution": "Node",
     "allowImportingTsExtensions": true,

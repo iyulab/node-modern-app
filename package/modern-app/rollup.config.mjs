@@ -26,25 +26,25 @@ const rollup = {
   input: entryPoints,
 
   // 빌드시 생성되는 파일 설정
-  // cjs와 esm으로 빌드
+  // esm으로 빌드
   // preserveModules: src폴더의 구조를 유지하면서 빌드
   output: [
     {
-      dir: "dist/esm",
+      dir: "dist",
       format: "esm",
       preserveModules: true,
       preserveModulesRoot: "src",
     },
-    {
-      dir: "dist/cjs",
-      format: "cjs",
-      preserveModules: true,
-      preserveModulesRoot: "src",
-    },
+    // {
+    //   dir: "dist/cjs",
+    //   format: "cjs",
+    //   preserveModules: true,
+    //   preserveModulesRoot: "src",
+    // },
   ],
 
   plugins: [
-
+    
     // 별칭 설정
     alias({
       entries: [
@@ -56,7 +56,7 @@ const rollup = {
     image(),
 
     // node_modules의 모듈을 불러와 같이 빌드 해줌
-    resolve(),
+    // resolve(),
     
     // CommonJS 모듈을 ES6로 변환
     commonjs(),
@@ -67,7 +67,7 @@ const rollup = {
     }),
     
     // json 파일을 불러와서 사용할 수 있게 해줌
-    json(),
+    // json(),
 
     // lit-element에서 가져온 scss를 js로 변환
     // 다른 scss플러그인과 충돌하므로 path지정
@@ -82,7 +82,6 @@ const rollup = {
     // litScss와 충돌하므로 path 지정
     postcss({
       include: [
-        //'src/components/react/**/*.scss',
         'src/styles/**/*.scss',
         'src/styles/**/*.css',
       ],
@@ -91,19 +90,19 @@ const rollup = {
       plugins: [
         require('autoprefixer'), // 자동으로 브라우저 접두사를 추가해 줍니다.
         require('tailwindcss'), // tailwindcss를 사용합니다.
-        require('cssnano')({
-          preset: 'default', // 기본 압축 설정을 사용합니다.
-        }),
+        //require('cssnano')({
+        //  preset: 'default', // 기본 압축 설정을 사용합니다.
+        //}),
         require('postcss-nested'), // 중첩된 CSS 문법을 일반 CSS로 변환합니다(sass의 중첩기능을 css에도 구현).
       ],
       minimize: false,
-      extract: true,
+      //extract: true,
     }),
 
     // 빌드시 코드 설정
     terser({
-      compress: true, // 코드 압축
-      mangle: true, // 변수 이름 난독화
+      compress: false, // 코드 압축
+      mangle: false, // 변수 이름 난독화
       output: {
         comments: false, // 모든 주석 제거
       }

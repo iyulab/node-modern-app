@@ -3,21 +3,24 @@
     "target": "ES6",
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+
     "strict": true,
+    "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
     "isolatedModules": true,
-    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "moduleResolution": "Node",
     "useDefineForClassFields": false,
+
     "outDir": "./dist/",
     "declaration": true,
     "declarationDir": "./dist/",
@@ -25,12 +28,14 @@
     "paths": {
       "@iyulab/modern-app/*": [ "./src/*" ],
     },
-    "typeRoots": ["./src/declarations", "./node_modules/@types"],
+    "typeRoots": [
+      "./src/declarations", 
+      "./node_modules/@types"
+    ],
   },
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "tailwind.config.ts"
   ],
   "exclude": [
     "node_modules",

@@ -1,21 +1,22 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
   },
   "homepage": "https://www.iyulab.com",
   "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "type": "module",
   "scripts": {
     "lint": "eslint .",
-    "init" : "rimraf dist node_modules package-lock.json && npm install",
+    "init": "rimraf dist node_modules package-lock.json && npm install",
     "build": "rimraf dist && rollup --config --bundleConfigAsCjs",
-    "publish": "npm publish --access public"
+    "publish": "copy package.json dist && cd dist && npm publish --access public"
   },
   "dependencies": {
     "@adobe/lit-mobx": "^2.2.0",
@@ -41,10 +42,10 @@
     "@types/react-dom": "^18.2.10",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
     "@typescript-eslint/parser": "^6.7.4",
+    "autoprefixer": "^10.4.16",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "autoprefixer": "^10.4.16",
     "glob": "^10.3.10",
     "node-sass": "^9.0.0",
     "postcss": "^8.4.31",

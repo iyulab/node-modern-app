@@ -1,8 +1,0 @@
-node_modules/
-src/
-.eslintrc.cjs
-package.lock.json
-postcss.config.cjs
-rollup.config.mjs
-tailwind.config.ts
-tsconfig.json
