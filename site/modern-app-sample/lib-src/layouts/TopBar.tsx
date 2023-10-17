@@ -87,7 +87,6 @@ function TopBar() {
 
   // 알림 설정
   useEffect(() => {
-    console.log("알림");
     setNotiCount(2);
   }, []);
 

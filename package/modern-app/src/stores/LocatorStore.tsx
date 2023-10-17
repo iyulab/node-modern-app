@@ -192,6 +192,7 @@ export class LocatorStore {
         throw new Error("path or index is required");
       }
 
+      const loaderCopy = route.loader;
       // 2 url 요청시 미들웨어 설정
       route.loader = ({ request, params }) => {
         // 2.1 페이지 로딩 시작 (20% 부터 시작)
@@ -223,7 +224,11 @@ export class LocatorStore {
           if(callback) callback(this.currentlocation);
         }
 
-        return new Response(null, { status: 200 });
+        if(loaderCopy) {
+          return loaderCopy({ request, params });
+        } else {
+          return new Response(null, { status: 200 });
+        }
       }
 
       // 3 children 있을경우 재귀호출(완전 분해후 재조립)
