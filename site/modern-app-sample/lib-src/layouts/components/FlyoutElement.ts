@@ -20,7 +20,7 @@ export enum Position {
 
 export abstract class FlyoutElement extends LitElement {
   private open = false;
-  private target!: HTMLElement;
+  private target?: HTMLElement;
 
   /**
    * 현재 컨텐츠가 보여지고 있는지 여부
@@ -60,7 +60,9 @@ export abstract class FlyoutElement extends LitElement {
    */
   async showClickAsync(event: MouseEvent) {
     await this.showAsync(event);
-    if(this.open) return;
+    document.removeEventListener("click", this.handleOutsideClickBind, { capture: true });
+    document.removeEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
+    window.removeEventListener("resize", this.adjustPositionBind);
     document.addEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.addEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
     window.addEventListener("resize", this.adjustPositionBind);
@@ -75,7 +77,11 @@ export abstract class FlyoutElement extends LitElement {
     document.removeEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.removeEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
     window.removeEventListener("resize", this.adjustPositionBind);
-    this.open = false;
+    
+    // 동시성 문제로 인해 setTimeout을 사용합니다.(toggleAsync와 동시 실행)
+    setTimeout(() => {
+      this.open = false;
+    }, 100);
   }
 
   /**
@@ -87,8 +93,10 @@ export abstract class FlyoutElement extends LitElement {
 
   private async showHoverAsync(event: MouseEvent) {
     await this.showAsync(event);
-    if(this.open) return;
-    this.target.addEventListener("mouseleave", this.handleHoverTargetBind);
+    if(this.target) this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
+    this.removeEventListener("mouseleave", this.handleHoverThisBind);
+    window.removeEventListener("resize", this.adjustPositionBind);
+    if(this.target) this.target.addEventListener("mouseleave", this.handleHoverTargetBind);
     this.addEventListener("mouseleave", this.handleHoverThisBind);
     window.addEventListener("resize", this.adjustPositionBind);
     this.open = true;
@@ -96,7 +104,7 @@ export abstract class FlyoutElement extends LitElement {
 
   private async hideHoverAsync() {
     this.hidden = true;
-    this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
+    if(this.target) this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
     this.removeEventListener("mouseleave", this.handleHoverThisBind);
     window.removeEventListener("resize", this.adjustPositionBind);
     this.open = false;
@@ -104,8 +112,10 @@ export abstract class FlyoutElement extends LitElement {
 
   // event methods Start
   private async handleOutsideClick(event: MouseEvent) {
-    const isInside = this.contains(event.target as Node);
-    const isTarget = this.target.contains(event.target as Node);
+    const target = event.target as Element;
+    const isInside = this.contains(target);
+    const isTarget = this.target ? target.contains(this.target) : false;
+    
     // 현재 엘리먼트 및 클릭한 대상을 제외한 다른 곳을 클릭했을 경우 감춥니다.
     if(!isInside && !isTarget) {
       this.hideClickAsync();
@@ -159,7 +169,7 @@ export abstract class FlyoutElement extends LitElement {
     // 1. 현재 브라우저의 크기를 구한다.
     const windowWidth = window.innerWidth;
     const windowHeight = window.innerHeight;
-    
+
     // 2. 현재 타겟을 기준으로 남은 공간을 구한다.
     if(!this.target) return;
     const targetRect = this.target.getBoundingClientRect();
@@ -237,8 +247,7 @@ export abstract class FlyoutElement extends LitElement {
         }
 
         if(((spaceLeft + targetRect.width) > width)) {
-          if(width > targetRect.width) right = spaceRight;
-          else left = spaceLeft;
+          right = spaceRight;
         } else {
           left = 1;
         }
@@ -265,8 +274,7 @@ export abstract class FlyoutElement extends LitElement {
         }
 
         if(((spaceRight + targetRect.width) > width)) {
-          if(width > targetRect.width) left = spaceLeft;
-          else right = spaceRight;
+          left = spaceLeft;
         } else {
           right = 1;
         }
