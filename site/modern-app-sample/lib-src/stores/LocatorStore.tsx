@@ -194,10 +194,12 @@ export class LocatorStore {
 
       const loaderCopy = route.loader;
       // 2 url 요청시 미들웨어 설정
-      route.loader = ({ request, params }) => {
-        // 2.1 페이지 로딩 시작 (20% 부터 시작)
+      route.loader = async ({ request, params }) => {
+        let newPage = false;
+        // 2.1 페이지 로딩 시작 (동일한 페이지 요청시 로딩안함)
         if(request.url !== this.currentlocation?.request.url && !params.id) {
           this.progress = 20;
+          newPage = true;
         }
 
         // 2.2 현재 로케이션 설정
@@ -223,10 +225,14 @@ export class LocatorStore {
           const callback = this.eventHandler.get(key);
           if(callback) callback(this.currentlocation);
         }
+        if(newPage) this.progress = 40;
 
         if(loaderCopy) {
-          return loaderCopy({ request, params });
+          const result = await loaderCopy({ request, params });
+          if(newPage) this.progress = 80;
+          return result;
         } else {
+          if(newPage) this.progress = 80;
           return new Response(null, { status: 200 });
         }
       }

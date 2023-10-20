@@ -19,7 +19,7 @@ export enum Position {
 }
 
 export abstract class FlyoutElement extends LitElement {
-  private open = false;
+  private open:boolean = false;
   private target?: HTMLElement;
   
   /**
@@ -35,6 +35,11 @@ export abstract class FlyoutElement extends LitElement {
   get targetElement() {
     return this.target;
   }
+
+  /**
+   * 호버링 방식의 이벤트에서 툴팁에 진입할 경우 호버링을 유지할지 여부
+   */
+  abstract keepHover:boolean;
 
   /**
    * 컨텐츠를 보여줄 기준이 되는 위치
@@ -58,6 +63,7 @@ export abstract class FlyoutElement extends LitElement {
     if(event.currentTarget === this.target && this.open) {
       await this.hideClickAsync();
     } else {
+      
       await this.showClickAsync(event);
     }
   }
@@ -76,7 +82,8 @@ export abstract class FlyoutElement extends LitElement {
     document.addEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
     window.addEventListener("resize", this.adjustPositionBind);
     
-    // 동시성 문제로 인해 setTimeout을 사용합니다.(hideClickAsync 동시 실행)
+    this.target?.classList.add("active");
+    // 동시성 문제로 인해 setTimeout을 사용합니다.(hideClickAsync 동시 실행, 보통 hide 먼저 실행)
     setTimeout(() => {
       this.open = true;
     }, 100);
@@ -92,7 +99,8 @@ export abstract class FlyoutElement extends LitElement {
     document.removeEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
     window.removeEventListener("resize", this.adjustPositionBind);
     
-    // 동시성 문제로 인해 setTimeout을 사용합니다.(showClickAsync 동시 실행)
+    this.target?.classList.remove("active");
+    // 동시성 문제로 인해 setTimeout을 사용합니다.(showClickAsync 동시 실행, 보통 hide 먼저 실행)
     setTimeout(() => {
       this.open = false;
     }, 100);
@@ -163,8 +171,8 @@ export abstract class FlyoutElement extends LitElement {
   private async handleOutsideClick(event: MouseEvent) {
     const target = event.target as Element;
     const isInside = this.contains(target);
-    const isTarget = this.target ? target.contains(this.target) : false;
-    
+    const isTarget = this.target?.contains(target);
+
     // 현재 엘리먼트 및 클릭한 대상을 제외한 다른 곳을 클릭했을 경우 감춥니다.
     if(!isInside && !isTarget) {
       this.hideClickAsync();
@@ -179,7 +187,7 @@ export abstract class FlyoutElement extends LitElement {
 
   private async handleHoverTarget(event: MouseEvent) {
     // 타겟 엘리먼트를 벗어났을 경우 벗어난 대상이 현재 엘리먼트가 아닐 경우 감춥니다.
-    if(event.relatedTarget === this) return;
+    if(event.relatedTarget === this && this.keepHover) return;
     this.hideHoverAsync();
   }
 
