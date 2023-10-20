@@ -19,15 +19,27 @@ export enum Position {
 }
 
 export abstract class FlyoutElement extends LitElement {
-  private open = false;
+  private open:boolean = false;
   private target?: HTMLElement;
-
+  
   /**
    * 현재 컨텐츠가 보여지고 있는지 여부
    */
   get isOpen() {
     return this.open;
   }
+
+  /**
+   * 현재 컨텐츠에 연결되어 있는 타겟 엘리먼트 
+  */
+  get targetElement() {
+    return this.target;
+  }
+
+  /**
+   * 호버링 방식의 이벤트에서 툴팁에 진입할 경우 호버링을 유지할지 여부
+   */
+  abstract keepHover:boolean;
 
   /**
    * 컨텐츠를 보여줄 기준이 되는 위치
@@ -44,13 +56,14 @@ export abstract class FlyoutElement extends LitElement {
   /** 
    * 토글 방식의 이벤트를 사용할 경우 사용합니다(with onClick event)
   */
-  async toggleAsync(event: MouseEvent) {
+  public async toggleAsync(event: MouseEvent) {
     const target = event.currentTarget as HTMLElement;
     if(!target) throw new Error("event target is null");
 
     if(event.currentTarget === this.target && this.open) {
       await this.hideClickAsync();
     } else {
+      
       await this.showClickAsync(event);
     }
   }
@@ -58,27 +71,36 @@ export abstract class FlyoutElement extends LitElement {
   /**
    * 클릭 이벤트를 사용할때 컨텐츠를 보여줍니다. (with onClick event)
    */
-  async showClickAsync(event: MouseEvent) {
+  public async showClickAsync(event: MouseEvent) {
     await this.showAsync(event);
+
     document.removeEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.removeEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
     window.removeEventListener("resize", this.adjustPositionBind);
+    
     document.addEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.addEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
     window.addEventListener("resize", this.adjustPositionBind);
-    this.open = true;
+    
+    this.target?.classList.add("active");
+    // 동시성 문제로 인해 setTimeout을 사용합니다.(hideClickAsync 동시 실행, 보통 hide 먼저 실행)
+    setTimeout(() => {
+      this.open = true;
+    }, 100);
   }
 
   /** 
    * 클릭 이벤트를 사용할때 컨텐츠를 감춥니다. (with onClick event)
   */
-  async hideClickAsync() {
+  public async hideClickAsync() {
     this.hidden = true;
+    
     document.removeEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.removeEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
     window.removeEventListener("resize", this.adjustPositionBind);
     
-    // 동시성 문제로 인해 setTimeout을 사용합니다.(toggleAsync와 동시 실행)
+    this.target?.classList.remove("active");
+    // 동시성 문제로 인해 setTimeout을 사용합니다.(showClickAsync 동시 실행, 보통 hide 먼저 실행)
     setTimeout(() => {
       this.open = false;
     }, 100);
@@ -87,65 +109,39 @@ export abstract class FlyoutElement extends LitElement {
   /**
    * 호버링 방식의 이벤트를 사용할 경우 사용합니다(with onMouseEnter event)
    */
-  async hoverAsync(event: MouseEvent) {
+  public async hoverAsync(event: MouseEvent) {
     await this.showHoverAsync(event);
   }
 
-  private async showHoverAsync(event: MouseEvent) {
+  /**
+   * 호버링 이벤트를 사용할때 컨텐츠를 보여줍니다. (with onMouseEnter event)
+   */
+  public async showHoverAsync(event: MouseEvent) {
     await this.showAsync(event);
+    
     if(this.target) this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
     this.removeEventListener("mouseleave", this.handleHoverThisBind);
     window.removeEventListener("resize", this.adjustPositionBind);
+    
     if(this.target) this.target.addEventListener("mouseleave", this.handleHoverTargetBind);
     this.addEventListener("mouseleave", this.handleHoverThisBind);
     window.addEventListener("resize", this.adjustPositionBind);
+    
     this.open = true;
   }
 
-  private async hideHoverAsync() {
+  /** 
+   * 호버링 이벤트를 사용할때 컨텐츠를 감춥니다. (with onMouseLeave event)
+  */
+  public async hideHoverAsync() {
     this.hidden = true;
+    
     if(this.target) this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
     this.removeEventListener("mouseleave", this.handleHoverThisBind);
     window.removeEventListener("resize", this.adjustPositionBind);
+    
     this.open = false;
   }
-
-  // event methods Start
-  private async handleOutsideClick(event: MouseEvent) {
-    const target = event.target as Element;
-    const isInside = this.contains(target);
-    const isTarget = this.target ? target.contains(this.target) : false;
-    
-    // 현재 엘리먼트 및 클릭한 대상을 제외한 다른 곳을 클릭했을 경우 감춥니다.
-    if(!isInside && !isTarget) {
-      this.hideClickAsync();
-    }
-  }
-
-  private handleOutsideClickBind = this.handleOutsideClick.bind(this);
-
-  private async handleEscapeKey(event: KeyboardEvent) {
-    if(event.key === "Escape") {
-      this.hideClickAsync();
-    }
-  }
-
-  private handleEscapeKeyBind = this.handleEscapeKey.bind(this);
-
-  private async handleHoverTarget(event: MouseEvent) {
-    // 타겟 엘리먼트를 벗어났을 경우 벗어난 대상이 현재 엘리먼트가 아닐 경우 감춥니다.
-    if(event.relatedTarget === this) return;
-    this.hideHoverAsync();
-  }
-
-  private handleHoverTargetBind = this.handleHoverTarget.bind(this);
-
-  private async handleHoverThis() {
-    this.hideHoverAsync();
-  }
-
-  private handleHoverThisBind = this.handleHoverThis.bind(this);
-  // event methods End
 
   // 컨텐츠를 보여줍니다.
   private async showAsync(event: MouseEvent) {
@@ -162,6 +158,43 @@ export abstract class FlyoutElement extends LitElement {
     await this.adjustPosition();
     this.style.opacity = "1";
   }
+
+  // event bind Start
+  private handleOutsideClickBind = this.handleOutsideClick.bind(this);
+  private handleEscapeKeyBind = this.handleEscapeKey.bind(this);
+  private handleHoverTargetBind = this.handleHoverTarget.bind(this);
+  private handleHoverThisBind = this.handleHoverThis.bind(this);
+  private adjustPositionBind = this.adjustPosition.bind(this);
+  // event bind End
+
+  // event methods Start
+  private async handleOutsideClick(event: MouseEvent) {
+    const target = event.target as Element;
+    const isInside = this.contains(target);
+    const isTarget = this.target?.contains(target);
+
+    // 현재 엘리먼트 및 클릭한 대상을 제외한 다른 곳을 클릭했을 경우 감춥니다.
+    if(!isInside && !isTarget) {
+      this.hideClickAsync();
+    }
+  }
+
+  private async handleEscapeKey(event: KeyboardEvent) {
+    if(event.key === "Escape") {
+      this.hideClickAsync();
+    }
+  }
+
+  private async handleHoverTarget(event: MouseEvent) {
+    // 타겟 엘리먼트를 벗어났을 경우 벗어난 대상이 현재 엘리먼트가 아닐 경우 감춥니다.
+    if(event.relatedTarget === this && this.keepHover) return;
+    this.hideHoverAsync();
+  }
+
+  private async handleHoverThis() {
+    this.hideHoverAsync();
+  }
+  // event methods End
 
   // 컨텐츠의 위치를 조정합니다.
   private async adjustPosition() {
@@ -384,7 +417,5 @@ export abstract class FlyoutElement extends LitElement {
     this.style.left = left ? `${left}px` : "unset";
     this.style.right = right ? `${right}px` : "unset";
   }
-
-  private adjustPositionBind = this.adjustPosition.bind(this);
 
 }

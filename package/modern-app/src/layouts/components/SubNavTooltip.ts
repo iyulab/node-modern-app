@@ -5,6 +5,7 @@ import { FlyoutElement, Position } from './FlyoutElement';
 
 @customElement('sub-nav-tooltip')
 export class SubNavTooltip extends FlyoutElement {
+    keepHover: boolean = false;
     position: Position = Position.RightCenter;
 
     @property({ type: String })

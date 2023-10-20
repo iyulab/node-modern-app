@@ -15,6 +15,7 @@ export interface Notification {
 
 @customElement('notification-menu')
 export class NotificationMenu extends FlyoutElement {
+  keepHover: boolean = true;
   position: Position = Position.BottomLeft;
 
   @property({ type: Array })

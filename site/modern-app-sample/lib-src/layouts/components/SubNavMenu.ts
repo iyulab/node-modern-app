@@ -10,6 +10,7 @@ import { FlyoutElement, Position } from './FlyoutElement';
 
 @customElement('sub-nav-menu')
 export class SubNavMenu extends FlyoutElement {
+  keepHover: boolean = true;
   position: Position = Position.RightBottom;
 
   @inject(LocatorStore)
