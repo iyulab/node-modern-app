@@ -94,7 +94,7 @@ function LeftNav() {
                   return `${styles.singleMenu} ${isActive ? styles.selected : ''}`}}
                   onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}
                   end={!hasParm}>
-                  <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 24} ${menu.iconSize ?? 24}`}>
+                  <svg className={styles.icon} viewBox={menu.iconViewBox ?? "0 0 24 24"}>
                     <path d={menu.iconData ?? single}></path>
                   </svg>
                   <div className={styles.text}>{menu.display}</div>
@@ -112,7 +112,7 @@ function LeftNav() {
                   <div className={`${styles.groupHeader}`} 
                     onClick={(e) => onToggleGroupMenu(e, index, menu)}
                     onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}>
-                    <svg className={styles.icon} viewBox={`0 0 ${menu.iconSize ?? 24} ${menu.iconSize ?? 24}`}>
+                    <svg className={styles.icon} viewBox={menu.iconViewBox ?? "0 0 24 24"}>
                       <path d={menu.iconData ?? group}></path>
                     </svg>
                     <div className={styles.text}>{menu.display}</div>

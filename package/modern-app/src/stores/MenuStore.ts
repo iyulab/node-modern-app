@@ -11,14 +11,14 @@ interface SingleMenu {
   key: string;
   display: string;
   path?: string;
-  iconSize?: number;
+  iconViewBox?: string;
   iconData?: string;
 }
 
 export interface GroupMenu {
   type: "group";
   display: string;
-  iconSize?: number;
+  iconViewBox?: string;
   iconData?: string;
   subMenu: SubMenu[];
 }
@@ -33,7 +33,7 @@ interface ActionMenu {
   type: "action";
   action: () => void;
   display: string;
-  iconSize?: number;
+  iconViewBox?: string;
   iconData?: string;
 }
 
