@@ -63,7 +63,6 @@ export abstract class FlyoutElement extends LitElement {
     if(event.currentTarget === this.target && this.open) {
       await this.hideClickAsync();
     } else {
-      
       await this.showClickAsync(event);
     }
   }
@@ -76,12 +75,14 @@ export abstract class FlyoutElement extends LitElement {
 
     document.removeEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.removeEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
+    document.removeEventListener("scroll", this.adjustPositionBind, { capture: true });
     window.removeEventListener("resize", this.adjustPositionBind);
     
     document.addEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.addEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
+    document.addEventListener("scroll", this.adjustPositionBind, { capture: true });
     window.addEventListener("resize", this.adjustPositionBind);
-    
+
     this.target?.classList.add("active");
     // 동시성 문제로 인해 setTimeout을 사용합니다.(hideClickAsync 동시 실행, 보통 hide 먼저 실행)
     setTimeout(() => {
@@ -97,6 +98,7 @@ export abstract class FlyoutElement extends LitElement {
     
     document.removeEventListener("click", this.handleOutsideClickBind, { capture: true });
     document.removeEventListener("keydown", this.handleEscapeKeyBind, { capture: true });
+    document.removeEventListener("scroll", this.adjustPositionBind, { capture: true });
     window.removeEventListener("resize", this.adjustPositionBind);
     
     this.target?.classList.remove("active");
@@ -121,11 +123,9 @@ export abstract class FlyoutElement extends LitElement {
     
     if(this.target) this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
     this.removeEventListener("mouseleave", this.handleHoverThisBind);
-    window.removeEventListener("resize", this.adjustPositionBind);
     
     if(this.target) this.target.addEventListener("mouseleave", this.handleHoverTargetBind);
     this.addEventListener("mouseleave", this.handleHoverThisBind);
-    window.addEventListener("resize", this.adjustPositionBind);
     
     this.open = true;
   }
@@ -138,7 +138,6 @@ export abstract class FlyoutElement extends LitElement {
     
     if(this.target) this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
     this.removeEventListener("mouseleave", this.handleHoverThisBind);
-    window.removeEventListener("resize", this.adjustPositionBind);
     
     this.open = false;
   }
