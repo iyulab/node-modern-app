@@ -37,6 +37,8 @@ export class LocatorStore {
 
   static readonly LOCATION_CHANGED_NAME = "location-changed";  
   
+  public routeData: any = undefined;
+
   private helpPath: string = "/help";
   private basePath: string = "/";
   private keyPath: Map<string, string> = new Map<string, string>();
@@ -113,7 +115,8 @@ export class LocatorStore {
     return [this.keyPath, this.router];
   }
 
-  go(path: string) {
+  go(path: string, data?: any) {
+    this.routeData = data;
     if(path.startsWith("/")) {
       this.router?.navigate(path);
     } else {
