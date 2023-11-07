@@ -1,7 +1,5 @@
-import { useEffect, useRef } from 'react';
-
+import { useRef } from 'react';
 import { useDocumentTitle } from '@iyulab/modern-app/hooks/UseDocumentTitle';
-import { useLocator } from '@iyulab/modern-app/hooks/UseStores';
 
 import { angleUp2 } from '@iyulab/modern-app/layouts/IconVector';
 import styles from '@iyulab/modern-app/styles/layouts/PageBase.module.scss';
@@ -16,7 +14,6 @@ function PageBase({ docTitle, title, children } : PageBaseProps) {
   useDocumentTitle(docTitle);
   const content = useRef<HTMLDivElement>(null);
   const scrollTop = useRef<HTMLDivElement>(null);
-  const locator = useLocator();
 
   // 스크롤 이벤트
   const handleScroll = () => {
@@ -34,10 +31,6 @@ function PageBase({ docTitle, title, children } : PageBaseProps) {
     if(content.current === null) return;
     content.current.scrollTo({top: 0, behavior: 'smooth'});
   }
-
-  useEffect(() => {
-    locator.progress = 100;
-  }, [locator]);
 
   return (
     <div className={styles.container} ref={content}

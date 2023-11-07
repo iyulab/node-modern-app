@@ -232,10 +232,10 @@ export class LocatorStore {
 
         if(loaderCopy) {
           const result = await loaderCopy({ request, params });
-          if(newPage) this.progress = 80;
+          if(newPage) this.progress = 100;
           return result;
         } else {
-          if(newPage) this.progress = 80;
+          if(newPage) this.progress = 100;
           return new Response(null, { status: 200 });
         }
       }
