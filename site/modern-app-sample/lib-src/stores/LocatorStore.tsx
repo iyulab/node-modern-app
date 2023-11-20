@@ -277,7 +277,7 @@ export class LocatorStore {
         children: routes
       }
     ]
-
+    
     // 2 다른 레이아웃 엘리먼트 설정
     if(other) {
       baseRoutes.push(...other);

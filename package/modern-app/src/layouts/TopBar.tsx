@@ -77,7 +77,8 @@ function TopBar() {
   // 브레드 크럼 설정
   useEffect(() => {
     const setBread = autorun(() => {
-      setPaths(locator.current?.fullPaths ?? []);
+      if(!locator.current?.fullPaths) return;
+      setPaths(locator.current.fullPaths);
     });
 
     return () => {
