@@ -2,7 +2,8 @@ import { GroupMenu } from "@iyulab/modern-app/stores/MenuStore";
 import {
   NotificationMenu,
   SubNavMenu,
-  SubNavTooltip
+  SubNavTooltip,
+  ToastBar
 } from "@iyulab/modern-app/layouts/components";
 import {
   ContentDialog, 
@@ -23,10 +24,11 @@ export class UIStore {
   
   pageBusyIndicator: BusyIndicator = new BusyIndicator();
   messageBoxDialog: MessageDialog = new MessageDialog();
-  
+
   notificationMenu: NotificationMenu = new NotificationMenu();
   subNavMenu: SubNavMenu = new SubNavMenu();
   subNavTooltip: SubNavTooltip = new SubNavTooltip();
+  toastBar: ToastBar = new ToastBar();
 
   private busyStack: number = 0;
 
@@ -39,6 +41,7 @@ export class UIStore {
     document.body.appendChild(this.notificationMenu);
     document.body.appendChild(this.subNavMenu);
     document.body.appendChild(this.subNavTooltip);
+    document.body.appendChild(this.toastBar);
   }
 
   async toggleNotificationAsync(event: any) {

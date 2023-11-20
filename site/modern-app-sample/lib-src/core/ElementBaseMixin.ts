@@ -2,7 +2,7 @@ import { LitElement, unsafeCSS, CSSResultGroup } from "lit";
 import { MobxLitElement } from '@adobe/lit-mobx';
 
 import { LitHelper } from '@iyulab/modern-app/extensions/LitElement';
-import baseStyle from '@iyulab/modern-app/styles/tailwind.css';
+import baseStyle from '@iyulab/modern-app/styles/tailwind.css?inline';
 
 type Constructor<T> = new (...args: any[]) => T;
 

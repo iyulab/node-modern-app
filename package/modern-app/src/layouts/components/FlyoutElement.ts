@@ -49,7 +49,7 @@ export abstract class FlyoutElement extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this.style.position = "absolute";
-    this.style.zIndex = "3";
+    this.style.zIndex = "5";
     this.hidden = true;
   }
 
