@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js';
 
-import { ElementMixin } from '@iyulab/modern-app/core/ElementBaseMixin';
+import { ElementMixin } from '@iyulab/modern-app/core/ElementMixin';
 import { getPropertyMeta } from '@iyulab/modern-app/core/PropertyMeta';
 
 import { isObservableObject, runInAction } from 'mobx';

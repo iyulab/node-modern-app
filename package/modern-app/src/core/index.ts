@@ -1,5 +1,4 @@
 export * from "./DI";
 export * from "./StartupBase";
-export * from "./ElementBaseMixin";
-export * from "./ObservableMixin";
+export * from "./ElementMixin";
 export * from "./PropertyMeta";

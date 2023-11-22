@@ -9,14 +9,14 @@ import {
 
 import { RelayCommand } from '@iyulab/modern-app/services/patterns/RelayCommand';
 import { ICommand } from '@iyulab/modern-app/services/patterns/ICommand';
-import { ObservableMixin } from '@iyulab/modern-app/core/ObservableMixin';
+import { ElementMixin } from '@iyulab/modern-app/core/ElementMixin';
 
 provideFASTDesignSystem().register(
   fastButton()
 );
 
 @customElement('u-button')
-export class UButton extends  ObservableMixin(LitElement) {
+export class UButton extends  ElementMixin(LitElement) {
 
   static styles = [
     css`
