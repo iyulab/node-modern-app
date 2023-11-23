@@ -123,21 +123,21 @@ function TopBar() {
             <div className={styles.userButtons}>
                 {/* Help 버튼 */}
                 <div className={styles.hoverButton} onClick={() => locator.go(locator.helpUrl)}>
-                    <svg className={styles.icon} viewBox="0 0 24 24">
+                    <svg className={styles.icon} viewBox="0 -960 960 960">
                         <path d={question}/>
                     </svg>
                     <div className={styles.tooltip}>HELP</div>
                 </div>
                 {/* Theme 버튼 */}
                 <div className={styles.hoverButton} onClick={() => layout.toggleTheme()}>
-                    <svg className={styles.icon} viewBox="0 0 24 24">
+                    <svg className={styles.icon} viewBox="0 -960 960 960">
                         <path ref={themeIcon}/>
                     </svg>
                     <div className={styles.tooltip}>THEME</div>
                 </div>
                 {/* Notification 버튼 */}
                 <div className={styles.hoverButton} onClick={(e) => ui.toggleNotificationAsync(e)}>
-                    <svg className={styles.icon} viewBox="0 0 24 24">
+                    <svg className={styles.icon} viewBox="0 -960 960 960">
                         <path d={notification}/>
                     </svg>
                     {notiCount > 0 ? <span className={styles.badge}>{notiCount}</span> : null}
