@@ -188,7 +188,7 @@ export class LocatorStore {
       } else if(route.index) { 
         // index 설정
         route.path = '';
-        this.keyPath.set(key, parentPath ? `${parentPath}` : "/");
+        this.keyPath.set(key, parentPath ? `${parentPath}` : this.basePath);
 
         if(useParam) throw new Error("You cannot use 'useParam' in 'index route'");
       } else {
