@@ -8,16 +8,16 @@ export default function App() {
 
   useEffect(() => {
     setMounted(true);
-    setTimeout(() => {
-      app.current!.classList.add(styles.mounted);
-    }, 1_500);
+    // setTimeout(() => {
+    //   app.current!.classList.add(styles.mounted);
+    // }, 1_500);
   }, []);
 
   return mounted && (
     <>
-      <div className={styles.app} ref={app}>
+      {/* <div className={styles.app} ref={app}>
         <h1>WelCome!</h1>
-      </div>
+      </div> */}
 
       {/* 모던앱 레이아웃 */}
       <AppShell />

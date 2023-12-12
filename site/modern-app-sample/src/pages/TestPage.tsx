@@ -1,59 +1,32 @@
-import { useState } from 'react';
+import { PageHeader, PageBase, PagePanel } from '@iyulab/modern-app/layouts';
 
-import { PageBase } from '@iyulab/modern-app/layouts/PageBase';
 import styles from '@/styles/Test.module.scss';
 
-import { Position } from '@iyulab/modern-app/layouts/components/FlyoutElement';
-import { useUI } from '@iyulab/modern-app/hooks/UseStores';
-
 export function TestPage() {
-    const ui = useUI();
-    const [position, setPosition] = useState<Position>(0);
-
-    const handlePositionChange = (event) => {
-        const newPosition = event.target.value;
-        const value = Number(Position[newPosition]);
-        setPosition(value);
-    };
-
-    const handleFlyout = (e) => {
-        ui.notificationMenu.position = position;
-        ui.toggleNotificationAsync(e);
-        // ui.toggleSubNavAsync(e);
-        // ui.hoverNavTooltipAsync(e, 'test');
-    }
 
     return (
         <PageBase docTitle='This is Test'>
-            <div className={styles.container}>
-                <div className={styles.line}>
-                    <button onClick={handleFlyout}>Test</button>
-                    <button onClick={handleFlyout}>Test</button>
-                    <button onClick={handleFlyout}>Test</button>
+            <PageHeader>
+                <div className={styles.head}>
+                    헤더 타이틀
                 </div>
-                <div className={styles.line}>
-                    <button onClick={handleFlyout}>Test</button>
-                    <div className={styles.card}>
-                        <h1>Select Position</h1>
-                        <select onChange={handlePositionChange} value={Position[position]}>
-                            {Object.values(Position).map((value) => {
-                                if(typeof value === 'string') {
-                                    return (
-                                        <option key={value} value={value}>
-                                            {value}
-                                        </option>)
-                                }
-                            })}
-                        </select>
-                    </div>
-                    <button onClick={handleFlyout}>Test</button>
-                </div>
-                <div className={styles.line}>
-                    <button onClick={handleFlyout}>Test</button>
-                    <button onClick={handleFlyout}>Test</button>
-                    <button onClick={handleFlyout}>Test</button>
-                </div>
+            </PageHeader>
+            <div className={styles.body}>
+                본문 시작<br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                본문 끝
             </div>
+            <PagePanel key="오른쪽 패널" position='right'>
+                <div className={styles.rightPanel}>
+                    오른쪽 패널
+                </div>
+            </PagePanel>
+            <PagePanel key="하단 패널" position='bottom'>
+                <div className={styles.bottomPanel}>
+                    하단 패널
+                </div>
+            </PagePanel>
         </PageBase>
-    )
+    );
 }

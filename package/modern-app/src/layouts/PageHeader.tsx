@@ -1,14 +1,9 @@
-const styles = {
-  backgroundColor: "var(--gray-8)",
-  boxShadow: "0px 0px 8px rgba(0,0,0,.6)",
+interface PageHeaderProps {
+  children: React.ReactNode;
 }
 
-function PageHeader({ children }) {
-  return (
-    <div style={styles}>
-      {children}
-    </div>
-  );
+function PageHeader(props: PageHeaderProps) {
+  return <>{props.children}</>;
 }
 
 export { PageHeader };
