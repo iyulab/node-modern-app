@@ -22,9 +22,19 @@ export function TestPage() {
                     오른쪽 패널
                 </div>
             </PagePanel>
+            <PagePanel key="오른쪽 패널2" position='right'>
+                <div className={styles.rightPanel2}>
+                    오른쪽 패널2
+                </div>
+            </PagePanel>
             <PagePanel key="하단 패널" position='bottom'>
                 <div className={styles.bottomPanel}>
                     하단 패널
+                </div>
+            </PagePanel>
+            <PagePanel key="하단 패널2" position='bottom'>
+                <div className={styles.bottomPanel2}>
+                    하단 패널2
                 </div>
             </PagePanel>
         </PageBase>
