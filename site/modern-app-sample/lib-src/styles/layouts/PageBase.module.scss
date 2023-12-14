@@ -13,6 +13,7 @@
     box-sizing: border-box;
 }
 
+/* Page Header */
 .top {
     position: relative;
     grid-column: 1 / 4;
@@ -23,6 +24,7 @@
     }
 }
 
+/* Page Main Content */
 .main {
     position: relative;
     grid-column: 1 / 2;
@@ -97,6 +99,7 @@
     }
 }
 
+/* Page Panels Styles */
 .panel {
     position: absolute;
     display: flex;
@@ -141,7 +144,7 @@
 
         .title {
             font-size: 14px;
-            line-height: 14px;
+            line-height: 18px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -178,6 +181,7 @@
     }
 }
 
+/* Right Panel Style */
 .panel.right {
     grid-column: 2 / 3;
     grid-row: 2 / 5;
@@ -198,6 +202,7 @@
     }
 }
 
+/* Bottom Panel Style */
 .panel.bottom {
     grid-column: 1 / 2;
     grid-row: 3 / 4;
@@ -217,7 +222,7 @@
     }
 }
 
-/* Menu Common Style */
+/* Tab Menu Style */
 .menu {
     position: relative;
     display: flex;
