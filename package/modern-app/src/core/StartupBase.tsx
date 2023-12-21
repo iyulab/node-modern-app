@@ -14,6 +14,9 @@ import {
   RouteExt
 } from '@iyulab/modern-app/stores';
 
+import { useLayout } from '../hooks';
+import { topBarOptions } from '../layouts/TopBarOptions';
+
 export abstract class StartupBase {
   abstract title?: string;
   abstract logo?: string;
@@ -25,6 +28,9 @@ export abstract class StartupBase {
 
   abstract initMainMenuItems(): MenuItem[];
   abstract initRoutes(): RouteExt[];
+
+  layout = useLayout();
+  topBarOptions = topBarOptions;
 
   init() : Router {
 

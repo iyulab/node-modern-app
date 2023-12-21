@@ -23,10 +23,11 @@ export interface GroupMenu {
   subMenu: SubMenu[];
 }
 
-interface SubMenu {
+export interface SubMenu {
   key: string;
   display: string;
   path?: string;
+  force?: boolean; // true: window.location.href, false: locator.go
 }
 
 interface ActionMenu {

@@ -6,10 +6,13 @@ import { useLayout, useLocator, useUI } from '@iyulab/modern-app/hooks/UseStores
 import { Themes } from "@iyulab/modern-app/stores/LayoutStore";
 
 import logo from "@iyulab/modern-app/assets/app-logo.svg";
-import { question, sun, moon, notification } from './IconVector';
+import { question, sun, moon, notification, user } from './IconVector';
 import styles from "@iyulab/modern-app/styles/layouts/TopBar.module.scss";
 
-function TopBar() {
+import { observer } from 'mobx-react';
+import { topBarOptions } from "./TopBarOptions";
+
+const TopBar = observer(() => {
   const locator = useLocator();
   const layout = useLayout();
   const ui = useUI();
@@ -106,11 +109,12 @@ function TopBar() {
 
             {/* 네비게이션 브레드 바 */}
             <div className={styles.breadCrumb}>
-                {paths.map((path, index) => {
+                {paths.map((_, index) => {
                     const toPath = paths.slice(0, index + 1).join('/');
+                    let display = locator.getDisplay(index);
                     return (
                         <div className={styles.bread} key={toPath}>
-                            <Link to={toPath} className={styles.path}>{path[0].toUpperCase() + path.slice(1)}</Link>
+                            <Link to={toPath} className={styles.path}>{display}</Link>
                             {index !== (paths.length -1) ? <div className={styles.slash}>/</div> : null}
                         </div>
                 )})}
@@ -122,12 +126,15 @@ function TopBar() {
             {/* User 버튼 */}
             <div className={styles.userButtons}>
                 {/* Help 버튼 */}
+                {topBarOptions.visibleHelp && (
                 <div className={styles.hoverButton} onClick={() => locator.go(locator.helpUrl)}>
                     <svg className={styles.icon} viewBox="0 -960 960 960">
                         <path d={question}/>
                     </svg>
                     <div className={styles.tooltip}>HELP</div>
                 </div>
+                )}
+               
                 {/* Theme 버튼 */}
                 <div className={styles.hoverButton} onClick={() => layout.toggleTheme()}>
                     <svg className={styles.icon} viewBox="0 -960 960 960">
@@ -135,7 +142,9 @@ function TopBar() {
                     </svg>
                     <div className={styles.tooltip}>THEME</div>
                 </div>
+                
                 {/* Notification 버튼 */}
+                {topBarOptions.visibleNotification && (
                 <div className={styles.hoverButton} onClick={(e) => ui.toggleNotificationAsync(e)}>
                     <svg className={styles.icon} viewBox="0 -960 960 960">
                         <path d={notification}/>
@@ -143,6 +152,14 @@ function TopBar() {
                     {notiCount > 0 ? <span className={styles.badge}>{notiCount}</span> : null}
                     <div className={styles.tooltip}>NOTIFICATION</div>
                 </div>
+                )}
+
+                <div className={styles.hoverButton} onClick={(e) => ui.showUserMenuAsync(e)}>
+                    <svg className={styles.icon}>
+                        <path d={user}/>
+                    </svg>
+                    <div className={styles.tooltip}>User</div>
+                </div>                
             </div>
 
         </div>
@@ -153,6 +170,6 @@ function TopBar() {
         </span>
     </>
   );
-}
+});
 
 export { TopBar };

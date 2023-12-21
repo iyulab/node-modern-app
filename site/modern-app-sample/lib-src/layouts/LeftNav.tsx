@@ -5,7 +5,7 @@ import { autorun } from "mobx";
 import { useLayout, useMenu, useUI } from "@iyulab/modern-app/hooks/UseStores";
 import { GroupMenu } from "@iyulab/modern-app/stores/MenuStore";
 
-import { single, group, leftChevron, rightChevron, angleUp, angleDown } from './IconVector';
+import { cube, group, leftChevron, rightChevron, angleUp, angleDown } from './IconVector';
 import styles from "@iyulab/modern-app/styles/layouts/LeftNav.module.scss";
 
 function LeftNav() {
@@ -87,7 +87,7 @@ function LeftNav() {
             else if(menu.type === "single") {
               const hasParm = menu.path?.endsWith("/:id?");
               const path = hasParm ? menu.path?.replace("/:id?","") : menu.path;
-
+              
               return (
                 <NavLink key={menu.key} to={path!} className={({isActive}) => {
                   if(isActive) groupChanged('');
@@ -95,7 +95,7 @@ function LeftNav() {
                   onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}
                   end={!hasParm}>
                   <svg className={styles.icon} viewBox={menu.iconViewBox ?? "0 0 24 24"}>
-                    <path d={menu.iconData ?? single}></path>
+                    <path d={menu.iconData ?? cube}></path>
                   </svg>
                   <div className={styles.text}>{menu.display}</div>
                 </NavLink>)

@@ -107,12 +107,14 @@ function PageBase(props : PageBaseProps) {
   const handleScroll = () => {
     if(content.current === null || scrollTop.current === null) return;    
 
-    if(content.current.scrollTop > 20) {
-      top.current!.classList.add(styles.shadow);
-      scrollTop.current.style.display = 'flex';
-    } else {
-      top.current!.classList.remove(styles.shadow);
-      scrollTop.current.style.display = 'none';
+    if (top.current) {
+      if(content.current.scrollTop > 20) {
+        top.current!.classList.add(styles.shadow);
+        scrollTop.current.style.display = 'flex';
+      } else {
+        top.current!.classList.remove(styles.shadow);
+        scrollTop.current.style.display = 'none';
+      }
     }
   }
 

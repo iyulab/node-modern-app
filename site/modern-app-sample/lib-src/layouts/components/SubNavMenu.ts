@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { autorun } from 'mobx';
 
 import { inject } from '@iyulab/modern-app/core/DI';
-import type { GroupMenu } from '@iyulab/modern-app/stores/MenuStore';
+import type { GroupMenu, SubMenu } from '@iyulab/modern-app/stores/MenuStore';
 import { LocatorStore } from '@iyulab/modern-app/stores/LocatorStore';
 
 import { FlyoutElement, Position } from './FlyoutElement';
@@ -40,10 +40,10 @@ export class SubNavMenu extends FlyoutElement {
           ${this.item?.display}
         </div>
         <div class="body">
-          ${this.item?.subMenu.map((i) => html`
-            <div key=${i.key} class="menu ${i.key === this.key ? "selected" : null}"
-              @click=${() => this.handleChangeLocation(i.path!)}>
-              ${i.display}
+          ${this.item?.subMenu.map((menu) => html`
+            <div key=${menu.key} class="menu ${menu.key === this.key ? "selected" : null}"
+              @click=${() => this.handleChangeLocation(menu)}>
+              ${menu.display}
             </div>
           `)}
         </div>
@@ -51,11 +51,16 @@ export class SubNavMenu extends FlyoutElement {
     `;
   }
 
-  private handleChangeLocation(path: string) {
+  private handleChangeLocation(menu: SubMenu) {
+    let path = menu.path!;
     const hasParm = path.endsWith("/:id?");
     const url = hasParm ? path.replace("/:id?","") : path;
 
-    this.locator.go(url);
+    if (menu.force) {
+      window.location.href = url;
+    } else {
+      this.locator.go(url);  
+    }
   }
 
   static styles = css`

@@ -26,7 +26,7 @@ function AppShell() {
           
           {/* 메인 */}
           <main className={styles.main}>
-            {/* 세로네비 */}
+            {/* 좌측 네비 */}
             <div className={styles.nav}>
               <LeftNav />
             </div>

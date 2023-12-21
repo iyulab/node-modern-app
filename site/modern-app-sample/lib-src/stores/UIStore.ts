@@ -48,6 +48,27 @@ export class UIStore {
     this.notificationMenu.toggleAsync(event);
   }
 
+  async showUserMenuAsync(event: any) {
+    this.subNavMenu.item = {
+      type: "group",
+      display: "User",
+      subMenu: [
+        {
+          key: "Profile",
+          display: "Profile",
+          path: "/app/profile"
+        },
+        {
+          key: "SignOut",
+          display: "Sign Out",
+          path: "/accounts/logout",
+          force: true
+        }
+      ]
+    };
+    this.subNavMenu.toggleAsync(event);
+  }
+  
   async toggleSubNavAsync(event: any, menu: GroupMenu) {
     this.subNavMenu.item = menu;
     this.subNavMenu.toggleAsync(event);
