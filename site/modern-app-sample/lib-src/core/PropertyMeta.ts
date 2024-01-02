@@ -27,7 +27,7 @@ export function propertyMeta<T = unknown, TypeHint = unknown>(metadata: Property
   return (target: object, propertyKey: string | symbol) => {
 
     // 1. Reflect 에 메타데이터를 등록합니다.
-    Reflect.defineMetadata(propertyMetaKey, metadata, target, propertyKey);
+    // Reflect.defineMetadata(propertyMetaKey, metadata, target, propertyKey);
 
     // 2. Reflect 에 문제가 있을 경우를 대비해서 __propertyMeta 에도 등록합니다.
     const key = target.constructor.name;

@@ -120,7 +120,7 @@ export class LocatorStore {
     if(path.startsWith("/")) {
       this.router?.navigate(path);
     } else {
-      this.router?.navigate(`/${path}`);
+      this.router?.navigate(`${this.basePath}/${path}`);
     }
   }
 
