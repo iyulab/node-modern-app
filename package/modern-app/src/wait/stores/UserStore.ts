@@ -4,7 +4,7 @@ import { action, makeAutoObservable } from "mobx";
 
 export class UserStore {
   
-  // @inject(AppSettings) appSettings?: AppSettings;
+  // @injectOf(AppSettings) appSettings?: AppSettings;
   user?: any = null;
 
   get userId() {

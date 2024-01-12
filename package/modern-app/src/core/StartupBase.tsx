@@ -81,5 +81,4 @@ export abstract class StartupBase {
       </React.StrictMode>
     );
   }
-
 }

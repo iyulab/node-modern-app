@@ -23,6 +23,8 @@ function useLocator() {
 
 function useUI() {
     const ui = DI.get(UIStore);
+    ui.initUI();
+    
     return ui;
 }
 

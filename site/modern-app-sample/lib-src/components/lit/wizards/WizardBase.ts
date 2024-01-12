@@ -3,7 +3,6 @@ import { property, state } from "lit/decorators.js";
 
 import { RelayCommand } from "@iyulab/modern-app/services/patterns/RelayCommand";
 
-// import baseStyle from '@iyulab/modern-app/styles/global-tw.scss';
 import { inject } from "@iyulab/modern-app/core/DI";
 import { UIStore } from "@iyulab/modern-app/stores/UIStore";
 import { IWizardStep } from "./WizardStep";

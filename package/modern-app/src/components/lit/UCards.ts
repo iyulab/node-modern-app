@@ -10,8 +10,6 @@ provideFASTDesignSystem().register(
   fastCard()
 );
 
-// import "@iyulab/modern-app/styles/global-tw.scss";
-
 @customElement('u-cards')
 export class UCards extends LitElement {
   static styles = [

@@ -33,6 +33,10 @@ export class UIStore {
   private busyStack: number = 0;
 
   initUI() {
+    if (this.pageBusyIndicator && this.pageBusyIndicator.parentElement) {
+      return;
+    }
+    
     document.body.appendChild(this.pageBusyIndicator);
     document.body.appendChild(this.messageBoxDialog);
     this.pageBusyIndicator.hidden = true;
@@ -226,10 +230,17 @@ export class UIStore {
   
   //#region busy indicator
 
-  busy() {
+  busy(message?: string) {
     // busy 스택에 추가
     this.busyStack++;
     this.updateBusyIndicator();
+
+    // 메시지가 있으면 표시
+    if (message) {
+      this.pageBusyIndicator.message = message;
+    } else {
+      this.pageBusyIndicator.message = undefined;
+    }
   }
 
   unbusy() {
@@ -245,8 +256,8 @@ export class UIStore {
     this.pageBusyIndicator.hidden = this.busyStack > 0 ? false : true;
   }
   
-  async invokeInBusy<T>(action: () => Promise<T>): Promise<T|undefined> {
-    this.busy();
+  async invokeInBusy<T>(action: () => Promise<T>, message?: string): Promise<T|undefined> {
+    this.busy(message);
 
     try {
       return await action();

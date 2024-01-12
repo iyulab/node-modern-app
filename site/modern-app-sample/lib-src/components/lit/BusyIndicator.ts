@@ -1,5 +1,5 @@
 import { css, html, LitElement } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { customElement, property } from 'lit/decorators.js'
 
 import { 
   fastProgressRing,
@@ -29,14 +29,21 @@ export class BusyIndicator extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
+
+        display: flex;
+        flex-direction: column;
       }
       `
   ];
+
+  @property({ type: String })
+  message?: string;
   
   render() {
     return html`
       <div class="busy-indicator">
         <fast-progress-ring indeterminate></fast-progress-ring>
+        <div>${this.message}</div>
       </div>`;
   }
   

@@ -101,6 +101,7 @@ export abstract class ApiClient {
   protected async get(address : string) : Promise<IStandardResponse> {
     
     const url = this.buildUrl(address);
+    console.debug(`Req|GET ${url}`);
     const headers = await this.buildHeadersAsync();
     const r: IStandardResponse = await fetch(url, {
       method: 'GET',
@@ -122,6 +123,7 @@ export abstract class ApiClient {
   }): Promise<IStandardResponse> {
 
     const url = this.buildUrl(address);
+    console.debug(`Req|POST ${url} ${this.asText(data)}`);
     const headers = await this.buildHeadersAsync({
       'Content-Type': 'application/json'
     });
@@ -135,8 +137,6 @@ export abstract class ApiClient {
     }
 
     const jsonBody = JSON.stringify(data);
-    console.debug(`Req|POST ${address} ${jsonBody}`);
-    
     const r: IStandardResponse = await fetch(url, {
       method: 'POST',
       headers: headers,
@@ -145,7 +145,7 @@ export abstract class ApiClient {
     })
     .then(async res => {
       const r = await this.onResponseAsync(res);
-      console.debug(`Res|POST ${address} ${this.asText(r.value)}`);
+      console.debug(`Res|POST ${url}`, r.status, this.asText(r.value));
       return r;
     })
     .catch(reason => {

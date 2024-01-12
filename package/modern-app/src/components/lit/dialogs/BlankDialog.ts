@@ -1,5 +1,7 @@
-import { css, html, LitElement } from 'lit'
+import { css, html, LitElement, unsafeCSS } from 'lit'
 import { customElement, property ,query } from 'lit/decorators.js'
+
+import baseStyle from '@iyulab/modern-app/styles/tailwind.css?inline';
 
 import {
   Dialog,
@@ -15,6 +17,7 @@ provideFASTDesignSystem().register(
 export class BlankDialog extends LitElement {
   
   static styles = [
+    unsafeCSS(baseStyle),
     css`
     :host {
       z-index: 999; 

@@ -154,4 +154,15 @@ export abstract class AuthorizeApiClient extends ApiClient {
       return res;
     }      
   }
+
+  protected getData(result: IStandardResponse) {
+    if (result && result.value) {
+      if (result.value.hasOwnProperty('value')) {
+        // OData v4
+        return result.value['value'];
+      } else {
+        return result.value;
+      }
+    }
+  }
 }
