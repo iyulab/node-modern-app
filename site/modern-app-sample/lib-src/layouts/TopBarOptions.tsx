@@ -8,11 +8,11 @@ export class TopBarOptions {
     makeAutoObservable(this);
   }
 
-  setVisibleHelp(visible: any) {
+  setVisibleHelp(visible) {
     this.visibleHelp = visible;
   }
 
-  setVisibleNotification(visible: any) {
+  setVisibleNotification(visible) {
     this.visibleNotification = visible;
   }
 }

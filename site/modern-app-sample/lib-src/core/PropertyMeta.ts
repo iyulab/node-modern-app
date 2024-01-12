@@ -1,7 +1,7 @@
 import "reflect-metadata";
 
-// const propertyKeyName = "propertyMeta";
-// const propertyMetaKey = Symbol(propertyKeyName);
+const propertyKeyName = "propertyMeta";
+const propertyMetaKey = Symbol(propertyKeyName);
 const objectName = "Object";
 const __propertyMeta: {
   [key: string]: any;
@@ -27,7 +27,7 @@ export function propertyMeta<T = unknown, TypeHint = unknown>(metadata: Property
   return (target: object, propertyKey: string | symbol) => {
 
     // 1. Reflect 에 메타데이터를 등록합니다.
-    // Reflect.defineMetadata(propertyMetaKey, metadata, target, propertyKey);
+    Reflect.defineMetadata(propertyMetaKey, metadata, target, propertyKey);
 
     // 2. Reflect 에 문제가 있을 경우를 대비해서 __propertyMeta 에도 등록합니다.
     const key = target.constructor.name;
@@ -41,10 +41,10 @@ export function propertyMeta<T = unknown, TypeHint = unknown>(metadata: Property
 export function getPropertyMeta(target: object, propertyKey: string | symbol): PropertyMetaData | undefined {
 
   // 1. Reflect 에서 메타데이터를 가져옵니다.
-  // const metadata: PropertyMetaData = Reflect.getMetadata(propertyMetaKey, target, propertyKey);
+  const metadata: PropertyMetaData = Reflect.getMetadata(propertyMetaKey, target, propertyKey);
 
   // 2. Reflect 에서 메타데이터를 못가져왔을 경우 __propertyMeta 에서 가져옵니다.
-  //if (metadata === undefined) {
+  if (metadata === undefined) {
     const key = target.constructor.name;
     if (__propertyMeta[key] === undefined) {
       if (target.constructor.name === objectName) {
@@ -55,6 +55,6 @@ export function getPropertyMeta(target: object, propertyKey: string | symbol): P
     } else {
       return __propertyMeta[key][propertyKey] as PropertyMetaData;
     }
-  //}
-  //return metadata
+  }
+  return metadata
 }
