@@ -52,7 +52,7 @@ export class SubNavMenu extends FlyoutElement {
   }
 
   private handleChangeLocation(menu: SubMenu) {
-    let path = menu.path!;
+    const path = menu.path!;
     const hasParm = path.endsWith("/:id?");
     const url = hasParm ? path.replace("/:id?","") : path;
 

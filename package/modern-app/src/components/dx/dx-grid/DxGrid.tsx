@@ -2,7 +2,7 @@ import { Component } from 'react';
 import DataGrid, { Selection, FilterRow, GroupPanel, IColumnProps, Pager, Paging, Export, DataGridTypes, Grouping, ColumnChooser, ColumnFixing, SearchPanel, Column } from 'devextreme-react/data-grid';
 
 import { Workbook } from 'exceljs';
-import saveAs from 'file-saver';
+import { saveAs } from 'file-saver';
 import { exportDataGrid } from 'devextreme/excel_exporter';
 import { jsPDF } from 'jspdf';
 import { exportDataGrid as exportDataGridToPdf} from 'devextreme/pdf_exporter';
@@ -114,7 +114,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
   }
 
   initODataStore() {
-    let odata = this.props.odata!;
+    const odata = this.props.odata!;
     
     fetch(`${odata.url}/$metadata#${odata.resourceName}`)
     .then(response => response.text())
@@ -150,7 +150,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
         onLoaded: () => {
           // console.log('odata, onLoaded');
         },
-        beforeSend: (_) => {
+        beforeSend: () => {
           // console.log('odata, beforeSend', request);
         }
       });
@@ -191,11 +191,11 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
     }
   }
 
-  onContentReady(_: DataGridTypes.ContentReadyEvent) {
+  onContentReady() { // e: DataGridTypes.ContentReadyEvent
     // console.log('onContentReady', e);
   }
 
-  onEditorPreparing(_: DataGridTypes.EditorPreparingEvent) {
+  onEditorPreparing() { // e: DataGridTypes.EditorPreparingEvent
     // console.log('onEditorPreparing', e);
   }
 
@@ -281,7 +281,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
   renderColumns() {
     
     if (this.props.columns) {
-      let columns: any[] = [];
+      const columns: any[] = [];
       for (const column of this.props.columns) {
         if (column.buttons) {
           columns.push(<Column key={column.dataField} {...column} />);

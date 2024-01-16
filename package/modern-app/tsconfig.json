@@ -1,44 +1,42 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "ESNext",
+    "target": "ESNext",
+    "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "jsx": "react-jsx",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
+    "module": "ESNext",
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
 
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+
+    /* Linting */
     "strict": true,
-    "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noImplicitAny": true,
-    "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
 
-    "isolatedModules": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "useDefineForClassFields": false,
-
-    "outDir": "./dist/",
+    "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "./dist/",
+    "declarationDir": "./dist",
+    "declarationMap": true, // 타입 맵 파일 생성
+    "sourceMap": true, // 소스 맵 생성
+    
     "baseUrl": ".",
     "paths": {
-      "@iyulab/modern-app/*": [ "./src/*" ],
+      "@/*": [ "src/*" ],
+      "@iyulab/modern-app/*": [ "src/*" ],
     },
     "typeRoots": [
       "./src/declarations", 
       "./node_modules/@types"
     ],
   },
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

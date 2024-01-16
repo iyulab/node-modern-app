@@ -1,61 +1,73 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
   },
   "homepage": "https://www.iyulab.com",
   "license": "MIT",
-  "main": "index.js",
-  "module": "index.js",
-  "types": "index.d.ts",
   "type": "module",
+  "main": "main.js",
+  "module": "index.es.js",
+  "types": "types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./index.es.js",
+      "require": "./main.js"
+    },
+    "./components/dx": {
+      "import": "./dx.js",
+      "require": "./dx.js"
+    }
+  },  
   "scripts": {
     "lint": "eslint .",
     "init": "rimraf dist node_modules package-lock.json && npm install",
-    "build": "rimraf dist && rollup --config --bundleConfigAsCjs",
-    "publish": "copy package.json dist && cd dist && npm publish --access public"
+    "build": "rimraf dist && vite build",
+    "commit": "node scripts/commit.js",
+    "publish-npm": "copy package.json dist && cd dist && npm publish --access public && cd .. && npm run commit"
   },
   "dependencies": {
-    "@adobe/lit-mobx": "^2.2.1",
+    "@adobe/lit-mobx": "^2.2.2",
     "@lit-labs/react": "^2.1.2",
     "@microsoft/fast-components": "^2.30.6",
-    "axios": "^1.6.3",
-    "lit": "^3.1.0",
+    "axios": "^1.6.5",
+    "lit": "^3.1.1",
     "mobx": "^6.12.0",
     "mobx-react": "^9.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.1",
+    "react-router-dom": "^6.21.2",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
-    "@rollup/plugin-alias": "^5.1.0",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-image": "^3.0.3",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@types/node": "^20.10.6",
-    "@types/react": "^18.2.46",
+    "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@typescript-eslint/parser": "^6.17.0",
-    "autoprefixer": "^10.4.16",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0",
+    "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.11",    
+    "@types/file-saver": "^2.0.7",
+    "@types/node": "^20.11.4",
+    "autoprefixer": "^10.4.16",
+    "devextreme": "^23.2.3",
+    "devextreme-react": "^23.2.3",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "glob": "^10.3.10",
-    "node-sass": "^9.0.0",
-    "postcss": "^8.4.32",
+    "jspdf": "^2.5.1",
+    "postcss": "^8.4.33",
     "postcss-nesting": "^12.0.2",
-    "rollup": "^4.9.2",
-    "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-typescript2": "^0.36.0",
-    "sass": "^1.69.6",
-    "tailwindcss": "3.4.0",
-    "typescript": "^5.3.3"
+    "sass": "^1.69.7",
+    "tailwindcss": "3.4.1"
   }
 }

@@ -111,7 +111,7 @@ const TopBar = observer(() => {
             <div className={styles.breadCrumb}>
                 {paths.map((_, index) => {
                     const toPath = paths.slice(0, index + 1).join('/');
-                    let display = locator.getDisplay(index);
+                    const display = locator.getDisplay(index);
                     return (
                         <div className={styles.bread} key={toPath}>
                             <Link to={toPath} className={styles.path}>{display}</Link>

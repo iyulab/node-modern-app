@@ -157,7 +157,7 @@ export abstract class AuthorizeApiClient extends ApiClient {
 
   protected getData(result: IStandardResponse) {
     if (result && result.value) {
-      if (result.value.hasOwnProperty('value')) {
+      if (Object.prototype.hasOwnProperty.call(result.value, 'value')) {
         // OData v4
         return result.value['value'];
       } else {

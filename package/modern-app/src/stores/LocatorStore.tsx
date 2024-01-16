@@ -301,12 +301,12 @@ export class LocatorStore {
 
   // 현재 로케이션의 특정 인덱스의 표시(Display)경로를 가져옵니다.
   getDisplay(index: number): string {
-    let path = this.currentlocation?.fullPaths?.at(index);
+    const path = this.currentlocation?.fullPaths?.at(index);
     if (path == null) return '';
 
     if (path.match(/^[a-zA-Z]/)) {
       // 첫 문자를 대문자로 변경
-      let display = path.charAt(0).toUpperCase() + path.slice(1);
+      const display = path.charAt(0).toUpperCase() + path.slice(1);
       return display;
     } else {
       return path;

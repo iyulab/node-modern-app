@@ -1,5 +1,5 @@
 class Service<T> {
-  key: Symbol;
+  key: symbol;
   instance?: T;
   type: string;
 
@@ -62,13 +62,13 @@ class DIContainer {
   }
   
   createService<T>(type: 'singleton' | 'multiton' = 'singleton') {
-    let service = new Service<T>(type);
+    const service = new Service<T>(type);
     this.services.push(service);
     return service.key;
   }
 
-  register(key: Symbol, instance: any) {
-    let service = this.services.find(n => n.key == key);
+  register(key: symbol, instance: any) {
+    const service = this.services.find(n => n.key == key);
     if (service) {
       service.instance = instance;
     } else {
@@ -76,8 +76,8 @@ class DIContainer {
     }
   }
 
-  resolve<T>(key: Symbol): T | null {
-    let service = this.services.find(n => n.key == key);
+  resolve<T>(key: symbol): T | null {
+    const service = this.services.find(n => n.key == key);
     if (service) {
       if (service.type == 'singleton') {
         return service.instance;
@@ -132,7 +132,7 @@ export function inject<T>( type: Constructor<T>, key?: string ) {
 
 // 심볼에 의한 주입 데코레이터
 // 예) @injectOf(AppSettings) appSettings?: AppSettings;
-export function injectOf<T>(key: Symbol) {
+export function injectOf<T>(key: symbol) {
   return function (target: any, propertyKey: string) {
     Object.defineProperty(target, propertyKey, {
       get: function () {
