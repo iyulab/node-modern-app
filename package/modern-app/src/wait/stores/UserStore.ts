@@ -2,10 +2,14 @@ import { action, makeAutoObservable } from "mobx";
 // import { inject } from '@iyulab/modern-app/core/DI';
 // import { AppSettings } from "@iyulab/modern-app/core/AppSettings";
 
+export interface IUser {
+  claims: {type:string, value: string}[];
+}
+
 export class UserStore {
   
   // @injectOf(AppSettings) appSettings?: AppSettings;
-  user?: any = null;
+  user?: IUser | null = null;
 
   get userId() {
     return this.user?.claims?.find((n: { type: string; }) => n.type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.value;
@@ -20,7 +24,7 @@ export class UserStore {
   }
 
   get userRoles() {
-    return this.user?.claims?.filter((n: { type: string; }) => n.type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.map((n: { value: any; }) => n.value);
+    return this.user?.claims?.filter((n: { type: string; }) => n.type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.map((n: { value: string; }) => n.value);
   }
 
   get SID() {
@@ -36,7 +40,7 @@ export class UserStore {
     makeAutoObservable(this);
   }
 
-  @action login(user: any) {
+  @action login(user: IUser) {
     this.user = user;
     console.debug('login user', user);
   }

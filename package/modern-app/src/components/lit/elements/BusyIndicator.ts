@@ -19,8 +19,16 @@ export class BusyIndicator extends LitElement {
         z-index: 999;
       }
 
+      :host([full]) .busy-indicator {
+        position: fixed; /* 전체 화면을 커버하기 위한 스타일 */
+        left: 0;
+        top: 0;
+        right: 0;
+        bottom: 0;
+      }
+      
       .busy-indicator {
-        position: fixed;
+        position: absolute;
         left: 0;
         top: 0;
         right: 0;
@@ -38,8 +46,17 @@ export class BusyIndicator extends LitElement {
 
   @property({ type: String })
   message?: string;
+
+  // 화면 전체영역을 커버합니다. <busy-indicator full></busy-indicator>
+  @property({ type: Boolean, reflect: true })
+  full = false;
+
+  @property({ type: Boolean, reflect: true })
+  show = true;
   
   render() {
+    if (!this.show) return html``;
+    
     return html`
       <div class="busy-indicator">
         <fast-progress-ring indeterminate></fast-progress-ring>

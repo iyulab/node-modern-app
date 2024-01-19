@@ -1,19 +1,36 @@
-import { Component } from 'react';
-import DataGrid, { Selection, FilterRow, GroupPanel, IColumnProps, Pager, Paging, Export, DataGridTypes, Grouping, ColumnChooser, ColumnFixing, SearchPanel, Column } from 'devextreme-react/data-grid';
+import { Component } from "react";
+import DataGrid, {
+  Selection,
+  FilterRow,
+  GroupPanel,
+  IColumnProps,
+  Pager,
+  Paging,
+  Export,
+  DataGridTypes,
+  Grouping,
+  ColumnChooser,
+  ColumnFixing,
+  SearchPanel,
+  Column,
+} from "devextreme-react/data-grid";
 
-import { Workbook } from 'exceljs';
-import { saveAs } from 'file-saver';
-import { exportDataGrid } from 'devextreme/excel_exporter';
-import { jsPDF } from 'jspdf';
-import { exportDataGrid as exportDataGridToPdf} from 'devextreme/pdf_exporter';
+import { Workbook } from "exceljs";
+import { saveAs } from "file-saver";
+import { exportDataGrid } from "devextreme/excel_exporter";
+import { jsPDF } from "jspdf";
+import { exportDataGrid as exportDataGridToPdf } from "devextreme/pdf_exporter";
 
-import 'devextreme/dist/css/dx.light.css';
+import "devextreme/dist/css/dx.light.css";
 
-import ODataStore from 'devextreme/data/odata/store';
-import React from 'react';
+import ODataStore from "devextreme/data/odata/store";
+import React from "react";
+import {
+  ODataStoreBuilder,
+  ODataStoreBuildOptions,
+} from "../helpers/ODataStoreBuilder";
 
 export class DxGridContext {
-  
   grid: any;
   selectedKeys: any[] = [];
 
@@ -21,7 +38,7 @@ export class DxGridContext {
     this.grid.selectedKeys = [];
     this.grid.refresh();
   }
-  
+
   init(grid: DxGrid) {
     this.grid = grid;
   }
@@ -32,15 +49,12 @@ export interface IDxGridEventHandler {
 }
 
 export interface IDxGridOptions {
-  filter?: Array<any>
+  filter?: Array<any>;
 }
 
 export interface DxGridProps {
-  odata?: {
-    url: string;
-    resourceName: string;
-  },
-  options?: IDxGridOptions,
+  odata?: ODataStoreBuildOptions;
+  options?: IDxGridOptions;
   columns?: IColumnProps[];
   allowColumnReordering?: boolean;
   allowColumnResizing?: boolean;
@@ -51,7 +65,7 @@ export interface DxGridProps {
   showRowLines?: boolean;
   showFilterRow?: boolean;
   showGroupPanel?: boolean;
-  selectionMode?: 'none' | 'single' | 'multiple';
+  selectionMode?: "none" | "single" | "multiple";
   wordWrapEnabled?: boolean;
   context?: DxGridContext;
   eventHandler?: IDxGridEventHandler;
@@ -70,12 +84,12 @@ const defaultProps: DxGridProps = {
   showRowLines: false,
   showFilterRow: true,
   showGroupPanel: false,
-  selectionMode: 'single',
-  wordWrapEnabled: false
+  selectionMode: "single",
+  wordWrapEnabled: false,
 };
 
 interface DxGridState {
-  dataSource: ODataStore | { store: ODataStore, filter?: [] } | null;
+  dataSource: ODataStore | { store: ODataStore; filter?: [] } | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -83,15 +97,14 @@ interface DxGridState {
 const defaultState: DxGridState = {
   dataSource: null,
   isLoading: true,
-  error: null
+  error: null,
 };
 
-const exportFormats = ['xlsx'] //, 'pdf'
+const exportFormats = ["xlsx"]; //, 'pdf'
 
 export class DxGrid extends Component<DxGridProps, DxGridState> {
-  
   dataGrid: React.RefObject<DataGrid>;
-  
+
   constructor(props: DxGridProps) {
     super(props);
     this.state = defaultState;
@@ -106,102 +119,71 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
 
     props.context?.init(this);
   }
-    
+
   componentDidMount() {
     if (this.props.odata) {
       this.initODataStore();
     }
   }
 
-  initODataStore() {
+  async initODataStore() {
     const odata = this.props.odata!;
-    
-    fetch(`${odata.url}/$metadata#${odata.resourceName}`)
-    .then(response => response.text())
-    .then(str => {
-      const parser = new DOMParser();
-      const xml = parser.parseFromString(str, "application/xml");
-      return xml;
-    })
-    .then(meta => {
-      const fieldTypes: { [key: string]: any } = {};
-      const keyName = meta.querySelector('Key PropertyRef')?.getAttribute('Name');
-      
-      // 모든 Property의 Name과 Type 추출
-      const properties = meta.querySelectorAll('Property');
-      const propertyDetails = Array.from(properties).map(prop => ({
-          name: prop.getAttribute('Name')!,
-          type: prop.getAttribute('Type')!
-      }));        
-      for (const p of propertyDetails) {
-        let type = p.type;
-        if (type.startsWith('Edm.')) {
-          type = type.replace('Edm.', '');
-        }
-        fieldTypes[p.name] = type;
-      }
-      
-      const store = new ODataStore({
-        version: 4,
-        url: `${odata.url}/${odata.resourceName}`,
-        key: `${keyName}`,
-        keyType: 'Guid',
-        fieldTypes: fieldTypes,
-        onLoaded: () => {
-          // console.log('odata, onLoaded');
+
+    const result = await ODataStoreBuilder.Build(odata);
+    if (result instanceof ODataStore) {
+      this.setState({
+        dataSource: {
+          store: result,
+          // @ts-expect-error 설명: filter가 없는 경우도 있음
+          filter: this.props.options?.filter,
         },
-        beforeSend: () => {
-          // console.log('odata, beforeSend', request);
-        }
+        isLoading: false,
       });
-      
-      this.setState({ dataSource: {
-        store: store,
-        // @ts-ignore
-        filter: this.props.options?.filter,
-      }, isLoading: false });
-    })
-    .catch(error => {
-      this.setState({ error: error.message, isLoading: false });
+    } else {
+      // 오류가 발생했을 때의 처리
+      this.setState({ error: result, isLoading: false });
     }
-  );
   }
 
   onExporting(e: DataGridTypes.ExportingEvent) {
-    if (e.format === 'xlsx') {
-      const workbook = new Workbook(); 
-      const worksheet = workbook.addWorksheet("Main sheet"); 
-      exportDataGrid({ 
-          worksheet: worksheet, 
-          component: e.component,
-      }).then(function() {
-          workbook.xlsx.writeBuffer().then(function(buffer) { 
-              saveAs(new Blob([buffer], { type: "application/octet-stream" }), "DataGrid.xlsx"); 
-          }); 
-      }); 
-    } 
-    else if (e.format === 'pdf') {
+    if (e.format === "xlsx") {
+      const workbook = new Workbook();
+      const worksheet = workbook.addWorksheet("Main sheet");
+      exportDataGrid({
+        worksheet: worksheet,
+        component: e.component,
+      }).then(function () {
+        workbook.xlsx.writeBuffer().then(function (buffer) {
+          saveAs(
+            new Blob([buffer], { type: "application/octet-stream" }),
+            "DataGrid.xlsx"
+          );
+        });
+      });
+    } else if (e.format === "pdf") {
       const doc = new jsPDF();
       exportDataGridToPdf({
-          jsPDFDocument: doc,
-          component: e.component,
+        jsPDFDocument: doc,
+        component: e.component,
       }).then(() => {
-          doc.save('DataGrid.pdf');
+        doc.save("DataGrid.pdf");
       });
     }
   }
 
-  onContentReady() { // e: DataGridTypes.ContentReadyEvent
+  onContentReady() {
+    // e: DataGridTypes.ContentReadyEvent
     // console.log('onContentReady', e);
   }
 
-  onEditorPreparing() { // e: DataGridTypes.EditorPreparingEvent
+  onEditorPreparing() {
+    // e: DataGridTypes.EditorPreparingEvent
     // console.log('onEditorPreparing', e);
   }
 
   onCellPrepared(e: DataGridTypes.CellPreparedEvent) {
     // console.log('onCellPrepared', e);
-    if (e.column.type == 'buttons' && e.rowType == 'data') {
+    if (e.column.type == "buttons" && e.rowType == "data") {
       this.props.eventHandler?.onInitCellButtons?.(e);
     }
   }
@@ -216,7 +198,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
   refresh() {
     this.dataGrid.current?.instance.refresh();
   }
-  
+
   render() {
     const { dataSource, isLoading, error } = this.state;
 
@@ -238,21 +220,34 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
     //   allowUpdating: this.props.allowEdit ?? false,
     //   allowDeleting: this.props.allowDelete ?? false,
     // };
-    
+
     return (
-      <DataGrid ref={this.dataGrid}
+      <DataGrid
+        ref={this.dataGrid}
         dataSource={dataSource}
         // defaultColumns={this.initColumns()}
         // columns={this.initColumns()}
-        allowColumnReordering={this.props.allowColumnReordering ?? defaultProps.allowColumnReordering}
-        allowColumnResizing={this.props.allowColumnResizing ?? defaultProps.allowColumnResizing}
-        rowAlternationEnabled={this.props.rowAlternationEnabled ?? defaultProps.rowAlternationEnabled}
-        columnAutoWidth={this.props.columnAutoWidth ?? defaultProps.columnAutoWidth}
+        allowColumnReordering={
+          this.props.allowColumnReordering ?? defaultProps.allowColumnReordering
+        }
+        allowColumnResizing={
+          this.props.allowColumnResizing ?? defaultProps.allowColumnResizing
+        }
+        rowAlternationEnabled={
+          this.props.rowAlternationEnabled ?? defaultProps.rowAlternationEnabled
+        }
+        columnAutoWidth={
+          this.props.columnAutoWidth ?? defaultProps.columnAutoWidth
+        }
         columnMinWidth={40}
         showBorders={this.props.showBorders ?? defaultProps.showBorders}
-        showColumnLines={this.props.showColumnLines ?? defaultProps.showColumnLines}
+        showColumnLines={
+          this.props.showColumnLines ?? defaultProps.showColumnLines
+        }
         showRowLines={this.props.showRowLines ?? defaultProps.showRowLines}
-        wordWrapEnabled={this.props.wordWrapEnabled ?? defaultProps.wordWrapEnabled}
+        wordWrapEnabled={
+          this.props.wordWrapEnabled ?? defaultProps.wordWrapEnabled
+        }
         onExporting={this.onExporting}
         onContentReady={this.onContentReady}
         onEditorPreparing={this.onEditorPreparing}
@@ -263,31 +258,39 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
         {this.renderColumns()}
         <ColumnChooser enabled={false} />
         <ColumnFixing enabled={true} />
-        
-        <Selection mode={this.props.selectionMode ?? defaultProps.selectionMode} />
-        <FilterRow visible={this.props.showFilterRow ?? defaultProps.showFilterRow} />
-        <GroupPanel visible={this.props.showGroupPanel ?? defaultProps.showGroupPanel} />
+
+        <Selection
+          mode={this.props.selectionMode ?? defaultProps.selectionMode}
+        />
+        <FilterRow
+          visible={this.props.showFilterRow ?? defaultProps.showFilterRow}
+        />
+        <GroupPanel
+          visible={this.props.showGroupPanel ?? defaultProps.showGroupPanel}
+        />
         <Grouping autoExpandAll={false} />
         <SearchPanel visible={false} />
-        
+
         <Export enabled={true} formats={exportFormats} />
-        
-        <Pager allowedPageSizes={[10, 25, 50, 100]} showPageSizeSelector={true} />
+
+        <Pager
+          allowedPageSizes={[10, 25, 50, 100]}
+          showPageSizeSelector={true}
+        />
         <Paging defaultPageSize={10} />
       </DataGrid>
     );
   }
-  
+
   renderColumns() {
-    
     if (this.props.columns) {
       const columns: any[] = [];
       for (const column of this.props.columns) {
+        const key = column.dataField ?? column.name;
         if (column.buttons) {
-          columns.push(<Column key={column.dataField} {...column} />);
-        }
-        else {
-          columns.push(<Column key={column.dataField} {...column} />);
+          columns.push(<Column key={key} {...column} />);
+        } else {
+          columns.push(<Column key={key} {...column} />);
         }
       }
       return columns;
@@ -295,9 +298,8 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
       return [];
     }
   }
-  
-  initColumns(): IColumnProps[] | any
-  {
+
+  initColumns(): IColumnProps[] | any {
     // let type: import('devextreme-react/data-grid').IColumnProps;
     return this.props.columns ?? null;
   }

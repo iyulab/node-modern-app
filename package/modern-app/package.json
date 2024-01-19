@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -42,7 +42,7 @@
     "mobx-react": "^9.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.2",
+    "react-router-dom": "^6.21.3",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
@@ -57,8 +57,8 @@
     "typescript": "^5.3.3",
     "vite": "^5.0.11",    
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^20.11.4",
-    "autoprefixer": "^10.4.16",
+    "@types/node": "^20.11.5",
+    "autoprefixer": "^10.4.17",
     "devextreme": "^23.2.3",
     "devextreme-react": "^23.2.3",
     "exceljs": "^4.4.0",
@@ -67,7 +67,7 @@
     "jspdf": "^2.5.1",
     "postcss": "^8.4.33",
     "postcss-nesting": "^12.0.2",
-    "sass": "^1.69.7",
+    "sass": "^1.70.0",
     "tailwindcss": "3.4.1"
   }
 }

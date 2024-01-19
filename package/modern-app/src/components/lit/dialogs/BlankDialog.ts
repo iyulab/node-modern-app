@@ -1,5 +1,5 @@
 import { css, html, LitElement, unsafeCSS } from 'lit'
-import { customElement, property ,query } from 'lit/decorators.js'
+import { customElement, property, query } from 'lit/decorators.js'
 
 import baseStyle from '@iyulab/modern-app/styles/tailwind.css?inline';
 

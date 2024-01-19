@@ -1,12 +1,11 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 
-import { ObjectHelper } from '@iyulab/modern-app/extensions/Object';
-
 import { 
   fastCombobox,
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
+import { Reflections } from '@/extensions';
 
 provideFASTDesignSystem().register(
   fastCombobox()
@@ -33,7 +32,7 @@ export class ComboboxContext implements IComboboxContext {
   
   constructor(context: IComboboxContext) {
     
-    ObjectHelper.cloneFrom(context, this);
+    Reflections.cloneFrom(context, this);
   }
 }
 

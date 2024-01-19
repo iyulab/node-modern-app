@@ -3,7 +3,8 @@ import { customElement, query, property } from 'lit/decorators.js'
 
 import { Validations } from '@iyulab/modern-app/helpers/Validations';
 
-import '../UInput';
+import '../elements';
+
 import {
   Dialog,
   fastDialog,

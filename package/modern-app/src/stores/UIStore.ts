@@ -10,15 +10,17 @@ import {
   InputDialog, 
   InputDialogOptions, 
   MessageDialog,
-  BlankDialog 
+  BlankDialog,
+  RightDialog,
+  IDialogContent
 } from "@iyulab/modern-app/components/lit/dialogs";
 import { 
   BusyIndicator 
-} from "@iyulab/modern-app/components/lit/BusyIndicator";
+} from "@iyulab/modern-app/components/lit/elements/BusyIndicator";
 import {
   IMenuItem, 
   PopupMenu 
-} from "@iyulab/modern-app/components/lit/PopupMenu";
+} from "@iyulab/modern-app/components/lit/elements/PopupMenu"
 
 export class UIStore {
   
@@ -29,8 +31,6 @@ export class UIStore {
   subNavMenu: SubNavMenu = new SubNavMenu();
   subNavTooltip: SubNavTooltip = new SubNavTooltip();
   toastBar: ToastBar = new ToastBar();
-
-  private busyStack: number = 0;
 
   initUI() {
     if (this.pageBusyIndicator && this.pageBusyIndicator.parentElement) {
@@ -48,11 +48,53 @@ export class UIStore {
     document.body.appendChild(this.toastBar);
   }
 
-  async toggleNotificationAsync(event: any) {
+  async toggleNotificationAsync(event: MouseEvent) {
     this.notificationMenu.toggleAsync(event);
   }
 
-  async showUserMenuAsync(event: any) {
+  async toggleSubNavAsync(event: MouseEvent, menu: GroupMenu) {
+    this.subNavMenu.item = menu;
+    this.subNavMenu.toggleAsync(event);
+  }
+
+  async hoverNavTooltipAsync(event: MouseEvent, display: string) {
+    this.subNavTooltip.display = display;
+    this.subNavTooltip.hoverAsync(event);
+  }
+
+  createElement(html: string): Element {
+    const template = document.createElement('template');
+    template.innerHTML = html.trim();
+    return template.content.firstChild as Element;
+  }
+  
+  async showContextMenu(menuItems: Array<IMenuItem>, e: MouseEvent) {
+    
+    const html = `<popup-menu hidden></popup-menu>`;
+    const element = this.createElement(html)
+    document.body.appendChild(element);
+
+    try {
+      const popupMenu = element as PopupMenu;
+      popupMenu.menuItems = menuItems;
+      popupMenu.location = {
+        x: e.x,
+        y: e.y
+      };
+      
+      const r = await popupMenu.showAsync();
+      return r;
+    } catch (ex) {
+      return {
+        success: false,
+        value: ex
+      };
+    } finally {
+      document.body.removeChild(element);
+    }
+  }
+
+  async showUserMenuAsync(event: MouseEvent) {
     this.subNavMenu.item = {
       type: "group",
       display: "User",
@@ -72,16 +114,6 @@ export class UIStore {
     };
     this.subNavMenu.toggleAsync(event);
   }
-  
-  async toggleSubNavAsync(event: any, menu: GroupMenu) {
-    this.subNavMenu.item = menu;
-    this.subNavMenu.toggleAsync(event);
-  }
-
-  async hoverNavTooltipAsync(event: any, display: string) {
-    this.subNavTooltip.display = display;
-    this.subNavTooltip.hoverAsync(event);
-  }
 
   async showMessageAsync(title: string, message: string) : Promise<boolean> {
     this.messageBoxDialog.initOk();
@@ -98,26 +130,20 @@ export class UIStore {
     return this.messageBoxDialog.showAsync(title, message);
   }
   
-  createInertElement(html: string): Element {
-    const template = document.createElement('template');
-    template.innerHTML = html.trim();
-    return template.content.firstChild as Element;
-  }
-  
   async showInputDialogAsync(
     title: string, 
     message: string, 
     options?: InputDialogOptions) {
     
     const html = `<input-dialog hidden></input-dialog>`;
-    const element = this.createInertElement(html)
+    const element = this.createElement(html)
     document.body.appendChild(element);
     
     try {
       const dlg = element as InputDialog;
       const r = await dlg.showAsync(title, message, options);
       return r;
-    } catch (ex: any) {
+    } catch (ex) {
       return {
         success: false,
         value: ex
@@ -126,28 +152,7 @@ export class UIStore {
       document.body.removeChild(element);
     }
   }
-
-  async showDialogAsync(content: any) {
-    
-    const html = `<blank-dialog hidden></blank-dialog>`;
-    const element = this.createInertElement(html)
-    document.body.appendChild(element);
-
-    try {
-      const dlg = element as BlankDialog;
-      dlg.content = content;
-      const r = await dlg.showAsync();
-      return r;
-    } catch (e) {
-      return {
-        success: false,
-        value: null
-      };
-    } finally {
-      document.body.removeChild(element);
-    }
-  }
-
+  
   async showContentDialogAsync(title: string, content: any, options?: {
     okCancel?: boolean,
     yesNo?: boolean,
@@ -164,7 +169,7 @@ export class UIStore {
     // let result = await uiManager.showContentDialogAsync('New Workspace', el);
 
     const html = `<content-dialog hidden></content-dialog>`;
-    const element = this.createInertElement(html)
+    const element = this.createElement(html)
     document.body.appendChild(element);
 
     try {
@@ -202,73 +207,46 @@ export class UIStore {
     }
   }
 
-  async showContextMenu(menuItems: Array<IMenuItem>, e: MouseEvent) {
+  async showDialogAsync(content: any) {
     
-    const html = `<popup-menu hidden></popup-menu>`;
-    const element = this.createInertElement(html)
+    const html = `<blank-dialog hidden></blank-dialog>`;
+    const element = this.createElement(html)
     document.body.appendChild(element);
 
     try {
-      const popupMenu = element as PopupMenu;
-      popupMenu.menuItems = menuItems;
-      popupMenu.location = {
-        x: e.x,
-        y: e.y
-      };
-      
-      const r = await popupMenu.showAsync();
+      const dlg = element as BlankDialog;
+      dlg.content = content;
+      const r = await dlg.showAsync();
       return r;
-    } catch (ex) {
+    } catch (e) {
       return {
         success: false,
-        value: ex
+        value: null
       };
     } finally {
       document.body.removeChild(element);
     }
   }
-  
-  //#region busy indicator
 
-  busy(message?: string) {
-    // busy 스택에 추가
-    this.busyStack++;
-    this.updateBusyIndicator();
+  async showRightDialogAsync(content: IDialogContent) {
 
-    // 메시지가 있으면 표시
-    if (message) {
-      this.pageBusyIndicator.message = message;
-    } else {
-      this.pageBusyIndicator.message = undefined;
-    }
-  }
-
-  unbusy() {
-    // busy 스택에서 제거, 0보다 작아지면 0으로 맞춤
-    this.busyStack--;
-    if (this.busyStack < 0) {
-      this.busyStack = 0;
-    }
-    this.updateBusyIndicator();
-  }
-
-  updateBusyIndicator() {
-    this.pageBusyIndicator.hidden = this.busyStack > 0 ? false : true;
-  }
-  
-  async invokeInBusy<T>(action: () => Promise<T>, message?: string): Promise<T|undefined> {
-    this.busy(message);
-
+    const html = `<right-dialog hidden></right-dialog>`;
+    const element = this.createElement(html);
+    document.body.appendChild(element);
+    
     try {
-      return await action();
+      const dlg = element as RightDialog;
+      dlg.title = content.title;
+      dlg.content = content;
+      const r = await dlg.showAsync();
+      return r;
     } catch (e) {
-      console.error(e);
-      return undefined;
+      return {
+        success: false,
+        value: null
+      };
     } finally {
-      this.unbusy();
+      document.body.removeChild(element);
     }
-  }
-  
-  //#endregion
-
+  }  
 }

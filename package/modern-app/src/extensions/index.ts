@@ -1,5 +1,5 @@
 export * from "./LitElement";
-export * from "./Object";
+export * from "./Reflections";
 export * from "./Array";
 export * from "./Document";
 export * from "./HTMLElement";

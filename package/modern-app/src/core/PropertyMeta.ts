@@ -8,7 +8,7 @@ const __propertyMeta: {
 } = {
 };
 
-// @ts-ignore
+// @ts-expect-error 설명: propertyMeta 충돌 문제로 은닉형식으로 사용
 document.__propertyMeta__ = __propertyMeta;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

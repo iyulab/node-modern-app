@@ -105,12 +105,18 @@ export class UInput extends ElementMixin(LitElement) {
   @property({type: Boolean, attribute: true})
   multiline: boolean = false;
 
+  @property({type: String})
+  pattern: string | null = null;
+
   @property({type: Function})
   updatedAction: ((path: string, value: any, context: any) => void) | null = null;
   
+  @property({type: String})
+  errorMessage: string | null = null;
+
   private lastContext: any = null;
   private lastPath: string | null = null;
-
+  
   protected override async updated(_changedProperties: any) {
     super.updated(_changedProperties);
     await this.updateComplete;
@@ -219,25 +225,26 @@ export class UInput extends ElementMixin(LitElement) {
       }
     }
   }
-
+  
   renderError() {
+    if (this.errorMessage) {
+      return html`<div style="color: red; font-size: 12px;">${this.errorMessage}</div>`;
+    }
     return html``;
   }
   
   renderText(type?: string | null) {
-    
+    const pattern = this.pattern ?? this.getPatternByType(type);
     return html `
-    <fast-text-field @change=${(e: any) => {
-        this.value = e.target.value.trim();
-        this.onChange(this.value);
-        e.cancelBubble = true;
-      }}
+    <fast-text-field @change=${this.onChangeTextField}
       .type=${type}
       .value=${this.value} 
       .placeholder=${this.hint ?? this.label} 
       ?required=${this.required}
       ?readonly=${this.readonly}
-      ?autofocus=${this.autoFocus}>
+      ?autofocus=${this.autoFocus}
+      pattern=${pattern}
+      tabindex=0>
       ${this.label && this.required ? html`<span style="color:red;">&#42;</span>` : html``}
       ${this.label}
     </fast-text-field>
@@ -257,7 +264,8 @@ export class UInput extends ElementMixin(LitElement) {
       .placeholder=${this.hint ?? this.label}
       ?required=${this.required}
       ?readonly=${this.readonly}
-      ?autofocus=${this.autoFocus}>
+      ?autofocus=${this.autoFocus}
+      tabindex=0>
       ${this.label && this.required ? html`<span style="color:red;">&#42;</span>` : html``}
       ${this.label}
     </fast-text-area>
@@ -275,7 +283,9 @@ export class UInput extends ElementMixin(LitElement) {
       ?required=${this.required}
       ?readonly=${this.readonly}
       ?autofocus=${this.autoFocus}
-    >${this.label}</fast-checkbox>`;
+      tabindex=0>
+      ${this.label}
+    </fast-checkbox>`;
   }
 
   renderNumber() {
@@ -290,11 +300,35 @@ export class UInput extends ElementMixin(LitElement) {
       .placeholder=${this.hint ?? this.label} 
       ?required=${this.required}
       ?readonly=${this.readonly}
-      ?autofocus=${this.autoFocus}>
+      ?autofocus=${this.autoFocus}
+      tabindex=0>
       ${this.label && this.required ? html`<span style="color:red;">&#42;</span>` : html``}
       ${this.label}
     </fast-number-field>
     `;
+  }
+
+  onChangeTextField(e: any) {
+
+    const value = e.target.value;
+    const pattern = e.target.pattern;
+    if (this.validate(value, pattern)) {
+      this.value = e.target.value.trim();
+      this.onChange(this.value);
+      e.cancelBubble = true;
+    }
+  }
+
+  validate(value: any, pattern: any) {
+    if (value && pattern) {
+      const regex = new RegExp(pattern);
+      if (!regex.test(value)) {
+        this.errorMessage = '입력된 값이 유효하지 않습니다.';
+        return false;
+      }
+    }
+    this.errorMessage = null;
+    return true;
   }
 
   onChange(value: any) {
@@ -319,6 +353,26 @@ export class UInput extends ElementMixin(LitElement) {
 
     if (this.updatedAction && this.path) {
       this.updatedAction(this.path, value, this.context);
+    }
+  }
+  
+  getPatternByType(type: string | null | undefined): string | null {
+    
+    if (type == null || type == undefined || type == 'text') {
+      return null;
+    } else if (type == 'email') {
+      return '^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$';
+    } else if (type == 'tel') {
+      // 숫자, -, +, (, ) 만 입력 가능
+      return '^[-+()0-9]+$';
+    } else if (type == 'url') {
+      return '^((http|https):\\/\\/)?[a-z0-9]+([\\-\\.]{1}[a-z0-9]+)*\\.[a-z]{2,5}' + 
+        '((:[0-9]{1,5})?\\/.*)?$';
+    } else if (type == 'password') {
+      // 숫자, 영문자, 특수문자(!@#$%^&*()-_=+) 만 입력 가능
+      return '[0-9a-zA-Z!@#$%^&*()-_=+]';
+    } else {
+      return null;
     }
   }
 }

@@ -1,1 +1,1 @@
-export * from './dx-grid';
+export * from './helpers';

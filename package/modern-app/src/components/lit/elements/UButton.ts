@@ -22,6 +22,7 @@ export class UButton extends  ElementMixin(LitElement) {
     css`
       :host {
         --neutral-fill-stealth-rest: none;
+        --btn-min-width: 80px;
         display: inline-flex;
       }
       
@@ -33,6 +34,10 @@ export class UButton extends  ElementMixin(LitElement) {
 
       :host(.block) #btn {
         display: flex;
+      }
+
+      #btn {
+        min-width: var(--btn-min-width);
       }
     `
   ];
