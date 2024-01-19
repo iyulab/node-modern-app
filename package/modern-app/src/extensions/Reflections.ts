@@ -5,7 +5,6 @@ function cloneFrom(from: object, to: object) {
 
   for (const propertyName of propertyNames) {
     if (propertyName !== "constructor") {
-      // @ts-expect-error 설명: 동적 속성 할당으로 인한 타입 체크 무시
       to[propertyName] = from[propertyName];
     }
   }

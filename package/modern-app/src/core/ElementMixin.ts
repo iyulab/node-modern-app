@@ -30,7 +30,6 @@ export const ElementMixin = <T extends Constructor<LitElement>>(superClass: T) =
         const methodName = `onChanged${pName}`;
         const method = Reflect.get(this, methodName);
         if (typeof method === 'function') {
-          // @ts-expect-error 설명: 동적으로 결정되는 메소드, 컴파일 시 타입 확인 불가
           method.call(this, this[propertyName]);
         }
       }

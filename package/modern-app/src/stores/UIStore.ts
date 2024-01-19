@@ -48,16 +48,16 @@ export class UIStore {
     document.body.appendChild(this.toastBar);
   }
 
-  async toggleNotificationAsync(event: MouseEvent) {
+  async toggleNotificationAsync(event: Event) {
     this.notificationMenu.toggleAsync(event);
   }
 
-  async toggleSubNavAsync(event: MouseEvent, menu: GroupMenu) {
+  async toggleSubNavAsync(event: Event, menu: GroupMenu) {
     this.subNavMenu.item = menu;
     this.subNavMenu.toggleAsync(event);
   }
 
-  async hoverNavTooltipAsync(event: MouseEvent, display: string) {
+  async hoverNavTooltipAsync(event: Event, display: string) {
     this.subNavTooltip.display = display;
     this.subNavTooltip.hoverAsync(event);
   }
@@ -94,7 +94,7 @@ export class UIStore {
     }
   }
 
-  async showUserMenuAsync(event: MouseEvent) {
+  async showUserMenuAsync(event: Event) {
     this.subNavMenu.item = {
       type: "group",
       display: "User",

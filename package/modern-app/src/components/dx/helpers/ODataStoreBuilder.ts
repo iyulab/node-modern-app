@@ -64,7 +64,6 @@ async function Build(options: ODataStoreBuildOptions): Promise<ODataStore | stri
       if (type.startsWith('Edm.')) {
         type = type.replace('Edm.', '');
       }
-      // @ts-expect-error 설명: fieldTypes 에서는 keyName 을 사용하지 않음
       fieldTypes[p.name] = type;
     }
 

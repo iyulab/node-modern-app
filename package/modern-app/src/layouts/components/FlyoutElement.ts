@@ -56,7 +56,7 @@ export abstract class FlyoutElement extends LitElement {
   /** 
    * 토글 방식의 이벤트를 사용할 경우 사용합니다(with onClick event)
   */
-  public async toggleAsync(event: MouseEvent) {
+  public async toggleAsync(event: Event) {
     const target = event.currentTarget as HTMLElement;
     if(!target) throw new Error("event target is null");
 
@@ -70,7 +70,7 @@ export abstract class FlyoutElement extends LitElement {
   /**
    * 클릭 이벤트를 사용할때 컨텐츠를 보여줍니다. (with onClick event)
    */
-  public async showClickAsync(event: MouseEvent) {
+  public async showClickAsync(event: Event) {
     await this.showAsync(event);
 
     document.removeEventListener("click", this.handleOutsideClickBind, { capture: true });
@@ -111,14 +111,14 @@ export abstract class FlyoutElement extends LitElement {
   /**
    * 호버링 방식의 이벤트를 사용할 경우 사용합니다(with onMouseEnter event)
    */
-  public async hoverAsync(event: MouseEvent) {
+  public async hoverAsync(event: Event) {
     await this.showHoverAsync(event);
   }
 
   /**
    * 호버링 이벤트를 사용할때 컨텐츠를 보여줍니다. (with onMouseEnter event)
    */
-  public async showHoverAsync(event: MouseEvent) {
+  public async showHoverAsync(event: Event) {
     await this.showAsync(event);
     
     if(this.target) this.target.removeEventListener("mouseleave", this.handleHoverTargetBind);
@@ -143,7 +143,7 @@ export abstract class FlyoutElement extends LitElement {
   }
 
   // 컨텐츠를 보여줍니다.
-  private async showAsync(event: MouseEvent) {
+  private async showAsync(event: Event) {
     const target = event.currentTarget as HTMLElement;
     if(!target) throw new Error("event target is null");
     this.target = target;
@@ -167,7 +167,7 @@ export abstract class FlyoutElement extends LitElement {
   // event bind End
 
   // event methods Start
-  private async handleOutsideClick(event: MouseEvent) {
+  private async handleOutsideClick(event: Event) {
     const target = event.target as Element;
     const isInside = this.contains(target);
     const isTarget = this.target?.contains(target);

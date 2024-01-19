@@ -5,7 +5,7 @@ import {
   fastCombobox,
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
-import { Reflections } from '@/extensions';
+import { Reflections } from '@iyulab/modern-app/extensions';
 
 provideFASTDesignSystem().register(
   fastCombobox()
