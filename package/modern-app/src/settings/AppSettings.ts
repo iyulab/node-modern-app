@@ -4,15 +4,50 @@ import { DI } from "../core";
 export interface AppSettings {
   getServiceURL(): string | null;
   getAccessToken(): string | null;
+
+  get<T>(key: string): T;
+  set<T>(key: string, value: T): void;
 }
 
 export const AppSettings = DI.createService<AppSettings>();
+
+export abstract class AppSettingsBase implements AppSettings {
+  private settings: Map<string, any> = new Map();
+
+  getServiceURL(): string | null {
+    return null;
+  }
+  
+  getAccessToken(): string | null {
+    return null;
+  }
+
+  get<T>(key: string): T {
+    if (this.settings.has(key)) {
+      return this.settings.get(key) as T;
+    } else {
+      // 값이 없는 경우 처리. 여기서는 예외를 발생시키지만, 다른 방식으로 처리할 수도 있습니다.
+      throw new Error(`No value found for key: ${key}`);
+    }
+  }
+
+  set<T>(key: string, value: T): void {
+    this.settings.set(key, value);
+  }
+}
+
 
 /* Usage 
 // service-registration.ts
 import { DI } from "@iyulab/modern-app";
 import {AppSettings} from "@iyulab/modern-app/settings"; 
-import { DefaultAppSettings } from "./DefaultAppSettings";
+import { LocalAppSettings } from "./LocalAppSettings";
 
-DI.register(AppSettings, new DefaultAppSettings());
+DI.register(AppSettings, new LocalAppSettings());
+
+// LocalAppSettings.ts
+import { AppSettingsBase } from "@iyulab/modern-app/settings";
+
+export class LocalAppSettings extends AppSettingsBase {
+}
 */
