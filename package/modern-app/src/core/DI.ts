@@ -101,11 +101,8 @@ class DIContainer {
     key?: string
   ) : T {
 
-    console.log(`get ${type.name} ${key}`);
     if (key) {
-      console.log(`get ${type.name} ${key}`);
       const multiton = this.multitons.get(key);
-      console.log(`get ${type.name} ${key} ${multiton}`);
       if (multiton) {
         return multiton;
       } else {
@@ -113,9 +110,7 @@ class DIContainer {
         return this.addMultiton(key, type);
       }
     } else {
-      console.log(`get ${type.name}`);
       const singleton = this.singletons.get(type);
-      console.log(`get ${type.name} ${singleton}`);
       if (singleton) {
         return singleton;
       } else {
@@ -128,9 +123,7 @@ class DIContainer {
 
 // 서비스 주입하는 데코레이터
 export function inject<T>( type: Constructor<T>, key?: string ) {
-  console.log(`inject ${type.name} ${key}`);
   return function (target: any, propertyKey: string) {
-    console.log(`inject ${type.name} ${key} ${propertyKey}`);
     Object.defineProperty(target, propertyKey, {
       get: () => DI.get<T>(type, key)
     });

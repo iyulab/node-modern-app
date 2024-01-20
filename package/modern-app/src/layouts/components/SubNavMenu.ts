@@ -27,7 +27,7 @@ export class SubNavMenu extends FlyoutElement {
     this.style.zIndex = "4";
 
     autorun(() => {
-      this.key = this.locator.current?.key;
+      this.key = this.locator?.current?.key;
     });
   }
 
