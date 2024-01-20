@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 
 import { FlyoutElement, Position } from './FlyoutElement';
 
-import { trash } from '@iyulab/modern-app/layouts/IconVector';
+import { VectorIcons } from '@/layouts/VectorIcons';
 
 export interface Notification {
   id: number;
@@ -50,7 +50,7 @@ export class NotificationMenu extends FlyoutElement {
                 </div>
                 <div class="delete" @click=${() => this.deleteItem(i.id)}>
                   <svg class="icon" viewBox="0 0 24 24">
-                    <path d=${trash}></path>
+                    <path d=${VectorIcons.trash}></path>
                   </svg>
                 </div>
               </div>

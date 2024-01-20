@@ -10,7 +10,7 @@ import {
 import { Themes } from "@iyulab/modern-app/stores/LayoutStore";
 
 import logo from "@iyulab/modern-app/assets/app-logo.svg";
-import { question, sun, moon, notification, user } from "./IconVector";
+import { VectorIcons } from "./VectorIcons";
 import styles from "@iyulab/modern-app/styles/layouts/TopBar.module.scss";
 
 import { observer } from "mobx-react";
@@ -33,9 +33,9 @@ const TopBar = observer(() => {
       if (!path) return;
 
       if (layout.theme === Themes.dark) {
-        path.setAttribute("d", sun);
+        path.setAttribute("d", VectorIcons.sun);
       } else {
-        path.setAttribute("d", moon);
+        path.setAttribute("d", VectorIcons.moon);
       }
     });
 
@@ -139,7 +139,7 @@ const TopBar = observer(() => {
               onClick={() => locator.go(locator.helpUrl)}
             >
               <svg className={styles.icon} viewBox="0 -960 960 960">
-                <path d={question} />
+                <path d={VectorIcons.question} />
               </svg>
               <div className={styles.tooltip}>HELP</div>
             </div>
@@ -163,7 +163,7 @@ const TopBar = observer(() => {
               onClick={(e) => ui.toggleNotificationAsync(e as unknown as Event)}
             >
               <svg className={styles.icon} viewBox="0 -960 960 960">
-                <path d={notification} />
+                <path d={VectorIcons.notification} />
               </svg>
               {notiCount > 0 ? (
                 <span className={styles.badge}>{notiCount}</span>
@@ -177,7 +177,7 @@ const TopBar = observer(() => {
             onClick={(e) => ui.showUserMenuAsync(e as unknown as Event)}
           >
             <svg className={styles.icon}>
-              <path d={user} />
+              <path d={VectorIcons.user} />
             </svg>
             <div className={styles.tooltip}>User</div>
           </div>

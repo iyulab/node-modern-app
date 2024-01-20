@@ -1,9 +1,9 @@
-import React from 'react';
-import { Router } from '@remix-run/router';
-import ReactDOM from 'react-dom/client';
-import { RouterProvider, RouteObject } from 'react-router-dom';
+import React from "react";
+import { Router } from "@remix-run/router";
+import ReactDOM from "react-dom/client";
+import { RouterProvider, RouteObject } from "react-router-dom";
 
-import { DI } from './DI';
+import { DI } from "./DI";
 import {
   AppInfoStore,
   MenuItem,
@@ -11,11 +11,11 @@ import {
   LocatorStore,
   LayoutStore,
   UIStore,
-  RouteExt
-} from '@iyulab/modern-app/stores';
+  RouteExt,
+} from "@iyulab/modern-app/stores";
 
-import { useLayout } from '../hooks';
-import { topBarOptions } from '../layouts/TopBarOptions';
+import { useLayout } from "../hooks";
+import { topBarOptions } from "../layouts/TopBarOptions";
 
 export abstract class StartupBase {
   abstract title?: string;
@@ -32,8 +32,7 @@ export abstract class StartupBase {
   layout = useLayout();
   topBarOptions = topBarOptions;
 
-  init() : Router {
-
+  init(): Router {
     // 서비스 등록
     const appInfo = DI.addSingleton(AppInfoStore);
     const menu = DI.addSingleton(MenuStore);
@@ -53,8 +52,12 @@ export abstract class StartupBase {
     // locator 초기화
     const routes = this.initRoutes();
     const [keyPath, router] = locator.initLocator(
-      routes, this.helpPath, this.basePath,
-      this.baseElement, this.errorElement, this.otherShells
+      routes,
+      this.helpPath,
+      this.basePath,
+      this.baseElement,
+      this.errorElement,
+      this.otherShells
     );
 
     // menu 초기화
@@ -63,14 +66,14 @@ export abstract class StartupBase {
 
     return router;
   }
-  
+
   run() {
     const router = this.init();
-    
-    let root = document.getElementById('root');
-    if(!root) {
-      root = document.createElement('div');
-      root.id = 'root';
+
+    let root = document.getElementById("root");
+    if (!root) {
+      root = document.createElement("div");
+      root.id = "root";
       document.body.appendChild(root);
     }
 

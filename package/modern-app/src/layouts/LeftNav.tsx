@@ -5,17 +5,19 @@ import { autorun } from "mobx";
 import { useLayout, useMenu, useUI } from "@iyulab/modern-app/hooks/UseStores";
 import { GroupMenu } from "@iyulab/modern-app/stores/MenuStore";
 
-import { cube, group, leftChevron, rightChevron, angleUp, angleDown } from './IconVector';
+import { VectorIcons } from "./VectorIcons";
 import styles from "@iyulab/modern-app/styles/layouts/LeftNav.module.scss";
 
 function LeftNav() {
   const menu = useMenu();
   const layout = useLayout();
   const ui = useUI();
-  
+
   const [expand, setExpand] = useState<boolean>(true);
   const [isSmallWindow, setIsSmallWindow] = useState<boolean>(false);
-  const [toggleGroup, setToggleGroup] = useState<{ [key: number]: boolean }>({});
+  const [toggleGroup, setToggleGroup] = useState<{ [key: number]: boolean }>(
+    {}
+  );
   const [selectedGroup, setSelectedGroup] = useState<string>("");
 
   // 다중 메뉴 선택시
@@ -23,14 +25,14 @@ function LeftNav() {
     setTimeout(() => {
       setSelectedGroup(key);
     }, 0);
-  }
+  };
 
   // 그룹 메뉴 펼침/접힘
-  const onToggleGroupMenu = (e:any, key: number, menu:GroupMenu) => {
-    if(expand) {
-      setToggleGroup(prevState => ({
+  const onToggleGroupMenu = (e: any, key: number, menu: GroupMenu) => {
+    if (expand) {
+      setToggleGroup((prevState) => ({
         ...prevState,
-        [key]: !prevState[key]
+        [key]: !prevState[key],
       }));
     } else {
       ui.toggleSubNavAsync(e, menu);
@@ -38,17 +40,17 @@ function LeftNav() {
   };
 
   // 메뉴 접힘 상태에서 메뉴 디스플레이
-  const onHoverMenuDisplay = (e:any, display:string) => {
-    if(expand) return;
+  const onHoverMenuDisplay = (e: any, display: string) => {
+    if (expand) return;
     ui.hoverNavTooltipAsync(e, display);
-  }
+  };
 
   // 브라우저 사이즈 변경시
   useEffect(() => {
     const setLayout = autorun(() => {
       const isSmall = layout.isMediumScreen;
-  
-      if(isSmall) {
+
+      if (isSmall) {
         setIsSmallWindow(true);
         setExpand(false);
       } else {
@@ -60,23 +62,24 @@ function LeftNav() {
 
     return () => {
       setLayout();
-    }
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>
       {/* 네비게이션 본문 */}
-      <div className={`${styles.leftNavContainer} ${isSmallWindow ? styles.small : ''} ${expand ? styles.expand : ''}`}>
-        
+      <div
+        className={`${styles.leftNavContainer} ${
+          isSmallWindow ? styles.small : ""
+        } ${expand ? styles.expand : ""}`}
+      >
         {/* 네비게이션 메뉴: 단일메뉴, 그룹메뉴, 메뉴구분선 */}
         <div className={styles.navMenus}>
-
           {menu.menus.map((menu, index) => {
-
             // 1. 구분선
-            if(menu.type === "separator") {
-              const height = {height: menu.height ? menu.height : undefined};
-              
+            if (menu.type === "separator") {
+              const height = { height: menu.height ? menu.height : undefined };
+
               return (
                 <div key={index} className={styles.separator} style={height}>
                   {menu.line && <div className={styles.line}></div>}
@@ -84,64 +87,105 @@ function LeftNav() {
               );
             }
             // 2. 단일 메뉴
-            else if(menu.type === "single") {
+            else if (menu.type === "single") {
               const hasParm = menu.path?.endsWith("/:id?");
-              const path = hasParm ? menu.path?.replace("/:id?","") : menu.path;
-              
+              const path = hasParm
+                ? menu.path?.replace("/:id?", "")
+                : menu.path;
+
               return (
-                <NavLink key={menu.key} to={path!} className={({isActive}) => {
-                  if(isActive) groupChanged('');
-                  return `${styles.singleMenu} ${isActive ? styles.selected : ''}`}}
+                <NavLink
+                  key={menu.key}
+                  to={path!}
+                  className={({ isActive }) => {
+                    if (isActive) groupChanged("");
+                    return `${styles.singleMenu} ${
+                      isActive ? styles.selected : ""
+                    }`;
+                  }}
                   onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}
-                  end={!hasParm}>
-                  <svg className={styles.icon} viewBox={menu.iconViewBox ?? "0 0 24 24"}>
-                    <path d={menu.iconData ?? cube}></path>
+                  end={!hasParm}
+                >
+                  <svg
+                    className={styles.icon}
+                    viewBox={menu.iconViewBox ?? "0 0 24 24"}
+                  >
+                    <path d={menu.iconData ?? VectorIcons.cube}></path>
                   </svg>
                   <div className={styles.text}>{menu.display}</div>
-                </NavLink>)
+                </NavLink>
+              );
             }
             // 3. 그룹 메뉴
-            else if(menu.type === "group") {
-              const selected = menu.subMenu.find(s => s.key === selectedGroup) !== undefined;
+            else if (menu.type === "group") {
+              const selected =
+                menu.subMenu.find((s) => s.key === selectedGroup) !== undefined;
               const showMenu = toggleGroup[index] ?? false;
 
               return (
-                <div key={index} className={`${styles.groupMenu}
-                  ${selected ? styles.selected : ''} ${expand ? '' : styles.collapsed}`}>
-                  { /* 그룹 메뉴 헤더 */ }
-                  <div className={`${styles.groupHeader}`} 
+                <div
+                  key={index}
+                  className={`${styles.groupMenu}
+                  ${selected ? styles.selected : ""} ${
+                    expand ? "" : styles.collapsed
+                  }`}
+                >
+                  {/* 그룹 메뉴 헤더 */}
+                  <div
+                    className={`${styles.groupHeader}`}
                     onClick={(e) => onToggleGroupMenu(e, index, menu)}
-                    onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}>
-                    <svg className={styles.icon} viewBox={menu.iconViewBox ?? "0 0 24 24"}>
-                      <path d={menu.iconData ?? group}></path>
+                    onMouseEnter={(e) => onHoverMenuDisplay(e, menu.display)}
+                  >
+                    <svg
+                      className={styles.icon}
+                      viewBox={menu.iconViewBox ?? "0 0 24 24"}
+                    >
+                      <path d={menu.iconData ?? VectorIcons.group}></path>
                     </svg>
                     <div className={styles.text}>{menu.display}</div>
                     <div className={styles.flex}></div>
                     <svg className={styles.toggle} viewBox="0 0 24 24">
-                      <path d={showMenu ? angleDown : angleUp}></path>
+                      <path
+                        d={
+                          showMenu ? VectorIcons.angleDown : VectorIcons.angleUp
+                        }
+                      ></path>
                     </svg>
                   </div>
-                  { /* 그룹 메뉴 본문 */ }
-                  <div className={styles.groupBody} hidden={!showMenu || !expand}>
+                  {/* 그룹 메뉴 본문 */}
+                  <div
+                    className={styles.groupBody}
+                    hidden={!showMenu || !expand}
+                  >
                     {menu.subMenu.map((child) => {
                       const hasParm = child.path?.endsWith("/:id?");
-                      const path = hasParm ? child.path?.replace("/:id?","") : child.path;
-                      
+                      const path = hasParm
+                        ? child.path?.replace("/:id?", "")
+                        : child.path;
+
                       return (
-                        <NavLink key={child.key} to={path!} className={({isActive}) => {
-                          if(isActive) groupChanged(child.key);
-                          return `${styles.subMenu} ${isActive ? styles.selected : ''}`}} end={!hasParm}>
-                            <div className={styles.text}>{child.display}</div>
-                        </NavLink>)
+                        <NavLink
+                          key={child.key}
+                          to={path!}
+                          className={({ isActive }) => {
+                            if (isActive) groupChanged(child.key);
+                            return `${styles.subMenu} ${
+                              isActive ? styles.selected : ""
+                            }`;
+                          }}
+                          end={!hasParm}
+                        >
+                          <div className={styles.text}>{child.display}</div>
+                        </NavLink>
+                      );
                     })}
                   </div>
-                </div>);
+                </div>
+              );
             } else {
               return null;
             }
-
           })}
-
         </div>
 
         {/* 네비게이션 하단 버튼 */}
@@ -149,18 +193,21 @@ function LeftNav() {
           {/* 펼침/접힘 버튼 */}
           <div className={styles.button} onClick={() => setExpand(!expand)}>
             <svg className={styles.img} viewBox="0 0 32 32">
-              <path d={expand ? leftChevron : rightChevron}></path>
+              <path
+                d={expand ? VectorIcons.leftChevron : VectorIcons.rightChevron}
+              ></path>
             </svg>
           </div>
         </div>
-
       </div>
 
       {/* 작은 윈도우사이즈에서 메뉴바가 펼쳐질때 오른쪽을 커버하는 오버레이 창 */}
-      <div className={isSmallWindow && expand ? styles.smallWindowExpandedOverlay : ""}
-        onClick={() => setExpand(false)}>
-      </div>
-
+      <div
+        className={
+          isSmallWindow && expand ? styles.smallWindowExpandedOverlay : ""
+        }
+        onClick={() => setExpand(false)}
+      ></div>
     </>
   );
 }
