@@ -1,16 +1,25 @@
 import { ReactNode } from "react";
 import { RouteObject } from "react-router-dom";
 
-import { StartupBase } from "@iyulab/modern-app/core/StartupBase";
-import { MenuItem } from "@iyulab/modern-app/stores/MenuStore";
-import { RouteExt } from "@iyulab/modern-app/stores/LocatorStore";
+import { StartupBase } from "@iyulab/modern-app";
+import { MenuItem } from "@iyulab/modern-app";
+import { RouteExt } from "@iyulab/modern-app";
 
 import App from "./App";
-import { HomePage, LitPage, ReactPage, MixPage, SettingPage, UserPage, TestPage } from "./pages";
-import { setting, labs } from "@iyulab/modern-app/layouts/IconVector";
+import {
+  HomePage,
+  LitPage,
+  ReactPage,
+  MixPage,
+  SettingPage,
+  UserPage,
+  TestPage,
+} from "./pages";
+import { VectorIcons } from "@iyulab/modern-app";
+
+// import "./global.scss";
 
 class Startup extends StartupBase {
-  
   // layout 상단 타이틀
   title?: string = "IYULAB APP SAMPLE";
 
@@ -59,8 +68,8 @@ class Startup extends StartupBase {
           {
             key: "react",
             display: "React Component",
-          }
-        ]
+          },
+        ],
       },
       {
         type: "separator",
@@ -68,7 +77,7 @@ class Startup extends StartupBase {
       {
         type: "group",
         display: "Setting",
-        iconData: setting,
+        iconData: VectorIcons.setting,
         subMenu: [
           {
             key: "settingIndex",
@@ -77,8 +86,8 @@ class Startup extends StartupBase {
           {
             key: "user",
             display: "User",
-          }
-        ]
+          },
+        ],
       },
       {
         type: "separator",
@@ -88,8 +97,8 @@ class Startup extends StartupBase {
         type: "single",
         key: "test",
         display: "Test Page",
-        iconData: labs,
-      }
+        iconData: VectorIcons.labs,
+      },
     ];
   }
 
@@ -131,14 +140,14 @@ class Startup extends StartupBase {
           {
             key: "settingIndex",
             index: true,
-            element: <SettingPage />
+            element: <SettingPage />,
           },
           {
             key: "user",
             path: "user",
             element: <UserPage />,
           },
-        ]
+        ],
       },
       {
         key: "test",
@@ -147,7 +156,6 @@ class Startup extends StartupBase {
       },
     ];
   }
-
 }
 
 export default new Startup();

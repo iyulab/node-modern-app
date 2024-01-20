@@ -7,11 +7,6 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "composite": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": [ "src/*" ],
-      "@iyulab/modern-app/*": [ "lib-src/*" ],
-    },
     
     /* Bundler mode */
     "moduleResolution": "Node",
@@ -27,11 +22,22 @@
     "noImplicitAny": false,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [ "src/*" ],
+      // "@iyulab/modern-app": [ "lib-src" ],
+      // "@iyulab/modern-app/*": [ "lib-src/*" ],
+    },
+    "typeRoots": [
+      "./src/declarations", 
+      "./node_modules/@types"
+    ]
   },
   "include": [
     "vite.config.ts",
     "src",
-    "lib-src"
+    // "lib-src"
   ],
 }
