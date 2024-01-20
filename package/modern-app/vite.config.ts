@@ -13,7 +13,8 @@ export default defineConfig({
     preserveSymlinks: true,
   },  
   build: {
-    sourcemap: true,
+    sourcemap: true, // 소스 맵 활성화
+    minify: false, // 최소화 비활성화 (디버깅: false, 배포: true)
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: '@iyulab/modern-app',
