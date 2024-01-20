@@ -1,6 +1,7 @@
 // vite.config.ts
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
+import typescript from '@rollup/plugin-typescript';
 import path, { resolve } from 'path'
 
 export default defineConfig({
@@ -12,11 +13,12 @@ export default defineConfig({
     preserveSymlinks: true,
   },  
   build: {
+    sourcemap: true,
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: '@iyulab/modern-app',
       fileName: (format) => `index.${format}.js`,
-      formats: ['es'], // ES 모듈 형식을 사용
+      formats: ['es'],
     },
     rollupOptions: {
       input: {
@@ -28,9 +30,14 @@ export default defineConfig({
         // 각 진입점에 대한 출력 경로 설정
         entryFileNames: `[name].js`,
         chunkFileNames: `chunks/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
-      }
+        assetFileNames: `assets/[name].[ext]`,
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM'
+        }
+      },
+      external: ['react', 'react-dom'],
     }    
   },
-  plugins: [react()],
+  plugins: [react(), typescript()],
 })
