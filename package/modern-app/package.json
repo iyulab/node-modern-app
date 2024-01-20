@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -13,7 +13,7 @@
   "module": "main.js",
   "types": "index.d.ts",
   "files": [
-    "dist/**/*"
+    "**/*"
   ],
   "exports": {
     ".": {
