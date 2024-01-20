@@ -17,8 +17,6 @@ import {
 import { useLayout } from "../hooks";
 import { topBarOptions } from "../layouts/TopBarOptions";
 
-import "@iyulab/modern-app/styles/global.scss";
-
 export abstract class StartupBase {
   abstract title?: string;
   abstract logo?: string;
