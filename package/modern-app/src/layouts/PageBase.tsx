@@ -1,7 +1,7 @@
 import { useRef, Children, isValidElement, useEffect, useState } from "react";
 import { useDocumentTitle } from "@iyulab/modern-app/hooks/UseDocumentTitle";
 
-import { VectorIcons } from "@/layouts/VectorIcons";
+import { VectorIcons } from "@iyulab/modern-app/layouts/VectorIcons";
 import styles from "@iyulab/modern-app/styles/layouts/PageBase.module.scss";
 import { PageHeader } from "./PageHeader";
 import { PagePanel } from "./PagePanel";

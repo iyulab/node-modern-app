@@ -30,6 +30,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
 
+    "rootDir": ".",
     "baseUrl": ".",
     "paths": {
       "@/*": [ "src/*" ],

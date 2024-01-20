@@ -3,7 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 
 import { FlyoutElement, Position } from './FlyoutElement';
 
-import { VectorIcons } from '@/layouts/VectorIcons';
+import { VectorIcons } from '@iyulab/modern-app/layouts/VectorIcons';
 
 export interface Notification {
   id: number;
