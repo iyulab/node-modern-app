@@ -1,4 +1,5 @@
 // vite.config.ts
+import postcss from 'rollup-plugin-postcss';
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import typescript from '@rollup/plugin-typescript';
@@ -40,5 +41,13 @@ export default defineConfig({
       external: ['react', 'react-dom'],
     }    
   },
-  plugins: [react(), typescript()],
+  plugins: [
+    react(), 
+    typescript(),
+    postcss({
+      extensions: ['.scss', '.sass'],
+      inject: true, // CSS를 JavaScript에 주입
+      extract: false // CSS 파일을 별도로 추출하지 않음
+    }),
+  ],
 })
