@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -70,6 +70,7 @@
     "postcss-nesting": "^12.0.2",
     "rollup-plugin-postcss": "^4.0.2",
     "sass": "^1.70.0",
+    "sass-loader": "^14.0.0",
     "tailwindcss": "3.4.1",
     "typescript": "^5.3.3",
     "vite": "^5.0.12"
