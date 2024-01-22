@@ -6,7 +6,7 @@ import { LeftNav } from "./LeftNav";
 
 import "@iyulab/modern-app/styles/global.scss";
 
-import styles from "@iyulab/modern-app/styles/layouts/AppShell.module.scss";
+import styles from "@iyulab/modern-app/styles/layouts/AppShell.module.scss?inline";
 
 function AppShell() {
   const [mounted, setMounted] = useState<boolean>(false);
