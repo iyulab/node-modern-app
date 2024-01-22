@@ -83,14 +83,15 @@ const TopBar = observer(() => {
   // 브레드 크럼 설정
   useEffect(() => {
     const setBread = autorun(() => {
-      if (!locator.current?.fullPaths) return;
-      setPaths(locator.current.fullPaths);
+      locator.current?.fullPaths;
+      const paths = locator.getBreadcrumbPaths();
+      setPaths(paths);
     });
 
     return () => {
       setBread();
     };
-  });
+  }, []);
 
   // 알림 설정
   useEffect(() => {
@@ -111,11 +112,11 @@ const TopBar = observer(() => {
 
         {/* 네비게이션 브레드 바 */}
         <div className={styles.breadCrumb}>
-          {paths.map((_, index) => {
-            const toPath = paths.slice(0, index + 1).join("/");
-            const display = locator.getDisplay(index);
+          {paths.map((display, index) => {
+            const fullPath = locator.current?.fullPaths ?? [];
+            const toPath = fullPath.slice(0, index + 1).join("/");
             return (
-              <div className={styles.bread} key={toPath}>
+              <div className={styles.bread} key={index}>
                 <Link to={toPath} className={styles.path}>
                   {display}
                 </Link>

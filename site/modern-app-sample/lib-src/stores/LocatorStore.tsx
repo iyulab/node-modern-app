@@ -10,6 +10,8 @@ import { makeAutoObservable } from "mobx";
 
 import { AppShell } from "@iyulab/modern-app/layouts/AppShell";
 import { ErrorPage } from "@iyulab/modern-app/layouts/ErrorPage";
+import { DI } from "@iyulab/modern-app/core/DI";
+import { MenuStore } from "@iyulab/modern-app/stores/MenuStore";
 
 // index route => children이 undefined
 interface IndexRouteExt extends IndexRouteObject {
@@ -321,6 +323,33 @@ export class LocatorStore {
 
     // 4 router 생성
     return createBrowserRouter([...baseRoutes]);
+  }
+
+  getBreadcrumbPaths(): string[] {
+    const key = this.currentlocation?.key;
+    const menu = DI.get(MenuStore);
+    const paths: string[] = [];
+    const currentMenu = menu.menus.find((x) => {
+      if(x.type === 'single') {
+        return x.key === key;
+      } else if(x.type === 'group' && x.subMenu) {
+        return x.subMenu.find(y => y.key === key);
+      }
+    })
+    
+    if(currentMenu?.type === 'single') {
+      paths.push(currentMenu.display);
+      const rest = this.currentlocation?.fullPaths?.slice(1) ?? [];
+      paths.push(...rest);
+    } else if(currentMenu?.type === 'group' && currentMenu.subMenu) {
+      paths.push(currentMenu.display);
+      const subMenu = currentMenu.subMenu.find(y => y.key === key);
+      if(subMenu) paths.push(subMenu.display);
+      const rest = this.currentlocation?.fullPaths?.slice(2) ?? [];
+      paths.push(...rest);
+    }
+
+    return paths;
   }
 
   // 현재 로케이션의 특정 인덱스의 표시(Display)경로를 가져옵니다.
