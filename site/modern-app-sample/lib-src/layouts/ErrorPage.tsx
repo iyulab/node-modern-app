@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useRouteError, useNavigate, isRouteErrorResponse } from "react-router-dom";
 
-import styles from '@iyulab/modern-app/styles/layouts/ErrorPage.module.scss';
+import styles from '@iyulab/modern-app/styles/layouts/ErrorPage.module.scss?inline';
 import { useDocumentTitle } from "@iyulab/modern-app/hooks/UseDocumentTitle";
 
 function ErrorPage() {
