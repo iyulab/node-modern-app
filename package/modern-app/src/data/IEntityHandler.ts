@@ -9,6 +9,7 @@ export interface IEntityField {
   format?: string;
   required?: boolean;
   maxLength?: number;
+  multiline?: boolean;
 }
 
 export interface IEntityHandler {
@@ -16,7 +17,7 @@ export interface IEntityHandler {
   label?: string;
 
   readyAsync(): Promise<any>;
-  getInputFieldsAsync(): any;
+  getInputFieldsAsync(key?: string): Promise<IEntityField[]>;
   validate(): IResultValue;
   saveAsync(): Promise<IResultValue>;
 }
@@ -57,6 +58,7 @@ function convertFieldByProperty(p: IEntityProperty): IEntityField {
     // format: p.format,
     required: p.required,
     maxLength: p.maxLength,
+    multiline: p.multiline
   };
 
   return field;

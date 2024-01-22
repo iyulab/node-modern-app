@@ -3,6 +3,7 @@ export interface IEntityProperty {
   type: string;
   required?: boolean;
   maxLength?: number;
+  multiline?: boolean;
   label?: string;
   unique?: boolean;
   input?: string;
@@ -17,15 +18,20 @@ export class EntityMetadata {
   constructor(data: any) {
     this.name = data.name;
     this.label = data.label;
-    this.properties = data.properties.map((prop: any) => ({
-      name: prop.Name,
-      type: prop.Type,
-      required: prop.Required || false,
-      maxLength: prop.MaxLength || undefined,
-      label: prop.Label || undefined,
-      unique: prop.Unique || false,
-      input: prop.Input,
-    }));
+    
+    if (Array.isArray(data.properties)) {
+      this.properties = data.properties.map(prop => {
+        const property = {};
+        Object.keys(prop).forEach(key => {
+          // 속성 키에 따라 자동으로 값을 할당
+          property[key.toLowerCase()] = prop[key];
+        });
+        return property;
+      });
+    } else {
+      this.properties = [];
+    }
+
   }
   
   getProperties(key?: string) {

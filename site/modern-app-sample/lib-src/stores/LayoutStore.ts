@@ -16,7 +16,7 @@ export enum Themes {
 
 export class LayoutStore {
 
-  private _title?: string = "IYULAB APP";
+  private _title?: string = "Modern App";
   private _logo?: any = undefined;
   private _theme: Themes = Themes.light;
   private _isMediumScreen: boolean = window.innerWidth < Breakpoint.Medium;

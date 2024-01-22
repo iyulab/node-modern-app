@@ -38,19 +38,19 @@ export class ODataEntityHandler implements IEntityHandler {
         this.url,
         this.resourceName
       );
-
-      console.log(this.entityMeta.label);
+      // console.log(this.entityMeta.label);
       this.label ??= this.entityMeta.label;
     })();
 
     return this.readyTask;
   }
 
-  async getInputFieldsAsync() {
+  async getInputFieldsAsync(key: string = 'default') {
     await this.readyAsync();
 
     if (this.entityMeta) {
-      const properties = this.entityMeta.getProperties("default");
+      const properties = this.entityMeta.getProperties(key);
+      console.log(properties);
       return EntityFieldUtils.convertPropertiesToFields(properties);
     } else {
       return [];

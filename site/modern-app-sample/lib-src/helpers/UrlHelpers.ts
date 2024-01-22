@@ -1,3 +1,6 @@
+import { DI } from "../core";
+import { AppSettings } from "../settings";
+
 function getUrlParams(url: string = document.location.href): Record<string, string> {
   const searchParams = new URLSearchParams(new URL(url).search);
   const params: Record<string, string> = {};
@@ -46,13 +49,31 @@ function buildUrl(...parts: string[]): string {
       url.search += (url.search ? "&" : "?") + part;
     } else {
       // 경로 조각 추가
-      url.pathname += "/" + encodeURIComponent(part);
+      // 경로 끝에 '/'가 없으면 추가
+      if (!url.pathname.endsWith("/")) {
+        url.pathname += "/";
+      }
+      url.pathname += encodeURIComponent(part);
     }
   }
   return url.toString();
 }
 
+function buildWith(...parts: string[]): string {
+  
+  const first = parts[0];
+  if (first.startsWith("http://") || first.startsWith("https://")) {
+    return buildUrl(...parts);
+  } else {
+    const appSettings = DI.resolve<AppSettings>(AppSettings);
+    const apiHost = appSettings?.getServiceURL() ?? window.location.origin;
+    const url = buildUrl(apiHost, ...parts);
+    return url;
+  }
+}
+
 export const UrlHelpers = {
   getUrlParams,
-  buildUrl
+  buildUrl,
+  buildWith
 }

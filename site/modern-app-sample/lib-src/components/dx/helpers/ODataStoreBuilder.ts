@@ -2,6 +2,7 @@ import ODataStore from "devextreme/data/odata/store";
 
 export interface ODataStoreBuildOptions {
   url: string;
+  accessToken?: string | null;
   resourceName: string;
   key?: string;
 }
@@ -68,17 +69,20 @@ async function Build(options: ODataStoreBuildOptions): Promise<ODataStore | stri
     }
 
     const store = new ODataStore({
-      version: 4,
+        version: 4,
       url: `${options.url}/${options.resourceName}`,
       key: `${keyName}`,
       keyType: 'Guid',
       fieldTypes: fieldTypes,
+      withCredentials: options.accessToken ? true : false,
+      beforeSend: (request) => {
+        if (options.accessToken) {
+          request.headers['Authorization'] = `Bearer ${options.accessToken}`;
+        }
+      },
       onLoaded: () => {
         // console.log('odata, onLoaded');
       },
-      beforeSend: () => {
-        // console.log('odata, beforeSend', request);
-      }
     });
 
     return store;
