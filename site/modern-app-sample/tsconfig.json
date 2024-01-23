@@ -28,7 +28,7 @@
     "paths": {
       "@/*": [ "src/*" ],
       // "@iyulab/modern-app": [ "lib-src" ],
-      "@iyulab/modern-app/*": [ "lib-src/*" ],
+      // "@iyulab/modern-app/*": [ "lib-src/*" ],
     },
     "typeRoots": [
       "./src/declarations", 
@@ -38,6 +38,6 @@
   "include": [
     "vite.config.ts",
     "src",
-    "lib-src"
+    //"lib-src"
   ],
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"AppInfoStore.d.ts","sourceRoot":"","sources":["../../src/stores/AppInfoStore.ts"],"names":[],"mappings":"AAEA,qBAAa,YAAY;IAEvB,IAAI,CAAC,EAAE,GAAG,CAAa;IACvB,KAAK,EAAE,MAAM,CAAgB;;IAM7B,WAAW,CAAC,KAAK,CAAC,EAAE,MAAM,EAAE,IAAI,CAAC,EAAE,GAAG,GAAI,IAAI;CAK/C"}

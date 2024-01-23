@@ -17,8 +17,6 @@ import {
 } from "./pages";
 import { VectorIcons } from "@iyulab/modern-app";
 
-// import "./global.scss";
-
 class Startup extends StartupBase {
   // layout 상단 타이틀
   title?: string = "IYULAB APP SAMPLE";

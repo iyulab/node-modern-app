@@ -9,7 +9,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      '@iyulab/modern-app': path.resolve(__dirname, 'lib-src'),
+      //'@iyulab/modern-app': path.resolve(__dirname, 'src', 'pack', 'main.js'),
+      //'@iyulab/modern-app': path.resolve(__dirname, '../../package/modern-app/dist/main.js'),
+      //'@iyulab/modern-app': path.resolve(__dirname, 'lib-src'),
     },
     preserveSymlinks: true,
   },

@@ -1,0 +1,1 @@
+{"version":3,"file":"ViewBox.d.ts","sourceRoot":"","sources":["../../../../src/components/lit/elements/ViewBox.ts"],"names":[],"mappings":"AAAA,OAAO,EAAa,UAAU,EAAE,MAAM,KAAK,CAAA;AAG3C,qBACa,OAAQ,SAAQ,UAAU;IACrC,MAAM,CAAC,MAAM,0BASX;IAEF,OAAO,CAAC,cAAc,CAAiB;IACvC,OAAO,CAAC,gBAAgB,CAAmB;;IAQ3C,iBAAiB;IAKjB,oBAAoB;IAMpB,YAAY;IAQZ,OAAO,CAAC,WAAW;IAmBnB,MAAM;CAOP"}
