@@ -1,9 +1,10 @@
 // vite.config.ts
-import postcss from 'rollup-plugin-postcss';
+// import postcss from 'rollup-plugin-postcss';
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import typescript from '@rollup/plugin-typescript';
 import path, { resolve } from 'path'
+import { libInjectCss } from 'vite-plugin-lib-inject-css';
 
 export default defineConfig({
   resolve: {
@@ -12,7 +13,7 @@ export default defineConfig({
       '@iyulab/modern-app': path.resolve(__dirname, 'src'),
     },
     preserveSymlinks: true,
-  },  
+  },
   build: {
     sourcemap: true, // 소스 맵 활성화
     minify: false, // 최소화 비활성화 (디버깅: false, 배포: true)
@@ -38,16 +39,19 @@ export default defineConfig({
           'react-dom': 'ReactDOM'
         }
       },
-      external: ['react', 'react-dom'],
+      external: ['react', 'react-dom', 'react-router-dom', 'lit'],
     }
   },
   plugins: [
-    react(), 
-    typescript(),
-    postcss({
-      extensions: ['.scss', '.sass'],
-      inject: true, // CSS를 JavaScript에 주입
-      extract: false // CSS 파일을 별도로 추출하지 않음
+    libInjectCss(),
+    react({
+      // tsDecorators: true,
     }),
+    typescript(),
+    // postcss({
+    //   extensions: ['.scss', '.sass'],
+    //   inject: true, // CSS를 JavaScript에 주입
+    //   extract: false // CSS 파일을 별도로 추출하지 않음
+    // }),
   ],
 })
