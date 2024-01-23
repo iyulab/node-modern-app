@@ -11,6 +11,8 @@ export interface AppSettings {
 
 export const AppSettings = DI.createService<AppSettings>();
 
+export const resolveAppSettings = () => DI.resolve<AppSettings>(AppSettings)!;
+
 export abstract class AppSettingsBase implements AppSettings {
   private settings: Map<string, any> = new Map();
 
@@ -26,7 +28,7 @@ export abstract class AppSettingsBase implements AppSettings {
     if (this.settings.has(key)) {
       return this.settings.get(key) as T;
     } else {
-      // 값이 없는 경우 처리. 여기서는 예외를 발생시키지만, 다른 방식으로 처리할 수도 있습니다.
+      // 값이 없는 경우 처리. 여기서는 예외를 발생시킴.
       throw new Error(`No value found for key: ${key}`);
     }
   }
@@ -49,5 +51,13 @@ DI.register(AppSettings, new LocalAppSettings());
 import { AppSettingsBase } from "@iyulab/modern-app/settings";
 
 export class LocalAppSettings extends AppSettingsBase {
+
+  override getServiceURL(): string | null {
+    if (import.meta.env.DEV === true) {
+      return "https://localhost:7040";
+    } else {
+      return null;
+    }
+  }  
 }
 */

@@ -9,7 +9,6 @@ import {
 } from "@iyulab/modern-app/hooks/UseStores";
 import { Themes } from "@iyulab/modern-app/stores/LayoutStore";
 
-import logo from "@iyulab/modern-app/assets/app-logo.svg";
 import { VectorIcons } from "./VectorIcons";
 import styles from "@iyulab/modern-app/styles/layouts/TopBar.module.scss";
 
@@ -98,6 +97,9 @@ const TopBar = observer(() => {
     setNotiCount(2);
   }, []);
 
+  // favicon.ico 가져오기
+  const logo = layout.logo ?? "/favicon.ico";
+
   return (
     <>
       {/* 헤더부 본문 */}
@@ -105,7 +107,7 @@ const TopBar = observer(() => {
         {/* 로고 */}
         <Link className={styles.logo} to={locator.baseUrl}>
           <div className={styles.icon}>
-            <img className={styles.img} src={layout.logo ?? logo} />
+            <img className={styles.img} src={logo} />
           </div>
           <div className={styles.title}>{layout.title}</div>
         </Link>

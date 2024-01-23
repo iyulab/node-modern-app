@@ -1,7 +1,7 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import { EntityFieldUtils, IEntityHandler, IResultValue } from "@iyulab/modern-app/data";
+import { EntityFieldUtils, IEntityField, IEntityHandler, IResultValue } from "@iyulab/modern-app/data";
 import { IDialogContent } from "../../dialogs";
 
 import baseStyle from "@iyulab/modern-app/styles/tailwind.css?inline";
@@ -52,18 +52,22 @@ export class EntityEditForm
       <div id="form">
         <!-- input fields -->
         ${this.fields.map(
-          (f: any) => html`
+          (f: IEntityField) => {
+            console.log(f);
+            return html`
             <div class="flex flex-col space-y-1">
               <u-input
                 type=${EntityFieldUtils.getInputType(f)}
                 label=${f.label}
                 format=${EntityFieldUtils.getInputFormat(f)}
+                .multiline=${f.multiline}
                 .required=${f.required}
                 .context=${this.handler.data}
                 path=${f.field}
               />
             </div>
-          `
+          `;
+          }
         )}
 
         <!-- errors -->
