@@ -19,7 +19,7 @@ declare module '*.scss?inline' {
     const content: any;
     export default content;  
 }
-declare module '*.module.scss?inline' {
+declare module '*.module.scss' {
     const content: Record<string, string>;
     export default content;  
 }

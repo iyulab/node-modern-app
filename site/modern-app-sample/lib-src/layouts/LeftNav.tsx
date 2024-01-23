@@ -6,7 +6,7 @@ import { useLayout, useMenu, useUI } from "@iyulab/modern-app/hooks/UseStores";
 import { GroupMenu } from "@iyulab/modern-app/stores/MenuStore";
 
 import { VectorIcons } from "./VectorIcons";
-import styles from "@iyulab/modern-app/styles/layouts/LeftNav.module.scss?inline?inline";
+import styles from "@iyulab/modern-app/styles/layouts/LeftNav.module.scss";
 
 function LeftNav() {
   const menu = useMenu();

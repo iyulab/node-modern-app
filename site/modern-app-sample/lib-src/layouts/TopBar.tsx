@@ -10,7 +10,7 @@ import {
 import { Themes } from "@iyulab/modern-app/stores/LayoutStore";
 
 import { VectorIcons } from "./VectorIcons";
-import styles from "@iyulab/modern-app/styles/layouts/TopBar.module.scss?inline";
+import styles from "@iyulab/modern-app/styles/layouts/TopBar.module.scss";
 
 import { observer } from "mobx-react";
 import { topBarOptions } from "./TopBarOptions";
