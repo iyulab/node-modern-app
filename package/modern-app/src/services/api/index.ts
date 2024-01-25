@@ -1,3 +1,3 @@
 export * from "./AccountsBase";
-export * from "./ApiClient";
+export * from "./ApiClientBase";
 export * from "./AuthorizeApiClient";

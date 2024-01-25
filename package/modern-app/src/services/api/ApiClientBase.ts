@@ -4,7 +4,7 @@ export interface IStandardResponse {
   value?: any
 }
 
-export abstract class ApiClient {
+export abstract class ApiClientBase {
   
   protected abstract host: string;
   
@@ -81,7 +81,7 @@ export abstract class ApiClient {
         let address: string;
         if (host.endsWith("/") || url.startsWith("/")) {
           address = host + url;
-        } else {
+        } else {  
           address = `${host}/${url}`;
         }
         
@@ -172,5 +172,15 @@ export abstract class ApiClient {
     
     return r;
   }
-
+  
+  protected getData(result: IStandardResponse) {
+    if (result && result.value) {
+      if (Object.prototype.hasOwnProperty.call(result.value, 'value')) {
+        // OData v4
+        return result.value['value'];
+      } else {
+        return result.value;
+      }
+    }
+  }
 }

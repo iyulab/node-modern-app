@@ -1,4 +1,4 @@
-import { ApiClient, IStandardResponse } from "./ApiClient";
+import { ApiClientBase, IStandardResponse } from "./ApiClientBase";
 
 export type AuthToken = {
   accessToken: string,
@@ -7,7 +7,7 @@ export type AuthToken = {
   expires: number // minutes
 };
 
-export abstract class AuthorizeApiClient extends ApiClient {
+export abstract class AuthorizeApiClient extends ApiClientBase {
   
   protected accessToken: string | null = null;
   protected token: AuthToken | null = null;
@@ -153,16 +153,5 @@ export abstract class AuthorizeApiClient extends ApiClient {
     } else {
       return res;
     }      
-  }
-
-  protected getData(result: IStandardResponse) {
-    if (result && result.value) {
-      if (Object.prototype.hasOwnProperty.call(result.value, 'value')) {
-        // OData v4
-        return result.value['value'];
-      } else {
-        return result.value;
-      }
-    }
   }
 }
