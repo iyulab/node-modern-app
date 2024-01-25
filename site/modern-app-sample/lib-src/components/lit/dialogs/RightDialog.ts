@@ -9,7 +9,7 @@ import {
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
 import { IResultValue } from '@iyulab/modern-app/data/IResultValue';
-import { IDialogContent } from '..';
+import type { IDialogContent } from '..';
 
 provideFASTDesignSystem().register(
   fastDialog()

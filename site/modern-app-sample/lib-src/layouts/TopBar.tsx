@@ -90,7 +90,7 @@ const TopBar = observer(() => {
     return () => {
       setBread();
     };
-  }, []);
+  }, [locator]);
 
   // 알림 설정
   useEffect(() => {

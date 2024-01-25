@@ -21,6 +21,7 @@ import {
   IMenuItem, 
   PopupMenu 
 } from "@iyulab/modern-app/components/lit/elements/PopupMenu"
+import { ResultTValue } from "../data";
 
 export class UIStore {
   
@@ -159,10 +160,10 @@ export class UIStore {
       const r = await dlg.showAsync(title, message, options);
       return r;
     } catch (ex) {
-      return {
+      return new ResultTValue<string>({
         success: false,
-        value: ex
-      };
+        exception: ex
+      });
     } finally {
       document.body.removeChild(element);
     }
@@ -279,7 +280,8 @@ export class UIStore {
   // ui.invokeInBusy(async () => {
   //   await new Promise((resolve) => setTimeout(resolve, 2000));
   // });
-  async invokeInBusy(func: () => Promise<any>) {
+  async invokeInBusy(func: () => Promise<any>, message?: string) {
+    this.pageBusyIndicator.message = message;
     this.pageBusyIndicator.busy();
     try {
       await func();
