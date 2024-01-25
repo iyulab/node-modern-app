@@ -15,7 +15,7 @@ import {
   fastOption,
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
-import { EntityFieldUtils, IEntityField } from '@iyulab/modern-app/data';
+import { EntityFieldUtils, type IEntityField } from '@iyulab/modern-app/data';
 
 provideFASTDesignSystem().register(
   fastTextField(),

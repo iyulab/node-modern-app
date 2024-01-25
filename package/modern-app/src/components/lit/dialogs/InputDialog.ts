@@ -11,6 +11,7 @@ import {
   fastButton,
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
+import { IResultTValue, ResultTValue } from '@iyulab/modern-app/data';
 
 provideFASTDesignSystem().register(
   fastDialog(),
@@ -53,7 +54,7 @@ export class InputDialog extends LitElement {
   @property() format: string = "";
   @property() value: string = "";
   
-  resolve?: (value: {success: boolean, value: string} | PromiseLike<{success: boolean, value: string}>) => void;
+  resolve?: (value: IResultTValue<string> | PromiseLike<IResultTValue<string>>) => void;
   reject?: (reason?: any) => void;
   
   constructor() {
@@ -118,7 +119,7 @@ export class InputDialog extends LitElement {
     }
   }
   
-  async showAsync(title: string, message: string, options?: InputDialogOptions) : Promise<{success: boolean, value: string}> {
+  async showAsync(title: string, message: string, options?: InputDialogOptions) : Promise<IResultTValue<string>> {
   
     await this.updateComplete;
 
@@ -129,11 +130,14 @@ export class InputDialog extends LitElement {
     
     this.visible();
     
-    return new Promise<{success: boolean, value: string}>((resolve, reject) => {
+    return new Promise<IResultTValue<string>>((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;
     }).catch((_error) => {
-      return { success: false, value: _error };
+      return new ResultTValue<string>({
+        success: false,
+        exception: _error
+      });
     });
   }
 

@@ -16,7 +16,7 @@ export default defineConfig({
   },
   build: {
     sourcemap: true, // 소스 맵 활성화
-    minify: false, // 최소화 비활성화 (디버깅: false, 배포: true)
+    minify: true, // 최소화 비활성화 (디버깅: false, 배포: true)
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: '@iyulab/modern-app',
@@ -40,7 +40,12 @@ export default defineConfig({
         }
       },
       external: ['react', 'react-dom', 'react-router-dom', 'lit'],
-    }
+    },
+    terserOptions: {
+      format: {
+        comments: false, // 모든 주석 제거
+      },
+    },
   },
   plugins: [
     libInjectCss(),

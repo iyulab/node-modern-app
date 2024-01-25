@@ -330,21 +330,23 @@ export class LocatorStore {
     const menu = DI.get(MenuStore);
     const paths: string[] = [];
     const currentMenu = menu.menus.find((x) => {
-      if(x.type === 'single') {
+      if (x.type === "single") {
         return x.key === key;
-      } else if(x.type === 'group' && x.subMenu) {
-        return x.subMenu.find(y => y.key === key);
+      } else if (x.type === "group" && x.subMenu) {
+        return x.subMenu.find((y) => y.key === key);
+      } else {
+        return false;
       }
-    })
-    
-    if(currentMenu?.type === 'single') {
+    });
+
+    if (currentMenu?.type === "single") {
       paths.push(currentMenu.display);
       const rest = this.currentlocation?.fullPaths?.slice(1) ?? [];
       paths.push(...rest);
-    } else if(currentMenu?.type === 'group' && currentMenu.subMenu) {
+    } else if (currentMenu?.type === "group" && currentMenu.subMenu) {
       paths.push(currentMenu.display);
-      const subMenu = currentMenu.subMenu.find(y => y.key === key);
-      if(subMenu) paths.push(subMenu.display);
+      const subMenu = currentMenu.subMenu.find((y) => y.key === key);
+      if (subMenu) paths.push(subMenu.display);
       const rest = this.currentlocation?.fullPaths?.slice(2) ?? [];
       paths.push(...rest);
     }

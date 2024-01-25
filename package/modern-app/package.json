@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.1.24",
+  "version": "0.1.25",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -28,7 +28,6 @@
     "build": "rimraf dist && vite build",
     "commit": "node scripts/commit.js",
     "publish-npm": "copy package.json dist && node scripts/copy-files.js && cd dist && npm publish --access public && cd .. && npm run commit",
-
     "copy-dist": "xcopy C:\\data\\iyu-webapps\\package\\modern-app\\dist\\* C:\\data\\iyu-webapps\\site\\modern-app-sample\\src\\pack /E /Y",    
     "buildt": "npm run build && npm run copy-dist"
   },
@@ -36,7 +35,7 @@
     "@adobe/lit-mobx": "^2.2.2",
     "@lit-labs/react": "^2.1.2",
     "@microsoft/fast-components": "^2.30.6",
-    "axios": "^1.6.5",
+    "axios": "^1.6.6",
     "lit": "^3.1.1",
     "mobx": "^6.12.0",
     "mobx-react": "^9.1.0",
@@ -48,11 +47,11 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.6",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^20.11.5",
+    "@types/node": "^20.11.6",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "@typescript-eslint/eslint-plugin": "^6.19.0",
-    "@typescript-eslint/parser": "^6.19.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.17",
     "devextreme": "^23.2.3",
