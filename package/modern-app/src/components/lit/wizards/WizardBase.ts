@@ -6,6 +6,7 @@ import { RelayCommand } from "@iyulab/modern-app/services/patterns/RelayCommand"
 import { inject } from "@iyulab/modern-app/core/DI";
 import { UIStore } from "@iyulab/modern-app/stores/UIStore";
 import { IWizardStep } from "./WizardStep";
+import { IResultValue } from "@iyulab/modern-app/data";
 
 export abstract class WizardBase extends LitElement {
   
@@ -148,15 +149,15 @@ export abstract class WizardBase extends LitElement {
     return this;
   }
 
-  loadPromise(
-    resolve?: (value: {success: boolean, value: any} | PromiseLike<{success: boolean, value: any}>) => void,
+  dialogTask(
+    resolve?: (value: IResultValue | PromiseLike<IResultValue>) => void,
     reject?: (reason?: any) => void  
   ) {
     this.resolve = resolve;
     this.reject = reject;
   }
 
-  showAsync() : Promise<{success: boolean, value: any}> {
+  showAsync() : Promise<IResultValue> {
     if(this.manager) {
       return this.manager.showDialogAsync(this);
     } else {

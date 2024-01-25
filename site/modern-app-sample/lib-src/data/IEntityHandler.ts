@@ -3,10 +3,11 @@ import { IEntityProperty } from "./EntityMetadata";
 import { IResultValue } from "./IResultValue";
 
 export interface IEntityField {
-  field: string;
+  name: string;
   label?: string;
   type?: string | InputTypes;
   format?: string;
+  hint?: string;
   required?: boolean;
   maxLength?: number;
   multiline?: boolean;
@@ -52,15 +53,14 @@ function convertPropertiesToFields(properties: IEntityProperty[]) {
 function convertFieldByProperty(p: IEntityProperty): IEntityField {
   const inputType = getInputTypeByEntityProperty(p);
   const field: IEntityField = {
-    field: p.name,
-    label: p.label ?? p.name,
-    type: InputTypes[inputType],
-    // format: p.format,
-    required: p.required,
-    maxLength: p.maxLength,
-    multiline: p.multiline
+    ...p
   };
 
+  if (field.label == null) {
+    field.label = p.name;
+  }
+  field.type = InputTypes[inputType];
+  
   return field;
 }
 

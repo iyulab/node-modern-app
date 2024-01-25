@@ -15,6 +15,7 @@ import {
   fastOption,
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
+import { EntityFieldUtils, IEntityField } from '@iyulab/modern-app/data';
 
 provideFASTDesignSystem().register(
   fastTextField(),
@@ -63,11 +64,15 @@ export class UInput extends ElementMixin(LitElement) {
 
     fast-number-field {
       display: block;
-      margin: 2px 0px;      
+      margin: 2px 0px;  
     }
-    
+
     fast-checkbox {
       margin: 4px 0px 4px 0px;
+    }
+
+    fast-number-field::part(control) {
+      text-align: right;
     }
     `
   ];
@@ -105,8 +110,20 @@ export class UInput extends ElementMixin(LitElement) {
   @property({type: Boolean, attribute: true})
   multiline: boolean = false;
 
+  @property({type: Number})
+  minLength: number | null = null;
+
+  @property({type: Number})
+  maxLength: number | null = null;
+
   @property({type: String})
   pattern: string | null = null;
+
+  @property({type: Number}) // number-field
+  min: number | null = null;
+
+  @property({type: Number}) // number-field
+  max: number | null = null;
 
   @property({type: Function})
   updatedAction: ((path: string, value: any, context: any) => void) | null = null;
@@ -114,9 +131,49 @@ export class UInput extends ElementMixin(LitElement) {
   @property({type: String})
   errorMessage: string | null = null;
 
+  @property({type: Object})
+  entityField?: IEntityField;
+  
   private lastContext: any = null;
   private lastPath: string | null = null;
   
+  onChangedEntityField(field: IEntityField) {
+    if (field == null) return;
+
+    this.type = EntityFieldUtils.getInputType(field);
+    if (field.label) {
+      this.label = field.label;
+    }
+    
+    if (field.hint) {
+      this.hint = field.hint;
+    }
+
+    if (field.required) {
+      this.required = field.required;
+    }
+
+    if (field.multiline) {
+      this.multiline = field.multiline;
+    }
+
+    if (field.maxLength) {
+      this.maxLength = field.maxLength;
+    }
+    
+    if (field.format) {
+      //this.format = EntityFieldUtils.getInputFormat(field);
+    }
+
+    if (field.name) {
+      this.path = field.name;
+
+      if (this.context && this.path) {
+        this.autoWire(this.context, this.path);
+      }
+    }
+  }
+
   protected override async updated(_changedProperties: any) {
     super.updated(_changedProperties);
     await this.updateComplete;
@@ -240,6 +297,8 @@ export class UInput extends ElementMixin(LitElement) {
       .type=${type}
       .value=${this.value} 
       .placeholder=${this.hint ?? this.label} 
+      .minLength=${this.minLength}
+      .maxlength=${this.maxLength}
       ?required=${this.required}
       ?readonly=${this.readonly}
       ?autofocus=${this.autoFocus}
@@ -289,7 +348,7 @@ export class UInput extends ElementMixin(LitElement) {
   }
 
   renderNumber() {
-    
+    // <fast-number-field appearance="filled" min="0" max="10"></fast-number-field>
     return html `
     <fast-number-field @change=${(e: any) => {
         this.value = e.target.value !== null ? Number(e.target.value) : null;
@@ -301,6 +360,8 @@ export class UInput extends ElementMixin(LitElement) {
       ?required=${this.required}
       ?readonly=${this.readonly}
       ?autofocus=${this.autoFocus}
+      .min=${this.min}
+      .max=${this.max}
       tabindex=0>
       ${this.label && this.required ? html`<span style="color:red;">&#42;</span>` : html``}
       ${this.label}

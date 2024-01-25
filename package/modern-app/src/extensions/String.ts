@@ -14,4 +14,8 @@ String.prototype.right = function(search: string, last: boolean = true): string 
     : s.substring(s.indexOf(search) + search.length);
 }
 
+String.prototype.isNullOrEmpty = function(): boolean {
+  return String(this).toString().length === 0;
+}
+
 export {}

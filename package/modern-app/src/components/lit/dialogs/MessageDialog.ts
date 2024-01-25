@@ -15,39 +15,16 @@ provideFASTDesignSystem().register(
   fastButton()
 );
 
+export interface IMessageDialogProps {
+  title: string;
+  message: string;
+  positiveText?: string;
+  negativeText?: string;
+  useNegative?: boolean;
+}
+
 @customElement('message-dialog')
-export class MessageDialog extends LitElement {
-  
-  static styles = [
-    css`
-      :host {
-        z-index: 999; 
-        position: absolute;
-      }
-          
-      fast-dialog {
-        --dialog-height: auto;
-        --dialog-width: auto;
-      }
-
-      .row {
-        display: flex;
-        justify-content: space-between;
-        justify-content: end;
-      }
-      
-      fast-button {
-        min-width: 80px;
-        margin: 0px 4px;
-      }
-
-      #title {
-        font-weight: initial;
-        opacity: 0.6;
-        font-size: large;
-      }
-    `
-  ];
+export class MessageDialog extends LitElement implements IMessageDialogProps {
 
   positiveText = "Ok";
   negativeText = "Cancel";
@@ -79,12 +56,48 @@ export class MessageDialog extends LitElement {
     super.disconnectedCallback();
   }
 
+  static styles = [
+    css`
+      :host {
+        z-index: 999; 
+        position: absolute;
+      }
+          
+      fast-dialog {
+        --dialog-height: auto;
+        --dialog-width: 640px;
+      }
+
+      .row {
+        display: flex;
+        justify-content: space-between;
+        justify-content: end;
+      }
+      
+      fast-button {
+        min-width: 80px;
+        margin: 0px 4px;
+      }
+
+      #title {
+        font-weight: initial;
+        opacity: 0.6;
+        font-size: large;
+      }
+
+      p {
+        opacity: 0.8;
+        font-size: smaller;
+      }
+    `
+  ];
+
   render() {
     return html`
       <fast-dialog id="dialog" modal="true" hidden>
-        <div style="padding: 10px; color: var(--neutral-foreground-rest); min-width: 400px">
+        <div style="padding: 10px; color: var(--neutral-foreground-rest);">
           <label id="title">${this.title}</label>
-          <pre>${this.message}</pre>
+          <p>${this.message}</p>
           <div class="row">
             <fast-button @click=${() => this.ok()}>${this.positiveText}</fast-button>
             ${this.useNegative ? html`<fast-button @click=${() => this.cancel()}>${this.negativeText}</fast-button>` : null}

@@ -78,7 +78,7 @@ export class ODataEntityHandler implements IEntityHandler {
   }
 
   validateField(field: IEntityField, errors: string[]) {
-    const value = this.data[field.field];
+    const value = this.data[field.name];
 
     if (field.required && (value == null || value == "")) {
       errors.push(`${field.label} 필드는 필수입니다.`);

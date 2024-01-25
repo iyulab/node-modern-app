@@ -122,6 +122,7 @@ class DIContainer {
 }
 
 // 서비스 주입하는 데코레이터
+// 예) @inject(AppSettings) appSettings?: AppSettings;
 export function inject<T>( type: Constructor<T>, key?: string ) {
   return function (target: any, propertyKey: string) {
     Object.defineProperty(target, propertyKey, {

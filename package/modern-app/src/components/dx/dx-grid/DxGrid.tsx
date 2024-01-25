@@ -33,6 +33,7 @@ import {
 export class DxGridContext {
   grid: any;
   selectedKeys: any[] = [];
+  selectedRows: any[] = [];
 
   refresh() {
     this.grid.selectedKeys = [];
@@ -114,6 +115,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
     this.onEditorPreparing = this.onEditorPreparing.bind(this);
     this.onCellPrepared = this.onCellPrepared.bind(this);
     this.onSelectedRowKeysChange = this.onSelectedRowKeysChange.bind(this);
+    this.onSelectionChanged = this.onSelectionChanged.bind(this);
 
     this.dataGrid = React.createRef();
 
@@ -189,9 +191,14 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
   }
 
   onSelectedRowKeysChange(values: any[]) {
-    // console.log('onSelectedRowKeysChange', values);
     if (this.props.context) {
-      this.props.context.selectedKeys = values;
+      this.props.context.selectedKeys = values.map((v) => v._value);
+    }
+  }
+
+  onSelectionChanged(e: DataGridTypes.SelectionChangedEvent) {
+    if (this.props.context) {
+      this.props.context.selectedRows = e.selectedRowsData;
     }
   }
 
@@ -253,6 +260,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
         onEditorPreparing={this.onEditorPreparing}
         onCellPrepared={this.onCellPrepared}
         onSelectedRowKeysChange={this.onSelectedRowKeysChange}
+        onSelectionChanged={this.onSelectionChanged}
         // editing={editing}
       >
         {this.renderColumns()}

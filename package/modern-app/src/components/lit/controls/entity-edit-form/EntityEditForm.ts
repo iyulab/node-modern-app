@@ -1,12 +1,13 @@
 import { LitElement, html, unsafeCSS } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
-import { EntityFieldUtils, IEntityField, IEntityHandler, IResultValue } from "@iyulab/modern-app/data";
-import { IDialogContent } from "../../dialogs";
+import { IEntityField, IEntityHandler, IResultValue } from "@iyulab/modern-app/data";
+import { IDialogContent } from '../../dialogs/IDialogContent';
 
 import baseStyle from "@iyulab/modern-app/styles/tailwind.css?inline";
 
 export interface IEntityEditFormProps {
+  title?: string;
   handler: IEntityHandler;
 }
 
@@ -20,8 +21,7 @@ export class EntityEditForm
   handler: IEntityHandler;
   fields: any;
 
-  // @property({ type: String })
-  // title?: string;
+  @property() title: string = "";
 
   @state() errors?: string[];
   @state() isReady: boolean = false;
@@ -30,6 +30,9 @@ export class EntityEditForm
   constructor(props: IEntityEditFormProps) {
     super();
 
+    if (props.title) {
+      this.title = props.title;
+    }
     this.handler = props.handler;
 
     this.init();
@@ -37,7 +40,9 @@ export class EntityEditForm
 
   async init() {
     await this.handler.readyAsync();
-    this.title = this.handler.label ?? "";
+    if (this.title.isNullOrEmpty() != true) {
+      this.title = this.handler.label ?? "";
+    }
     this.fields = await this.handler.getInputFieldsAsync();
 
     this.isReady = true;
@@ -53,17 +58,11 @@ export class EntityEditForm
         <!-- input fields -->
         ${this.fields.map(
           (f: IEntityField) => {
-            console.log(f);
             return html`
             <div class="flex flex-col space-y-1">
               <u-input
-                type=${EntityFieldUtils.getInputType(f)}
-                label=${f.label}
-                format=${EntityFieldUtils.getInputFormat(f)}
-                .multiline=${f.multiline}
-                .required=${f.required}
+                .entityField=${f}
                 .context=${this.handler.data}
-                path=${f.field}
               />
             </div>
           `;

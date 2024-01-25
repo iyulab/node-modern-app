@@ -59,6 +59,17 @@ declare global {
     * @param last - default true
     */
     right(search: string, last?: boolean): string;
+
+    /**
+     * 문자열이 null 또는 빈 문자열인지 확인합니다.
+     * @returns null 또는 빈 문자열이면 true를 반환합니다.
+     * @example
+     * ```typescript
+     * const s = "";
+     * const r = s.isNullOrEmpty(); // true
+     * ```
+     */
+    isNullOrEmpty(): boolean;
   }
   
   interface URLSearchParams {

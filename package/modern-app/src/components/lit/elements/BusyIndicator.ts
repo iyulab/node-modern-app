@@ -16,11 +16,13 @@ export class BusyIndicator extends LitElement {
   static styles = [
     css`
       :host {
-        z-index: 999;
+        display: none;
       }
-
-      :host([full]) .busy-indicator {
-        position: fixed; /* 전체 화면을 커버하기 위한 스타일 */
+      
+      :host([show]) {
+        z-index: 999;
+        display: block;
+        position: absolute;
         left: 0;
         top: 0;
         right: 0;
@@ -47,12 +49,18 @@ export class BusyIndicator extends LitElement {
   @property({ type: String })
   message?: string;
 
-  // 화면 전체영역을 커버합니다. <busy-indicator full></busy-indicator>
-  @property({ type: Boolean, reflect: true })
-  full = false;
-
   @property({ type: Boolean, reflect: true })
   show = true;
+
+  busy() {
+    this.show = true;
+    this.hidden = false;
+  }
+
+  unbusy() {
+    this.show = false;
+    this.hidden = true;
+  }
   
   render() {
     if (!this.show) return html``;

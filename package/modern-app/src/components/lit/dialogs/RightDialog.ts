@@ -9,15 +9,11 @@ import {
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
 import { IResultValue } from '@iyulab/modern-app/data/IResultValue';
+import { IDialogContent } from '..';
 
 provideFASTDesignSystem().register(
   fastDialog()
 );
-
-export interface IDialogContent extends EventTarget {
-  title: string;
-  loadPromise?: (resolve: (value: IResultValue | PromiseLike<IResultValue>) => void, reject: (reason?: any) => void) => void;
-}
 
 @customElement('right-dialog')
 export class RightDialog extends LitElement {
@@ -62,7 +58,7 @@ export class RightDialog extends LitElement {
     }
 
     #title {
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       font-weight: 600;
       padding: 12px;
       overflow: hidden;
@@ -94,7 +90,7 @@ export class RightDialog extends LitElement {
     return html`
       <fast-dialog id="dialog" modal="true" hidden>
         <div id="title">
-          ${this.title}        
+          ${this.title}
         </div>
         <div id="content">
           ${this.content}
@@ -135,10 +131,10 @@ export class RightDialog extends LitElement {
       this.resolve = resolve;
       this.reject = reject;
       if (this.content) {
-        if (this.content.loadPromise) {
-          this.content.loadPromise(resolve, reject);
+        if (this.content.dialogTask) {
+          this.content.dialogTask(resolve, reject);
         }
-
+        
         if (this.content.title) {
           this.title = this.content.title;
         }

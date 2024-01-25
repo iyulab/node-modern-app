@@ -12,8 +12,8 @@ import {
   MessageDialog,
   BlankDialog,
   RightDialog,
-  IDialogContent
-} from "@iyulab/modern-app/components/lit/dialogs";
+  IMessageDialogProps} from "@iyulab/modern-app/components/lit/dialogs";
+import { IDialogContent } from '../components/lit/dialogs/IDialogContent';
 import { 
   BusyIndicator 
 } from "@iyulab/modern-app/components/lit/elements/BusyIndicator";
@@ -115,19 +115,34 @@ export class UIStore {
     this.subNavMenu.toggleAsync(event);
   }
 
-  async showMessageAsync(title: string, message: string) : Promise<boolean> {
+  private applyProps(dlg: MessageDialog, props: IMessageDialogProps) {
+    if (props.positiveText) {
+      dlg.positiveText = props.positiveText;
+    }
+    if (props.negativeText) {
+      dlg.negativeText = props.negativeText;
+    }
+    if (props.useNegative != null) {
+      dlg.useNegative = props.useNegative;
+    }    
+  }
+
+  async showMessageAsync(p: IMessageDialogProps) : Promise<boolean> {
     this.messageBoxDialog.initOk();
-    return this.messageBoxDialog.showAsync(title, message);
+    this.applyProps(this.messageBoxDialog, p);
+    return this.messageBoxDialog.showAsync(p.title, p.message);
   }
 
-  async showMessageOkCancelAsync(title: string, message: string) {
+  async showMessageOkCancelAsync(p: IMessageDialogProps) {
     this.messageBoxDialog.initOkCancel();
-    return this.messageBoxDialog.showAsync(title, message);    
+    this.applyProps(this.messageBoxDialog, p);
+    return this.messageBoxDialog.showAsync(p.title, p.message);    
   }
 
-  async showConfirmDialog(title: string, message: string) {
+  async showConfirmDialog(p: IMessageDialogProps) {
     this.messageBoxDialog.initYesNo();
-    return this.messageBoxDialog.showAsync(title, message);
+    this.applyProps(this.messageBoxDialog, p);
+    return this.messageBoxDialog.showAsync(p.title, p.message);
   }
   
   async showInputDialogAsync(
@@ -207,6 +222,12 @@ export class UIStore {
     }
   }
 
+  // # Dialog를 표시합니다.
+  // 예)
+  // const ui = DI.get(UIStore);
+  // // const content = new UserAutoForm();
+  // // const content = ui.createElement("<user-auto-form></user-auto-form>");
+  // const r = await ui.showDialogAsync(content);
   async showDialogAsync(content: any) {
     
     const html = `<blank-dialog hidden></blank-dialog>`;
@@ -228,6 +249,7 @@ export class UIStore {
     }
   }
 
+  // # 우측패널 Dialog를 표시합니다.
   async showRightDialogAsync(content: IDialogContent) {
 
     const html = `<right-dialog hidden></right-dialog>`;
@@ -236,7 +258,9 @@ export class UIStore {
     
     try {
       const dlg = element as RightDialog;
-      dlg.title = content.title;
+      if (content.title) {
+        dlg.title = content.title;
+      }
       dlg.content = content;
       const r = await dlg.showAsync();
       return r;
@@ -248,5 +272,21 @@ export class UIStore {
     } finally {
       document.body.removeChild(element);
     }
-  }  
+  }
+  
+  // # BusyIndicator를 표시한 상태에서 작업을 수행합니다. (완료 후 해제)
+  // 예)
+  // ui.invokeInBusy(async () => {
+  //   await new Promise((resolve) => setTimeout(resolve, 2000));
+  // });
+  async invokeInBusy(func: () => Promise<any>) {
+    this.pageBusyIndicator.busy();
+    try {
+      await func();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.pageBusyIndicator.unbusy();
+    }
+  }
 }

@@ -8,6 +8,7 @@ import {
   fastDialog,
   provideFASTDesignSystem,
 } from "@microsoft/fast-components";
+import { IResultValue } from '@iyulab/modern-app/data';
 
 provideFASTDesignSystem().register(
   fastDialog()
@@ -47,7 +48,7 @@ export class BlankDialog extends LitElement {
 
   @property() content: any = null;
   
-  resolve?: (value: {success: boolean, value: any} | PromiseLike<{success: boolean, value: any}>) => void;
+  resolve?: (value: IResultValue | PromiseLike<IResultValue>) => void;
   reject?: (reason?: any) => void;
   
   render() {
@@ -81,16 +82,20 @@ export class BlankDialog extends LitElement {
     }
   }
   
-  async showAsync() : Promise<{success: boolean, value: any}> {
+  async showAsync() : Promise<IResultValue> {
     await this.updateComplete;
     
     this.visible();
+
+    console.log('showAsync');
     
-    return new Promise<{success: boolean, value: any}>((resolve, reject) => {
+    return new Promise<IResultValue>((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;
-      if (this.content && this.content.loadPromise) {
-        this.content.loadPromise(resolve, reject);
+      if (this.content) {
+        if (this.content.dialogTask) {
+          this.content.dialogTask(resolve, reject);
+        }
       }
     }).catch((_error) => {
       return { success: false, value: _error };
