@@ -1,0 +1,15 @@
+{
+  "main": "main.js",
+  "module": "main.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./main.js",
+      "require": "./main.js"
+    },
+    "./components/dx": {
+      "import": "./dx.js",
+      "require": "./dx.js"
+    }
+  }
+}

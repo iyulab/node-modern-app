@@ -1,1 +1,0 @@
-{"version":3,"file":"PagePanel.d.ts","sourceRoot":"","sources":["../../src/layouts/PagePanel.tsx"],"names":[],"mappings":"AAAA,UAAU,cAAc;IACtB,QAAQ,EAAE,OAAO,GAAG,QAAQ,CAAC;IAC7B,QAAQ,EAAE,KAAK,CAAC,SAAS,CAAC;CAC3B;AAED,iBAAS,SAAS,CAAC,KAAK,EAAE,cAAc,2CAEvC;AAED,OAAO,EAAE,SAAS,EAAE,CAAC"}
