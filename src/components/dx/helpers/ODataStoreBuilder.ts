@@ -69,7 +69,7 @@ async function Build(options: ODataStoreBuildOptions): Promise<ODataStore | stri
     }
 
     const store = new ODataStore({
-        version: 4,
+      version: 4,
       url: `${options.url}/${options.resourceName}`,
       key: `${keyName}`,
       keyType: 'Guid',

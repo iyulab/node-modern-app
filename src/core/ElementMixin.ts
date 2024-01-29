@@ -6,7 +6,7 @@ import baseStyle from '../styles/tailwind.css?inline';
 
 type Constructor<T> = new (...args: any[]) => T;
 
-export declare interface IElement {
+export interface IElement {
   findContext(propertyName: string): any;
 }
 
@@ -30,7 +30,9 @@ export const ElementMixin = <T extends Constructor<LitElement>>(superClass: T) =
         const methodName = `onChanged${pName}`;
         const method = Reflect.get(this, methodName);
         if (typeof method === 'function') {
-          method.call(this, this[propertyName]);
+          if (propertyName in this) {
+            method.call(this, this[propertyName as keyof this]);
+          }
         }
       }
     }    
