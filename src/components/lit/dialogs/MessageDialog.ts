@@ -1,6 +1,6 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, query, property } from 'lit/decorators.js'
-import { createComponent } from '@lit-labs/react';
+import { createComponent } from '@lit/react';
 import React from 'react';
 
 import {
