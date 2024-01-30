@@ -9,8 +9,6 @@ export class IdentityStore {
   
   constructor() {
     makeAutoObservable(this);
-
-    console.log(11);
   }
 
   async getClaimAsync(type: string) {
