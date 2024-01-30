@@ -13,9 +13,8 @@
   "module": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && vite build && node scripts/copy-files.js",
-    "publish-npm": "cd dist && npm publish --access public && cd .. && npm run commit",
-    "commit": "node scripts/commit.js"
+    "build": "rimraf dist && vite build && iyulab copy:pkg",
+    "deploy": "iyulab publish -p"
   },
   "dependencies": {
     "@adobe/lit-mobx": "^2.2.2",
@@ -31,6 +30,7 @@
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {
+    "@iyulab/utils": "^0.0.4",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^20.11.10",
     "@types/react": "^18.2.48",
