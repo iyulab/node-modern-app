@@ -32,7 +32,10 @@ export default defineConfig({
           'react-dom': 'ReactDOM'
         }
       },
-      external: ['react', 'react-dom', 'react-router-dom', 'lit'],
+      external: [
+        'react', 'react-dom', 'react-router-dom', 
+        'lit', 'reflect-metadata'
+      ],
     },
     terserOptions: {
       format: {

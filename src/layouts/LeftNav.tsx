@@ -8,7 +8,11 @@ import { GroupMenu } from "../stores/MenuStore";
 import { VectorIcons } from "./VectorIcons";
 import styles from "./LeftNav.module.scss";
 
-function LeftNav() {
+interface LeftNavProps {
+  onExpand?: (isExpanded: boolean) => void;
+}
+
+function LeftNav({ onExpand }: LeftNavProps) {
   const menu = useMenu();
   const layout = useLayout();
   const ui = useUI();
@@ -45,6 +49,14 @@ function LeftNav() {
     ui.hoverNavTooltipAsync(e, display);
   };
 
+  // 펼침/접힘 버튼 클릭
+  const onToggleExpand = () => {
+    setExpand(!expand);
+    if(!isSmallWindow) {
+      onExpand?.(!expand);
+    }
+  };
+
   // 브라우저 사이즈 변경시
   useEffect(() => {
     const setLayout = autorun(() => {
@@ -53,9 +65,11 @@ function LeftNav() {
       if (isSmall) {
         setIsSmallWindow(true);
         setExpand(false);
+        onExpand?.(false);
       } else {
         setIsSmallWindow(false);
         setExpand(true);
+        onExpand?.(true);
         ui.subNavMenu.hideClickAsync();
       }
     });
@@ -191,7 +205,7 @@ function LeftNav() {
         {/* 네비게이션 하단 버튼 */}
         <div className={styles.navFooter}>
           {/* 펼침/접힘 버튼 */}
-          <div className={styles.button} onClick={() => setExpand(!expand)}>
+          <div className={styles.button} onClick={onToggleExpand}>
             <svg className={styles.img} viewBox="0 0 32 32">
               <path
                 d={expand ? VectorIcons.leftChevron : VectorIcons.rightChevron}

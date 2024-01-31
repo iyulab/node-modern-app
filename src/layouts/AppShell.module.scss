@@ -29,12 +29,17 @@
 
         .content {
             position: relative;
-            width: 100%;
+            width: calc(100% - 50px);
             margin-left: 0px;
             height: calc(100vh - 48px);
             display: inline-flex;
             flex-direction: column;
             z-index: 1;
+            transition: width 0.3s cubic-bezier(0.215, 0.61, 0.355, 1);
+
+            &.expand {
+                width: calc(100% - 260px);
+            }
 
             @media (max-width: 1300px) {
                 position: absolute;
