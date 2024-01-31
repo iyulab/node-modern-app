@@ -13,7 +13,7 @@
   "module": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && vite build && iyulab copy:pkg",
+    "build": "iyulab build -d dist -b vite",
     "deploy": "iyulab publish -p"
   },
   "dependencies": {
