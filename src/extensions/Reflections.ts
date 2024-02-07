@@ -5,7 +5,7 @@ function cloneFrom(from: object, to: object) {
 
   for (const propertyName of propertyNames) {
     if (propertyName !== "constructor") {
-      to[propertyName] = from[propertyName];
+      (<any>to)[propertyName] = (<any>from)[propertyName];
     }
   }
 }

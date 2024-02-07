@@ -65,7 +65,7 @@ async function Build(options: ODataStoreBuildOptions): Promise<ODataStore | stri
       if (type.startsWith('Edm.')) {
         type = type.replace('Edm.', '');
       }
-      fieldTypes[p.name] = type;
+      (<any>fieldTypes)[p.name] = type;
     }
 
     const store = new ODataStore({
