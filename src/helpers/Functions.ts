@@ -13,7 +13,7 @@
  * console.log(asText(undefined)); // ''
  * console.log(asText({ a: 1, b: 2 })); // '[object Object]'
  */
-export function asText(value) {
+export function asText(value: any) {
   if (value === null || value === undefined) return "";
   return value.toString();
 }

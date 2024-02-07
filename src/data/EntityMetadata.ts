@@ -20,10 +20,9 @@ export class EntityMetadata {
     this.label = data.label;
     
     if (Array.isArray(data.properties)) {
-      this.properties = data.properties.map(prop => {
-        const property = {};
+      this.properties = data.properties.map((prop: any) => {
+        const property: any = {};
         Object.keys(prop).forEach(key => {
-          // 속성 키에 따라 자동으로 값을 할당
           property[key.toLowerCase()] = prop[key];
         });
         return property;
@@ -31,8 +30,8 @@ export class EntityMetadata {
     } else {
       this.properties = [];
     }
-
   }
+  
   
   getProperties(key?: string) {
     if (key == null) {

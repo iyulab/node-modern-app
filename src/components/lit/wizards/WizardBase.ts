@@ -3,10 +3,9 @@ import { property, state } from "lit/decorators.js";
 
 import { RelayCommand } from "../../../services/patterns/RelayCommand";
 
-import { inject } from "../../../core/DI";
-import { UIStore } from "../../../stores/UIStore";
 import { IWizardStep } from "./WizardStep";
 import { IResultValue } from "../../../data";
+import { useUI } from "@iyulab/modern-app/hooks";
 
 export abstract class WizardBase extends LitElement {
   
@@ -14,7 +13,7 @@ export abstract class WizardBase extends LitElement {
     // unsafeCSS(baseStyle)
   ];
 
-  @inject(UIStore) manager!: UIStore;
+  // @inject(UIStore) manager!: UIStore;
   @property({type: Array}) steps: Array<HTMLElement | IWizardStep> = [];
   @state() currentStepIndex: number = 0;
 
@@ -158,11 +157,11 @@ export abstract class WizardBase extends LitElement {
   }
 
   showAsync() : Promise<IResultValue> {
-    if(this.manager) {
-      return this.manager.showDialogAsync(this);
+    const ui = useUI();
+    if(ui) {
+      return ui.showDialogAsync(this);
     } else {
       return Promise.resolve({success: false, value: "UIManager is null"});
     }
   }
-
 }
