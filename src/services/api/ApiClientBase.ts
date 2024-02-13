@@ -51,6 +51,30 @@ export abstract class ApiClientBase {
       } else if (contentType.startsWith("text/plain")) {
         const text = await res.text();
         return { success: true, status: res.status, value: text };
+      } else if (contentType == 'application/octet-stream') {
+        const data = await res.blob();
+        const downloadUrl = window.URL.createObjectURL(data);
+        const contentDisposition = res.headers.get('Content-Disposition');
+        let fileName = 'downloaded_file';
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+          if (fileNameMatch && fileNameMatch[1]) { 
+            fileName = fileNameMatch[1].replace(/['"]/g, ''); // 따옴표 제거
+          }
+        }
+        
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+    
+        // 다운로드 후 링크 제거
+        window.URL.revokeObjectURL(downloadUrl);
+        document.body.removeChild(a);
+            
+            
+        return { success: true, status: res.status };
       } else {
         return { success: false, status: res.status };
       }
@@ -155,6 +179,17 @@ export abstract class ApiClientBase {
     return r;
   }
   
+  protected getData(result: IStandardResponse) {
+    if (result && result.value) {
+      if (Object.prototype.hasOwnProperty.call(result.value, 'value')) {
+        // OData v4
+        return result.value['value'];
+      } else {
+        return result.value;
+      }
+    }
+  }
+
   protected async delete(address : string) : Promise<IStandardResponse> {
     const url = this.buildUrl(address);
     
@@ -172,15 +207,56 @@ export abstract class ApiClientBase {
     
     return r;
   }
-  
-  protected getData(result: IStandardResponse) {
-    if (result && result.value) {
-      if (Object.prototype.hasOwnProperty.call(result.value, 'value')) {
-        // OData v4
-        return result.value['value'];
-      } else {
-        return result.value;
+
+  protected async deleteWithKeys(address: string, keys: any[]) {
+    
+    const url = this.buildUrl(address);
+
+    try {
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          keys: keys
+        })
+      });
+      
+      if (!response.ok) {
+        let message = await response.text();
+        throw new Error(`[${response.status}] ${message}`);
       }
+      
+      // if content-type is json, return json
+      const contentType = response.headers.get('content-type');
+      if (contentType) {
+        if (contentType.indexOf('application/json') !== -1) {
+          const data = await response.json();
+          return {
+            status: response.status,
+            success: true,
+            data: data,
+          }
+        } else if (contentType.indexOf('text/plain') !== -1) {
+          const data = await response.text();
+          return {
+            status: response.status,
+            success: true,
+            data: data,
+          }
+        }
+      } else {
+        const data = await response.text();
+        return {
+          status: response.status,
+          success: true,
+          data: data,
+        };
+      }
+    } catch (error) {
+      throw error;
     }
   }
+  
 }

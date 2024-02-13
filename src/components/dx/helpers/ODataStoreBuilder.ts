@@ -5,26 +5,31 @@ export interface ODataStoreBuildOptions {
   accessToken?: string | null;
   resourceName: string;
   key?: string;
+  fieldTypes?: {};
+  keyType?: string;
+  expand?: string; // "ProductList($expand=Account)"
 }
 
 export class LookupSource {
 
-  source: ODataStore<any, any>;
+
   key: string;
+  options: ODataStoreBuildOptions;
+  store?: ODataStore;
   
   constructor(options: ODataStoreBuildOptions) {
     this.key = options.key || '_key';
-
-    this.source = new ODataStore({
-      url: `${options.url}/${options.resourceName}`,
-      key: this.key,
-      version: 4
-    })
+    this.options = options;
   }
 
   field(field: string) {
+    
+    if (this.store == null) {
+      this.store = ODataStoreBuilder.Build(this.options);  
+    }
+    
     return {
-      dataSource: this.source,
+      dataSource: this.store,
       valueExpr: this.key,
       displayExpr: field
     }    
@@ -32,6 +37,35 @@ export class LookupSource {
 }
 
 // ### usage:
+
+function Build(options: ODataStoreBuildOptions) {
+  
+  const keyType = options.keyType || 'String';
+  
+  const store = new ODataStore({
+    version: 4,
+    url: `${options.url}/${options.resourceName}`,
+    key: `${options.key}`,
+    keyType: keyType,
+    fieldTypes: options.fieldTypes,
+    deserializeDates: true,
+    withCredentials: options.accessToken ? true : false,
+    beforeSend: (request) => {
+      if (options.accessToken) {
+        request.headers['Authorization'] = `Bearer ${options.accessToken}`;
+      }
+      if (options.expand) {
+        request.params.$expand = options.expand;
+      }
+    },
+    onLoaded: () => {
+      // console.log('odata, onLoaded');
+    },
+  });
+
+  return store;
+}
+
 
 // const result = await ODataStoreBuild({ url: 'your-url', resourceName: 'your-resource' });
 
@@ -42,7 +76,7 @@ export class LookupSource {
 //     // 오류가 발생했을 때의 처리
 //     this.setState({ error: result, isLoading: false });
 //   }  
-async function Build(options: ODataStoreBuildOptions): Promise<ODataStore | string> {
+async function BuildAsync(options: ODataStoreBuildOptions): Promise<ODataStore | string> {
   
   try {
     const response = await fetch(`${options.url}/$metadata#${options.resourceName}`);
@@ -65,27 +99,25 @@ async function Build(options: ODataStoreBuildOptions): Promise<ODataStore | stri
       if (type.startsWith('Edm.')) {
         type = type.replace('Edm.', '');
       }
+
+      // // type 허용범위 "String", "Int32", "Int64", "Guid"
+      // if (type == 'String' || type == 'Boolean' || type == 'Guid') {
+      //   // 아무것도 하지 않음
+      // } else if (type == 'Int32' || type == 'Int64' || type == "Decimal") {
+      //   type = "Number";
+      // } else if (type == 'Date' || type == 'DateTime' || type == 'DateTimeOffset') {
+      //   type = "Date";
+      // } else {
+      //   return `Error: ${type} is not supported`;
+      // }
+      
       (<any>fieldTypes)[p.name] = type;
     }
 
-    const store = new ODataStore({
-      version: 4,
-      url: `${options.url}/${options.resourceName}`,
-      key: `${keyName}`,
-      keyType: 'Guid',
-      fieldTypes: fieldTypes,
-      withCredentials: options.accessToken ? true : false,
-      beforeSend: (request) => {
-        if (options.accessToken) {
-          request.headers['Authorization'] = `Bearer ${options.accessToken}`;
-        }
-      },
-      onLoaded: () => {
-        // console.log('odata, onLoaded');
-      },
-    });
-
-    return store;
+    options.key = keyName || '_key';
+    // options.fieldTypes = fieldTypes; // TODO: E4014 오류 해결안됨..
+    
+    return Build(options);
     
   } catch (error: any) {
     return `Error: ${error.message}`;
@@ -93,12 +125,11 @@ async function Build(options: ODataStoreBuildOptions): Promise<ODataStore | stri
 }
 
 function Lookup(options: ODataStoreBuildOptions) {
-  
-  const lookupSource = new LookupSource(options);
-  return  lookupSource;
+  return new LookupSource(options);
 }
 
 export const ODataStoreBuilder = {
   Build,
+  BuildAsync,
   Lookup
 }

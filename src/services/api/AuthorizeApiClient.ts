@@ -1,4 +1,6 @@
+import { DI } from "@iyulab/modern-app/core/DI";
 import { ApiClientBase, IStandardResponse } from "./ApiClientBase";
+import { AppSettings } from "@iyulab/modern-app/settings";
 
 export type AuthToken = {
   accessToken: string,
@@ -7,20 +9,31 @@ export type AuthToken = {
   expires: number // minutes
 };
 
+
+
 export abstract class AuthorizeApiClient extends ApiClientBase {
   
   protected accessToken: string | null = null;
   protected token: AuthToken | null = null;
   
+  protected override host: string = '';
+
+  constructor() {
+    super();
+    const appSettings = DI.resolve<AppSettings>(AppSettings);
+    
+    this.host = appSettings?.getServiceURL() ?? '';
+    this.accessToken = appSettings?.getAccessToken() ?? null;
+  }
+  
   protected async getAccessTokenAsync() {
     
-    if (this.accessToken == null) {
-      this.accessToken = localStorage.getItem('accessToken');
-    }
-    if (this.accessToken == null && this.token?.accessToken != null) {
-      this.accessToken = this.token.accessToken;
-    }    
-    
+    // if (this.accessToken == null) {
+    //   this.accessToken = localStorage.getItem('accessToken');
+    // }
+    // if (this.accessToken == null && this.token?.accessToken != null) {
+    //   this.accessToken = this.token.accessToken;
+    // }    
     return this.accessToken;
   }
 

@@ -21,14 +21,14 @@ import { exportDataGrid } from "devextreme/excel_exporter";
 import { jsPDF } from "jspdf";
 import { exportDataGrid as exportDataGridToPdf } from "devextreme/pdf_exporter";
 
-import "devextreme/dist/css/dx.light.css";
-
 import ODataStore from "devextreme/data/odata/store";
 import React from "react";
 import {
   ODataStoreBuilder,
   ODataStoreBuildOptions,
 } from "../helpers/ODataStoreBuilder";
+
+import "../theme";
 
 export class DxGridContext {
   grid: any;
@@ -131,7 +131,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
   async initODataStore() {
     const odata = this.props.odata!;
 
-    const result = await ODataStoreBuilder.Build(odata);
+    const result = await ODataStoreBuilder.BuildAsync(odata);
     if (result instanceof ODataStore) {
       this.setState({
         dataSource: {
@@ -192,7 +192,12 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
 
   onSelectedRowKeysChange(values: any[]) {
     if (this.props.context) {
-      this.props.context.selectedKeys = values.map((v) => v._value);
+      // 첫 번째 요소가 _value 속성을 가지고 있는지 확인
+      const useValue = values.length > 0 && values[0]._value !== undefined;
+
+      this.props.context.selectedKeys = useValue
+        ? values.map((v) => v._value) // 첫 번째 요소가 _value 속성을 가지고 있다면, 모든 요소의 _value 값을 사용
+        : values; // 아니면 원래의 값을 사용
     }
   }
 
@@ -294,7 +299,15 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
     if (this.props.columns) {
       const columns: any[] = [];
       for (const column of this.props.columns) {
-        const key = column.dataField ?? column.name;
+        let key = column.name;
+        if (column.name == null) {
+          key = column.dataField;
+          if (column.lookup) {
+            key += "_" + column.lookup.displayExpr;
+          }
+          column.name = key;
+        }
+
         if (column.buttons) {
           columns.push(<Column key={key} {...column} />);
         } else {
