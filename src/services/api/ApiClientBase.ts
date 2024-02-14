@@ -208,7 +208,7 @@ export abstract class ApiClientBase {
     return r;
   }
 
-  protected async deleteWithKeys(address: string, keys: any[]) {
+  protected async deleteWithKeys(address: string, keys: any[]) : Promise<IStandardResponse> {
     
     const url = this.buildUrl(address);
 
@@ -236,22 +236,24 @@ export abstract class ApiClientBase {
           return {
             status: response.status,
             success: true,
-            data: data,
+            value: data,
           }
         } else if (contentType.indexOf('text/plain') !== -1) {
           const data = await response.text();
           return {
             status: response.status,
             success: true,
-            data: data,
+            value: data,
           }
+        } else {
+          throw new Error(`Unsupported content type: ${contentType}`);
         }
       } else {
         const data = await response.text();
         return {
           status: response.status,
           success: true,
-          data: data,
+          value: data,
         };
       }
     } catch (error) {

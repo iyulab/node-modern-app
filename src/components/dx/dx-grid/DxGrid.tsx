@@ -13,6 +13,7 @@ import DataGrid, {
   ColumnFixing,
   SearchPanel,
   Column,
+  Scrolling,
 } from "devextreme-react/data-grid";
 
 import { Workbook } from "exceljs";
@@ -73,6 +74,7 @@ export interface DxGridProps {
   allowAdd?: boolean;
   allowEdit?: boolean;
   allowDelete?: boolean;
+  height?: string | number | (() => string | number) | undefined; // 80%
 }
 
 const defaultProps: DxGridProps = {
@@ -87,6 +89,7 @@ const defaultProps: DxGridProps = {
   showGroupPanel: false,
   selectionMode: "single",
   wordWrapEnabled: false,
+  // height: undefined,
 };
 
 interface DxGridState {
@@ -237,6 +240,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
       <DataGrid
         ref={this.dataGrid}
         dataSource={dataSource}
+        height={this.props.height}
         // defaultColumns={this.initColumns()}
         // columns={this.initColumns()}
         allowColumnReordering={
@@ -283,6 +287,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
         />
         <Grouping autoExpandAll={false} />
         <SearchPanel visible={false} />
+        <Scrolling mode="virtual" />
 
         <Export enabled={true} formats={exportFormats} />
 

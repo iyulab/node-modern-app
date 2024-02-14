@@ -100,22 +100,23 @@ async function BuildAsync(options: ODataStoreBuildOptions): Promise<ODataStore |
         type = type.replace('Edm.', '');
       }
 
-      // // type 허용범위 "String", "Int32", "Int64", "Guid"
-      // if (type == 'String' || type == 'Boolean' || type == 'Guid') {
-      //   // 아무것도 하지 않음
-      // } else if (type == 'Int32' || type == 'Int64' || type == "Decimal") {
-      //   type = "Number";
-      // } else if (type == 'Date' || type == 'DateTime' || type == 'DateTimeOffset') {
-      //   type = "Date";
-      // } else {
-      //   return `Error: ${type} is not supported`;
-      // }
+      // type 허용범위 "String", "Int32", "Int64", "Guid"
+      if (type == 'String' || type == 'Boolean' || type == 'Guid') {
+        // 아무것도 하지 않음
+      } else if (type == 'Int32' || type == 'Int64' || type == "Decimal") {
+        type = "Number";
+      } else if (type == 'Date' || type == 'DateTime' || type == 'DateTimeOffset') {
+        //type = "Date"; // 필터에서 오류메시지가 표시됨. 그냥 continue 처리하면 우선 해결됨..
+        continue;
+      } else {
+        console.error(`Error: ${type} is not supported`);
+      }
       
       (<any>fieldTypes)[p.name] = type;
     }
 
     options.key = keyName || '_key';
-    // options.fieldTypes = fieldTypes; // TODO: E4014 오류 해결안됨..
+    options.fieldTypes = fieldTypes;
     
     return Build(options);
     
