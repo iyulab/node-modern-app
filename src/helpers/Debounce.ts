@@ -6,7 +6,7 @@ export const debounce = <F extends (...args: any[]) => void>(
   func: F, 
   timeout = 300
 ): ((...args: Parameters<F>) => void) => {
-  let timer: NodeJS.Timeout | undefined;
+  let timer: any;
   return (...args: Parameters<F>) => {
     if (timer) {
       clearTimeout(timer);

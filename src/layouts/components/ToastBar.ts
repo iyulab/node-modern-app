@@ -14,8 +14,8 @@ const colors = {
 
 @customElement('toast-bar')
 export class ToastBar extends LitElement {
-    private hideTimeout?: NodeJS.Timeout;
-    private closeTimeout?: NodeJS.Timeout;
+    private hideTimeout?: any;
+    private closeTimeout?: any;
     private expanded: boolean = false;
 
     @query('#container')

@@ -5,7 +5,7 @@ import { RelayCommand } from "../../../services/patterns/RelayCommand";
 
 import { IWizardStep } from "./WizardStep";
 import { IResultValue } from "../../../data";
-import { useUI } from "@iyulab/modern-app/hooks";
+import { useUI } from "../../../hooks";
 
 export abstract class WizardBase extends LitElement {
   

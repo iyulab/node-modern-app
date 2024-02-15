@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.1.28",
+  "version": "0.1.30",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@iyulab/utils": "^0.0.8",
+    "@microsoft/fast-components": "^2.30.6",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^20.11.16",
     "@types/react": "^18.2.55",

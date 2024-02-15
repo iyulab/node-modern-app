@@ -1,6 +1,6 @@
-import { DI } from "@iyulab/modern-app/core/DI";
+import { DI } from "../../core/DI";
 import { ApiClientBase, IStandardResponse } from "./ApiClientBase";
-import { AppSettings } from "@iyulab/modern-app/settings";
+import { AppSettings } from "../../settings";
 
 export type AuthToken = {
   accessToken: string,
