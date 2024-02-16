@@ -4,4 +4,3 @@ export * from './PageBase';
 export * from './PageHeader';
 export * from './PagePanel';
 export * from './VectorIcons';
-export * from './components';

@@ -35,7 +35,7 @@ export const ElementMixin = <T extends Constructor<LitElement>>(superClass: T) =
           }
         }
       }
-    }    
+    }
     
     findContext(propertyName: string) {
       return LitHelper.findContext(propertyName, this);

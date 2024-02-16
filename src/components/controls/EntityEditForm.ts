@@ -1,8 +1,7 @@
 import { LitElement, html, unsafeCSS } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { IEntityField, IEntityHandler, IResultValue } from "../../../../data";
-import { IDialogContent } from '../../dialogs/IDialogContent';
+import { IEntityField, IEntityHandler, IResultValue } from "../../data";
 
 import baseStyle from "../../../../styles/tailwind.css?inline";
 
@@ -14,7 +13,7 @@ export interface IEntityEditFormProps {
 @customElement("entity-edit-form")
 export class EntityEditForm
   extends LitElement
-  implements IEntityEditFormProps, IDialogContent
+  implements IEntityEditFormProps
 {
   static styles = [unsafeCSS(baseStyle)];
 
@@ -63,7 +62,7 @@ export class EntityEditForm
               <u-input
                 .entityField=${f}
                 .context=${this.handler.data}
-              />
+              ></u-input>
             </div>
           `;
           }

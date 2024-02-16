@@ -5,7 +5,6 @@ import { RouterProvider, RouteObject } from "react-router-dom";
 
 import { DI } from "./DI";
 import {
-  AppInfoStore,
   MenuItem,
   MenuStore,
   LocatorStore,
@@ -34,7 +33,6 @@ export abstract class StartupBase {
 
   init(): Router {
     // 서비스 등록
-    const appInfo = DI.addSingleton(AppInfoStore);
     const menu = DI.addSingleton(MenuStore);
     const locator = DI.addSingleton(LocatorStore);
     const layout = DI.addSingleton(LayoutStore);
@@ -42,9 +40,6 @@ export abstract class StartupBase {
 
     // ui 초기화
     ui.initUI();
-
-    // appInfo 초기화
-    appInfo.initAppInfo();
 
     // layout 초기화
     layout.initLayout(this.title, this.logo);
@@ -79,9 +74,7 @@ export abstract class StartupBase {
 
     ReactDOM.hydrateRoot(
       root,
-      <React.StrictMode>
-        <RouterProvider router={router} />
-      </React.StrictMode>
+      React.createElement(RouterProvider, { router: router })
     );
   }
 }

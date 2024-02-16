@@ -29,7 +29,10 @@ export default defineConfig({
         assetFileNames: `assets/[name].[ext]`,
         globals: {
           react: 'React',
-          'react-dom': 'ReactDOM'
+          'react-dom': 'ReactDOM',
+          'react-router-dom': 'ReactRouterDOM',
+          lit: 'lit',
+          'reflect-metadata': 'Reflect'
         }
       },
       external: [

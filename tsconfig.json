@@ -1,40 +1,47 @@
 {
   "compilerOptions": {
-    "composite": true,
+    // 기본 컴파일러 옵션
     "target": "ESNext",
     "module": "ESNext",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "useDefineForClassFields": false,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
+    "lib": ["ESNext","DOM","DOM.Iterable"],
+    "moduleResolution": "Bundler",
     "jsx": "react-jsx",
 
-    /* Linting */
+    // 엄격한 타입 체킹
     "strict": true,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+
+    // 코드 품질 관련
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationMap": true, // 타입 맵 파일 생성
-    "sourceMap": true, // 소스 맵 생성
-    
-    /* 추가 설정 */
-    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": [
-      "./src/declarations"
-    ],
+
+    // 모듈 및 호환성 설정
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    // 데코레이터 지원
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+
+    // 출력 설정
+    "noEmit": true,
+
+    // 기타 옵션
+    "useDefineForClassFields": false,
+    "skipLibCheck": true,
+    "typeRoots": ["./src/declarations"]
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src/**/*",
+    "vite.config.ts"
+  ]
 }

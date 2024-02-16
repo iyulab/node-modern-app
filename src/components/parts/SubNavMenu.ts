@@ -6,12 +6,12 @@ import { inject } from '../../core/DI';
 import type { GroupMenu, SubMenu } from '../../stores/MenuStore';
 import { LocatorStore } from '../../stores/LocatorStore';
 
-import { FlyoutElement, Position } from './FlyoutElement';
+import { UFlyout, UFlyoutPosition } from '@iyulab/u-components/components/flyouts';
 
 @customElement('sub-nav-menu')
-export class SubNavMenu extends FlyoutElement {
+export class SubNavMenu extends UFlyout {
   keepHover: boolean = true;
-  position: Position = Position.RightBottom;
+  position: UFlyoutPosition = "RightBottom";
 
   @inject(LocatorStore)
   locator!: LocatorStore;

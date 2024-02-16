@@ -1,6 +1,18 @@
-import { InputTypes } from "../components/lit";
 import { IEntityProperty } from "./EntityMetadata";
 import { IResultValue } from "./IResultValue";
+
+export enum InputTypes {
+  text,
+  email,
+  password,
+  tel,
+  url,
+  checkbox,
+  number,
+  date,
+  time,
+  datetime,
+}
 
 export interface IEntityField {
   name: string;

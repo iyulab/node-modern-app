@@ -1,4 +1,5 @@
-export * from './components/lit'; // dx 는 기본빌드에서 제외합니다. 별도구성
+// dx 는 기본빌드에서 제외합니다. 별도구성
+export * from './components/parts';
 export * from './core';
 export * from './helpers';
 export * from './hooks';

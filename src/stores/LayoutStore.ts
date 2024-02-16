@@ -1,6 +1,4 @@
 import { makeAutoObservable } from "mobx";
-import { DOM } from "@microsoft/fast-element";
-import { baseLayerLuminance, StandardLuminance } from "@microsoft/fast-components";
 
 export enum Breakpoint {
   Tablet = 768,
@@ -49,12 +47,13 @@ export class LayoutStore {
     this._logo = logo;
   }
 
-  toggleTheme(targetElement?: any) {
+  toggleTheme() {
+    document.documentElement.classList.toggle('sl-theme-dark');
     const otherTheme = this.theme === Themes.dark ? Themes.light : Themes.dark;
-    this.updateTheme(otherTheme, targetElement);
+    this.updateTheme(otherTheme);
   }
   
-  private updateTheme(theme: Themes, targetElement?: any) {
+  private updateTheme(theme: Themes) {
     this._theme = theme;
     localStorage.theme = theme === Themes.dark ? 'dark' : 'light';
     
@@ -66,13 +65,6 @@ export class LayoutStore {
       document.documentElement.classList.remove('dark')
       document.documentElement.removeAttribute('data-dark-theme');
       document.documentElement.setAttribute('data-prefers-color-scheme', "light");
-    }
-    
-    const target = targetElement ?? window.document.body;
-    if (target) {
-      DOM.queueUpdate(() => {
-        baseLayerLuminance.setValueFor(target, theme == Themes.dark ? StandardLuminance.DarkMode : StandardLuminance.LightMode);
-      });
     }
 
     const root = document.querySelector("#root");

@@ -1,4 +1,4 @@
-import { getPropertyMeta } from "../core/PropertyMeta";
+import { getPropertyMeta } from "@iyulab/u-components";
 
 function validateEmail(value: string): boolean {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,18 +37,18 @@ function validatePath(obj: any, path: string) : string[] {
   }
 
   // format 체크
-  if (meta.format) {
-    if (meta.format == "email" && validateEmail(value) != true) {
+  if (meta.type) {
+    if (meta.type == "email" && validateEmail(value) != true) {
       errors.push(`${key} is not an email format`)
 
-    } else if (meta.format == "tel" && validateTel(value) != true) {
+    } else if (meta.type == "tel" && validateTel(value) != true) {
       errors.push(`${key} is not a phone number format`)
     } // else if 포멧에 의한 Validation 추가
   }
   
   // regex 체크
-  if (meta.regex) {
-    const r = meta.regex.test(value);
+  if (meta.pattern) {
+    const r = new RegExp(meta.pattern).test(value);
     if (r == false) {
       errors.push(`${key} is not a valid format.`)
     }

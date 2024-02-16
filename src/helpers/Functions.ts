@@ -7,13 +7,13 @@
  * @param {any} value - 문자열로 변환하고자 하는 값.
  * @return {string} 변환된 문자열, 또는 값이 null/undefined인 경우 빈 문자열.
  *
- * 예시 사용법:
+ * @example
  * console.log(asText(123)); // '123'
  * console.log(asText(null)); // ''
  * console.log(asText(undefined)); // ''
  * console.log(asText({ a: 1, b: 2 })); // '[object Object]'
  */
-export function asText(value: any) {
+export function asText(value: any): string {
   if (value === null || value === undefined) return "";
   return value.toString();
 }

@@ -1,7 +1,7 @@
 import { html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { FlyoutElement, Position } from './FlyoutElement';
+import { UFlyout, UFlyoutPosition } from '@iyulab/u-components/components/flyouts';
 
 import { VectorIcons } from '../../layouts/VectorIcons';
 
@@ -14,9 +14,9 @@ export interface Notification {
 }
 
 @customElement('notification-menu')
-export class NotificationMenu extends FlyoutElement {
+export class NotificationMenu extends UFlyout {
   keepHover: boolean = true;
-  position: Position = Position.BottomLeft;
+  position: UFlyoutPosition = 'BottomLeft';
 
   @property({ type: Array })
   items: Notification[] = [];

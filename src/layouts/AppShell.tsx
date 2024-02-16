@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 import { TopBar } from "./TopBar";
 import { LeftNav } from "./LeftNav";
 
-import '../styles/global.scss';
+import '../styles/global.css';
 import styles from "./AppShell.module.scss";
 
 function AppShell() {
