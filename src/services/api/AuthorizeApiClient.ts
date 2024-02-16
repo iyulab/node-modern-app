@@ -167,4 +167,8 @@ export abstract class AuthorizeApiClient extends ApiClientBase {
       return res;
     }      
   }
+
+  public deleteByKey(resourceName: string, _key: string)  {
+    return this.delete(`/$data/${resourceName}/${_key}`);
+  }
 }

@@ -11,14 +11,15 @@ export interface IEntityField {
   required?: boolean;
   maxLength?: number;
   multiline?: boolean;
+  textRange?: string[];
 }
 
 export interface IEntityHandler {
-  data?: any;
   label?: string;
+  fields?: IEntityField[];
+  data?: any;
 
-  readyAsync(): Promise<any>;
-  getInputFieldsAsync(key?: string): Promise<IEntityField[]>;
+  readyAsync(key?: string): Promise<any>;
   validate(): IResultValue;
   saveAsync(): Promise<IResultValue>;
 }
@@ -60,12 +61,12 @@ function convertFieldByProperty(p: IEntityProperty): IEntityField {
     field.label = p.name;
   }
   field.type = InputTypes[inputType];
-  
   return field;
 }
 
 function getInputTypeByEntityProperty(p: IEntityProperty): InputTypes {
   const type = p.type.toLowerCase(); // .NET 타입을 소문자로 변환
+
   switch (type) {
     case "string":
       return InputTypes.text;
@@ -106,3 +107,4 @@ export const EntityFieldUtils = {
   convertFieldByProperty,
   getInputTypeByEntityProperty,
 }
+

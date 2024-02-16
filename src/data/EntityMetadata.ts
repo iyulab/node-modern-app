@@ -7,6 +7,7 @@ export interface IEntityProperty {
   label?: string;
   unique?: boolean;
   input?: string;
+  textRange?: [];
 }
 
 export class EntityMetadata {
@@ -23,7 +24,8 @@ export class EntityMetadata {
       this.properties = data.properties.map((prop: any) => {
         const property: any = {};
         Object.keys(prop).forEach(key => {
-          property[key.toLowerCase()] = prop[key];
+          const jName = key.charAt(0).toLowerCase() + key.slice(1);
+          property[jName] = prop[key];
         });
         return property;
       });

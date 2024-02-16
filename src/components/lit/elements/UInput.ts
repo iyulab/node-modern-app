@@ -36,7 +36,7 @@ export enum InputTypes {
   number,
   date,
   time,
-  datetime
+  datetime,
 }
 
 @customElement('u-input')
@@ -250,29 +250,38 @@ export class UInput extends ElementMixin(LitElement) {
       ${this.renderError()}
     `;
   }
+
+  getEnumType() {
+    if (typeof this.type === 'number') {
+      return InputTypes[this.type];
+    } else {
+      return InputTypes[this.type as keyof typeof InputTypes];
+    }
+  }
   
   renderInput() {
-    if (this.type == InputTypes.checkbox || this.type == InputTypes[InputTypes.checkbox]) {
+    const enumType = this.getEnumType();
+
+    if (enumType == InputTypes.checkbox) {
       return this.renderCheckbox();
 
-    } else if (this.type == InputTypes.email || this.type == InputTypes[InputTypes.email]) {
+    } else if (enumType == InputTypes.email) {
       return this.renderText('email');
 
-    } else if (this.type == InputTypes.number || this.type == InputTypes[InputTypes.number]) {
+    } else if (enumType == InputTypes.number) {
       return this.renderNumber();
 
-    } else if (this.type == InputTypes.date || this.type == InputTypes[InputTypes.date]) {
+    } else if (enumType == InputTypes.date) {
       return html`<input type="date">`;
 
-    } else if (this.type == InputTypes.time || this.type == InputTypes[InputTypes.time]) {
+    } else if (enumType == InputTypes.time) {
       return html`<input type="time">`;      
 
-    } else if (this.type == InputTypes.datetime || this.type == InputTypes[InputTypes.datetime]) {
+    } else if (enumType == InputTypes.datetime) {
       return html`<input type="datetime-local">`;
-      
     } else {
       let inputType = this.type;
-      if (typeof this.type == "number") {
+      if (typeof enumType == "number") {
         inputType = InputTypes[this.type];
       }
       if (this.multiline) {

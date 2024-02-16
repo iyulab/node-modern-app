@@ -43,8 +43,8 @@ export class EntityEditForm
     if (this.title.isNullOrEmpty() != true) {
       this.title = this.handler.label ?? "";
     }
-    this.fields = await this.handler.getInputFieldsAsync();
-
+    this.fields = this.handler.fields;
+    
     this.isReady = true;
   }
 
