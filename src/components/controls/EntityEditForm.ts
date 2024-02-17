@@ -1,9 +1,11 @@
-import { LitElement, html, unsafeCSS } from "lit";
+import { html, unsafeCSS } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import "@iyulab/u-components/components/form";
+import { UModalContent } from "@iyulab/u-components/components/modal";
 
-import { IEntityField, IEntityHandler, IResultValue } from "../../data";
+import { IEntityHandler, IResultValue } from "../../data";
 
-import baseStyle from "../../../../styles/tailwind.css?inline";
+import baseStyle from "../../styles/tailwind.css?inline";
 
 export interface IEntityEditFormProps {
   title?: string;
@@ -12,7 +14,7 @@ export interface IEntityEditFormProps {
 
 @customElement("entity-edit-form")
 export class EntityEditForm
-  extends LitElement
+  extends UModalContent
   implements IEntityEditFormProps
 {
   static styles = [unsafeCSS(baseStyle)];
@@ -31,6 +33,7 @@ export class EntityEditForm
 
     if (props.title) {
       this.title = props.title;
+      this.label = this.title;
     }
     this.handler = props.handler;
 
@@ -41,9 +44,9 @@ export class EntityEditForm
     await this.handler.readyAsync();
     if (this.title.isNullOrEmpty() != true) {
       this.title = this.handler.label ?? "";
+      this.label = this.title;
     }
     this.fields = this.handler.fields;
-    
     this.isReady = true;
   }
 
@@ -52,77 +55,65 @@ export class EntityEditForm
       return html`<busy-indicator></busy-indicator>`;
     }
 
+    console.log("Field Meta", this.fields);
+    console.log("Data", this.handler.data);
     return html`
-      <div id="form">
-        <!-- input fields -->
-        ${this.fields.map(
-          (f: IEntityField) => {
-            return html`
-            <div class="flex flex-col space-y-1">
-              <u-input
-                .entityField=${f}
-                .context=${this.handler.data}
-              ></u-input>
-            </div>
-          `;
-          }
-        )}
-
-        <!-- errors -->
-        ${this.renderErrors()}
-      </div>
-      <u-buttons right>
-        <u-button accent @click=${this.ok}>확인</u-button>
-        <u-button @click=${this.cancel}>취소</u-button>
-      </u-buttons>
-
-      <busy-indicator .show=${this.isBusy}></busy-indicator>
+      <u-form
+        .meta=${this.fields}
+        .context=${this.handler.data}
+        .onSubmit=${async () => await this.handler.saveAsync()}
+        @submit=${this.ok}
+        @cancel=${this.cancel}
+      ></u-form>
     `;
   }
 
-  renderErrors() {
-    if (!this.errors || this.errors.length === 0) {
-      return html``; // 오류가 없으면 아무것도 표시하지 않음
-    }
+  // renderErrors() {
+  //   if (!this.errors || this.errors.length === 0) {
+  //     return html``; // 오류가 없으면 아무것도 표시하지 않음
+  //   }
 
-    return html`
-      <ul class="list-disc pl-5 mt-2">
-        ${this.errors.map(
-          (error) => html` <li class="text-red-500 text-sm">${error}</li>`
-        )}
-      </ul>
-    `;
-  }
+  //   return html`
+  //     <ul class="list-disc pl-5 mt-2">
+  //       ${this.errors.map(
+  //         (error) => html` <li class="text-red-500 text-sm">${error}</li>`
+  //       )}
+  //     </ul>
+  //   `;
+  // }
 
-  validation() {
-    const validationResult = this.handler.validate();
-    if (validationResult.success == false) {
-      this.errors = validationResult.errors;
-      return false;
-    }
+  // validation() {
+  //   const validationResult = this.handler.validate();
+  //   if (validationResult.success == false) {
+  //     this.errors = validationResult.errors;
+  //     return false;
+  //   }
 
-    return true;
-  }
+  //   return true;
+  // }
 
-  async ok() {
-    if (this.validation() == false) return;
+  async ok(e:any) {
+    this.requestConfirm(e.detail);
+    this.close({ success: true, value: this.handler.data });
+    // if (this.validation() == false) return;
 
-    this.isBusy = true;
-    try {
-      const r = await this.handler.saveAsync();
-      if (r.success) {
-        this.close({ success: true, value: this.handler.data });
-      } else {
-        this.errors = r.errors;
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.isBusy = false;
-    }
+    // this.isBusy = true;
+    // try {
+    //   const r = await this.handler.saveAsync();
+    //   if (r.success) {
+    //     this.close({ success: true, value: this.handler.data });
+    //   } else {
+    //     this.errors = r.errors;
+    //   }
+    // } catch (e) {
+    //   console.error(e);
+    // } finally {
+    //   this.isBusy = false;
+    // }
   }
 
   cancel() {
+    this.requestCancle("cancel");
     this.close({ success: false });
   }
 

@@ -1,10 +1,10 @@
 import { css, html, LitElement, TemplateResult } from 'lit'
 import { customElement, query, property } from 'lit/decorators.js'
 
-import '@iyulab/u-components/components/inputs';
-import { type UInputType, UInput } from '@iyulab/u-components/components/inputs';
-import '@iyulab/u-components/components/buttons';
-import { UModalContent } from '@iyulab/u-components/components/modals';
+import '@iyulab/u-components/components/input';
+import { type UInputType, UInput } from '@iyulab/u-components/components/input';
+import '@iyulab/u-components/components/button';
+import { UModalContent } from '@iyulab/u-components/components/modal';
 
 /**
  * 입력 대화 상자 옵션
@@ -81,11 +81,11 @@ export class InputModalContent extends UModalContent {
   }
 
   private async confirm() {
-    this.requestConfirm("confirm");
+    this.requestConfirm(this.input.value);
   }
 
   private async cancel() {
-    this.requestCancle("cancel");
+    this.requestCancle('cancel');
   }
 
   static styles = css`

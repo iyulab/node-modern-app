@@ -1,7 +1,7 @@
 import { html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import { UFlyout, UFlyoutPosition } from '@iyulab/u-components/components/flyouts';
+import { UFlyout, UFlyoutPosition } from '@iyulab/u-components/components/flyout';
 
 import { VectorIcons } from '../../layouts/VectorIcons';
 

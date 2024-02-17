@@ -1,7 +1,7 @@
 import { css, html, LitElement } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 
-import '@iyulab/u-components/components/spinners'
+import '@iyulab/u-components/components/spinner'
 
 @customElement('busy-indicator')
 export class BusyIndicator extends LitElement {
@@ -9,7 +9,7 @@ export class BusyIndicator extends LitElement {
   @property({ type: String })
   message?: string;
 
-  @property({ type: Boolean, reflect: true })
+  @property({ type: Boolean })
   open: boolean = true;
   
   render() {

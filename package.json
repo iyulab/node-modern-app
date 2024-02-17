@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.1.30",
+  "version": "0.1.31",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -17,7 +17,7 @@
     "deploy": "iyulab publish -p"
   },
   "dependencies": {
-    "@iyulab/u-components": "^0.0.2",
+    "@iyulab/u-components": "^0.0.61",
     "@adobe/lit-mobx": "^2.2.2",
     "@lit-labs/react": "^2.1.3",
     "axios": "^1.6.7",
@@ -26,7 +26,7 @@
     "mobx-react": "^9.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.0",
+    "react-router-dom": "^6.22.1",
     "reflect-metadata": "^0.2.1"
   },
   "devDependencies": {

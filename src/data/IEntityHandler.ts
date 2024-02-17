@@ -1,23 +1,11 @@
+import type { UInputType } from '@iyulab/u-components/components/input';
 import { IEntityProperty } from "./EntityMetadata";
 import { IResultValue } from "./IResultValue";
-
-export enum InputTypes {
-  text,
-  email,
-  password,
-  tel,
-  url,
-  checkbox,
-  number,
-  date,
-  time,
-  datetime,
-}
 
 export interface IEntityField {
   name: string;
   label?: string;
-  type?: string | InputTypes;
+  type?: string | UInputType;
   format?: string;
   hint?: string;
   required?: boolean;
@@ -36,22 +24,21 @@ export interface IEntityHandler {
   saveAsync(): Promise<IResultValue>;
 }
 
-function getInputType(field: IEntityField): InputTypes {
-  if (field.type == null) return InputTypes.text;
-  else if (field.type in InputTypes) return field.type as InputTypes;
-  else if (field.type == "bool") return InputTypes.checkbox;
-  else if (field.type == "number") return InputTypes.number;
-  else if (field.type == "date") return InputTypes.date;
-  else if (field.type == "time") return InputTypes.time;
-  else if (field.type == "datetime") return InputTypes.datetime;
+function getInputType(field: IEntityField): UInputType {
+  if (field.type == null) return 'text';
+  else if (field.type == "bool") return 'checkbox';
+  else if (field.type == "number") return 'number';
+  else if (field.type == "date") return 'date';
+  else if (field.type == "time") return 'time';
+  else if (field.type == "datetime") return 'datetime-local';
   else if (field.type == "text") {
-    if (field.format == "email") return InputTypes.email;
-    else if (field.format == "tel") return InputTypes.tel;
-    else if (field.format == "url") return InputTypes.url;
-    else if (field.format == "password") return InputTypes.password;
-    else return InputTypes.text;
+    if (field.format == "email") return 'email';
+    else if (field.format == "tel") return 'tel';
+    else if (field.format == "url") return 'url';
+    else if (field.format == "password") return 'password';
+    else return 'text';
   } else {
-    return InputTypes.text;
+    return 'text';
   }
 }
 
@@ -72,43 +59,43 @@ function convertFieldByProperty(p: IEntityProperty): IEntityField {
   if (field.label == null) {
     field.label = p.name;
   }
-  field.type = InputTypes[inputType];
+  field.type = inputType;
   return field;
 }
 
-function getInputTypeByEntityProperty(p: IEntityProperty): InputTypes {
+function getInputTypeByEntityProperty(p: IEntityProperty): UInputType {
   const type = p.type.toLowerCase(); // .NET 타입을 소문자로 변환
 
   switch (type) {
     case "string":
-      return InputTypes.text;
+      return 'text';
     case "email":
     case "emailaddress":
-      return InputTypes.email;
+      return 'email';
     case "password":
-      return InputTypes.password;
+      return 'password';
     case "phone":
     case "phonenumber":
-      return InputTypes.tel;
+      return 'tel';
     case "url":
-      return InputTypes.url;
+      return 'url';
     case "bool":
     case "boolean":
-      return InputTypes.checkbox;
+      return 'checkbox';
     case "int":
     case "integer":
     case "float":
     case "double":
     case "decimal":
-      return InputTypes.number;
+      return 'number';
     case "datetime":
-      return InputTypes.datetime;
+      return 'datetime-local';
     case "date":
-      return InputTypes.date;
+      return 'date';
     case "time":
-      return InputTypes.time;
+      return 'time';
     default:
-      return InputTypes.text; // 기본값
+      return 'text'; // 기본값
   }
 }
 

@@ -4,8 +4,8 @@ import {
   UDialog,
   UDrawer,
   UModalContent,
-} from "@iyulab/u-components/components/modals";
-import type { UInputType } from "@iyulab/u-components/components/inputs";
+} from "@iyulab/u-components/components/modal";
+import type { UInputType } from "@iyulab/u-components/components/input";
 import {
   NotificationMenu,
   SubNavMenu,

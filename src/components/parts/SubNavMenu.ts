@@ -6,7 +6,7 @@ import { inject } from '../../core/DI';
 import type { GroupMenu, SubMenu } from '../../stores/MenuStore';
 import { LocatorStore } from '../../stores/LocatorStore';
 
-import { UFlyout, UFlyoutPosition } from '@iyulab/u-components/components/flyouts';
+import { UFlyout, UFlyoutPosition } from '@iyulab/u-components/components/flyout';
 
 @customElement('sub-nav-menu')
 export class SubNavMenu extends UFlyout {

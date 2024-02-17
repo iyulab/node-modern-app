@@ -1,8 +1,8 @@
 import { LitElement, TemplateResult, css, html } from 'lit'
 import { customElement, property, query } from 'lit/decorators.js'
 
-import '@iyulab/u-components/components/buttons';
-import { UModalContent } from '@iyulab/u-components/components/modals';
+import '@iyulab/u-components/components/button';
+import { UModalContent } from '@iyulab/u-components/components/modal';
 
 /**
  * 메시지 대화 상자 옵션
