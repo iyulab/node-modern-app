@@ -7,3 +7,4 @@ export * from './layouts';
 export * from './services';
 export * from './stores';
 export * from './extensions';
+export * from './settings';
