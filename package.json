@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework iyu, react and lit-element",
-  "version": "0.1.31",
+  "version": "0.1.36",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -9,12 +9,25 @@
   "homepage": "https://www.iyulab.com",
   "license": "MIT",
   "type": "module",
-  "main": "src/index.js",
-  "module": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "main.js",
+  "module": "main.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./main.js",
+      "require": "./main.js",
+      "types": "./index.d.ts"
+    },
+    "./dx": {
+      "import": "./dx.js",
+      "require": "./dx.js",
+      "types": "./components/dx/index.d.ts"
+    }
+  },
   "scripts": {
     "build": "iyulab build -d dist -b vite",
-    "deploy": "iyulab publish -p"
+    "deploy": "iyulab publish -p",
+    "publish-npm": "copy package.json dist && cd dist && npm publish --access public"
   },
   "dependencies": {
     "@iyulab/u-components": "^0.0.61",
