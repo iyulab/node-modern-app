@@ -1,16 +1,14 @@
 {
-  "main": "main.js",
-  "module": "main.js",
+  "main": "index.es.js",
+  "module": "index.es.js",
   "types": "index.d.ts",
   "exports": {
     ".": {
-      "import": "./main.js",
-      "require": "./main.js",
+      "import": "./index.es.js",
       "types": "./index.d.ts"
     },
     "./components/dx": {
-      "import": "./dx.js",
-      "require": "./dx.js",
+      "import": "./components/dx/index.es.js",
       "types": "./components/dx/index.d.ts"
     }
   }

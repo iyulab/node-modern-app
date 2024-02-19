@@ -1,35 +1,26 @@
 // import postcss from 'rollup-plugin-postcss';
 import { defineConfig, normalizePath } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+// import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
-<<<<<<< HEAD
-import dts from 'vite-plugin-dts';
-=======
 import { viteStaticCopy } from 'vite-plugin-static-copy'
->>>>>>> 28d8f5f80c736facb57210caf0f355b850adf20e
+import dts from 'vite-plugin-dts';
 
 export default defineConfig({
   build: {
-    sourcemap: true, // 소스 맵 활성화
     minify: true, // 최소화 비활성화 (디버깅: false, 배포: true)
+    outDir: 'dist',
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: '@iyulab/modern-app',
-      fileName: (format) => `index.${format}.js`,
+      entry: {
+        "index": resolve(__dirname, 'src/index.ts'), // 첫 번째 진입점
+        "components/dx/index": resolve(__dirname, 'src/components/dx/index.ts') // 추가 진입점
+      },
+      fileName: (format, entry) => `${entry}.${format}.js`,
       formats: ['es'],
     },
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'src/index.ts'), // 첫 번째 진입점
-        dx: resolve(__dirname, 'src/components/dx/index.ts') // 추가 진입점
-      },
       output: {
-        inlineDynamicImports: false,
-        // 각 진입점에 대한 출력 경로 설정
-        entryFileNames: `[name].js`,
-        chunkFileNames: `chunks/[name].js`,
-        assetFileNames: `assets/[name].[ext]`
+        chunkFileNames: `chunks/[name].js`
       },
       external: [
         /^react*/,
@@ -44,18 +35,13 @@ export default defineConfig({
     },
   },
   plugins: [
-    libInjectCss(),
-    react({
-      // tsDecorators: true,
-    }),
-<<<<<<< HEAD
-    typescript(),
     dts({
-      include: [
-        "src/**/*"
-      ]
-    })
-=======
+      include: 'src/**/*',
+    }),
+    libInjectCss(),
+    // react({
+    //   // tsDecorators: true,
+    // }),
     viteStaticCopy({
       targets: [
         {
@@ -65,7 +51,6 @@ export default defineConfig({
         }
       ]
     }),
->>>>>>> 28d8f5f80c736facb57210caf0f355b850adf20e
     // postcss({
     //   extensions: ['.scss', '.sass'],
     //   inject: true, // CSS를 JavaScript에 주입
