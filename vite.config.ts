@@ -1,10 +1,9 @@
-// vite.config.ts
 // import postcss from 'rollup-plugin-postcss';
-import { defineConfig } from 'vite'
+import { defineConfig, normalizePath } from 'vite'
 import react from '@vitejs/plugin-react-swc'
-import typescript from '@rollup/plugin-typescript';
 import { resolve } from 'path'
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
+import { viteStaticCopy } from 'vite-plugin-static-copy'
 
 export default defineConfig({
   build: {
@@ -26,18 +25,12 @@ export default defineConfig({
         // 각 진입점에 대한 출력 경로 설정
         entryFileNames: `[name].js`,
         chunkFileNames: `chunks/[name].js`,
-        assetFileNames: `assets/[name].[ext]`,
-        globals: {
-          react: 'React',
-          'react-dom': 'ReactDOM',
-          'react-router-dom': 'ReactRouterDOM',
-          lit: 'lit',
-          'reflect-metadata': 'Reflect'
-        }
+        assetFileNames: `assets/[name].[ext]`
       },
       external: [
-        'react', 'react-dom', 'react-router-dom', 
-        'lit', 'reflect-metadata'
+        /^react*/,
+        /^lit*/,
+        /^@iyulab\/u-components*/,
       ],
     },
     terserOptions: {
@@ -51,7 +44,15 @@ export default defineConfig({
     react({
       // tsDecorators: true,
     }),
-    typescript(),
+    viteStaticCopy({
+      targets: [
+        {
+          src: normalizePath(resolve(__dirname, 'src/styles')),
+          dest: normalizePath(resolve(__dirname, 'dist')),
+          overwrite: true
+        }
+      ]
+    }),
     // postcss({
     //   extensions: ['.scss', '.sass'],
     //   inject: true, // CSS를 JavaScript에 주입

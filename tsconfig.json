@@ -37,9 +37,9 @@
       "*": ["src/*"] // 모든 모듈을 'src' 디렉토리 아래에서 해석
     },
     "declaration": true,
+    "emitDeclarationOnly": true,
     "noEmit": false, // '.d.ts' 파일 생성을 위해 'noEmit'을 false로 설정
     "outDir": "./dist", // 출력 디렉토리 설정
-    "rootDir": "./src", // 소스 디렉토리 설정
     
     // 기타 옵션
     "useDefineForClassFields": false,
