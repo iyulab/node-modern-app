@@ -42,10 +42,11 @@ export class EntityEditForm
 
   async init() {
     await this.handler.readyAsync();
-    if (this.title.isNullOrEmpty() != true) {
+    if (this.title.isNullOrEmpty()) {
       this.title = this.handler.label ?? "";
       this.label = this.title;
     }
+
     this.fields = this.handler.fields;
     this.isReady = true;
   }
@@ -54,9 +55,8 @@ export class EntityEditForm
     if (!this.isReady || this.fields == null) {
       return html`<busy-indicator></busy-indicator>`;
     }
-
-    console.log("Field Meta", this.fields);
-    console.log("Data", this.handler.data);
+    // console.log("Field Meta", this.fields);
+    // console.log("Data", this.handler.data);
     return html`
       <u-form
         .meta=${this.fields}
@@ -93,6 +93,7 @@ export class EntityEditForm
   // }
 
   async ok(e:any) {
+    // console.log("OK", e);
     this.requestConfirm(e.detail);
     this.close({ success: true, value: this.handler.data });
     // if (this.validation() == false) return;

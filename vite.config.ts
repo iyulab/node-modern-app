@@ -3,7 +3,11 @@ import { defineConfig, normalizePath } from 'vite'
 import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
+<<<<<<< HEAD
+import dts from 'vite-plugin-dts';
+=======
 import { viteStaticCopy } from 'vite-plugin-static-copy'
+>>>>>>> 28d8f5f80c736facb57210caf0f355b850adf20e
 
 export default defineConfig({
   build: {
@@ -44,6 +48,14 @@ export default defineConfig({
     react({
       // tsDecorators: true,
     }),
+<<<<<<< HEAD
+    typescript(),
+    dts({
+      include: [
+        "src/**/*"
+      ]
+    })
+=======
     viteStaticCopy({
       targets: [
         {
@@ -53,6 +65,7 @@ export default defineConfig({
         }
       ]
     }),
+>>>>>>> 28d8f5f80c736facb57210caf0f355b850adf20e
     // postcss({
     //   extensions: ['.scss', '.sass'],
     //   inject: true, // CSS를 JavaScript에 주입

@@ -47,7 +47,6 @@
     "typeRoots": ["./src/declarations"]
   },
   "include": [
-    "src/**/*",
-    "vite.config.ts"
+    "src/**/*"
   ]
 }

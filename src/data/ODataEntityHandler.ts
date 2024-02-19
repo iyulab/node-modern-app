@@ -35,11 +35,11 @@ export class ODataEntityHandler extends EntityHandlerBase {
         this.url,
         this.resourceName
       );
-      // console.log(this.entityMeta.label);
       this.label ??= this.entityMeta.label;
+      // console.log(this.entityMeta.label);
       
       this.fields = await this.getInputFieldsAsync(key);
-      
+      // console.log(this.fields);
     })();
 
     return this.readyTask;
@@ -57,6 +57,7 @@ export class ODataEntityHandler extends EntityHandlerBase {
   }
 
   saveAsync(): Promise<IResultValue> {
+    // console.log("Save", this.data);
     const client = DI.get(ODataClient);
     return client.saveAsync(this.url, this.resourceName, this.data);
   }
