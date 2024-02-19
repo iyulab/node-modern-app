@@ -5,11 +5,13 @@
   "exports": {
     ".": {
       "import": "./main.js",
-      "require": "./main.js"
+      "require": "./main.js",
+      "types": "./index.d.ts"
     },
     "./components/dx": {
       "import": "./dx.js",
-      "require": "./dx.js"
+      "require": "./dx.js",
+      "types": "./components/dx/index.d.ts"
     }
   }
 }
