@@ -48,13 +48,14 @@ export class LayoutStore {
   }
 
   toggleTheme() {
-    document.documentElement.classList.toggle('sl-theme-dark', this.theme === Themes.dark);
     const otherTheme = this.theme === Themes.dark ? Themes.light : Themes.dark;
     this.updateTheme(otherTheme);
   }
   
   private updateTheme(theme: Themes) {
     this._theme = theme;
+    document.documentElement.classList.toggle('sl-theme-dark', theme === Themes.dark);
+
     localStorage.theme = theme === Themes.dark ? 'dark' : 'light';
     
     if (theme == Themes.dark) {
