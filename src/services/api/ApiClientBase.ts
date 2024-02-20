@@ -41,12 +41,16 @@ export abstract class ApiClientBase {
       return { success: true, status: res.status, value: null };
     } else if (this.success(res.status)) {
       if (contentType == null || contentType.indexOf('json') > 0) {
-        const resJson = await res.json();
-        if (resJson.key == "Redirect") {
-          document.location.href = resJson.value;
+        try {
+          const resJson = await res.json();
+          if (resJson.key == "Redirect") {
+            document.location.href = resJson.value;
+            return { success: true, status: res.status, value: null };
+          } else {
+            return { success: true, status: res.status, value: resJson };
+          }
+        } catch {
           return { success: true, status: res.status, value: null };
-        } else {
-          return { success: true, status: res.status, value: resJson };
         }
       } else if (contentType.startsWith("text/plain")) {
         const text = await res.text();
