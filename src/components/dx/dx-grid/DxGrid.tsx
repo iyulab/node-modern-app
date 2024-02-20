@@ -67,6 +67,8 @@ export interface DxGridProps {
   showRowLines?: boolean;
   showFilterRow?: boolean;
   showGroupPanel?: boolean;
+  scrollingMode?: "standard" | "virtual";
+  allowedPageSizes?: number[];
   selectionMode?: "none" | "single" | "multiple";
   wordWrapEnabled?: boolean;
   context?: DxGridContext;
@@ -89,6 +91,8 @@ const defaultProps: DxGridProps = {
   showGroupPanel: false,
   selectionMode: "single",
   wordWrapEnabled: false,
+  scrollingMode: "virtual",
+  allowedPageSizes: [10, 25, 50, 100],
   // height: undefined,
 };
 
@@ -287,12 +291,16 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
         />
         <Grouping autoExpandAll={false} />
         <SearchPanel visible={false} />
-        <Scrolling mode="virtual" />
+        <Scrolling
+          mode={this.props.scrollingMode ?? defaultProps.scrollingMode}
+        />
 
         <Export enabled={true} formats={exportFormats} />
 
         <Pager
-          allowedPageSizes={[10, 25, 50, 100]}
+          allowedPageSizes={
+            this.props.allowedPageSizes ?? defaultProps.allowedPageSizes
+          }
           showPageSizeSelector={true}
         />
         <Paging defaultPageSize={10} />

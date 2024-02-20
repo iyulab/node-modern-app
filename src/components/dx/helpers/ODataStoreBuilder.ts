@@ -4,6 +4,7 @@ export interface ODataStoreBuildOptions {
   url: string;
   accessToken?: string | null;
   resourceName: string;
+  address?: string;
   key?: string;
   fieldTypes?: {};
   keyType?: string;
@@ -42,9 +43,11 @@ function Build(options: ODataStoreBuildOptions) {
   
   const keyType = options.keyType || 'String';
   
+  const address = options.address || options.resourceName;
+  console.log(address);
   const store = new ODataStore({
     version: 4,
-    url: `${options.url}/${options.resourceName}`,
+    url: `${options.url}/${address}`,
     key: `${options.key}`,
     keyType: keyType,
     fieldTypes: options.fieldTypes,
