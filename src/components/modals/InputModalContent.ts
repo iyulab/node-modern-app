@@ -60,6 +60,7 @@ export class InputModalContent extends UModalContent {
       <u-input
         .type=${this.type}
         .autofocus=${true}
+        required
       ></u-input>
       <u-button-group gap="10px">
         ${this.negative ? html`
@@ -81,6 +82,8 @@ export class InputModalContent extends UModalContent {
   }
 
   private async confirm() {
+    const isValid = this.input.checkValidity();
+    if(!isValid) return;
     this.requestConfirm(this.input.value);
   }
 

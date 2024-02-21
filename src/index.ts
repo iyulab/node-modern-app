@@ -10,3 +10,5 @@ export * from './services';
 export * from './stores';
 export * from './extensions';
 export * from './settings';
+
+export { UModernApp as default } from './core/UModernApp';
