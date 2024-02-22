@@ -40,6 +40,7 @@ export interface CurrentLocation {
 type callback = (current: CurrentLocation) => void;
 
 export class LocatorStore {
+  
   static readonly LOCATION_CHANGED_NAME = "location-changed";
 
   public routeData: any = undefined;
@@ -366,5 +367,9 @@ export class LocatorStore {
     } else {
       return path;
     }
+  }
+
+  createRouter(model: object): any {
+    console.log(model);
   }
 }

@@ -5,6 +5,7 @@ import {
   UDrawer,
   UModalContent,
 } from "@iyulab/u-components/components/modal";
+import { UAlert } from "@iyulab/u-components/components/alert";
 import type { UInputType } from "@iyulab/u-components/components/input";
 import {
   NotificationMenu,
@@ -20,9 +21,11 @@ import {
   InputModalContent,
 } from "../components/modals";
 
+
 export class UIStore {
   private dialog: UDialog = new UDialog();
   private drawer: UDrawer = new UDrawer();
+  private alert: UAlert = new UAlert();
 
   private notificationMenu: NotificationMenu = new NotificationMenu();
   public subNavMenu: SubNavMenu = new SubNavMenu();
@@ -76,6 +79,51 @@ export class UIStore {
       ]
     };
     this.subNavMenu.toggleAsync(event);
+  }
+
+  /**
+   * #### 정보 메시지를 표시합니다.
+   * @param message 표시할 메시지
+   * @param duration 표시할 시간 (밀리초)
+  */
+  public async info(message: string, duration: number = 3000) {
+    await this.alert.toastAsync("primary", message, duration);
+  }
+
+  /**
+   * #### 성공 메시지를 표시합니다.
+   * @param message 표시할 메시지
+   * @param duration 표시할 시간 (밀리초)
+  */
+  public async success(message: string, duration: number = 3000) {
+    await this.alert.toastAsync("success", message, duration);
+  }
+
+  /**
+   * #### 경고 메시지를 표시합니다.
+   * @param message 표시할 메시지
+   * @param duration 표시할 시간 (밀리초)
+  */
+  public async warn(message: string, duration: number = 3000) {
+    await this.alert.toastAsync("warning", message, duration);
+  }
+
+  /**
+   * #### 에러 메시지를 표시합니다.
+   * @param message 표시할 메시지
+   * @param duration 표시할 시간 (밀리초)
+  */
+  public async error(message: string, duration: number = 3000) {
+    await this.alert.toastAsync("danger", message, duration);
+  }
+
+  /**
+   * #### 시스템 메시지를 표시합니다.
+   * @param message 표시할 메시지
+   * @param duration 표시할 시간 (밀리초)
+  */
+  public async system(message: string, duration: number = 3000) {
+    await this.alert.toastAsync("neutral", message, duration);
   }
 
   /**
