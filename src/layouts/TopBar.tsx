@@ -82,8 +82,7 @@ const TopBar = observer(() => {
   // 브레드 크럼 설정
   useEffect(() => {
     const setBread = autorun(() => {
-      locator.current?.fullPaths;
-      const paths = locator.getBreadcrumbPaths();
+      const paths = locator.current?.fullPaths ?? [];
       setPaths(paths);
     });
 
@@ -113,14 +112,18 @@ const TopBar = observer(() => {
         </Link>
 
         {/* 네비게이션 브레드 바 */}
+        {/* FixMe: 다시 재구현 하기 */}
         <div className={styles.breadCrumb}>
-          {paths.map((display, index) => {
+          {paths.map((path, index) => {
             const fullPath = locator.current?.fullPaths ?? [];
             const toPath = fullPath.slice(0, index + 1).join("/");
+            const display = layout.breadcrumbs.find((b) => {
+              return b.path === toPath.replace(/\/:id\??$/, '');
+            })?.display;
             return (
               <div className={styles.bread} key={index}>
                 <Link to={toPath} className={styles.path}>
-                  {display}
+                  {display ?? path}
                 </Link>
                 {index !== paths.length - 1 ? (
                   <div className={styles.slash}>/</div>

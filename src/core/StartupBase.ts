@@ -6,7 +6,7 @@ import { RouterProvider, RouteObject } from "react-router-dom";
 import { DI } from "./DI";
 import {
   MenuItem,
-  MenuStore,
+  BreadcrumbItem,
   LocatorStore,
   LayoutStore,
   UIStore,
@@ -21,28 +21,24 @@ export abstract class StartupBase {
   abstract logo?: string;
   abstract helpPath?: string;
   abstract basePath?: string;
-  abstract baseElement?: React.ReactNode;
-  abstract errorElement?: React.ReactNode;
+  abstract baseElement?: React.ComponentType;
+  abstract errorElement?: React.ComponentType;
   abstract otherShells?: RouteObject[];
 
-  abstract initMainMenuItems(): MenuItem[];
   abstract initRoutes(): RouteExt[];
+  abstract initMainMenuItems(): MenuItem[];
+  protected initBreadcrumbItems(): BreadcrumbItem[] {
+    return [];
+  }
 
   layout = useLayout();
   topBarOptions = topBarOptions;
 
   init(): Router {
     // 서비스 등록
-    const menu = DI.addSingleton(MenuStore);
     const locator = DI.addSingleton(LocatorStore);
     const layout = DI.addSingleton(LayoutStore);
     const ui = DI.addSingleton(UIStore);
-
-    // ui 초기화
-    ui.initUI();
-
-    // layout 초기화
-    layout.initLayout(this.title, this.logo);
 
     // locator 초기화
     const routes = this.initRoutes();
@@ -55,9 +51,19 @@ export abstract class StartupBase {
       this.otherShells
     );
 
-    // menu 초기화
+    // layout 초기화
     const menuItems = this.initMainMenuItems();
-    menu.initMenu(menuItems, keyPath);
+    const breadcrumbItems = this.initBreadcrumbItems();
+    layout.initLayout(
+      keyPath,
+      menuItems,
+      breadcrumbItems,
+      this.title, 
+      this.logo
+    );
+
+    // ui 초기화
+    ui.initUI();
 
     return router;
   }

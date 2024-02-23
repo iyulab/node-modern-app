@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { autorun } from "mobx";
 
-import { useLayout, useMenu, useUI } from "../hooks/UseStores";
-import { GroupMenu } from "../stores/MenuStore";
+import { useLayout, useUI } from "../hooks/UseStores";
+import type { GroupMenu } from "../stores/LayoutStore";
 
 import { VectorIcons } from "./VectorIcons";
 import styles from "./LeftNav.module.scss";
@@ -13,7 +13,6 @@ interface LeftNavProps {
 }
 
 function LeftNav({ onExpand }: LeftNavProps) {
-  const menu = useMenu();
   const layout = useLayout();
   const ui = useUI();
 
@@ -89,7 +88,7 @@ function LeftNav({ onExpand }: LeftNavProps) {
       >
         {/* 네비게이션 메뉴: 단일메뉴, 그룹메뉴, 메뉴구분선 */}
         <div className={styles.navMenus}>
-          {menu.menus.map((menu, index) => {
+          {layout.menus.map((menu, index) => {
             // 1. 구분선
             if (menu.type === "separator") {
               const height = { height: menu.height ? menu.height : undefined };

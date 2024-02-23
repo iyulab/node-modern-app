@@ -2,18 +2,12 @@ import { DI } from '../core/DI';
 import { 
     LayoutStore,
     LocatorStore,
-    MenuStore,
     UIStore
 } from '../stores';
 
 function useLayout() {
     const layout = DI.get(LayoutStore);
     return layout;
-}
-
-function useMenu() {
-    const menu = DI.get(MenuStore);
-    return menu;
 }
 
 function useLocator() {
@@ -29,8 +23,7 @@ function useUI() {
 }
 
 export { 
-    useLayout, 
-    useMenu, 
+    useLayout,
     useLocator, 
     useUI 
 };

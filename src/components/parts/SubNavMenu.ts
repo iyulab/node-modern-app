@@ -3,7 +3,7 @@ import { customElement, property, state } from 'lit/decorators.js';
 import { autorun } from 'mobx';
 
 import { inject } from '../../core/DI';
-import type { GroupMenu, SubMenu } from '../../stores/MenuStore';
+import type { GroupMenu, SubMenu } from '../../stores/LayoutStore';
 import { LocatorStore } from '../../stores/LocatorStore';
 
 import { UFlyout, UFlyoutPosition } from '@iyulab/u-components/components/flyout';

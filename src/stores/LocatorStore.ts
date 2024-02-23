@@ -10,8 +10,6 @@ import { makeAutoObservable } from "mobx";
 
 import { AppShell } from "../layouts/AppShell";
 import { ErrorPage } from "../layouts/ErrorPage";
-import { DI } from "../core/DI";
-import { MenuStore } from "../stores/MenuStore";
 
 // index route => children이 undefined
 interface IndexRouteExt extends IndexRouteObject {
@@ -96,8 +94,8 @@ export class LocatorStore {
     routes: RouteExt[],
     helpPath?: string,
     basePath?: string,
-    baseElement?: React.ReactNode,
-    errorElement?: React.ReactNode,
+    baseComponent?: React.ComponentType,
+    errorComponent?: React.ComponentType,
     otherShells?: RouteObject[]
   ): [Map<string, string>, Router] {
     // 1. base/help Path 설정
@@ -116,8 +114,8 @@ export class LocatorStore {
     // 3. router 생성
     const router = this.setRouter(
       baseRoutes,
-      baseElement,
-      errorElement,
+      baseComponent,
+      errorComponent,
       otherShells
     );
     this.router = router;
@@ -289,17 +287,17 @@ export class LocatorStore {
 
   private setRouter(
     routes: RouteObject[],
-    base?: React.ReactNode,
-    error?: React.ReactNode,
+    base?: React.ComponentType,
+    error?: React.ComponentType,
     other?: RouteObject[]
   ): Router {
     // 1 기본 레이아웃 routes 설정
     const baseRoutes: RouteObject[] = [
       {
         path: this.basePath,
-        element: base ?? <AppShell />,
-        errorElement:
-          this.basePath === "/" ? error ?? <ErrorPage /> : undefined,
+        Component: base ?? AppShell,
+        ErrorBoundary:
+          this.basePath === "/" ? error ?? ErrorPage : undefined,
         children: routes,
       },
     ];
@@ -313,46 +311,12 @@ export class LocatorStore {
     if (this.basePath !== "/") {
       baseRoutes.push({
         path: "",
-        element: (
-          <>
-            <pre> WRONG URL! Base Path: [{this.basePath}] </pre>
-          </>
-        ),
-        errorElement: error ?? <ErrorPage />,
+        ErrorBoundary: error ?? ErrorPage,
       });
     }
 
     // 4 router 생성
     return createBrowserRouter([...baseRoutes]);
-  }
-
-  getBreadcrumbPaths(): string[] {
-    const key = this.currentlocation?.key;
-    const menu = DI.get(MenuStore);
-    const paths: string[] = [];
-    const currentMenu = menu.menus.find((x) => {
-      if (x.type === "single") {
-        return x.key === key;
-      } else if (x.type === "group" && x.subMenu) {
-        return x.subMenu.find((y) => y.key === key);
-      } else {
-        return false;
-      }
-    });
-
-    if (currentMenu?.type === "single") {
-      paths.push(currentMenu.display);
-      const rest = this.currentlocation?.fullPaths?.slice(1) ?? [];
-      paths.push(...rest);
-    } else if (currentMenu?.type === "group" && currentMenu.subMenu) {
-      paths.push(currentMenu.display);
-      const subMenu = currentMenu.subMenu.find((y) => y.key === key);
-      if (subMenu) paths.push(subMenu.display);
-      const rest = this.currentlocation?.fullPaths?.slice(2) ?? [];
-      paths.push(...rest);
-    }
-
-    return paths;
   }
 
   // 현재 로케이션의 특정 인덱스의 표시(Display)경로를 가져옵니다.

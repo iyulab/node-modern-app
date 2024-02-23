@@ -1,11 +1,11 @@
-import { GroupMenu } from "../stores/MenuStore";
+import type { GroupMenu } from "../stores/LayoutStore";
 import {
   type UModalResult,
   UDialog,
   UDrawer,
   UModalContent,
 } from "@iyulab/u-components/components/modal";
-import { UAlert } from "@iyulab/u-components/components/alert";
+import { UAlert, AlertType } from "@iyulab/u-components/components/alert";
 import type { UInputType } from "@iyulab/u-components/components/input";
 import {
   NotificationMenu,
@@ -21,11 +21,9 @@ import {
   InputModalContent,
 } from "../components/modals";
 
-
 export class UIStore {
   private dialog: UDialog = new UDialog();
   private drawer: UDrawer = new UDrawer();
-  private alert: UAlert = new UAlert();
 
   private notificationMenu: NotificationMenu = new NotificationMenu();
   public subNavMenu: SubNavMenu = new SubNavMenu();
@@ -87,7 +85,7 @@ export class UIStore {
    * @param duration 표시할 시간 (밀리초)
   */
   public async info(message: string, duration: number = 3000) {
-    await this.alert.toastAsync("primary", message, duration);
+    await this.toastAlertAsync("primary", message, duration);
   }
 
   /**
@@ -96,7 +94,7 @@ export class UIStore {
    * @param duration 표시할 시간 (밀리초)
   */
   public async success(message: string, duration: number = 3000) {
-    await this.alert.toastAsync("success", message, duration);
+    await this.toastAlertAsync("success", message, duration);
   }
 
   /**
@@ -105,7 +103,7 @@ export class UIStore {
    * @param duration 표시할 시간 (밀리초)
   */
   public async warn(message: string, duration: number = 3000) {
-    await this.alert.toastAsync("warning", message, duration);
+    await this.toastAlertAsync("warning", message, duration);
   }
 
   /**
@@ -114,7 +112,7 @@ export class UIStore {
    * @param duration 표시할 시간 (밀리초)
   */
   public async error(message: string, duration: number = 3000) {
-    await this.alert.toastAsync("danger", message, duration);
+    await this.toastAlertAsync("danger", message, duration);
   }
 
   /**
@@ -123,7 +121,7 @@ export class UIStore {
    * @param duration 표시할 시간 (밀리초)
   */
   public async system(message: string, duration: number = 3000) {
-    await this.alert.toastAsync("neutral", message, duration);
+    await this.toastAlertAsync("neutral", message, duration);
   }
 
   /**
@@ -153,7 +151,7 @@ export class UIStore {
    * const ui = DI.get(UIStore);
    * const result = await ui.showInputDialogAsync("text", { message: "이름을 입력 하세요" });
    */
-  async showInputDialogAsync(type: UInputType, options?: InputDialogOptions): Promise<UModalResult> {
+  public async showInputDialogAsync(type: UInputType, options?: InputDialogOptions): Promise<UModalResult> {
     const content = new InputModalContent(options);
     content.type = type;
     this.dialog.label = options?.title || "입력 대화 상자";
@@ -170,7 +168,7 @@ export class UIStore {
    * const content = new DialogContent(); 
    * const result = await ui.showDialogAsync(content);
    */
-  async showDialogAsync(content?: UModalContent): Promise<UModalResult> {
+  public async showDialogAsync(content?: UModalContent): Promise<UModalResult> {
     return await this.dialog.showAsync(content);
   }
 
@@ -183,7 +181,7 @@ export class UIStore {
    * const content = new DrawerContent(); 
    * const result = await ui.showDrawerAsync(content);
    */
-  async showDrawerAsync(content?: UModalContent): Promise<UModalResult> {
+  public async showDrawerAsync(content?: UModalContent): Promise<UModalResult> {
     return await this.drawer.showAsync(content);
   }
   
@@ -218,5 +216,15 @@ export class UIStore {
     const template = document.createElement('template');
     template.innerHTML = html.trim();
     return template.content.firstChild as Element;
+  }
+
+  private async toastAlertAsync(type: AlertType, message: string, duration: number = 3000) {
+    const alert = new UAlert();
+    try {
+      document.body.appendChild(alert);
+      await alert.toastAsync(type, message, duration);
+    } finally {
+      document.body.removeChild(alert);
+    }
   }
 }
