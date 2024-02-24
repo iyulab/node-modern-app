@@ -37,14 +37,23 @@ export class LookupSource {
   }
 }
 
-// ### usage:
+function toUtc(kstDateString) {
+  // KST 날짜 문자열을 Date 객체로 변환
+  const localDate = new Date(kstDateString);
+
+  // UTC 날짜 형식으로 변환
+  const utcDate = new Date(localDate.getTime() - (9 * 60 * 60000)); // KST는 UTC보다 9시간 앞서므로
+
+  // ISO 문자열로 변환하고, 'Z'를 제거하여 OData 형식에 맞춤
+  return utcDate.toISOString().replace('.000Z', 'Z');
+}
 
 function Build(options: ODataStoreBuildOptions) {
   
   const keyType = options.keyType || 'String';
   
   const address = options.address || options.resourceName;
-  console.log(address);
+  // console.log(address); // 로그 출력
   const store = new ODataStore({
     version: 4,
     url: `${options.url}/${address}`,
@@ -60,11 +69,34 @@ function Build(options: ODataStoreBuildOptions) {
       if (options.expand) {
         request.params.$expand = options.expand;
       }
-      console.log(request);
+
+      if (request.params.$filter) {
+        // 정규 표현식을 사용하여 ISO 8601 날짜 형식 찾기
+        const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/g;
+        request.params.$filter = request.params.$filter.replace(dateRegex, (match) => {
+            // 각 일치하는 날짜를 KST에서 UTC로 변환
+            return toUtc(match);
+        });
+
+        // console.log(request.params.$filter); // 변환된 필터 로그 출력
+      }
+
+      // console.log(request); // 요청 로그 출력
     },
     onLoaded: () => {
       // console.log('odata, onLoaded');
     },
+    // customizeLoadResult: (data) => {
+    //   data.data.forEach(item => {
+    //     Object.keys(item).forEach(key => {
+    //       // 필드 값이 Date 객체인지 확인
+    //       if (item[key] instanceof Date) {
+    //         item[key] = toKst(item[key]); // UTC를 KST로 변환
+    //       }
+    //     });
+    //   });
+    //   return data;
+    // }
   });
 
   return store;

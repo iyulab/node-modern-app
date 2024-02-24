@@ -187,7 +187,6 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
 
   onEditorPreparing() {
     // e: DataGridTypes.EditorPreparingEvent
-    // console.log('onEditorPreparing', e);
   }
 
   onCellPrepared(e: DataGridTypes.CellPreparedEvent) {
