@@ -2,16 +2,25 @@ import { IColumnProps } from "devextreme-react/cjs/data-grid";
 import { LookupSource } from "./ODataStoreBuilder";
 
 export class ColumnBuilder {
+  
   static DateTime(dataField: string, caption: string): IColumnProps {
     return {
-      dataType: "datetime",
-      dataField: dataField,
-      caption: caption,
-      format: "yyyy-MM-dd HH:mm",
-      filterOperations: ["=", "<>", "<", ">", "<=", ">=", "between"],
-      selectedFilterOperation: "between",
+        dataType: "datetime",
+        dataField: dataField,
+        caption: caption,
+        format: "yyyy-MM-dd HH:mm",
+        filterOperations: ["=", "<>", "<", ">", "<=", ">=", "between"],
+        selectedFilterOperation: "between",
+      //   calculateDisplayValue: function(data) {
+      //     const utcDate = new Date(data[dataField]);
+      //     const koreaTimeOffset = 9 * 60; // 한국은 UTC+9
+      //     utcDate.setMinutes(utcDate.getMinutes() + koreaTimeOffset); // UTC 시간에 9시간을 추가
+      //     return utcDate;
+      // }
     }
-  }
+}
+
+
   public static String(dataField: string, caption: string): IColumnProps {
     return { dataType: "string", dataField: dataField, caption: caption };
   }

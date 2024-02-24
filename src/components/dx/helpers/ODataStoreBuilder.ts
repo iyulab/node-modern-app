@@ -60,6 +60,7 @@ function Build(options: ODataStoreBuildOptions) {
       if (options.expand) {
         request.params.$expand = options.expand;
       }
+      console.log(request);
     },
     onLoaded: () => {
       // console.log('odata, onLoaded');
