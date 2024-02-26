@@ -83,17 +83,23 @@ export abstract class ApiClientBase {
         return { success: false, status: res.status };
       }
     } else if (this.isClientError(res.status)) {
-      if (contentType?.indexOf('json')) {
-        return { success: false, status: res.status, value: await res.json() };
-      } else {
-        return { success: false, status: res.status };
-      }
+      return await this.buildFailResponseAsync(res, contentType);
     } else //if (this.isServerError(res.status)) {
-      if (contentType?.indexOf('json')) {
+      return await this.buildFailResponseAsync(res, contentType);
+  }
+
+  private async buildFailResponseAsync(res: Response, contentType: string | null) {
+    if (contentType) {
+      if (contentType.indexOf('json') > 0) {
         return { success: false, status: res.status, value: await res.json() };
+      } else if (contentType.indexOf("text/plain") >= 0) {
+        return { success: false, status: res.status, value: await res.text() };
       } else {
-        return { success: false, status: res.status };
+        return { success: false, status: res.status };  
       }
+    } else {
+      return { success: false, status: res.status };
+    }
   }
   
   protected buildUrl(url : string): string {

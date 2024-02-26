@@ -61,7 +61,17 @@ export class EntityEditForm
       <u-form
         .meta=${this.fields}
         .context=${this.handler.data}
-        .onSubmit=${async () => await this.handler.saveAsync()}
+        .onSubmit=${async () => {
+          const r = await this.handler.saveAsync();
+          if (r.success == false) {
+            if (r.value) {
+              throw new Error(r.value);
+            } else if (r.errors) {
+              this.errors = r.errors;
+              throw new Error(r.errors.join("\n"));
+            }
+          }
+        }}
         @submit=${this.ok}
         @cancel=${this.cancel}
       ></u-form>
