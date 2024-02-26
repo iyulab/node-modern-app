@@ -9,6 +9,7 @@ export interface IODataEntityHandlerProps {
   url: string;
   resourceName: string;
   data?: any;
+  onSave?: ((data: any) => Promise<IResultValue>) | null;
 }
 
 export class ODataEntityHandler extends EntityHandlerBase {
@@ -17,13 +18,15 @@ export class ODataEntityHandler extends EntityHandlerBase {
 
   entityMeta: EntityMetadata | null = null;
   readyTask: Promise<any> | null = null;
-
+  onSave?: ((data: any) => Promise<IResultValue>) | null = null;
+  
   constructor(props: IODataEntityHandlerProps) {
     super();
     
     this.url = props.url;
     this.resourceName = props.resourceName;
     this.data = props.data;
+    this.onSave = props.onSave;
   }
 
   async readyAsync(key?: string) {
@@ -57,8 +60,11 @@ export class ODataEntityHandler extends EntityHandlerBase {
   }
 
   saveAsync(): Promise<IResultValue> {
-    // console.log("Save", this.data);
-    const client = DI.get(ODataClient);
-    return client.saveAsync(this.url, this.resourceName, this.data);
+    if (this.onSave) {
+      return this.onSave(this.data);
+    } else {
+      const client = DI.get(ODataClient);
+      return client.saveAsync(this.url, this.resourceName, this.data);
+    }
   }
 }

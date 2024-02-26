@@ -67,50 +67,10 @@ export class EntityEditForm
       ></u-form>
     `;
   }
-
-  // renderErrors() {
-  //   if (!this.errors || this.errors.length === 0) {
-  //     return html``; // 오류가 없으면 아무것도 표시하지 않음
-  //   }
-
-  //   return html`
-  //     <ul class="list-disc pl-5 mt-2">
-  //       ${this.errors.map(
-  //         (error) => html` <li class="text-red-500 text-sm">${error}</li>`
-  //       )}
-  //     </ul>
-  //   `;
-  // }
-
-  // validation() {
-  //   const validationResult = this.handler.validate();
-  //   if (validationResult.success == false) {
-  //     this.errors = validationResult.errors;
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
-
+  
   async ok(e:any) {
-    // console.log("OK", e);
     this.requestConfirm(e.detail);
     this.close({ success: true, value: this.handler.data });
-    // if (this.validation() == false) return;
-
-    // this.isBusy = true;
-    // try {
-    //   const r = await this.handler.saveAsync();
-    //   if (r.success) {
-    //     this.close({ success: true, value: this.handler.data });
-    //   } else {
-    //     this.errors = r.errors;
-    //   }
-    // } catch (e) {
-    //   console.error(e);
-    // } finally {
-    //   this.isBusy = false;
-    // }
   }
 
   cancel() {
