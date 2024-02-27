@@ -31,13 +31,29 @@ export class UIStore {
   private toastBar: ToastBar = new ToastBar();
   private pageBusyIndicator: BusyIndicator = new BusyIndicator();
 
+  constructor() {
+    this.initUI();
+  }
+
   public initUI() {
-    document.body.appendChild(this.dialog);
-    document.body.appendChild(this.drawer);
-    document.body.appendChild(this.notificationMenu);
-    document.body.appendChild(this.subNavMenu);
-    document.body.appendChild(this.subNavTooltip);
-    document.body.appendChild(this.toastBar);
+    if(!document.body.querySelector('u-dialog')) {
+      document.body.appendChild(this.dialog);
+    }
+    if(!document.body.querySelector('u-drawer')) {
+      document.body.appendChild(this.drawer);
+    }
+    if(!document.body.querySelector('notification-menu')) {
+      document.body.appendChild(this.notificationMenu);
+    }
+    if(!document.body.querySelector('sub-nav-menu')) {
+      document.body.appendChild(this.subNavMenu);
+    }
+    if(!document.body.querySelector('sub-nav-tooltip')) {
+      document.body.appendChild(this.subNavTooltip);
+    }
+    if(!document.body.querySelector('toast-bar')) {
+      document.body.appendChild(this.toastBar);
+    }
     if(!document.body.querySelector('busy-indicator')) {
       document.body.appendChild(this.pageBusyIndicator);
       this.pageBusyIndicator.open = false;

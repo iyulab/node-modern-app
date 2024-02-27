@@ -53,11 +53,11 @@ export class UModernApp {
     return await UModernApp.ui.showDrawerAsync(content);
   }
 
-  public static async showMessageDialogAsync(message:string, options: MessageDialogOptions) {
+  public static async showMessageDialogAsync(message:string, options?: MessageDialogOptions) {
     return await UModernApp.ui.showMessageDialogAsync(message, options);
   }
 
-  public static async showInputDialogAsync(type: UInputType, options: InputDialogOptions) {
+  public static async showInputDialogAsync(type: UInputType, options?: InputDialogOptions) {
     return await UModernApp.ui.showInputDialogAsync(type, options);
   }
 
