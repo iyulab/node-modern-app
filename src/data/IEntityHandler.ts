@@ -65,6 +65,7 @@ function convertFieldByProperty(p: IEntityProperty): IEntityField {
 
 function getInputTypeByEntityProperty(p: IEntityProperty): UInputType {
   const type = p.type.toLowerCase(); // .NET 타입을 소문자로 변환
+  console.log(type);
 
   switch (type) {
     case "string":
@@ -83,10 +84,13 @@ function getInputTypeByEntityProperty(p: IEntityProperty): UInputType {
     case "boolean":
       return 'checkbox';
     case "int":
+    case "int32":
+    case "int64":
     case "integer":
     case "float":
     case "double":
     case "decimal":
+    case "number":
       return 'number';
     case "datetime":
       return 'datetime-local';
