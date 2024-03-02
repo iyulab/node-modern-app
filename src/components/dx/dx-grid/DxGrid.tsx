@@ -297,6 +297,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
         <Export enabled={true} formats={exportFormats} />
 
         <Pager
+          visible={true}
           allowedPageSizes={
             this.props.allowedPageSizes ?? defaultProps.allowedPageSizes
           }
