@@ -75,7 +75,7 @@ export class UIStore {
   }
 
   public async showUserMenuAsync(event: Event) {
-    this.subNavMenu.item = {
+    this.subNavMenu.item ??= {
       type: "group",
       display: "User",
       subMenu: [
