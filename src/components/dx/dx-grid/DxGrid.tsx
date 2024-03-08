@@ -70,6 +70,7 @@ export interface DxGridProps {
   scrollingMode?: "standard" | "virtual";
   allowedPageSizes?: number[];
   selectionMode?: "none" | "single" | "multiple";
+  selectAllMode?: "allPages" | "page";
   wordWrapEnabled?: boolean;
   context?: DxGridContext;
   eventHandler?: IDxGridEventHandler;
@@ -281,6 +282,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
 
         <Selection
           mode={this.props.selectionMode ?? defaultProps.selectionMode}
+          selectAllMode={this.props.selectAllMode ?? defaultProps.selectAllMode} // "allPages" | "page"
         />
         <FilterRow
           visible={this.props.showFilterRow ?? defaultProps.showFilterRow}
@@ -302,6 +304,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
             this.props.allowedPageSizes ?? defaultProps.allowedPageSizes
           }
           showPageSizeSelector={true}
+          showInfo={true}
         />
         <Paging defaultPageSize={10} />
       </DataGrid>
