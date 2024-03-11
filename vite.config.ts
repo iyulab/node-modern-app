@@ -35,13 +35,16 @@ export default defineConfig({
     },
   },
   plugins: [
+    //@ts-ignore
     dts({
       include: 'src/**/*',
     }),
+    //@ts-ignore
     libInjectCss(),
     // react({
     //   // tsDecorators: true,
     // }),
+    //@ts-ignore
     viteStaticCopy({
       targets: [
         {

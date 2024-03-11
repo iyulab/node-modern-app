@@ -37,7 +37,7 @@ export class LookupSource {
   }
 }
 
-function toUtc(kstDateString) {
+function toUtc(kstDateString: any) {
   // KST 날짜 문자열을 Date 객체로 변환
   const localDate = new Date(kstDateString);
 
@@ -73,7 +73,7 @@ function Build(options: ODataStoreBuildOptions) {
       if (request.params.$filter) {
         // 정규 표현식을 사용하여 ISO 8601 날짜 형식 찾기
         const dateRegex = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z/g;
-        request.params.$filter = request.params.$filter.replace(dateRegex, (match) => {
+        request.params.$filter = request.params.$filter.replace(dateRegex, (match: any) => {
             // 각 일치하는 날짜를 KST에서 UTC로 변환
             return toUtc(match);
         });
