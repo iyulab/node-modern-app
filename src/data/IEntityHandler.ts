@@ -1,4 +1,4 @@
-import type { UInputType } from '@iyulab/u-components/components/input';
+import type { UInputType } from "@iyulab/u-components/components/input";
 import { IEntityProperty } from "./EntityMetadata";
 import { IResultValue } from "./IResultValue";
 
@@ -25,20 +25,20 @@ export interface IEntityHandler {
 }
 
 function getInputType(field: IEntityField): UInputType {
-  if (field.type == null) return 'text';
-  else if (field.type == "bool") return 'checkbox';
-  else if (field.type == "number") return 'number';
-  else if (field.type == "date") return 'date';
-  else if (field.type == "time") return 'time';
-  else if (field.type == "datetime") return 'datetime-local';
+  if (field.type == null) return "text";
+  else if (field.type == "bool") return "checkbox";
+  else if (field.type == "number") return "number";
+  else if (field.type == "date") return "date";
+  else if (field.type == "time") return "time";
+  else if (field.type == "datetime") return "datetime-local";
   else if (field.type == "text") {
-    if (field.format == "email") return 'email';
-    else if (field.format == "tel") return 'tel';
-    else if (field.format == "url") return 'url';
-    else if (field.format == "password") return 'password';
-    else return 'text';
+    if (field.format == "email") return "email";
+    else if (field.format == "tel") return "tel";
+    else if (field.format == "url") return "url";
+    else if (field.format == "password") return "password";
+    else return "text";
   } else {
-    return 'text';
+    return "text";
   }
 }
 
@@ -53,7 +53,7 @@ function convertPropertiesToFields(properties: IEntityProperty[]) {
 function convertFieldByProperty(p: IEntityProperty): IEntityField {
   const inputType = getInputTypeByEntityProperty(p);
   const field: IEntityField = {
-    ...p
+    ...p,
   };
 
   if (field.label == null) {
@@ -65,24 +65,24 @@ function convertFieldByProperty(p: IEntityProperty): IEntityField {
 
 function getInputTypeByEntityProperty(p: IEntityProperty): UInputType {
   const type = p.type.toLowerCase(); // .NET 타입을 소문자로 변환
-  console.log(type);
+  // console.log(type);
 
   switch (type) {
     case "string":
-      return 'text';
+      return "text";
     case "email":
     case "emailaddress":
-      return 'email';
+      return "email";
     case "password":
-      return 'password';
+      return "password";
     case "phone":
     case "phonenumber":
-      return 'tel';
+      return "tel";
     case "url":
-      return 'url';
+      return "url";
     case "bool":
     case "boolean":
-      return 'checkbox';
+      return "checkbox";
     case "int":
     case "int32":
     case "int64":
@@ -91,15 +91,15 @@ function getInputTypeByEntityProperty(p: IEntityProperty): UInputType {
     case "double":
     case "decimal":
     case "number":
-      return 'number';
+      return "number";
     case "datetime":
-      return 'datetime-local';
+      return "datetime-local";
     case "date":
-      return 'date';
+      return "date";
     case "time":
-      return 'time';
+      return "time";
     default:
-      return 'text'; // 기본값
+      return "text"; // 기본값
   }
 }
 
@@ -109,5 +109,4 @@ export const EntityFieldUtils = {
   convertPropertiesToFields,
   convertFieldByProperty,
   getInputTypeByEntityProperty,
-}
-
+};

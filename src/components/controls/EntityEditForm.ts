@@ -55,8 +55,6 @@ export class EntityEditForm
     if (!this.isReady || this.fields == null) {
       return html`<busy-indicator></busy-indicator>`;
     }
-    // console.log("Field Meta", this.fields);
-    // console.log("Data", this.handler.data);
     return html`
       <u-form
         .meta=${this.fields}
@@ -75,10 +73,11 @@ export class EntityEditForm
         @submit=${this.ok}
         @cancel=${this.cancel}
       ></u-form>
+      <slot name="footer"></slot>
     `;
   }
-  
-  async ok(e:any) {
+
+  async ok(e: any) {
     this.requestConfirm(e.detail);
     this.close({ success: true, value: this.handler.data });
   }
