@@ -21,10 +21,15 @@ $nav-transition-easing: cubic-bezier(0.215, 0.61, 0.355, 1);
   transition: width $nav-transition-duration $nav-transition-easing;
 
   .navMenus {
-    display: block;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     height: 100%;
     margin: 10px 0;
+
+    .mainMenus {
+      flex-grow: 1;
+    }
 
     .singleMenu {
       position: relative;

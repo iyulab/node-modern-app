@@ -27,6 +27,10 @@ export abstract class StartupBase {
 
   abstract initRoutes(): RouteExt[];
   abstract initMainMenuItems(): MenuItem[];
+  protected initSubMenuItems(): MenuItem[] {
+    return [];
+  }
+
   protected initBreadcrumbItems(): BreadcrumbItem[] {
     return [];
   }
@@ -52,13 +56,15 @@ export abstract class StartupBase {
     );
 
     // layout 초기화
-    const menuItems = this.initMainMenuItems();
+    const mainMenuItems = this.initMainMenuItems();
+    const subMenuItems = this.initSubMenuItems();
     const breadcrumbItems = this.initBreadcrumbItems();
     layout.initLayout(
       keyPath,
-      menuItems,
+      mainMenuItems,
+      subMenuItems,
       breadcrumbItems,
-      this.title, 
+      this.title,
       this.logo
     );
 
