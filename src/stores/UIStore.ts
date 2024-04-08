@@ -5,8 +5,8 @@ import {
   UDrawer,
   UModalContent,
 } from "@iyulab/u-components/components/modal";
-import { UAlert, AlertType } from "@iyulab/u-components/components/alert";
-import type { UInputType } from "@iyulab/u-components/components/input";
+import type { AlertType } from "@iyulab/u-components/components/alert";
+import type { UInputType } from "@iyulab/u-components/components/form";
 import {
   NotificationMenu,
   SubNavMenu,
@@ -20,6 +20,7 @@ import {
   MessageModalContent,
   InputModalContent,
 } from "../components/modals";
+import { UAlertController } from "../../../u-components/src/components/alert/UAlertController";
 
 export class UIStore {
   private dialog: UDialog = new UDialog();
@@ -235,12 +236,10 @@ export class UIStore {
   }
 
   private async toastAlertAsync(type: AlertType, message: string, duration: number = 3000) {
-    const alert = new UAlert();
-    try {
-      document.body.appendChild(alert);
-      await alert.toastAsync(type, message, duration);
-    } finally {
-      document.body.removeChild(alert);
-    }
+    UAlertController.toastAsync({
+      type: type,
+      content: message,
+      duration: duration
+    });
   }
 }

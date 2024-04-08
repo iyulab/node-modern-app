@@ -1,4 +1,4 @@
-import type { UInputType } from "@iyulab/u-components/components/input";
+import type { UInputType } from "@iyulab/u-components/components/form";
 import { IEntityProperty } from "./EntityMetadata";
 import { IResultValue } from "./IResultValue";
 
