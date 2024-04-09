@@ -7,6 +7,7 @@ import {
 } from "@iyulab/u-components/components/modal";
 import type { AlertType } from "@iyulab/u-components/components/alert";
 import type { UInputType } from "@iyulab/u-components/components/form";
+import { UAlertController } from "@iyulab/u-components/components/alert/UAlertController";
 import {
   NotificationMenu,
   SubNavMenu,
@@ -20,7 +21,6 @@ import {
   MessageModalContent,
   InputModalContent,
 } from "../components/modals";
-import { UAlertController } from "../../../u-components/src/components/alert/UAlertController";
 
 export class UIStore {
   private dialog: UDialog = new UDialog();

@@ -140,6 +140,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
     const odata = this.props.odata!;
 
     const result = await ODataStoreBuilder.BuildAsync(odata);
+    console.log(result);
     if (result instanceof ODataStore) {
       this.setState({
         dataSource: {

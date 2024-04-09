@@ -2,17 +2,30 @@ import { EntityMetadata } from "../../data";
 import { IResultValue } from "../../data/IResultValue";
 import { UrlHelpers } from "../../helpers";
 
+import { resolveAppSettings } from "../../settings/AppSettings";
+
 export class ODataClient {
   
   private async getAsync(url: string) {
-    const response = await fetch(url);
+    const settings = resolveAppSettings();
+    const token = settings.getAccessToken();
+    const response = await fetch(url, {
+      headers: token ? { "Authorization": `Bearer ${token}` } : {}
+    });
     return await response.json();
   }
 
   private async postAsync(url: string, data: any) {
+    const settings = resolveAppSettings();
+    const token = settings.getAccessToken();
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    if (token) {
+      headers.append("Authorization", `Bearer ${token}`);
+    }
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: headers,
       body: JSON.stringify(data)
     });
     return response;
