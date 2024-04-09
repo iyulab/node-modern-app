@@ -5,9 +5,8 @@ import {
   UDrawer,
   UModalContent,
 } from "@iyulab/u-components/components/modal";
-import type { AlertType } from "@iyulab/u-components/components/alert";
+import { UAlertController, type AlertType } from "@iyulab/u-components/components/alert";
 import type { UInputType } from "@iyulab/u-components/components/form";
-import { UAlertController } from "@iyulab/u-components/components/alert/UAlertController";
 import {
   NotificationMenu,
   SubNavMenu,

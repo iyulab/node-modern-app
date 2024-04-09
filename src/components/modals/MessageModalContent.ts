@@ -116,7 +116,7 @@ export class MessageModalContent extends UModalContent implements MessageDialogO
   }
 
   private async cancel() {
-    this.requestCancle("cancel");
+    this.requestCancel("cancel");
   }
 
   static styles = css`

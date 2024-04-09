@@ -2,7 +2,7 @@ import { css, html, LitElement, TemplateResult } from 'lit'
 import { customElement, query, property } from 'lit/decorators.js'
 
 import '@iyulab/u-components/components/input';
-import { type UInputType, UInput } from '@iyulab/u-components/components/input';
+import { type UInputType, UInput } from '@iyulab/u-components/components/form';
 import '@iyulab/u-components/components/button';
 import { UModalContent } from '@iyulab/u-components/components/modal';
 
@@ -88,7 +88,7 @@ export class InputModalContent extends UModalContent {
   }
 
   private async cancel() {
-    this.requestCancle('cancel');
+    this.requestCancel('cancel');
   }
 
   static styles = css`

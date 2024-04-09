@@ -84,7 +84,7 @@ export class EntityEditForm
   }
 
   cancel() {
-    this.requestCancle("cancel");
+    this.requestCancel("cancel");
     this.close({ success: false });
   }
 

@@ -9,7 +9,7 @@ import { LayoutStore, LocatorStore, UIStore } from "../stores";
 
 // Types
 import type { UModalContent } from "@iyulab/u-components/components/modal";
-import type { UInputType } from "@iyulab/u-components/components/input";
+import type { UInputType } from "@iyulab/u-components/components/form";
 import type { InputDialogOptions, MessageDialogOptions } from "../components/modals";
 
 export class UModernApp {
