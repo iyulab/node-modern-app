@@ -1,10 +1,11 @@
 import { css, html, LitElement, TemplateResult } from 'lit'
 import { customElement, query, property } from 'lit/decorators.js'
 
-import '@iyulab/u-components/components/input';
-import { type UInputType, UInput } from '@iyulab/u-components/components/form';
-import '@iyulab/u-components/components/button';
-import { UModalContent } from '@iyulab/u-components/components/modal';
+import type { TextInputFormat } from '@iyulab/u-components/components/input/UTextInput.model';
+import type { UTextInput } from '@iyulab/u-components/components/input/UTextInput';
+import { UModalContent } from '@iyulab/u-components/components/modal/UModalContent';
+import '@iyulab/u-components/components/input/UTextInput';
+import '@iyulab/u-components/components/button/UButton';
 
 /**
  * 입력 대화 상자 옵션
@@ -40,9 +41,9 @@ export interface InputDialogOptions {
 @customElement('input-modal-content')
 export class InputModalContent extends UModalContent {
 
-  @query('u-input') input!: UInput;
+  @query('u-text-input') input!: UTextInput;
 
-  @property({ type:String }) type: UInputType = "text";
+  @property({ type:String }) format?: TextInputFormat;
   @property({ attribute: false }) message: string | HTMLElement | TemplateResult | LitElement = "다음 내용을 입력하세요.";
   @property({ type:String }) positive: string = "확인";
   @property({ type:String }) negative: string = "취소";
@@ -57,11 +58,11 @@ export class InputModalContent extends UModalContent {
       <div class="message">
         ${this.message}
       </div>
-      <u-input
-        .type=${this.type}
-        .autofocus=${true}
+      <u-text-input
         required
-      ></u-input>
+        .format=${this.format}
+        .autofocus=${true}
+      ></u-text-input>
       <u-button-group gap="10px">
         ${this.negative ? html`
           <u-button
@@ -82,7 +83,7 @@ export class InputModalContent extends UModalContent {
   }
 
   private async confirm() {
-    const isValid = this.input.checkValidity();
+    const isValid = this.input.validate();
     if(!isValid) return;
     this.requestConfirm(this.input.value);
   }

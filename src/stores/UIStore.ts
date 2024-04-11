@@ -6,7 +6,7 @@ import {
   UModalContent,
 } from "@iyulab/u-components/components/modal";
 import { UAlertController, type AlertType } from "@iyulab/u-components/components/alert";
-import type { UInputType } from "@iyulab/u-components/components/form";
+import type { TextInputFormat } from "@iyulab/u-components/components/input/UTextInput.model";
 import {
   NotificationMenu,
   SubNavMenu,
@@ -160,16 +160,16 @@ export class UIStore {
   
   /**
    * #### 입력 대화 상자를 표시합니다.
-   * @param type 입력 타입
+   * @param format 입력 타입
    * @param options 대화상자 옵션
    * @returns 입력 결과
    * @example
    * const ui = DI.get(UIStore);
    * const result = await ui.showInputDialogAsync("text", { message: "이름을 입력 하세요" });
    */
-  public async showInputDialogAsync(type: UInputType, options?: InputDialogOptions): Promise<UModalResult> {
+  public async showInputDialogAsync(format: TextInputFormat, options?: InputDialogOptions): Promise<UModalResult> {
     const content = new InputModalContent(options);
-    content.type = type;
+    content.format = format;
     this.dialog.label = options?.title || "입력 대화 상자";
     this.dialog.noHeader = options?.noHeader || false;
     return await this.dialog.showAsync(content);

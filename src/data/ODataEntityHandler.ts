@@ -29,7 +29,7 @@ export class ODataEntityHandler extends EntityHandlerBase {
     this.onSave = props.onSave;
   }
 
-  async readyAsync(key?: string) {
+  public async readyAsync(key?: string) {
     if (this.readyTask) return this.readyTask;
 
     this.readyTask = (async () => {
@@ -38,18 +38,14 @@ export class ODataEntityHandler extends EntityHandlerBase {
         this.url,
         this.resourceName
       );
-      this.label ??= this.entityMeta.label;
-      // console.log(this.entityMeta.label);
-      
+      this.label ||= this.entityMeta.label;
       this.fields = await this.getInputFieldsAsync(key);
-      // console.log(this.fields);
     })();
 
     return this.readyTask;
   }
 
-  async getInputFieldsAsync(key: string = 'default') {
-    
+  public async getInputFieldsAsync(key: string = 'default') {
     if (this.entityMeta) {
       const properties = this.entityMeta.getProperties(key);
       // console.log(properties);
@@ -59,9 +55,9 @@ export class ODataEntityHandler extends EntityHandlerBase {
     }
   }
 
-  saveAsync(): Promise<IResultValue> {
+  public async saveAsync(): Promise<IResultValue> {
     if (this.onSave) {
-      return this.onSave(this.data);
+      return await this.onSave(this.data);
     } else {
       const client = DI.get(ODataClient);
       return client.saveAsync(this.url, this.resourceName, this.data);

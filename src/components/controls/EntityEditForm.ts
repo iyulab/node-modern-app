@@ -1,9 +1,11 @@
 import { html, unsafeCSS } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import "@iyulab/u-components/components/form";
-import { UModalContent } from "@iyulab/u-components/components/modal";
+import { customElement, state } from "lit/decorators.js";
 
-import { IEntityHandler, IResultValue } from "../../data";
+import type { IEntityHandler, IResultValue } from "../../data";
+import type { UForm } from "@iyulab/u-components/components/form";
+import { UModalContent } from "@iyulab/u-components/components/modal/UModalContent";
+import { UModernApp } from "../../core/UModernApp";
+import "@iyulab/u-components/components/form";
 
 import baseStyle from "../../styles/tailwind.css?inline";
 
@@ -19,58 +21,25 @@ export class EntityEditForm
 {
   static styles = [unsafeCSS(baseStyle)];
 
-  handler: IEntityHandler;
-  fields: any;
-
-  @property() title: string = "";
-
-  @state() errors?: string[];
   @state() isReady: boolean = false;
-  @state() isBusy: boolean = false;
+  @state() handler: IEntityHandler;
+  @state() fields: any;
 
   constructor(props: IEntityEditFormProps) {
     super();
-
-    if (props.title) {
-      this.title = props.title;
-      this.label = this.title;
-    }
+    this.label = props.title;
     this.handler = props.handler;
-
-    this.init();
-  }
-
-  async init() {
-    await this.handler.readyAsync();
-    if (this.title.isNullOrEmpty()) {
-      this.title = this.handler.label ?? "";
-      this.label = this.title;
-    }
-
-    this.fields = this.handler.fields;
-    this.isReady = true;
+    this.initAsync();
   }
 
   render() {
-    
-    if (!this.isReady || this.fields == null) {
+    if (!this.isReady || !this.fields) {
       return html`<busy-indicator></busy-indicator>`;
     }
     return html`
       <u-form
         .meta=${this.fields}
         .context=${this.handler.data}
-        .onSubmit=${async () => {
-          const r = await this.handler.saveAsync();
-          if (r.success == false) {
-            if (r.value) {
-              throw new Error(r.value);
-            } else if (r.errors) {
-              this.errors = r.errors;
-              throw new Error(r.errors.join("\n"));
-            }
-          }
-        }}
         @submit=${this.ok}
         @cancel=${this.cancel}
       ></u-form>
@@ -78,23 +47,41 @@ export class EntityEditForm
     `;
   }
 
-  async ok(e: any) {
-    this.requestConfirm(e.detail);
-    this.close({ success: true, value: this.handler.data });
+  public async initAsync() {
+    await this.handler.readyAsync();
+    this.fields = this.handler.fields;
+    this.isReady = true;
   }
 
-  cancel() {
+  private async ok(event: CustomEvent) {
+    const form = event.target as UForm;
+    try {
+      form.loading = true;
+      const r = await this.handler.saveAsync();
+      if (r.success) {
+        this.requestConfirm(event.detail);
+        this.close({ success: true, value: this.handler.data });  
+      } else {
+        const message = r.value ?? r.errors?.join("\n") ?? "Unknown error";
+        UModernApp.error(message);
+      }
+    } catch (error: any) {
+      UModernApp.error(error.message);
+    } finally {
+      form.loading = false;
+    }
+  }
+
+  private cancel() {
     this.requestCancel("cancel");
     this.close({ success: false });
   }
 
-  close(result: IResultValue) {
-    this.dispatchEvent(
-      new CustomEvent("close", {
-        detail: result,
-        bubbles: true,
-        composed: true,
-      })
-    );
+  private close(result: IResultValue) {
+    this.dispatchEvent(new CustomEvent("close", {
+      detail: result,
+      bubbles: true,
+      composed: true,
+    }));
   }
 }

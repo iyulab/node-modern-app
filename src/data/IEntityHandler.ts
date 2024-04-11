@@ -1,17 +1,18 @@
-import type { UInputType } from "@iyulab/u-components/components/form";
-import { IEntityProperty } from "./EntityMetadata";
-import { IResultValue } from "./IResultValue";
+import type { PropertyMetaType } from "@iyulab/u-components/decorators";
+import type { TextInputFormat } from "@iyulab/u-components/components/input/UTextInput.model";
+import type { NumberInputFormat } from "@iyulab/u-components/components/input/UNumberInput.model";
+import type { IEntityProperty } from "./EntityMetadata";
+import type { IResultValue } from "./IResultValue";
 
 export interface IEntityField {
   name: string;
+  type?: PropertyMetaType;
+  format?: TextInputFormat | NumberInputFormat;
   label?: string;
-  type?: string | UInputType;
-  format?: string;
-  hint?: string;
   required?: boolean;
-  maxLength?: number;
-  multiline?: boolean;
-  textRange?: string[];
+  placeholder?: string;
+  length?: number;
+  options?: string[];
 }
 
 export interface IEntityHandler {
@@ -24,89 +25,83 @@ export interface IEntityHandler {
   saveAsync(): Promise<IResultValue>;
 }
 
-function getInputType(field: IEntityField): UInputType {
-  if (field.type == null) return "text";
-  else if (field.type == "bool") return "checkbox";
-  else if (field.type == "number") return "number";
-  else if (field.type == "date") return "date";
-  else if (field.type == "time") return "time";
-  else if (field.type == "datetime") return "datetime-local";
-  else if (field.type == "text") {
-    if (field.format == "email") return "email";
-    else if (field.format == "tel") return "tel";
-    else if (field.format == "url") return "url";
-    else if (field.format == "password") return "password";
-    else return "text";
-  } else {
-    return "text";
+// function getInputType(field: IEntityField): PropertyMetaType | undefined {
+//   return field.type;
+// }
+
+// function getInputFormat(field: IEntityField): TextInputFormat | NumberInputFormat | undefined {
+//   return field.format;
+// }
+
+function getInputTypeByEntityProperty(p: IEntityProperty): {
+  type: PropertyMetaType;
+  format?: TextInputFormat | NumberInputFormat;
+} {
+  const type = p.type.toLowerCase(); // .NET 타입을 소문자로 변환
+
+  switch (type) {
+    case "string":
+      return p.multiline
+      ? { type: "textarea" }
+      : p.textRange && p.textRange.length > 0
+      ? { type: "select" }
+      : { type: "text" };
+    case "email":
+    case "emailaddress":
+      return { type: "text", format: "email" };
+    case "password":
+      return { type: "text", format: "password" };
+    case "phone":
+    case "phonenumber":
+      return { type: "text", format: "tel" };
+    case "url":
+      return { type: "text", format: "url" };
+    case "datetime":
+      return { type: "text", format: "datetime-local" };
+    case "date":
+      return { type: "text", format: "date" };
+    case "time":
+      return { type: "text", format: "time" };
+    case "bool":
+    case "boolean":
+      return { type: "checkbox" };
+    case "int":
+    case "int32":
+    case "int64":
+    case "integer":
+      return { type: "number", format: "integer" };
+    case "float":
+    case "double":
+    case "decimal":
+    case "number":
+      return { type: "number", format: "float" };
+    default:
+      return { type: "text" } // 기본값
   }
 }
 
-function getInputFormat(field: IEntityField): string | undefined {
-  return field.format;
+function convertFieldByProperty(p: IEntityProperty): IEntityField {
+  console.log("convertFieldByProperty", p);
+  const { type, format } = getInputTypeByEntityProperty(p);
+  const field: IEntityField = {
+    ...p,
+    type: type,
+    format: format,
+    length: p.maxLength,
+    options: p.textRange,
+  };
+  field.label ||= p.name;
+  return field;
 }
 
 function convertPropertiesToFields(properties: IEntityProperty[]) {
   return properties.map(convertFieldByProperty);
 }
 
-function convertFieldByProperty(p: IEntityProperty): IEntityField {
-  const inputType = getInputTypeByEntityProperty(p);
-  const field: IEntityField = {
-    ...p,
-  };
-
-  if (field.label == null) {
-    field.label = p.name;
-  }
-  field.type = inputType;
-  return field;
-}
-
-function getInputTypeByEntityProperty(p: IEntityProperty): UInputType {
-  const type = p.type.toLowerCase(); // .NET 타입을 소문자로 변환
-  // console.log(type);
-
-  switch (type) {
-    case "string":
-      return "text";
-    case "email":
-    case "emailaddress":
-      return "email";
-    case "password":
-      return "password";
-    case "phone":
-    case "phonenumber":
-      return "tel";
-    case "url":
-      return "url";
-    case "bool":
-    case "boolean":
-      return "checkbox";
-    case "int":
-    case "int32":
-    case "int64":
-    case "integer":
-    case "float":
-    case "double":
-    case "decimal":
-    case "number":
-      return "number";
-    case "datetime":
-      return "datetime-local";
-    case "date":
-      return "date";
-    case "time":
-      return "time";
-    default:
-      return "text"; // 기본값
-  }
-}
-
 export const EntityFieldUtils = {
-  getInputType,
-  getInputFormat,
-  convertPropertiesToFields,
-  convertFieldByProperty,
+  // getInputType,
+  // getInputFormat,
   getInputTypeByEntityProperty,
+  convertFieldByProperty,
+  convertPropertiesToFields,
 };

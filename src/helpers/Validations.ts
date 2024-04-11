@@ -28,31 +28,31 @@ function validatePath(obj: any, path: string) : string[] {
 
   if (value == null || value.length < 1) return errors;
   
-  // length 체크
-  if (meta.minLength && meta.minLength > value.length) {
-    errors.push(`At least ${meta.minLength} characters are required for ${key}`)
-  }
-  if (meta.maxLength && meta.maxLength < value.length) {
-    errors.push(`Up to ${meta.maxLength} characters are allowed for ${key}`)
-  }
+  // // length 체크
+  // if (meta.minLength && meta.minLength > value.length) {
+  //   errors.push(`At least ${meta.minLength} characters are required for ${key}`)
+  // }
+  // if (meta.maxLength && meta.maxLength < value.length) {
+  //   errors.push(`Up to ${meta.maxLength} characters are allowed for ${key}`)
+  // }
 
-  // format 체크
-  if (meta.type) {
-    if (meta.type == "email" && validateEmail(value) != true) {
-      errors.push(`${key} is not an email format`)
+  // // format 체크
+  // if (meta.type) {
+  //   if (meta.type == "email" && validateEmail(value) != true) {
+  //     errors.push(`${key} is not an email format`)
 
-    } else if (meta.type == "tel" && validateTel(value) != true) {
-      errors.push(`${key} is not a phone number format`)
-    } // else if 포멧에 의한 Validation 추가
-  }
+  //   } else if (meta.type == "tel" && validateTel(value) != true) {
+  //     errors.push(`${key} is not a phone number format`)
+  //   } // else if 포멧에 의한 Validation 추가
+  // }
   
-  // regex 체크
-  if (meta.pattern) {
-    const r = new RegExp(meta.pattern).test(value);
-    if (r == false) {
-      errors.push(`${key} is not a valid format.`)
-    }
-  }
+  // // regex 체크
+  // if (meta.pattern) {
+  //   const r = new RegExp(meta.pattern).test(value);
+  //   if (r == false) {
+  //     errors.push(`${key} is not a valid format.`)
+  //   }
+  // }
   
   return errors;
 }
