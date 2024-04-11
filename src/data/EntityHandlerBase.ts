@@ -32,28 +32,28 @@ export abstract class EntityHandlerBase implements IEntityHandler {
       errors.push(`${field.label} 필드는 필수입니다.`);
     }
 
-    if (field.type == "text" && field.format == "email") {
+    if (field.type == "email") {
       const email = value;
       if (email && !this.validateEmail(email)) {
         errors.push(`${field.label} 필드가 이메일 형식이 아닙니다.`);
       }
     }
 
-    if (field.type == "text" && field.format == "tel") {
+    if (field.type == "tel") {
       const tel = value;
       if (tel && !this.validateTel(tel)) {
         errors.push(`${field.label} 필드가 전화번호 형식이 아닙니다.`);
       }
     }
 
-    if (field.type == "text" && field.format == "url") {
+    if (field.type == "url") {
       const url = value;
       if (url && !this.validateUrl(url)) {
         errors.push(`${field.label} 필드가 URL 형식이 아닙니다.`);
       }
     }
 
-    if (field.type == "text" && field.format == "password") {
+    if (field.type == "password") {
       const password = value;
       if (password && password.length < 4) {
         errors.push(`${field.label} 필드는 4자 이상이어야 합니다.`);

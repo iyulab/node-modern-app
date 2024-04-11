@@ -9,7 +9,6 @@ import { LayoutStore, LocatorStore, UIStore } from "../stores";
 
 // Types
 import type { UModalContent } from "@iyulab/u-components/components/modal";
-import type { TextInputFormat } from "@iyulab/u-components/components/input/UTextInput.model";
 import type { InputDialogOptions, MessageDialogOptions } from "../components/modals";
 
 export class UModernApp {
@@ -57,8 +56,8 @@ export class UModernApp {
     return await UModernApp.ui.showMessageDialogAsync(message, options);
   }
 
-  public static async showInputDialogAsync(format: TextInputFormat, options?: InputDialogOptions) {
-    return await UModernApp.ui.showInputDialogAsync(format, options);
+  public static async showInputDialogAsync(options?: InputDialogOptions) {
+    return await UModernApp.ui.showInputDialogAsync(options);
   }
 
   public static async info(message:string) {

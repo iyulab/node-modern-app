@@ -5,6 +5,7 @@ export interface IEntityProperty {
   maxLength?: number;
   multiline?: boolean;
   label?: string;
+  hint?: string;
   unique?: boolean;
   input?: string;
   textRange?: [];

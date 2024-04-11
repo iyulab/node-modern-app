@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab, react and lit-element",
-  "version": "0.1.58",
+  "version": "0.1.59",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -34,7 +34,7 @@
     "deploy": "iyulab publish -p"
   },
   "dependencies": {
-    "@iyulab/u-components": "^0.0.61",
+    "@iyulab/u-components": "^0.0.62",
     "lit": "^3.1.2",
     "mobx": "^6.12.3",
     "mobx-react": "^9.1.1",

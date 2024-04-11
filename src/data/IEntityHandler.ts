@@ -1,5 +1,5 @@
 import type { PropertyMetaType } from "@iyulab/u-components/decorators";
-import type { TextInputFormat } from "@iyulab/u-components/components/input/UTextInput.model";
+import type { DatetimeInputFormat } from "@iyulab/u-components/components/input/UDatetimeInput.model";
 import type { NumberInputFormat } from "@iyulab/u-components/components/input/UNumberInput.model";
 import type { IEntityProperty } from "./EntityMetadata";
 import type { IResultValue } from "./IResultValue";
@@ -7,7 +7,7 @@ import type { IResultValue } from "./IResultValue";
 export interface IEntityField {
   name: string;
   type?: PropertyMetaType;
-  format?: TextInputFormat | NumberInputFormat;
+  format?: DatetimeInputFormat | NumberInputFormat;
   label?: string;
   required?: boolean;
   placeholder?: string;
@@ -35,7 +35,7 @@ export interface IEntityHandler {
 
 function getInputTypeByEntityProperty(p: IEntityProperty): {
   type: PropertyMetaType;
-  format?: TextInputFormat | NumberInputFormat;
+  format?: DatetimeInputFormat | NumberInputFormat;
 } {
   const type = p.type.toLowerCase(); // .NET 타입을 소문자로 변환
 
@@ -48,20 +48,20 @@ function getInputTypeByEntityProperty(p: IEntityProperty): {
       : { type: "text" };
     case "email":
     case "emailaddress":
-      return { type: "text", format: "email" };
+      return { type: "email" };
     case "password":
-      return { type: "text", format: "password" };
+      return { type: "password" };
     case "phone":
     case "phonenumber":
-      return { type: "text", format: "tel" };
+      return { type: "tel" };
     case "url":
-      return { type: "text", format: "url" };
+      return { type: "url" };
     case "datetime":
-      return { type: "text", format: "datetime-local" };
+      return { type: "datetime", format: "datetime-local" };
     case "date":
-      return { type: "text", format: "date" };
+      return { type: "datetime", format: "date" };
     case "time":
-      return { type: "text", format: "time" };
+      return { type: "datetime", format: "time" };
     case "bool":
     case "boolean":
       return { type: "checkbox" };
@@ -81,16 +81,17 @@ function getInputTypeByEntityProperty(p: IEntityProperty): {
 }
 
 function convertFieldByProperty(p: IEntityProperty): IEntityField {
-  console.log("convertFieldByProperty", p);
   const { type, format } = getInputTypeByEntityProperty(p);
   const field: IEntityField = {
-    ...p,
+    name: p.name,
     type: type,
     format: format,
+    label: p.label || p.name,
+    required: p.required,
+    placeholder: p.hint,
     length: p.maxLength,
     options: p.textRange,
   };
-  field.label ||= p.name;
   return field;
 }
 

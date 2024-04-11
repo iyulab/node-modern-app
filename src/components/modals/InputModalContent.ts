@@ -1,7 +1,6 @@
 import { css, html, LitElement, TemplateResult } from 'lit'
 import { customElement, query, property } from 'lit/decorators.js'
 
-import type { TextInputFormat } from '@iyulab/u-components/components/input/UTextInput.model';
 import type { UTextInput } from '@iyulab/u-components/components/input/UTextInput';
 import { UModalContent } from '@iyulab/u-components/components/modal/UModalContent';
 import '@iyulab/u-components/components/input/UTextInput';
@@ -43,7 +42,6 @@ export class InputModalContent extends UModalContent {
 
   @query('u-text-input') input!: UTextInput;
 
-  @property({ type:String }) format?: TextInputFormat;
   @property({ attribute: false }) message: string | HTMLElement | TemplateResult | LitElement = "다음 내용을 입력하세요.";
   @property({ type:String }) positive: string = "확인";
   @property({ type:String }) negative: string = "취소";
@@ -60,7 +58,6 @@ export class InputModalContent extends UModalContent {
       </div>
       <u-text-input
         required
-        .format=${this.format}
         .autofocus=${true}
       ></u-text-input>
       <u-button-group gap="10px">
