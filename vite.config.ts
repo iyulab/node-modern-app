@@ -13,7 +13,8 @@ export default defineConfig({
     lib: {
       entry: {
         "index": resolve(__dirname, 'src/index.ts'), // 첫 번째 진입점
-        "components/dx/index": resolve(__dirname, 'src/components/dx/index.ts') // 추가 진입점
+        "components/dx/index": resolve(__dirname, 'src/components/dx/index.ts'), // 추가 진입점
+        "apps/index": resolve(__dirname, 'src/apps/index.ts'), // 추가 진입점
       },
       fileName: (format, entry) => `${entry}.${format}.js`,
       formats: ['es'],
