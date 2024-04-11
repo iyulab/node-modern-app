@@ -52,7 +52,6 @@ export class EntityEditForm
   }
 
   render() {
-    
     if (!this.isReady || this.fields == null) {
       return html`<busy-indicator></busy-indicator>`;
     }
