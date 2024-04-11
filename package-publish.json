@@ -10,6 +10,10 @@
     "./components/dx": {
       "import": "./components/dx/index.es.js",
       "types": "./components/dx/index.d.ts"
+    },
+    "./apps": {
+      "import": "./src/apps/index.es.js",
+      "types": "./src/apps/index.d.ts"
     }
   }
 }
