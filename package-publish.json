@@ -12,8 +12,8 @@
       "types": "./components/dx/index.d.ts"
     },
     "./apps": {
-      "import": "./src/apps/index.es.js",
-      "types": "./src/apps/index.d.ts"
+      "import": "./apps/index.es.js",
+      "types": "./apps/index.d.ts"
     }
   }
 }
