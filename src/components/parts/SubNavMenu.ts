@@ -2,7 +2,7 @@ import { html, css } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { autorun } from 'mobx';
 
-import { inject } from '../../core/DI';
+import { inject } from '../../services/DI';
 import type { GroupMenu, SubMenu } from '../../stores/LayoutStore';
 import { LocatorStore } from '../../stores/LocatorStore';
 

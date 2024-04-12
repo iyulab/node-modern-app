@@ -1,4 +1,4 @@
-import { DI } from "../../core/DI";
+import { DI } from "../DI";
 import { ApiClientBase, IStandardResponse } from "./ApiClientBase";
 import { AppSettings } from "../../settings";
 

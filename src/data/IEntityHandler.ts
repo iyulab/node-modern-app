@@ -33,6 +33,35 @@ export interface IEntityHandler {
 //   return field.format;
 // }
 
+function resolveStringType(p: IEntityProperty): {
+  type: PropertyMetaType;
+  format?: DatetimeInputFormat | NumberInputFormat;
+} {
+  if(p.multiline) {
+    return { type: "textarea" };
+  } else if(p.textRange && p.textRange.length > 0) {
+    return { type: "select" };
+  } else if(p.format) {
+    switch(p.format) {
+      case "email":
+      case "emailaddress":
+        return { type: "email" };
+      case "password":
+        return { type: "password" };
+      case "Tel":
+      case "phone":
+      case "phonenumber":
+        return { type: "tel" };
+      case "url":
+        return { type: "url" };
+      default:
+        return { type: "text" };
+    }
+  } else {
+    return { type: "text" };
+  }
+}
+
 function getInputTypeByEntityProperty(p: IEntityProperty): {
   type: PropertyMetaType;
   format?: DatetimeInputFormat | NumberInputFormat;
@@ -41,27 +70,7 @@ function getInputTypeByEntityProperty(p: IEntityProperty): {
 
   switch (type) {
     case "string":
-      return p.multiline
-      ? { type: "textarea" }
-      : p.textRange && p.textRange.length > 0
-      ? { type: "select" }
-      : { type: "text" };
-    case "email":
-    case "emailaddress":
-      return { type: "email" };
-    case "password":
-      return { type: "password" };
-    case "phone":
-    case "phonenumber":
-      return { type: "tel" };
-    case "url":
-      return { type: "url" };
-    case "datetime":
-      return { type: "datetime", format: "datetime-local" };
-    case "date":
-      return { type: "datetime", format: "date" };
-    case "time":
-      return { type: "datetime", format: "time" };
+      return resolveStringType(p);
     case "bool":
     case "boolean":
       return { type: "checkbox" };
@@ -75,6 +84,12 @@ function getInputTypeByEntityProperty(p: IEntityProperty): {
     case "decimal":
     case "number":
       return { type: "number", format: "float" };
+    case "datetime":
+      return { type: "datetime", format: "datetime-local" };
+    case "date":
+      return { type: "datetime", format: "date" };
+    case "time":
+      return { type: "datetime", format: "time" };
     default:
       return { type: "text" } // 기본값
   }

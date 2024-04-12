@@ -1,4 +1,4 @@
-import { DI } from "../core";
+import { DI } from "../services/DI";
 import { AppSettings } from "../settings";
 
 function getUrlParams(url: string = document.location.href): Record<string, string> {

@@ -3,7 +3,7 @@ import { Router } from "@remix-run/router";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, RouteObject } from "react-router-dom";
 
-import { DI } from "./DI";
+import { DI } from "../services/DI";
 import {
   MenuItem,
   BreadcrumbItem,

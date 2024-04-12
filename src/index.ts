@@ -3,6 +3,7 @@ export * from './components/parts';
 export * from './components/controls';
 export * from './components/modals';
 export * from './core';
+export * from './data';
 export * from './helpers';
 export * from './hooks';
 export * from './layouts';

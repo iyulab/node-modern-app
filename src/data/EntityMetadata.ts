@@ -1,6 +1,7 @@
 export interface IEntityProperty {
   name: string;
   type: string;
+  format?: string;
   required?: boolean;
   maxLength?: number;
   multiline?: boolean;

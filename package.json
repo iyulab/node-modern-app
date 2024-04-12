@@ -18,6 +18,16 @@
       "require": "./src/index.js",
       "types": "./src/index.d.ts"
     },
+    "./sevices": {
+      "import": "./src/services/index.js",
+      "require": "./src/services/index.js",
+      "types": "./src/services/index.d.ts"
+    },
+    "./settings": {
+      "import": "./src/settings/index.js",
+      "require": "./src/settings/index.js",
+      "types": "./src/settings/index.d.ts"
+    },
     "./components/dx": {
       "import": "./src/components/dx/index.js",
       "require": "./src/components/dx/index.js",

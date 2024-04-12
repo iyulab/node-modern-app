@@ -1,4 +1,4 @@
-import { DI } from '../core/DI';
+import { DI } from '../services/DI';
 import { 
     LayoutStore,
     LocatorStore,

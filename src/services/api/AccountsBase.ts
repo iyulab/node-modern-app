@@ -1,4 +1,5 @@
 import { AuthorizeApiClient } from "./AuthorizeApiClient";
+import "../../extensions";
 
 export abstract class AccountsBase extends AuthorizeApiClient {
     

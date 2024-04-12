@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 
 // Services
-import { DI } from "./DI";
+import { DI } from "../services/DI";
 import { LayoutStore, LocatorStore, UIStore } from "../stores";
 
 // Types

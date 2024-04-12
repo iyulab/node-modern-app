@@ -1,4 +1,4 @@
-import { DI } from "../core/DI";
+import { DI } from "../services/DI";
 import { ODataClient } from "../services/api/ODataClient";
 import { EntityMetadata } from "./EntityMetadata";
 import { EntityFieldUtils } from "./IEntityHandler";
@@ -48,7 +48,7 @@ export class ODataEntityHandler extends EntityHandlerBase {
   public async getInputFieldsAsync(key: string = 'default') {
     if (this.entityMeta) {
       const properties = this.entityMeta.getProperties(key);
-      // console.log(properties);
+      console.log(properties);
       return EntityFieldUtils.convertPropertiesToFields(properties);
     } else {
       return [];

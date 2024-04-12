@@ -1,4 +1,4 @@
-import { DI } from "../core";
+import { DI } from "../services/DI";
 
 // interface 이름(AppSettings) const 이름(AppSettings)은 같도록 의도되었습니다.
 export interface AppSettings {
