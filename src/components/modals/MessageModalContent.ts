@@ -96,16 +96,14 @@ export class MessageModalContent extends UModalContent implements MessageDialogO
         ${this.negative ? html`
           <u-button
             theme="default"
-            text=${this.negative}
             @click=${() => this.cancel()}
-          ></u-button>`
+          >${this.negative}</u-button>`
         : html``}
         ${this.positive ? html`
           <u-button
             theme="primary"
-            text=${this.positive}
             @click=${() => this.confirm()}
-          ></u-button>` 
+          >${this.positive}</u-button>` 
         : html``}
       </u-button-group>
     `;

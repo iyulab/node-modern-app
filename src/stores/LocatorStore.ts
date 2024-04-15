@@ -203,7 +203,7 @@ export class LocatorStore {
       } else if (route.index) {
         // index 설정
         route.path = "";
-        this.keyPath.set(key, parentPath ? `${parentPath}` : this.basePath);
+        this.keyPath.set(key, parentPath ? `${parentPath}` : '');
 
         if (useParam)
           throw new Error("You cannot use 'useParam' in 'index route'");
@@ -229,7 +229,7 @@ export class LocatorStore {
           .filter((x) => x.length > 0);
         const paths = params.id?.split("/").filter((x) => x.length > 0);
         const query = Object.fromEntries(url.searchParams.entries());
-
+        
         this.currentlocation = {
           key: key,
           request: request,

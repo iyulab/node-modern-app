@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { autorun } from "mobx";
 
-import { useLayout, useUI } from "../hooks/UseStores";
+import { useLayout, useLocator, useUI } from "../hooks/UseStores";
 import type { GroupMenu, MenuItem } from "../stores/LayoutStore";
 
 import { VectorIcons } from "./VectorIcons";
@@ -13,6 +13,7 @@ interface LeftNavProps {
 }
 
 function LeftNav({ onExpand }: LeftNavProps) {
+  const locator = useLocator();
   const layout = useLayout();
   const ui = useUI();
 
@@ -93,7 +94,7 @@ function LeftNav({ onExpand }: LeftNavProps) {
     }
     // 2. 단일 메뉴
     else if (menu.type === "single") {
-      const hasParm = menu.path?.endsWith("/:id?");
+      const hasParm = menu.path?.includes("/:id?");
       const path = hasParm ? menu.path?.replace("/:id?", "") : menu.path;
 
       return (
@@ -101,6 +102,10 @@ function LeftNav({ onExpand }: LeftNavProps) {
           key={menu.key}
           to={path!}
           className={({ isActive }) => {
+            if (!menu.path &&
+              locator.baseUrl.split('/').length !== locator.current?.url.pathname.split('/').length) {
+              isActive = false;
+            }
             if (isActive) groupChanged("");
             return `${styles.singleMenu} ${isActive ? styles.selected : ""}`;
           }}
