@@ -10,7 +10,6 @@ import {
   NotificationMenu,
   SubNavMenu,
   SubNavTooltip,
-  ToastBar,
   BusyIndicator,
 } from "../components/parts";
 import {
@@ -27,7 +26,6 @@ export class UIStore {
   private notificationMenu: NotificationMenu = new NotificationMenu();
   public subNavMenu: SubNavMenu = new SubNavMenu();
   private subNavTooltip: SubNavTooltip = new SubNavTooltip();
-  private toastBar: ToastBar = new ToastBar();
   private pageBusyIndicator: BusyIndicator = new BusyIndicator();
 
   constructor() {
@@ -49,9 +47,6 @@ export class UIStore {
     }
     if(!document.body.querySelector('sub-nav-tooltip')) {
       document.body.appendChild(this.subNavTooltip);
-    }
-    if(!document.body.querySelector('toast-bar')) {
-      document.body.appendChild(this.toastBar);
     }
     if(!document.body.querySelector('busy-indicator')) {
       document.body.appendChild(this.pageBusyIndicator);

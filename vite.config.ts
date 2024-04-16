@@ -1,15 +1,16 @@
 // import postcss from 'rollup-plugin-postcss';
 import { defineConfig, normalizePath } from 'vite'
-// import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'path'
 import { libInjectCss } from 'vite-plugin-lib-inject-css';
-import { viteStaticCopy } from 'vite-plugin-static-copy'
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
+  publicDir: 'assets',
   build: {
     minify: true, // 최소화 비활성화 (디버깅: false, 배포: true)
     outDir: 'dist',
+    copyPublicDir: true,
     lib: {
       entry: {
         "index": resolve(__dirname, 'src/index.ts'), // 첫 번째 진입점
@@ -36,16 +37,10 @@ export default defineConfig({
     },
   },
   plugins: [
-    //@ts-ignore
     dts({
       include: 'src/**/*',
     }),
-    //@ts-ignore
     libInjectCss(),
-    // react({
-    //   // tsDecorators: true,
-    // }),
-    //@ts-ignore
     viteStaticCopy({
       targets: [
         {
