@@ -25,8 +25,9 @@ export default defineConfig({
         chunkFileNames: `chunks/[name].js`
       },
       external: [
-        /^react*/,
-        /^lit*/,
+        /^react.*/,
+        /^lit.*/,
+        /^@lit.*/,
         /^@iyulab\/u-components*/,
       ],
     },

@@ -1,39 +1,21 @@
 import type { LitElement } from "lit";
 import type { ComponentType } from "react";
-import ReactDOM from "react-dom";
-import { ReactComponent } from "./ReactComponent";
-import React from "react";
-import { Router } from "./router/Router";
-
-export interface BaseRoute {
-  path?: string;
-  children?: Route[];
-}
-
-export interface ElementRoute extends BaseRoute {
-  element?: LitElement;
-}
-
-export interface ComponentRoute extends BaseRoute {
-  component?: ComponentType;
-}
-
-export type Route = ElementRoute | ComponentRoute;
+import { Router } from "./router/core/Router";
+import { Route } from "./router/models/Route";
 
 export interface Breadcrumb {
-  icon?: string;
-  display?: string;
+  icon: string;
+  display: string;
 }
 
 export interface Header {
   logo?: string;
   title?: string;
-  breadcrumbs?: Record<string, Breadcrumb>;
-
-  // actions
+  breadcrumbs?: Record<string, Breadcrumb | string>;
   help?: string;
-  user?: string;
   locale?: string;
+  user?: string;
+  actions?: (ComponentType | LitElement)[];
 }
 
 export interface Menu {
@@ -43,48 +25,97 @@ export interface Menu {
 }
 
 export interface Sidebar {
+  header?: ComponentType | LitElement;
+  footer?: ComponentType | LitElement;
   mainMenu?: Menu[];
   subMenu?: Menu[];
 }
 
-export interface Layout {
+export interface Shell {
   base?: string;
   routes?: Route[];
-  breakPoint?: BreakPoint;
+  layout?: ComponentType | LitElement;
   header?: Header;
   sidebar?: Sidebar;
+  breakPoint?: BreakPoint;
 }
 
 export type AppTheme = 'light' | 'dark';
 
-export type ScreenSize = 'small' | 'middle' | 'large';
+export type ScreenSize = 'small' | 'medium' | 'large';
 
 export type BreakPoint = {
   [L in ScreenSize]: number;
 }
 
 export class UTestApp {
-  private static theme = 'light';
-  private static screen = 'large';
-  private static router: Router;
-  private static routes: Route[] = [];
+  private static theme: AppTheme;
+  private static screen: ScreenSize;
   private static breakpoint: BreakPoint;
+
+  private static _currentShell: Shell;
+  private static shell: Shell | Shell[];
+  private static router: Router;
   
-  public static load(layouts: Layout | Layout[]) {
-    if (Array.isArray(layouts)) {
-      layouts.forEach(layout => {
-        const basePath = layout.base;
-        console.log(basePath);
+  public static async load(shell: Shell | Shell[]) {
+    this.dispose();
+    
+    if (Array.isArray(shell)) {
+
+      shell.forEach(s => {
+        s.base ||= '/';
+        s.base = s.base.startsWith('/') ? s.base : '/' + s.base;
       });
     } else {
-      const layout = layouts;
-      console.log(layout);
+      shell.base ||= '/';
+      shell.base = shell.base.startsWith('/') ? shell.base : '/' + shell.base;
+      this.router.setRoutes([
+        {
+          index: true,
+          component: shell.layout as ComponentType,
+          children: shell.routes || [],
+        }
+      ], document.body);
     }
-    const root = document.getElementById('root');
-    ReactDOM.render(React.createElement(ReactComponent), root);
+    const currentPathname = window.location.pathname;
+    const shell = this.findShell(currentPathname);
+    if (shell) {
+      this.router.setRoutes(shell.routes || [], document.body);
+    } else {
+      throw new Error('Shell not found');
+    }
+  }
+
+  public static dispose() {
+     
+  }
+
+  private static findShell(pathname: string) {
+    if (Array.isArray(this.shell)) {
+      return this.shell.find(s => pathname.startsWith(s.base || '/'));
+    } else {
+      return this.shell.base === pathname ? this.shell : undefined;
+    }
+  }
+
+  private static onPopState() {
+    const pathname = window.location.pathname;
+    const shell = this.findShell(pathname);
+    if (shell !== this._currentShell) {
+      this.router.setRoutes(shell.routes || [], document.body);
+    }
+  }
+
+  private static changeShell() {
+
+  }
+
+  private static onResize() {
+
   }
 
   public static toggleTheme() {
     
   }
+  
 }
