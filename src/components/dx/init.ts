@@ -1,4 +1,4 @@
-import { DI } from '../../core';
+import { DI } from '../../services';
 import { AppSettings } from '../../settings';
 import config from 'devextreme/core/config';
 

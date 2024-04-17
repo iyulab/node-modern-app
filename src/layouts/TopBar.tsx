@@ -104,7 +104,7 @@ const TopBar = observer(() => {
       {/* 헤더부 본문 */}
       <div className={styles.container}>
         {/* 로고 */}
-        <Link className={styles.logo} to={locator.baseUrl}>
+        <Link className={styles.logo} to={''}>
           <div className={styles.icon}>
             <img className={styles.img} src={logo} />
           </div>
