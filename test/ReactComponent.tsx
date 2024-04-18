@@ -1,4 +1,7 @@
-export function ReactComponent() {
+import { ReactPage } from "./layouts/Page";
+
+export const ReactComponent = ReactPage(({ params, pathname, data }) => {
+  console.log(params, pathname, data);
   return (
     <div style={{
       display: 'flex',
@@ -12,4 +15,4 @@ export function ReactComponent() {
       hello  
     </div>
   );
-}
+});

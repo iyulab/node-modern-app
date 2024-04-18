@@ -1,27 +1,31 @@
-import { convertReact } from '@iyulab/u-components/utils';
-import { LitElement, css, html } from 'lit';
+import { LitElement, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { createElement } from "react";
 
-@customElement('u-page')
-export class UPage extends LitElement {
+import type { RouteInfo } from '../router/models/Route';
+import { App } from '../App';
 
-  render() {
-    return html`
-      <slot></slot>
-    `;
-  }
+const defaultRouteInfo: RouteInfo = {
+  pathname: window.location.pathname,
+  params: {},
+};
+
+@customElement('lit-page')
+export class LitPage extends LitElement {
+  protected routeInfo: RouteInfo = App.router?.routeInfo || defaultRouteInfo;
 
   static styles = css`
     :host {
-      position: relative;
-      flex: 1;
-      overflow: auto;
+      display: block;
     }
-    
   `;
 }
 
-export const Page = convertReact({
-  elementClass: UPage,
-  tagName: 'u-page',
-});
+export function ReactPage(PageComponent: React.ComponentType<RouteInfo>) {
+  return function WithPageComponent() {
+    const routeInfo: RouteInfo = App.router?.routeInfo || defaultRouteInfo;
+
+    return createElement(PageComponent, routeInfo);
+  }
+}
+

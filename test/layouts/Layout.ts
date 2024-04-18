@@ -2,52 +2,36 @@ import { LitElement, css, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { convertReact } from '@iyulab/u-components/utils';
 
-import './UHeader';
-import './USidebar';
-import './UPage';
+import '../router/elements/Outlet';
+import './Header';
+import './Sidebar';
 
 @customElement('u-layout')
 export class ULayout extends LitElement {
-  private readonly observer = new ResizeObserver(this.handleResize);
 
   @property({ type: Object }) screen: any;
   @property({ type: Object }) breakpoint: any;
 
   connectedCallback() {
     super.connectedCallback();
-    this.observer.observe(this);
+    document.body.style.margin = '0';
+    document.body.style.overflow = 'hidden';
   }
 
   disconnectedCallback() {
-    this.observer.unobserve(this);
     super.disconnectedCallback();
   }
 
   render() {
     return html`
-      <u-header></u-header>
-      <u-sidebar></u-sidebar>
-      <u-page>
-        <u-outlet></u-outlet>
-      </u-page>
-    `;
-  }
+      <u-header
 
-  private handleResize() {
-    const width = this.offsetWidth;
-    if (!this.breakpoint.small && 
-      width <= this.breakpoint.small
-    ) {
-      this.screen = 'small';
-    } else if (!this.breakpoint.middle &&
-      (width > this.breakpoint.small && width <= this.breakpoint.middle)
-    ) {
-      this.screen = 'middle';
-    } else if (!this.breakpoint.large &&
-      width > this.breakpoint.large
-    ) {
-      this.screen = 'large';
-    }
+      ></u-header>
+      <u-sidebar
+        
+      ></u-sidebar>
+      <u-outlet></u-outlet>
+    `;
   }
 
   static styles = css`
@@ -56,7 +40,8 @@ export class ULayout extends LitElement {
       width: 100vw;
       height: 100vh;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: auto 1fr;
+      grid-template-rows: auto 1fr;
     }
     :host([screen="small"]) {
       /* grid-template-columns: 1fr; */
