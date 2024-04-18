@@ -5,25 +5,35 @@ if (!globalThis.URLPattern) {
   await import("urlpattern-polyfill");
 }
 
-import type { RouterConfig } from '../models/Router';
-import type { Route, RouteInfo } from '../models/Route';
-import type { ULayout } from '../../layouts/Layout';
-import type { UOutlet } from '../elements/Outlet';
-import { URLTool } from '../utils/URLTools';
+import type { Route, RouteInfo } from './Route';
+import type { ULayout } from '../layouts/Layout';
+import type { UOutlet } from './Outlet';
+
+export interface RouterConfig {
+  root: ULayout;
+  basepath?: string;
+  routes: Route[];
+  fallback?: any;
+}
 
 export class Router {
   private readonly root: ULayout;
-  private fallback?: any;
-  private basepath: string;
-  private routes: Route[] = [];
-  
+  private readonly fallback?: any;
+
+  private readonly _basepath: string;
+  private readonly _routes: Route[] = [];
   private _currentRoute?: Route;
   private _routeInfo?: RouteInfo;
 
+  public get basepath() {
+    return this._basepath;
+  }
+  public get routes() {
+    return this._routes;
+  }
   public get currentRoute() {
     return this._currentRoute;
   }
-
   public get routeInfo() {
     return this._routeInfo;
   }
@@ -31,9 +41,8 @@ export class Router {
   constructor(config: RouterConfig) {
     this.root = config.root;    
     this.fallback = config.fallback;
-    this.basepath = this.setBasepath(config.basepath || '/');
-    this.routes = this.setRoutes(config.routes, this.basepath);
-    console.log(this.routes);
+    this._basepath = this.setBasepath(config.basepath || '/');
+    this._routes = this.setRoutes(config.routes, this.basepath);
     this.connect();
   }
 
@@ -64,7 +73,7 @@ export class Router {
 
     // 경로 처리(상대경로일 경우 (basepath + pathname) 절대경로로 변환)
     const fullpath = pathname.startsWith('/') ? pathname 
-    : URLTool.combinePath(this.basepath, pathname);
+    : this.combinePath(this.basepath, pathname);
 
     // 일치하는 라우트 찾기
     const route = this.getRoute(fullpath);
@@ -114,7 +123,7 @@ export class Router {
         pathname: basepath + route.path,
       });
     });
-    return [...this.routes, ...routes];
+    return [...this._routes, ...routes];
   }
 
   /**
@@ -122,7 +131,7 @@ export class Router {
    * URLPattern을 사용하여 경로를 비교합니다.
    */
   private getRoute(pathname: string) {
-    const route = this.routes.find((route) => route.pattern?.test({ pathname: pathname }));
+    const route = this._routes.find((route) => route.pattern?.test({ pathname: pathname }));
     if (route) {
       return route;
     }
@@ -143,6 +152,10 @@ export class Router {
     const pathname = window.location.pathname;
     this.go(pathname);
   };
+
+  private combinePath(...paths: string[]) {
+    return paths.map(p => p.replace(/^\/|\/$/g, '')).join('/');
+  }
 
   /**
    * 전체 문서에서 a 태그의 이벤트가 발생했을 때 라우팅 처리

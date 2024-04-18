@@ -2,98 +2,124 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { convertReact } from '@iyulab/u-components/utils';
 
-import type { 
-  HeaderConfig,
-  HeaderLogo,
-  HeaderTitle,
-  Breadcrumb,
-  HeaderButton,
-} from './Header.model';
+import { 
+  App,
+  type AppScreen, 
+  type AppTheme 
+} from '../App';
 
-import "@iyulab/u-components/components/button";
-import "@iyulab/u-components/components/dropdown";
-import "@iyulab/u-components/components/breadcrumb";
+import type { 
+  Breadcrumb,
+  LocaleConfig,
+  UserConfig 
+} from '../components/header-parts';
+import type {
+  HeaderTitle,
+  HeaderOption
+} from './Header.model';
 
 @customElement('u-header')
 export class UHeader extends LitElement {
 
-  @property({ type: String }) basepath?: string;
-  @property({ type: Object }) logo?: string | HeaderLogo;
-  @property({ type: Object }) label?: string | HeaderTitle;
+  @property({ type: String }) screen?: AppScreen;
+  @property({ type: Object }) headline?: HeaderTitle;
   @property({ type: Object }) breadcrumbs?: Breadcrumb;
-  @property({ type: Object }) buttons?: HeaderButton;
-  @property({ type: Array }) others?: any[];
-
-  @property({ type: Object }) config?: HeaderConfig;
+  @property({ type: String }) help?: string;
+  @property({ type: String }) theme?: AppTheme;
+  @property({ type: Object }) locale?: LocaleConfig;
+  @property({ type: Object }) user?: UserConfig;
+  @property({ type: Object }) option?: HeaderOption;
 
   protected async updated(changedProperties: any) {
     super.updated(changedProperties);
     await this.updateComplete;
-
-    if (changedProperties.has('config') && this.config) {
-      this.logo = this.config.logo || './favicon.ico';
-      this.label = this.config.title;
-      this.breadcrumbs = this.config.breadcrumbs;
-      this.buttons = this.config.buttons;
-      this.others = this.config.others;
-    }
   }
 
   render() {
-    // if(!this.config) return nothing;
-
+    if (this.option?.noHeader) return nothing;
+    
     return html`
-      ${this.renderLogo()}
+      ${this.renderToggler()}
       ${this.renderTitle()}
       ${this.renderBreadcrumbs()}
-      ${this.renderActions()}
+      <div class="flex">
+        <slot name="extra"></slot>
+      </div>
+      ${this.renderHelp()}
+      ${this.renderLocale()}
+      ${this.renderTheme()}
+      ${this.renderUser()}
     `;
   }
 
-  private renderLogo() {
-    if (!this.logo) return nothing;
+  private renderToggler() {
+    if (this.option?.noMenuToggle) return nothing;
 
     return html`
-      <img src=${this.logo} />
+      <u-icon-button 
+        type="system" 
+        name="menu"
+        tooltip="메뉴"
+        size="24px"
+      ></u-icon-button>
     `;
   }
 
   private renderTitle() {
-    if (!this.label) return nothing;
+    if (this.option?.noTitle) return nothing;
 
+    const iconSrc = this.headline?.logo || '/favicon.ico';
+    const iconWidth = this.headline?.logoWidth || '32px';
+    const iconHeight = this.headline?.logoHeight || '32px';
+    const titleColor = this.headline?.textColor || 'black';
+    const path = this.headline?.path || App.router?.basepath || '/';
     return html`
-      <h1>${this.label}</h1>
+      <u-link href=${path}>
+        <img class="logo" src=${iconSrc} alt="app-logo" 
+          width=${iconWidth} height=${iconHeight} />
+        <div class="title" style=${`color: ${titleColor}`}>
+          ${this.headline?.text}
+        </div>
+      </u-link>
     `;
   }
 
   private renderBreadcrumbs() {
-    const pathnames = window.location.pathname.split('/');
-    if (!this.breadcrumbs) {
-      return html`
-        <u-breadcrumb>
-          <u-breadcrumb-item href=${this.basepath}>
-          </u-breadcrumb-item>
-        </u-breadcrumb>
-      `;
-    } else {
-      return html`
-        <u-breadcrumb>
-          
-        </u-breadcrumb>
-      `;
-    }
+    if (this.option?.noBreadcrumbs) return nothing;
+    return html`<header-breadcrumb></header-breadcrumb>`;
   }
 
-  private renderActions() {
+  private renderHelp() {
+    if (this.option?.noHelp || !this.help) return nothing;
     return html`
-      <u-dropdown>
-        <u-button slot="trigger">Actions</u-button>
-        <u-dropdown-menu>
-          <u-dropdown-item>Action 1</u-dropdown-item>
-          <u-dropdown-item>Action 2</u-dropdown-item>
-          <u-dropdown-item>Action 3</u-dropdown-item>
-        </u-dropdown-menu>
-      </u-dropdown>
+      <help-button
+        .href=${this.help}
+      ></help-button>
+    `;
+  }
+
+  private renderLocale() {
+    if (this.option?.noLocale) return nothing;
+
+    return html`
+      <locale-button
+        .locale=${this.locale}
+      ></locale-button>
+    `;
+  }
+
+  private renderTheme() {
+    if (this.option?.noTheme) return nothing;
+    return html`<theme-button></theme-button>`;
+  }
+
+  private renderUser() {
+    if (this.option?.noUser) return nothing;
+
+    return html`
+      <user-button
+        .user=${this.user}
+      ></user-button>
     `;
   }
 
@@ -102,8 +128,15 @@ export class UHeader extends LitElement {
       position: relative;
       display: flex;
       flex-direction: row;
+      gap: 10px;
       align-items: center;
       justify-content: space-between;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .flex {
+      flex: 1;
     }
   `;
 }

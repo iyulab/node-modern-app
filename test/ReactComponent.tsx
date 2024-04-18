@@ -1,6 +1,6 @@
-import { ReactPage } from "./layouts/Page";
+import { ReactChannel } from "./router/Channel";
 
-export const ReactComponent = ReactPage(({ params, pathname, data }) => {
+export const ReactComponent = ReactChannel(({ params, pathname, data }) => {
   console.log(params, pathname, data);
   return (
     <div style={{
@@ -8,8 +8,8 @@ export const ReactComponent = ReactPage(({ params, pathname, data }) => {
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
-      height: '100vh',
-      width: '100vw',
+      height: '100%',
+      width: '100%',
       backgroundColor: 'lightblue',
     }}>
       hello  

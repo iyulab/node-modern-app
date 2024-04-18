@@ -51,7 +51,7 @@ export class ULink extends LitElement {
 
   static styles = css`
     :host {
-      display: block;
+      display: inline-flex;
       cursor: pointer;
     }
   `;

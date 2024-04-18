@@ -1,11 +1,8 @@
 import { LitElement, css, html, nothing, render } from 'lit';
-import { customElement, query } from 'lit/decorators.js';
-
+import { customElement, property, query } from 'lit/decorators.js';
 import { createElement, type ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
-
 import { convertReact } from '@iyulab/u-components/utils';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
 @customElement('u-outlet')
 export class UOutlet extends LitElement {
@@ -16,6 +13,8 @@ export class UOutlet extends LitElement {
   @query('#react') reactDom!: HTMLElement;
   // LitElement를 렌더링할 엘리먼트
   @query('#lit') litDom!: HTMLElement;
+
+  @property({ type: String, reflect: true }) type?: 'react' | 'lit';
 
   render() {
     return html`
@@ -29,9 +28,10 @@ export class UOutlet extends LitElement {
    */
   public async renderLitElement(element: typeof LitElement | string) {
     this.removeDom();
+    this.type = 'lit';
     let template;
     if (typeof element === 'string') {
-      template = unsafeHTML(`<${element}></${element}>`);
+      template = document.createElement(element);
     } else if(element.prototype instanceof LitElement) {
       template = new element();
     } else {
@@ -45,6 +45,7 @@ export class UOutlet extends LitElement {
    */
   public renderReactComponent(component: ComponentType) {
     this.removeDom();
+    this.type = 'react';
     this.containerDom = createRoot(this.reactDom);
     this.containerDom.render(createElement(component));
   }
@@ -61,6 +62,12 @@ export class UOutlet extends LitElement {
   static styles = css`
     :host {
       display: block;
+    }
+    :host([type="react"]) #react {
+      height: 100%;
+    }
+    :host([type="lit"]) #lit {
+      height: 100%;
     }
   `;
   

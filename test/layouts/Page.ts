@@ -1,31 +1,87 @@
-import { LitElement, css } from 'lit';
-import { customElement } from 'lit/decorators.js';
-import { createElement } from "react";
+import { LitElement, css, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { convertReact } from "@iyulab/u-components/utils";
 
-import type { RouteInfo } from '../router/models/Route';
-import { App } from '../App';
+@customElement('u-page')
+export class UPage extends LitElement {
 
-const defaultRouteInfo: RouteInfo = {
-  pathname: window.location.pathname,
-  params: {},
-};
+  @property({ type: Boolean, reflect: true }) showElevator: boolean = false;
+  @property({ type: String }) headline?: string;
 
-@customElement('lit-page')
-export class LitPage extends LitElement {
-  protected routeInfo: RouteInfo = App.router?.routeInfo || defaultRouteInfo;
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('scroll', this.handleScroll);
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('scroll', this.handleScroll);
+    super.disconnectedCallback();
+  }
+
+  render() {
+    return html`
+      <!-- page title -->
+      ${this.renderTitle()}
+
+      <!-- main -->
+      <slot></slot>
+
+      <!-- elevator button -->
+      <div class="elevator">
+        <u-icon
+          type="system"
+          name="arrow-up"
+        ></u-icon>
+      </div>
+    `;
+  }
+
+  private renderTitle() {
+    if (!this.headline) return;
+    return html`
+      <div class="title">
+        ${this.headline}
+      </div>
+    `;
+  }
+
+  private handleScroll = () => {
+    if (this.scrollTop <= 20) {
+      this.showElevator = false;
+    } else {
+      this.showElevator = true;
+    }
+  }
 
   static styles = css`
     :host {
+      position: relative;
+      width: 100%;
+      height: 100%;
       display: block;
+      overflow: auto;
+    }
+    :host([showElevator]) .elevator {
+      display: block;
+    }
+
+    .title {
+      padding: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .elevator {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      display: none;
     }
   `;
 }
 
-export function ReactPage(PageComponent: React.ComponentType<RouteInfo>) {
-  return function WithPageComponent() {
-    const routeInfo: RouteInfo = App.router?.routeInfo || defaultRouteInfo;
-
-    return createElement(PageComponent, routeInfo);
-  }
-}
-
+export const Page = convertReact({
+  elementClass: UPage,
+  tagName: 'u-page',
+});

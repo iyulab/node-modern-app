@@ -1,49 +1,48 @@
 import type { LitElement } from "lit";
-import type { ComponentType } from "react";
-
-export interface HeaderLogo {
-  src: string;
-  size?: string;
-}
+import type { AppTheme } from "../App";
+import type { 
+  Breadcrumb,
+  LocaleConfig,
+  UserConfig
+} from "../components/header-parts";
 
 export interface HeaderTitle {
-  text: string;
+  logo?: string;
+  logoWidth?: string;
+  logoHeight?: string;
+  text?: string;
+  textColor?: string;
   path?: string;
-  fontSize?: string;
-  fontWeight?: string;
-  fontFamily?: string;
-  color?: string;
 }
 
-export type TextBreadcrumb = Record<string, string>;
-export type RegExpBreadcrumb = Record<RegExp, (match:string) => string>;
-export type Breadcrumb = TextBreadcrumb | RegExpBreadcrumb;
 
-export interface HeaderButton {
-  help?: string;
-  theme?: 'light' | 'dark' | 'system' | 'none';
-  locale?: LocaleConfig;
-  user?: UserConfig;
-}
-
-export interface LocaleConfig {
-  
-}
-
-export interface UserConfig {
-
+export interface HeaderOption {
+  noHeader?: boolean;
+  noTitle?: boolean;
+  noBreadcrumbs?: boolean;
+  noHelp?: boolean;
+  noLocale?: boolean;
+  noTheme?: boolean;
+  noUser?: boolean;
+  noMenuToggle?: boolean;
 }
 
 export interface HeaderConfig {
   
-  logo?: string | HeaderLogo;
-  
-  title?: string | HeaderTitle;
+  title?: HeaderTitle;
   
   breadcrumbs?: Breadcrumb;
   
-  buttons?: HeaderButton;
+  help?: string;
 
-  others?: (ComponentType | LitElement)[];
+  locale?: LocaleConfig;
+
+  theme?: AppTheme;
+
+  user?: UserConfig;
+
+  extra?: typeof LitElement | string;
+
+  option?: HeaderOption;
 
 }
