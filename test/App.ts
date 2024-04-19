@@ -1,19 +1,19 @@
 import { observable, IObservableValue } from 'mobx';
 
 import type { Route } from "./router/Route";
-import type { HeaderConfig } from "./layouts/Header.model";
-import type { SidebarConfig } from "./layouts/Sidebar.model";
+import type { HeaderModel } from "./layouts/Header.model";
+import type { SidebarModel } from "./layouts/Sidebar.model";
 
 import "./settings/UComponentsSetup";
 import { Router } from "./router/Router";
 import { ULayout } from "./layouts/Layout";
 
 export interface AppConfig {
-  routes: Route[];
   basepath?: string;
+  routes: Route[];
   breakPoint?: BreakPoint;
-  header?: HeaderConfig;
-  sidebar?: SidebarConfig;
+  header?: HeaderModel;
+  sidebar?: SidebarModel;
 }
 
 export type AppTheme = 'light' | 'dark' | 'system';
@@ -27,9 +27,9 @@ export type BreakPoint = {
 export class App {
   private static breakpoint: BreakPoint = { small: 768, medium: 1024, large: 1440 };
 
-  public static theme: IObservableValue<AppTheme> = observable.box('system');
-  public static screen: IObservableValue<AppScreen> = observable.box('large');
-  public static openSidebar: IObservableValue<boolean> = observable.box(true);
+  public static readonly theme: IObservableValue<AppTheme> = observable.box('system');
+  public static readonly screen: IObservableValue<AppScreen> = observable.box('large');
+  public static readonly openSidebar: IObservableValue<boolean> = observable.box(true);
   public static router?: Router;
   
   public static async load(config: AppConfig) {
@@ -39,6 +39,7 @@ export class App {
 
     const theme = localStorage.getItem('theme') as AppTheme;
     this.changeTheme(theme || 'system');
+    this.breakpoint = config.breakPoint || this.breakpoint;
 
     const layout = new ULayout();
     layout.header = config.header;
@@ -66,13 +67,17 @@ export class App {
   }
 
   public static changeTheme(theme: AppTheme) {
+    this.theme.set(theme);
     localStorage.setItem('theme', theme);
+
+    // 운영체제 테마 설정
     if (theme === 'system') {
       const media = window.matchMedia('(prefers-color-scheme: dark)');
       theme = media.matches ? 'dark' : 'light';
+      media.removeEventListener('change', this.onChangeColorScheme);
+      media.addEventListener('change', this.onChangeColorScheme);
     }
     document.documentElement.classList.toggle("sl-theme-dark", theme === 'dark');
-    this.theme.set(theme);
   }
 
   public static toggleSidebar() {
@@ -95,6 +100,11 @@ export class App {
     ) {
       this.screen.set('large');
     }
+  }
+
+  private static onChangeColorScheme = (e: MediaQueryListEvent) => {
+    const theme = e.matches ? 'dark' : 'light';
+    this.changeTheme(theme);
   }
   
 }

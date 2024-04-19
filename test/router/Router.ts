@@ -42,7 +42,7 @@ export class Router {
     this.root = config.root;    
     this.fallback = config.fallback;
     this._basepath = this.setBasepath(config.basepath || '/');
-    this._routes = this.setRoutes(config.routes, this.basepath);
+    this._routes = this.setRoutes(config.routes, this._basepath);
     this.connect();
   }
 
@@ -63,35 +63,32 @@ export class Router {
 
   /**
    * 지정한 경로로 이동
-   * - 절대경로일 경우 basepath를 무시하고 pathname으로 이동합니다.
-   * - 상대경로일 경우 basepath와 조합하여 절대경로로 변환합니다.
-   * @param pathname 이동할 경로
+   * - 상대경로일 경우 basepath와 조합되어 이동합니다.
+   * @param url 이동할 경로
    */
-  public async go(pathname: string) {
-    // 동일한 경로로 이동하는 경우 동작하지 않음
-    if (pathname === this._routeInfo?.pathname) return;
+  public async go(url: string) {
+    // URL 분석
+    const routeInfo = this.parseURL(url);
 
-    // 경로 처리(상대경로일 경우 (basepath + pathname) 절대경로로 변환)
-    const fullpath = pathname.startsWith('/') ? pathname 
-    : this.combinePath(this.basepath, pathname);
+    // 동일한 경로로 이동하는 경우 동작하지 않음
+    if (routeInfo.href === this._routeInfo?.href) return;
 
     // 일치하는 라우트 찾기
-    const route = this.getRoute(fullpath);
-    if(!route && fullpath !== this.basepath) {
-      throw new Error(`No route found for ${pathname}`);
+    const route = this.getRoute(routeInfo.pathname);
+    if(!route && routeInfo.pathname !== this._basepath) {
+      throw new Error(`No route found for pathname: ${routeInfo.pathname}`);
     }
 
     // 데이터 로딩 및 라우팅 정보 업데이트
-    const params = route?.pattern?.exec(fullpath)?.pathname.groups || {};
-    const query = new URLSearchParams(window.location.search);
-    const routeUrl = { pathname: fullpath, params: params, query: query };
-    let fetchData;
+    routeInfo.params = route?.pattern?.exec(routeInfo.pathname)?.pathname.groups || {};
     if (typeof route?.loader === 'function') {
-      fetchData = await route.loader(routeUrl);
+      routeInfo.data = await route.loader(routeInfo);
     }
     this._currentRoute = route;
-    this._routeInfo = { ...routeUrl, data: fetchData };
-    window.history.pushState({}, route?.title || '', fullpath);
+    this._routeInfo = routeInfo;
+    document.title = route?.title || document.title;
+    window.history.pushState({}, '', routeInfo.href);
+    document.dispatchEvent(new CustomEvent('route-changed', { detail: routeInfo }));
 
     // 페이지 렌더링
     await this.root.updateComplete;
@@ -103,6 +100,13 @@ export class Router {
     } else {
       outlet.removeDom();
     }
+  }
+
+  /**
+   * 라우터 기본 경로로 이동
+   */
+  public async goBase() {
+    await this.go(this._basepath);
   }
 
   /**
@@ -149,13 +153,43 @@ export class Router {
    * 브라우저 히스토리 이벤트가 발생했을 때 라우팅 처리
    */
   private onPopstate = () => {
-    const pathname = window.location.pathname;
-    this.go(pathname);
+    const href = window.location.href;
+    this.go(href);
   };
 
-  private combinePath(...paths: string[]) {
-    return paths.map(p => p.replace(/^\/|\/$/g, '')).join('/');
+  /**
+   * URL 문자열을 파싱하여 새로운 URL 정보를 반환합니다.
+   */
+  private parseURL(url: string): RouteInfo {
+    let urlObj: URL;
+    try {
+      if (url.startsWith('http')) {
+        urlObj = new URL(url);
+      } else if (url.startsWith('/')) {
+        urlObj = new URL(url, window.location.origin);
+      } else {
+        urlObj = new URL(this._basepath + url, window.location.origin);
+      }
+    } catch (error) {
+      throw new Error(`Invalid URL: ${url}`);
+    }
+    return {
+      href: urlObj.href,
+      origin: urlObj.origin,
+      path: urlObj.href.replace(urlObj.origin, ''),
+      pathname: urlObj.pathname,
+      query: new URLSearchParams(urlObj.search),
+      hash: urlObj.hash,
+      params: {},
+    };
   }
+
+  /**
+   * pathname 경로를 조합하여 반환합니다.
+   */
+  // private combinePath(...paths: string[]) {
+  //   return paths.map(p => p.replace(/^\/|\/$/g, '')).join('/');
+  // }
 
   /**
    * 전체 문서에서 a 태그의 이벤트가 발생했을 때 라우팅 처리

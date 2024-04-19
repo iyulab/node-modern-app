@@ -1,7 +1,7 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-export interface UserConfig {
+export interface UserModel {
   name?: string;
   avatar?: string;
 }
@@ -9,7 +9,7 @@ export interface UserConfig {
 @customElement('user-button')
 export class UserButton extends LitElement {
   
-  @property({ type: Object }) user?: UserConfig;
+  @property({ type: Object }) model?: UserModel;
 
   render() {
     return html`

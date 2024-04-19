@@ -5,21 +5,25 @@ import './test/LitElement';
 App.load({
   basepath: '/',
   routes: [
-    { path: '/react', component: ReactComponent },
+    { title: "React!", path: '/react', component: ReactComponent },
     { path: '/lit', element: 'u-lit', loader: async (url) => {
       return "hello lit" + url.pathname;
     }},
   ],
   header: {
+    title: {
+      text: 'Hello World',
+    },
     breadcrumbs: {
       'react': 'ReactComponent',
       'lit': 'LitElement',
-      'sdsd': async (path) => {
+      '/^d+/': async (path: any) => {
         return path + ' Page';
       }
     },
-    help: 'https://iyulab.com',
-    theme: 'dark',
+    help: {
+      href: 'https://www.naver.com/help',
+    },
     locale: 'en',
     user: {
       name: 'John Doe',
@@ -28,9 +32,13 @@ App.load({
   },
   sidebar: {
     menuItem: [
-      { display: 'Home', icon: 'home' },
-      { display: 'About', icon: 'info' },
-      { display: 'Contact', icon: 'contact' },
+      { display: 'Home', path: '/' },
+      { type: 'line' , color: 'red' },
+      { display: 'Group', items: [
+        { display: 'About', path: '/about' },
+        { display: 'Services', path: '/services' },
+        { display: 'Contact', path: '/contact' },
+      ]},
     ]
   }
 });

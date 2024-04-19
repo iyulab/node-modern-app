@@ -1,46 +1,30 @@
 import type { LitElement } from "lit";
+import type { 
+  SingleMenuModel, 
+  GroupMenuModel, 
+  MenuDividerModel 
+} from "../components/sidebar-parts";
 
-export interface SingleMenu {
-  icon?: string;
-  display?: string;
-  path?: string;
+export type NavMenuModel = ( SingleMenuModel | GroupMenuModel ) & {
+  type?: undefined;
 }
 
-export interface GroupMenu {
-  icon: string;
-  display: string;
-  subMenu: SubMenu[];
+export type MenuItem = NavMenuModel | MenuDividerModel;
+
+export interface SidebarOption {
+  noSidebar?: boolean;
 }
 
-export interface SubMenu {
-  display: string;
-  path: string;
-}
+export interface SidebarModel {
 
-export interface LineDivider {
-  type: 'line';
-  thickness?: string;
-  color?: string;
-  height?: string;
-}
+  backgroundColor?: string;
 
-export interface BlankDivider {
-  type: 'blank';
-  height?: string;
-}
-
-export interface TextDivider {
-  type: 'text';
-  display: string;
-  color?: string;
-  height?: string;
-  size?: string;
-}
-
-export type MenuItem = SingleMenu | GroupMenu | LineDivider | BlankDivider | TextDivider;
-
-export interface SidebarConfig {
   header?: typeof LitElement | string;
+
   footer?: typeof LitElement | string;
+
   menuItem?: MenuItem[];
+
+  option?: SidebarOption;
+
 }

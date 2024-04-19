@@ -2,32 +2,30 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { convertReact } from '@iyulab/u-components/utils';
 
-import { 
-  App,
-  type AppScreen, 
-  type AppTheme 
-} from '../App';
-
 import type { 
-  Breadcrumb,
-  LocaleConfig,
-  UserConfig 
+  AppScreen,
+} from '../App';
+import type {
+  BreadcrumbModel,
+  HeaderTitleModel,
+  LocaleModel,
+  UserModel,
+  HelpModel
 } from '../components/header-parts';
 import type {
-  HeaderTitle,
   HeaderOption
 } from './Header.model';
 
 @customElement('u-header')
 export class UHeader extends LitElement {
 
-  @property({ type: String }) screen?: AppScreen;
-  @property({ type: Object }) headline?: HeaderTitle;
-  @property({ type: Object }) breadcrumbs?: Breadcrumb;
-  @property({ type: String }) help?: string;
-  @property({ type: String }) theme?: AppTheme;
-  @property({ type: Object }) locale?: LocaleConfig;
-  @property({ type: Object }) user?: UserConfig;
+  @property({ type: String, reflect: true }) screen?: AppScreen;
+
+  @property({ type: Object }) headline?: HeaderTitleModel;
+  @property({ type: Object }) breadcrumbs?: BreadcrumbModel;
+  @property({ type: Object }) help?: HelpModel;
+  @property({ type: Object }) locale?: LocaleModel;
+  @property({ type: Object }) user?: UserModel;
   @property({ type: Object }) option?: HeaderOption;
 
   protected async updated(changedProperties: any) {
@@ -39,73 +37,49 @@ export class UHeader extends LitElement {
     if (this.option?.noHeader) return nothing;
     
     return html`
-      ${this.renderToggler()}
-      ${this.renderTitle()}
-      ${this.renderBreadcrumbs()}
+      <div class="headline">
+        ${this.renderToggler()}
+        ${this.renderTitle()}
+      </div>
+      <div class="breadcrumb">
+        ${this.renderBreadcrumbs()}
+      </div>
       <div class="flex">
         <slot name="extra"></slot>
       </div>
-      ${this.renderHelp()}
-      ${this.renderLocale()}
-      ${this.renderTheme()}
-      ${this.renderUser()}
+      <div class="action">
+        ${this.renderHelp()}
+        ${this.renderLocale()}
+        ${this.renderTheme()}
+        ${this.renderUser()}
+      </div>
+      <slot name="progress"></slot>
     `;
   }
 
   private renderToggler() {
     if (this.option?.noMenuToggle) return nothing;
-
-    return html`
-      <u-icon-button 
-        type="system" 
-        name="menu"
-        tooltip="메뉴"
-        size="24px"
-      ></u-icon-button>
-    `;
+    return html`<menu-toggler></menu-toggler>`;
   }
 
   private renderTitle() {
     if (this.option?.noTitle) return nothing;
-
-    const iconSrc = this.headline?.logo || '/favicon.ico';
-    const iconWidth = this.headline?.logoWidth || '32px';
-    const iconHeight = this.headline?.logoHeight || '32px';
-    const titleColor = this.headline?.textColor || 'black';
-    const path = this.headline?.path || App.router?.basepath || '/';
-    return html`
-      <u-link href=${path}>
-        <img class="logo" src=${iconSrc} alt="app-logo" 
-          width=${iconWidth} height=${iconHeight} />
-        <div class="title" style=${`color: ${titleColor}`}>
-          ${this.headline?.text}
-        </div>
-      </u-link>
-    `;
+    return html`<header-title .model=${this.headline}></header-title>`;
   }
 
   private renderBreadcrumbs() {
     if (this.option?.noBreadcrumbs) return nothing;
-    return html`<header-breadcrumb></header-breadcrumb>`;
+    return html`<header-breadcrumb .model=${this.breadcrumbs}></header-breadcrumb>`;
   }
 
   private renderHelp() {
     if (this.option?.noHelp || !this.help) return nothing;
-    return html`
-      <help-button
-        .href=${this.help}
-      ></help-button>
-    `;
+    return html`<help-button .model=${this.help}></help-button>`;
   }
 
   private renderLocale() {
     if (this.option?.noLocale) return nothing;
-
-    return html`
-      <locale-button
-        .locale=${this.locale}
-      ></locale-button>
-    `;
+    return html`<locale-button .model=${this.locale}></locale-button>`;
   }
 
   private renderTheme() {
@@ -115,12 +89,7 @@ export class UHeader extends LitElement {
 
   private renderUser() {
     if (this.option?.noUser) return nothing;
-
-    return html`
-      <user-button
-        .user=${this.user}
-      ></user-button>
-    `;
+    return html`<user-button .model=${this.user}></user-button>`;
   }
 
   static styles = css`
@@ -128,15 +97,37 @@ export class UHeader extends LitElement {
       position: relative;
       display: flex;
       flex-direction: row;
-      gap: 10px;
       align-items: center;
       justify-content: space-between;
       padding: 8px;
       box-sizing: border-box;
+      user-select: none;
+    }
+
+    .headline {
+      width: 260px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .breadcrumb {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
     }
 
     .flex {
       flex: 1;
+    }
+
+    .action {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 15px;
     }
   `;
 }

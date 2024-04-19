@@ -37,14 +37,10 @@ export class ULink extends LitElement {
   private handleClickEvent = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    if (!this.href) {
-      throw new Error('링크의 href 속성이 정의되지 않았습니다.');
-    }
-    
     if (this.external) {
-      window.open(this.href, '_blank');
+      window.open(this.href || '/', '_blank');
     } else {
-      window.history.pushState({}, '', this.href);
+      window.history.pushState({}, '', this.href || '/');
       window.dispatchEvent(new PopStateEvent('popstate'));
     }
   }

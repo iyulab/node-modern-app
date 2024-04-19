@@ -1,20 +1,11 @@
 import type { LitElement } from "lit";
-import type { AppTheme } from "../App";
 import type { 
-  Breadcrumb,
-  LocaleConfig,
-  UserConfig
+  BreadcrumbModel,
+  HeaderTitleModel,
+  LocaleModel,
+  UserModel,
+  HelpModel
 } from "../components/header-parts";
-
-export interface HeaderTitle {
-  logo?: string;
-  logoWidth?: string;
-  logoHeight?: string;
-  text?: string;
-  textColor?: string;
-  path?: string;
-}
-
 
 export interface HeaderOption {
   noHeader?: boolean;
@@ -27,19 +18,19 @@ export interface HeaderOption {
   noMenuToggle?: boolean;
 }
 
-export interface HeaderConfig {
-  
-  title?: HeaderTitle;
-  
-  breadcrumbs?: Breadcrumb;
-  
-  help?: string;
+export interface HeaderModel {
 
-  locale?: LocaleConfig;
+  backgroundColor?: string;
+  
+  title?: HeaderTitleModel;
+  
+  breadcrumbs?: BreadcrumbModel;
+  
+  help?: HelpModel;
 
-  theme?: AppTheme;
+  locale?: LocaleModel;
 
-  user?: UserConfig;
+  user?: UserModel;
 
   extra?: typeof LitElement | string;
 
