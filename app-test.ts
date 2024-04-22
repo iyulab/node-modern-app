@@ -1,9 +1,9 @@
-import { ReactComponent } from './test/ReactComponent';
+import { ReactComponent } from './test-page/ReactComponent';
 import { App } from './test/App';
-import './test/LitElement';
+import './test-page/LitElement';
 
 App.load({
-  basepath: '/',
+  basepath: '/app',
   routes: [
     { title: "React!", path: '/react', component: ReactComponent },
     { path: '/lit', element: 'u-lit', loader: async (url) => {
@@ -13,16 +13,18 @@ App.load({
   header: {
     title: {
       text: 'Hello World',
+      path: '/app'
     },
     breadcrumbs: {
-      'react': 'ReactComponent',
-      'lit': 'LitElement',
+      'react': 'React Component',
+      'lit': 'Lit Element',
       '/^d+/': async (path: any) => {
         return path + ' Page';
       }
     },
     help: {
-      href: 'https://www.naver.com/help',
+      href: '/help',
+      target: '_top'
     },
     locale: 'en',
     user: {
@@ -32,12 +34,13 @@ App.load({
   },
   sidebar: {
     menuItem: [
-      { display: 'Home', path: '/' },
-      { type: 'line' , color: 'red' },
-      { display: 'Group', items: [
-        { display: 'About', path: '/about' },
-        { display: 'Services', path: '/services' },
-        { display: 'Contact', path: '/contact' },
+      { display: 'Home', path: '/app', items: [
+        { display: 'Dashboard', path: '/dashboard' },
+      ]},
+      { type: 'divider', text: 'Group', height: "50px" },
+      { type: 'group', display: 'Group', items: [
+        { display: 'Lit Element', path: 'lit' },
+        { display: 'React Component', path: 'react' },
       ]},
     ]
   }

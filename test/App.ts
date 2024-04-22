@@ -29,7 +29,6 @@ export class App {
 
   public static readonly theme: IObservableValue<AppTheme> = observable.box('system');
   public static readonly screen: IObservableValue<AppScreen> = observable.box('large');
-  public static readonly openSidebar: IObservableValue<boolean> = observable.box(true);
   public static router?: Router;
   
   public static async load(config: AppConfig) {
@@ -42,13 +41,15 @@ export class App {
     this.breakpoint = config.breakPoint || this.breakpoint;
 
     const layout = new ULayout();
+    layout.basepath = config.basepath || '/';
     layout.header = config.header;
     layout.sidebar = config.sidebar;
     document.body.appendChild(layout);
+    await layout.updateComplete;
 
     this.router = new Router({
       root: layout,
-      basepath: config.basepath,
+      basepath: config.basepath || '/',
       routes: config.routes,
     });
   }
@@ -78,10 +79,6 @@ export class App {
       media.addEventListener('change', this.onChangeColorScheme);
     }
     document.documentElement.classList.toggle("sl-theme-dark", theme === 'dark');
-  }
-
-  public static toggleSidebar() {
-    this.openSidebar.set(!this.openSidebar.get());
   }
 
   private static onResize = async () => {

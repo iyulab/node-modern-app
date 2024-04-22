@@ -1,39 +1,60 @@
-import { LitElement, css, html } from "lit";
+import { LitElement, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-export interface LineDivider {
-  type: 'line';
-  color?: string;
-}
-
-export interface BlankDivider {
-  type: 'blank';
-}
-
-export interface TextDivider {
-  type: 'text';
-  text: string;
-}
-
-export type MenuDividerModel = ( LineDivider | BlankDivider | TextDivider ) & {
+export interface MenuDividerModel {
+  type: 'divider';
+  text?: string;
+  line?: boolean;
   height?: string;
 }
 
 @customElement('menu-divider')
 export class MenuDivider extends LitElement {
   
-  @property({ type: Object }) model?: MenuDividerModel;
+  @property({ type: Boolean, reflect: true }) collapsed: boolean = false;
+  @property({ type: String, reflect: true }) text?: string;
+  @property({ type: Boolean }) line?: boolean;
+  @property({ type: String }) height?: string;
+  
+  protected async updated(changedProperties: any) {
+    super.updated(changedProperties);
+    await this.updateComplete;
 
-  @property({ type: String }) type?: string;
+    if (changedProperties.has('height') && this.height) {
+      this.style.setProperty('height', this.height);
+    }
+  }
 
   render() {
     return html`
-      <u-divider></u-divider>
+      ${this.line ? html`<u-divider spacing="0px"></u-divider>`: nothing}
     `;
   }
 
   static styles = css`
-    
+    :host {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      
+      --divider-height: 21px;
+      height: var(--divider-height);
+    }
+    :host::before {
+      content: '';
+    }
+    :host([text])::after {
+      content: attr(text);
+      color: var(--sl-color-gray-600);
+      font-size: 14px;
+      line-height: 1.5;
+      padding: 0 15px;
+    }
+    :host([collapsed]) {
+      height: calc(var(--divider-height) * 0.2);
+    }
   `;
 
 }

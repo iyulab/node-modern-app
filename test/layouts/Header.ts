@@ -21,6 +21,7 @@ export class UHeader extends LitElement {
 
   @property({ type: String, reflect: true }) screen?: AppScreen;
 
+  @property({ type: String }) basepath?: string;
   @property({ type: Object }) headline?: HeaderTitleModel;
   @property({ type: Object }) breadcrumbs?: BreadcrumbModel;
   @property({ type: Object }) help?: HelpModel;
@@ -59,7 +60,7 @@ export class UHeader extends LitElement {
 
   private renderToggler() {
     if (this.option?.noMenuToggle) return nothing;
-    return html`<menu-toggler></menu-toggler>`;
+    return html`<slot name="toggler"></slot>`;
   }
 
   private renderTitle() {
@@ -99,13 +100,17 @@ export class UHeader extends LitElement {
       flex-direction: row;
       align-items: center;
       justify-content: space-between;
-      padding: 8px;
       box-sizing: border-box;
       user-select: none;
     }
+    :host([screen="small"]) .breadcrumb {
+      display: none;
+    }
+    :host([screen="large"]) .headline {
+      width: 260px;
+    }
 
     .headline {
-      width: 260px;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -113,6 +118,7 @@ export class UHeader extends LitElement {
     }
 
     .breadcrumb {
+      margin-left: 20px;
       display: flex;
       flex-direction: row;
       align-items: center;

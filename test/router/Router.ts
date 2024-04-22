@@ -80,7 +80,10 @@ export class Router {
     }
 
     // 데이터 로딩 및 라우팅 정보 업데이트
-    routeInfo.params = route?.pattern?.exec(routeInfo.pathname)?.pathname.groups || {};
+    routeInfo.params = route?.pattern?.exec({
+
+      pathname: routeInfo.pathname,
+    })?.pathname.groups || {};
     if (typeof route?.loader === 'function') {
       routeInfo.data = await route.loader(routeInfo);
     }
@@ -88,7 +91,8 @@ export class Router {
     this._routeInfo = routeInfo;
     document.title = route?.title || document.title;
     window.history.pushState({}, '', routeInfo.href);
-    document.dispatchEvent(new CustomEvent('route-changed', { detail: routeInfo }));
+    document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
+    console.log('route-change', routeInfo);
 
     // 페이지 렌더링
     await this.root.updateComplete;
@@ -123,8 +127,8 @@ export class Router {
     routes.forEach((route) => {
       route.path = route.index ? '' : route.path;
       route.path = route.path.replace(/^\/|\/$/g, '');
-      route.pattern ||= new URLPattern({ 
-        pathname: basepath + route.path,
+      route.pattern ||= new URLPattern({
+        pathname: basepath + '/' + route.path,
       });
     });
     return [...this._routes, ...routes];

@@ -51,6 +51,7 @@
     
     // 테스트 코드
     "test/**/*",
+    "test-page",
     "app-test.ts"
   ]
 }

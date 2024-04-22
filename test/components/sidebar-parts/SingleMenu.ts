@@ -2,19 +2,19 @@ import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 export interface SingleMenuModel {
+  type?: 'single';
   icon?: string;
   display: string;
   path: string;
-  items?: undefined;
+  pattern?: URLPattern;
 }
 
 @customElement('single-menu')
 export class SingleMenu extends LitElement {
   
   @property({ type: Boolean, reflect: true }) collapsed: boolean = false;
-  @property({ type: Boolean, reflect: true }) active: boolean = false;
-  @property({ type: Object }) model?: SingleMenuModel;
-
+  @property({ type: Boolean, reflect: true }) active?: boolean;
+  
   @property({ type: String }) icon?: string;
   @property({ type: String }) display?: string;
   @property({ type: String }) path?: string;
@@ -22,50 +22,54 @@ export class SingleMenu extends LitElement {
   protected async updated(changedProperties: any) {
     super.updated(changedProperties);
     await this.updateComplete;
-
-    if (changedProperties.has('model') && this.model) {
-      this.icon = this.model?.icon;
-      this.display = this.model?.display;
-      this.path = this.model?.path;
-    }
   }
 
   render() {
     return html`
       <u-link .href=${this.path}>
-        ${this.renderIcon()}
-        ${this.renderDisplay()}
+        <div class="icon">
+          ${this.renderIcon()}
+        </div>
+        <div class="display">
+          ${this.display}
+        </div>
       </u-link>
     `;
   }
 
   private renderIcon() {
-    return this.icon 
+    return this.icon
     ? html`<u-icon name=${this.icon}></u-icon>` 
     : html`<u-icon type="system" name="box"></u-icon>`;
   }
 
-  private renderDisplay() {
-    return html`<div class="display">${this.display}</div>`;
-  }
-
   static styles = css`
     :host {
+      position: relative;
       display: block;
       width: 100%;
       height: 40px;
     }
+    :host(:hover) {
+      background-color: var(--sl-color-gray-100);
+    }
     :host([collapsed]) .display {
       width: 0px;
     }
-    :host([active])::before {
+    :host([active]) {
+      background-color: var(--sl-color-gray-200);
+    }
+    :host([active]) u-link::before {
       content: "";
       position: absolute;
       left: 0;
-      top: 0;
+      top: 20%;
       width: 4px;
-      height: 100%;
-      background-color: var(--sl-color-primary-500);
+      height: 60%;
+      background-color: var(--sl-color-sky-600);
+    }
+    :host([active]) .display {
+      font-weight: 600;
     }
 
     u-link {
@@ -75,19 +79,19 @@ export class SingleMenu extends LitElement {
       align-items: center;
       box-sizing: border-box;
 
-      u-icon {
-        font-size: 24px;
+      .icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50px;
+        height: 50px;
       }
 
       .display {
-        margin-left: 10px;
-        font-size: 24px;
-        font-weight: 500;
-        line-height: 1.5;
+        font-size: 14px;
+        line-height: 50px;
+        font-weight: 400;
       }
-    }
-    u-link:hover {
-      background-color: var(--sl-color-gray-500);
     }
 
   `;

@@ -5,11 +5,9 @@ import type {
   MenuDividerModel 
 } from "../components/sidebar-parts";
 
-export type NavMenuModel = ( SingleMenuModel | GroupMenuModel ) & {
-  type?: undefined;
+export type MenuItem = ( SingleMenuModel | GroupMenuModel | MenuDividerModel ) & {
+  position?: 'top' | 'bottom';
 }
-
-export type MenuItem = NavMenuModel | MenuDividerModel;
 
 export interface SidebarOption {
   noSidebar?: boolean;

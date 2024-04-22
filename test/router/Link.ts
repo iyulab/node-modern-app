@@ -5,15 +5,7 @@ import { convertReact } from "@iyulab/u-components/utils";
 @customElement('u-link')
 export class ULink extends LitElement {
 
-  /**
-   * 링크 URL
-   */
   @property({ type: String }) href?: string;
-
-  /**
-   * 외부 링크 여부
-   */
-  @property({ type: Boolean }) external = false;
 
   connectedCallback() {
     super.connectedCallback();
@@ -37,12 +29,8 @@ export class ULink extends LitElement {
   private handleClickEvent = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    if (this.external) {
-      window.open(this.href || '/', '_blank');
-    } else {
-      window.history.pushState({}, '', this.href || '/');
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    }
+    window.history.pushState({}, '', this.href || '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
   }
 
   static styles = css`
