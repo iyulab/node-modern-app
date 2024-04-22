@@ -41,6 +41,9 @@ export class GroupMenuItem extends LitElement {
       height: 60%;
       background-color: var(--sl-color-primary-500);
     }
+    :host([active]) u-link {
+      font-weight: 600;
+    }
     
     u-link {
       width: 100%;

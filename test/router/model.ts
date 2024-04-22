@@ -52,7 +52,10 @@ export type BaseRoute = (NonIndexRoute | IndexRoute) & {
    */
   title?: string;
 
-  // children?: Route[];
+  /**
+   * 중첩 라우트
+   */
+  children?: Route[];
 }
 
 /**
@@ -149,8 +152,8 @@ export interface RouteURL {
    * - URLSearchParams를 사용하여 파싱된 쿼리스트링입니다.
    * @example 만약 URL이 ?page=1&size=10 일경우
    * ```typescript
-   * const page = urlquery.get('page');
-   * const size = urlquery.get('size');
+   * const page = query.get('page');
+   * const size = query.get('size');
    * ```
    */
   query: URLSearchParams;

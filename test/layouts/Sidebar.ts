@@ -4,8 +4,9 @@ import { convertReact } from '@iyulab/u-components/utils';
 
 import { type AppScreen } from '../App';
 import type { SidebarOption, MenuItem } from './Sidebar.model';
-import { RouteInfo } from '../router/Route';
+import { RouteInfo } from '../router/model';
 import { GroupMenuItemModel, SingleMenuModel } from '../components/sidebar-parts';
+import { combinePath } from '../router/Utils';
 
 @customElement('u-sidebar')
 export class USidebar extends LitElement {
@@ -26,7 +27,6 @@ export class USidebar extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     document.addEventListener('route-change', this.handleRouteChange);
-    console.log('u-sidebar connected');
   }
 
   disconnectedCallback() {
@@ -112,9 +112,11 @@ export class USidebar extends LitElement {
   }
 
   private handleRouteChange = (event: Event) => {
-    console.log('route-change event', event);
     const routeInfo = (event as CustomEvent).detail as RouteInfo;
     const pathname = routeInfo.pathname;
+    if (this.urlPatterns.size === 0) {
+      this.initializeUrlPatterns(this.menuItem!);
+    }
     this.urlPatterns.forEach((pattern, path) => {
       if (pattern.test({ pathname: pathname })) {
         this.activePath = path;
@@ -136,7 +138,6 @@ export class USidebar extends LitElement {
 
   private setupPattern(item: SingleMenuModel | GroupMenuItemModel): void {
     if (!item.pattern) {
-      item.path = this.basepath + '/' + item.path.replace(/^\/|\/$/g, '');
       item.pattern = new URLPattern({ pathname: item.path });
       this.urlPatterns.set(item.path, item.pattern);
     }

@@ -47,7 +47,8 @@ export class GroupMenu extends LitElement {
 
   private renderContent() {
     return html`
-      <div class="header" slot="trigger">
+      <div class="header" slot="trigger"
+        @click=${this.handleOpenGroup}>
         <div class="icon">
           ${this.renderIcon()}
         </div>
@@ -69,6 +70,11 @@ export class GroupMenu extends LitElement {
     return this.icon 
     ? html`<u-icon name=${this.icon}></u-icon>` 
     : html`<u-icon type="system" name="box"></u-icon>`;
+  }
+
+  private handleOpenGroup() {
+    if (this.collapsed) return;
+    this.open = !this.open;
   }
 
   private renderMenuItem() {

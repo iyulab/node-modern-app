@@ -1,6 +1,7 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { convertReact } from "@iyulab/u-components/utils";
+import { combinePath } from "./Utils";
 
 @customElement('u-link')
 export class ULink extends LitElement {
@@ -29,7 +30,8 @@ export class ULink extends LitElement {
   private handleClickEvent = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    window.history.pushState({}, '', this.href || '/');
+    const pathname = combinePath(this.href || '');
+    window.history.pushState({}, '', pathname);
     window.dispatchEvent(new PopStateEvent('popstate'));
   }
 

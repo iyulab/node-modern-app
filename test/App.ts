@@ -1,6 +1,6 @@
 import { observable, IObservableValue } from 'mobx';
 
-import type { Route } from "./router/Route";
+import type { Route } from "./router/model";
 import type { HeaderModel } from "./layouts/Header.model";
 import type { SidebarModel } from "./layouts/Sidebar.model";
 
@@ -48,7 +48,7 @@ export class App {
     await layout.updateComplete;
 
     this.router = new Router({
-      root: layout,
+      rootElement: layout,
       basepath: config.basepath || '/',
       routes: config.routes,
     });

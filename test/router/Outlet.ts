@@ -38,16 +38,20 @@ export class UOutlet extends LitElement {
       throw new Error('Provided element is neither a string nor a LitElement.');
     }
     render(html`${template}`, this.litDom);
+    await this.updateComplete;
+    return this.litDom.firstChild;
   }
 
   /**
    * 기존 렌더링된 DOM을 제거하고, React 컴포넌트를 삽입합니다.
    */
-  public renderReactComponent(component: ComponentType) {
+  public async renderReactComponent(component: ComponentType) {
     this.removeDom();
     this.type = 'react';
     this.containerDom = createRoot(this.reactDom);
     this.containerDom.render(createElement(component));
+    await this.updateComplete;
+    return this.reactDom.firstChild;
   }
 
   // 기존 렌더링된 DOM을 제거합니다.
@@ -63,11 +67,11 @@ export class UOutlet extends LitElement {
     :host {
       display: block;
     }
-    :host([type="react"]) #react {
-      height: 100%;
+    :host([type="react"]) #lit {
+      display: none;
     }
-    :host([type="lit"]) #lit {
-      height: 100%;
+    :host([type="lit"]) #react {
+      display: none;
     }
   `;
   

@@ -1,24 +1,8 @@
-// 노드와 브라우저에서 URLPattern을 지원하지 않는 경우에만 로드
-// Conditional ESM module loading (Node.js and browser)
-// @ts-ignore: Property 'UrlPattern' does not exist 
-if (!globalThis.URLPattern) { 
-  await import("urlpattern-polyfill");
-}
+import type { LitElement } from "lit";
+import type { Route } from "./model";
 
-import type { Route, RouteInfo } from './model';
-import type { ULayout } from '../layouts/Layout';
-import type { UOutlet } from './Outlet';
-import { combinePath, parseURL } from './Utils';
-
-export interface RouterConfig {
-  rootElement: ULayout;
-  basepath?: string;
-  fallback?: any;
-  routes: Route[];
-}
-
-export class Router {
-  private readonly rootElement: ULayout;
+export class Routes {
+  private readonly rootElement: LitElement;
   private readonly fallback?: any;
 
   private readonly _basepath: string;
@@ -42,7 +26,7 @@ export class Router {
   constructor(config: RouterConfig) {
     this.rootElement = config.rootElement;    
     this.fallback = config.fallback;
-    this._basepath = combinePath(config.basepath || '/');
+    this._basepath = this.setBasepath(config.basepath || '/');
     this._routes = this.setRoutes(config.routes, this._basepath);
     this.connect();
   }
@@ -65,11 +49,11 @@ export class Router {
   /**
    * 지정한 경로로 이동
    * - 상대경로일 경우 basepath와 조합되어 이동합니다.
-   * @param href 이동할 경로
+   * @param url 이동할 경로
    */
-  public async go(href: string) {
+  public async go(url: string) {
     // URL 분석
-    const routeInfo = parseURL(href);
+    const routeInfo = this.parseURL(url);
 
     // 동일한 경로로 이동하는 경우 동작하지 않음
     if (routeInfo.href === this._routeInfo?.href) return;
@@ -82,6 +66,7 @@ export class Router {
 
     // 데이터 로딩 및 라우팅 정보 업데이트
     routeInfo.params = route?.pattern?.exec({
+
       pathname: routeInfo.pathname,
     })?.pathname.groups || {};
     if (typeof route?.loader === 'function') {
@@ -92,6 +77,7 @@ export class Router {
     document.title = route?.title || document.title;
     window.history.pushState({}, '', routeInfo.href);
     document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
+    console.log('route-change', routeInfo);
 
     // 페이지 렌더링
     await this.rootElement.updateComplete;
@@ -113,13 +99,21 @@ export class Router {
   }
 
   /**
+   * 라우터 기본 경로 재설정
+  */
+  private setBasepath(basepath: string) {
+    return "/" + basepath.replace(/^\/|\/$/g, '');
+  }
+
+  /**
    * 라우터 경로 재설정 및 URLPattern 생성
    */
   private setRoutes(routes: Route[], basepath: string) {
     routes.forEach((route) => {
       route.path = route.index ? '' : route.path;
+      route.path = route.path.replace(/^\/|\/$/g, '');
       route.pattern ||= new URLPattern({
-        pathname: combinePath(basepath, route.path),
+        pathname: basepath + '/' + route.path,
       });
     });
     return [...this._routes, ...routes];
@@ -133,15 +127,15 @@ export class Router {
     const route = this._routes.find((route) => route.pattern?.test({ pathname: pathname }));
     if (route) {
       return route;
-    } else if (this.fallback) {
+    }
+    if (this.fallback) {
       return {
         path: '*',
         pattern: new URLPattern({ pathname: '*' }),
         element: this.fallback,
       } as Route;
-    } else {
-      return undefined;
     }
+    return undefined;
   }
 
   /**
@@ -152,39 +146,5 @@ export class Router {
     this.go(href);
   };
 
-  /**
-   * 전체 문서에서 a 태그의 이벤트가 발생했을 때 라우팅 처리
-   * - 현재 사용하지 않습니다!
-   */
-  // private onClick = (e: MouseEvent) => {
-  //   // 네비게이션 이벤트가 아닌 경우 리턴
-  //   const isNonNavigationClick = e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey;
-  //   if (e.defaultPrevented || isNonNavigationClick) return;
-
-  //   // 클릭한 타겟이 a 태그가 아닌 경우 리턴
-  //   const anchor = e.composedPath()
-  //     .find((n) => (n as HTMLElement).tagName === 'A') as
-  //     | HTMLAnchorElement | undefined;
-  //   if ( anchor === undefined || anchor.target !== '' ||
-  //     anchor.hasAttribute('download') || anchor.getAttribute('rel') === 'external'
-  //   ) {
-  //     return;
-  //   }
-
-  //   // a 태그의 href 속성이 비어있거나 mailto: 로 시작하는 경우 리턴
-  //   const href = anchor.href;
-  //   if (href === '' || href.startsWith('mailto:')) return;
-
-  //   // a 태그의 origin 속성이 현재 origin과 다른 경우 리턴
-  //   const origin = location.origin || location.protocol + '//' + location.host;
-  //   if (anchor.origin !== origin) return;
-
-  //   // a 태그의 href 속성이 현재 location.href와 다른 경우 라우팅
-  //   e.preventDefault();
-  //   if (href !== window.location.href) {
-  //     window.history.pushState({}, '', href);
-  //     this.goto(anchor.pathname);
-  //   }
-  // };
   
 }

@@ -34,9 +34,7 @@ App.load({
   },
   sidebar: {
     menuItem: [
-      { display: 'Home', path: '/app', items: [
-        { display: 'Dashboard', path: '/dashboard' },
-      ]},
+      { type: 'single', display:'Home', path: '/app' },
       { type: 'divider', text: 'Group', height: "50px" },
       { type: 'group', display: 'Group', items: [
         { display: 'Lit Element', path: 'lit' },
