@@ -18,6 +18,7 @@ export function combinePath(...paths: string[]) {
 export function parseURL(url: string, basepath: string): RouteInfo {
   let urlObj: URL;
   try {
+    basepath = catchBasepath(basepath);
     if (url.startsWith('http')) {
       urlObj = new URL(url);
     } else if (url.startsWith('/')) {
@@ -27,7 +28,6 @@ export function parseURL(url: string, basepath: string): RouteInfo {
     } else if (url.startsWith('#')) {
       urlObj = new URL(window.location.pathname + window.location.search + url, window.location.origin);
     } else {
-      basepath = catchBasePath(url, basepath);
       urlObj = new URL(combinePath(basepath, url), window.location.origin);
     }
   } catch (error) {
@@ -48,21 +48,23 @@ export function parseURL(url: string, basepath: string): RouteInfo {
 /**
  * 현재 경로상의 basepath를 반환합니다.
  * @example
- * catchBasePath('/app/123/user/config', '/app/:id') => '/app/123'
+ * catchBasePath('/app/:id') => '/app/123'
  */
-export function catchBasePath(pathname: string, basepath: string) {
-  if (basepath === '/') return '/';
-  basepath = basepath + '/*';
-
-  const pattern = new URLPattern({ pathname: basepath });
-  const match = pattern.exec({ pathname: pathname });
+export function catchBasepath(basepath: string) {
+  if (basepath === '/') return basepath;
+  let pattern = new URLPattern({ pathname: basepath + '/*' });
+  let match = pattern.exec({ pathname: window.location.pathname });
   if (match) {
     const rawPath = match.pathname.input;
     const restPath = match.pathname.groups?.["0"];
-    return rawPath.replace("/" + restPath, '');
-  } else {
-    throw new Error(`잘못된 경로 입니다.: ${pathname}`);
+    return restPath ? rawPath.replace("/" + restPath, '') : rawPath.slice(0, -1);
   }
+  pattern = new URLPattern({ pathname: basepath });
+  match = pattern.exec({ pathname: window.location.pathname });
+  if (match) {
+    return match.pathname.input;
+  }
+  return basepath;
 }
 
 /**

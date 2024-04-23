@@ -3,17 +3,20 @@ import { customElement, property } from "lit/decorators.js";
 import { GroupMenuItemModel } from "./GroupMenuItem";
 
 export interface GroupMenuModel {
-  type: 'group';
+  type?: 'menu';
   icon?: string;
   display: string;
   items: GroupMenuItemModel[];
+
+  path?: undefined;
+  pattern?: undefined;
 }
 
 @customElement('group-menu')
 export class GroupMenu extends LitElement {
   
   @property({ type: Boolean, reflect: true }) collapsed: boolean = false;
-  @property({ type: Boolean, reflect: true }) active?: boolean;
+  @property({ type: Boolean, reflect: true }) active: boolean = false;
   @property({ type: Boolean, reflect: true }) open: boolean = false;
 
   @property({ type: String }) icon?: string;
@@ -39,7 +42,7 @@ export class GroupMenu extends LitElement {
 
   private renderDropdownWith(content: any) {
     return html`
-      <u-dropdown hoist placement="right-end">
+      <u-dropdown hoist placement="right-start">
         ${content}
       </u-dropdown>
     `;
@@ -87,16 +90,13 @@ export class GroupMenu extends LitElement {
       position: relative;
       display: block;
       width: 100%;
+      background-color: inherit;
     }
     :host([collapsed]) .header .display {
       display: none;
     }
     :host([collapsed]) .header .arrow {
-      position: absolute;
-      right: 0;
-      width: auto;
-      height: auto;
-      transform: rotate(-90deg);
+      display: none;
     }
     :host([active]) .header .display {
       font-weight: 600;
@@ -159,6 +159,7 @@ export class GroupMenu extends LitElement {
       height: 0px;
       overflow: hidden;
       transition: height 0.3s ease-in-out;
+      background-color: inherit;
     }
   `;
 

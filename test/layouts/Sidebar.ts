@@ -1,5 +1,5 @@
 import { LitElement, css, html, nothing } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { convertReact } from '@iyulab/u-components/utils';
 
 import { type AppScreen } from '../App';
@@ -10,14 +10,17 @@ import { combinePath } from '../router/Utils';
 
 @customElement('u-sidebar')
 export class USidebar extends LitElement {
-  private urlPatterns: Map<string, URLPattern> = new Map();
-  
+
+  @query('.menu') menuEl!: HTMLElement;
+  @query('.elevator.up') elevatorUp!: HTMLElement;
+  @query('.elevator.down') elevatorDown!: HTMLElement;
+
   @state() topMenu?: MenuItem[];
   @state() bottomMenu?: MenuItem[];
   @state() activePath?: string;
 
-  @property({ type: String, reflect: true }) screen?: AppScreen;
-  @property({ type: Boolean, reflect: true }) open: boolean = true;
+  @property({ type: String }) screen?: AppScreen;
+  @property({ type: Boolean }) open: boolean = true;
   @property({ type: Boolean }) collapsed: boolean = false;
 
   @property({ type: String }) basepath?: string;
@@ -27,6 +30,7 @@ export class USidebar extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    if (this.menu) this.setMenu(this.menu);
     document.addEventListener('route-change', this.handleRouteChange);
   }
 
@@ -43,7 +47,7 @@ export class USidebar extends LitElement {
       this.style.backgroundColor = this.backgroundColor;
     }
     if (changedProperties.has('menu') && this.menu) {
-      this.initializeUrlPatterns(this.menu);
+      this.setMenu(this.menu);
     }
     if (changedProperties.has('open')) {
       this.collapsed = !this.open && this.screen !== 'small';
@@ -55,15 +59,17 @@ export class USidebar extends LitElement {
 
     return html`
       <slot name="header"></slot>
-      <div class="menu">
-        <u-icon class="up-elevator" 
+      <div class="menu" @scroll=${this.handleScrollMenu}>
+        <u-icon class="elevator up" 
           type="system" name="chevron-up"
+          @click=${this.handleScrollTop}
         ></u-icon>
         ${this.renderMenuItems(this.topMenu)}
         <div class="flex"></div>
         ${this.renderMenuItems(this.bottomMenu)}
-        <u-icon class="down-elevator" 
+        <u-icon class="elevator down" 
           type="system" name="arrow-down"
+          @click=${this.handleScrollBottom}
         ></u-icon>
       </div>
       <slot name="footer"></slot>
@@ -77,26 +83,27 @@ export class USidebar extends LitElement {
   private renderMenuItem(item: MenuItem) {
     if(item.type === 'divider') {
       return html`
-        <menu-divider 
+        <menu-divider
+          ?collapsed=${this.collapsed}
           .text=${item.text}
           .line=${item.line}
           .height=${item.height}
         ></menu-divider>`;
-    } else if(!item.type || item.type === 'single') {
+    } else if(item.path) {
       return html`
         <single-menu
           ?active=${this.activePath === item.path}
-          .collapsed=${this.collapsed}
+          ?collapsed=${this.collapsed}
           .icon=${item.icon}
           .display=${item.display}
           .path=${item.path}
         ></single-menu>`;
-    } else if(item.type === 'group') {
+    } else if(item.items) {
       const isActived = item.items.some(subItem => this.activePath === subItem.path);
       return html`
         <group-menu 
           ?active=${isActived}
-          .collapsed=${this.collapsed}
+          ?collapsed=${this.collapsed}
           .icon=${item.icon}
           .display=${item.display}>
           ${item.items.map((subItem) => {
@@ -113,38 +120,56 @@ export class USidebar extends LitElement {
     }
   }
 
+  private handleScrollMenu = (event: Event) => {
+    const target = event.target as HTMLElement;
+    if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+      this.elevatorDown.classList.remove('show');
+    } else {
+      this.elevatorDown.classList.add('show');
+    }
+    if (target.scrollTop > 20) {
+      this.elevatorUp.classList.add('show');
+    } else {
+      this.elevatorUp.classList.remove('show');
+    }
+  }
+
+  private handleScrollTop = () => {
+    this.menuEl.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  private handleScrollBottom = () => {
+    this.menuEl.scrollTo({ top: this.menuEl.scrollHeight, behavior: 'smooth' });
+  }
+
   private handleRouteChange = (event: Event) => {
     const routeInfo = (event as CustomEvent).detail as RouteInfo;
     const pathname = routeInfo.pathname;
-    if (this.urlPatterns.size === 0) {
-      this.initializeUrlPatterns(this.menu);
-    }
-    this.urlPatterns.forEach((pattern, path) => {
-      if (pattern.test({ pathname: pathname })) {
-        this.activePath = path;
-      }
+    this.menu?.forEach((item) => {
+      if (item.type === 'divider') return;
+      if (item.path) this.checkPattern(item, pathname);
+      if (item.items) item.items.forEach(subItem => this.checkPattern(subItem, pathname));
     });
   }
 
-  private initializeUrlPatterns(items: MenuItem[]): void {
-    this.topMenu = items.filter((item) => item.position === 'top' || !item.position);
-    this.bottomMenu = items.filter((item) => item.position === 'bottom');
+  private setMenu(items: MenuItem[]): void {
     items.forEach(item => {
       if (item.type === 'divider') return;
-      if (item.type === 'single' || !item.type) {
-        this.setupPattern(item);
-      }
-      if (item.type === 'group') {
-        item.items.forEach(subItem => this.setupPattern(subItem));
-      }
+      if (item.path) this.setPattern(item);
+      if (item.items) item.items.forEach(subItem => this.setPattern(subItem));
     });
+    this.topMenu = items.filter((item) => item.position === 'top' || !item.position);
+    this.bottomMenu = items.filter((item) => item.position === 'bottom');
   }
 
-  private setupPattern(item: SingleMenuModel | GroupMenuItemModel): void {
-    if (!item.pattern) {
-      item.pattern = new URLPattern({ pathname: item.path });
-      this.urlPatterns.set(item.path, item.pattern);
-    }
+  private setPattern(item: SingleMenuModel | GroupMenuItemModel) {
+    const pathname = item.path.startsWith('/') ? item.path : combinePath(this.basepath || '', item.path);
+    item.pattern ||= new URLPattern({ pathname: pathname + '*' });
+  }
+
+  private checkPattern(item: SingleMenuModel | GroupMenuItemModel, pathname: string) {
+    const isMatched = item.pattern?.test({ pathname: pathname });
+    if (isMatched) this.activePath = item.path;
   }
 
   static styles = css`
@@ -162,22 +187,43 @@ export class USidebar extends LitElement {
     }
 
     .menu {
+      position: relative;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: center;
-      position: relative;
       flex: 1;
       overflow-x: hidden;
       overflow-y: auto;
 
-      u-icon {
-        cursor: pointer;
-      }
-
       .flex {
         flex: 1;
       }
+
+      .elevator {
+        position: absolute;
+        z-index: 1;
+        display: none;
+        width: 100%;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .elevator:hover {
+        color: var(--sl-color-sky-600);
+      }
+      .elevator.show {
+        display: flex;
+      }
+      .elevator.up {
+        top: 0;
+        box-shadow: inset 0px 5px 10px -5px rgba(0, 0, 0, 0.3);
+      }
+      .elevator.down {
+        bottom: 0;
+        box-shadow: inset 0 -5px 10px -5px rgba(0, 0, 0, 0.3);
+      }
+    }
+    .menu::-webkit-scrollbar {
+      width: 0px;
     }
 
   `;

@@ -94,21 +94,18 @@ export class Router {
 
     // 일치하는 라우트 찾기
     const routes = this.getRoutes(routeInfo.pathname);
-    if(routes.length < 1) {
-      throw new Error(`경로에 해당하는 라우트 정보를 찾을 수 없습니다: ${routeInfo.pathname}`);
-    }
+    const route = routes[routes.length - 1];
+    // if(routes.length < 1) {
+    //   throw new Error(`경로에 해당하는 라우트 정보를 찾을 수 없습니다: ${routeInfo.pathname}`);
+    // }
 
     // 데이터 로딩 및 라우팅 정보 업데이트
-    const route = routes[routes.length - 1];
-    routeInfo.params = route.pattern?.exec({ pathname: routeInfo.pathname })?.pathname.groups || {};
-    if (typeof route.loader === 'function') {
+    routeInfo.params = route?.pattern?.exec({ pathname: routeInfo.pathname })?.pathname.groups || {};
+    if (typeof route?.loader === 'function') {
       routeInfo.data = await route.loader(routeInfo);
     }
     this._routeInfo = routeInfo;
-    document.title = route.title || document.title;
-    window.history.pushState({ basepath: routeInfo.basepath }, '', routeInfo.href);
-    document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
-
+    
     // 렌더링...(부모 route부터 u-outlet을 찾아서 렌더링합니다.)
     await this._rootElement.updateComplete;
     let outlet = this._rootElement.shadowRoot?.querySelector('u-outlet') as UOutlet;
@@ -123,6 +120,11 @@ export class Router {
         outlet.clearDom();
       }
     }
+
+    // 브라우저 히스토리 및 이벤트 발생
+    document.title = route?.title || document.title;
+    window.history.pushState({ basepath: routeInfo.basepath }, '', routeInfo.href);
+    document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
   }
 
   /**

@@ -46,7 +46,7 @@ export class ULink extends LitElement {
       window.history.pushState({}, '', window.location.pathname + window.location.search + this.href);
       window.dispatchEvent(new HashChangeEvent('hashchange'));
     } else {
-      const basepath = window.history.state.basepath || '';
+      const basepath = window.history.state?.basepath || '';
       window.history.pushState({}, '', combinePath(basepath, this.href));
       window.dispatchEvent(new PopStateEvent('popstate'));
     }

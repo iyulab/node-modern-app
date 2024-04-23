@@ -3,7 +3,7 @@ import { App } from './test/App';
 import './test-page/LitElement';
 
 App.load({
-  basepath: '/app',
+  basepath: '/app/:id',
   routes: [
     { title: "React!", path: '/react', component: ReactComponent },
     { path: '/lit', element: 'u-lit', loader: async (url) => {
@@ -38,9 +38,9 @@ App.load({
   },
   sidebar: {
     menu: [
-      { type: 'single', display:'Home', path: '/app' },
-      { type: 'divider', text: 'Group', height: "50px" },
-      { type: 'group', display: 'Group', items: [
+      { display:'Home', path: '/app' },
+      { type: 'divider', line: true, text: 'Components', height: '100px'},
+      { display: 'Group', items: [
         { display: 'Lit Element', path: 'lit' },
         { display: 'React Component', path: 'react' },
       ]},

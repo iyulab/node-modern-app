@@ -34,15 +34,16 @@ export class MenuDivider extends LitElement {
   static styles = css`
     :host {
       width: 100%;
+      min-height: 21px;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
       justify-content: space-between;
-      
-      --divider-height: 21px;
-      height: var(--divider-height);
     }
     :host::before {
+      content: '';
+    }
+    :host::after {
       content: '';
     }
     :host([text])::after {
@@ -52,8 +53,8 @@ export class MenuDivider extends LitElement {
       line-height: 1.5;
       padding: 0 15px;
     }
-    :host([collapsed]) {
-      height: calc(var(--divider-height) * 0.2);
+    :host([collapsed])::after {
+      content: '';
     }
   `;
 
