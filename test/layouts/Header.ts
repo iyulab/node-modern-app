@@ -7,13 +7,11 @@ import type {
 } from '../App';
 import type {
   BreadcrumbModel,
-  HeaderTitleModel,
-  LocaleModel,
-  UserModel,
-  HelpModel
+  HeaderTitleModel
 } from '../components/header-parts';
 import type {
-  HeaderOption
+  HeaderOption,
+  HeaderAction
 } from './Header.model';
 
 @customElement('u-header')
@@ -24,14 +22,17 @@ export class UHeader extends LitElement {
   @property({ type: String }) basepath?: string;
   @property({ type: Object }) headline?: HeaderTitleModel;
   @property({ type: Object }) breadcrumbs?: BreadcrumbModel;
-  @property({ type: Object }) help?: HelpModel;
-  @property({ type: Object }) locale?: LocaleModel;
-  @property({ type: Object }) user?: UserModel;
+  @property({ type: Object }) action?: HeaderAction;
   @property({ type: Object }) option?: HeaderOption;
+  @property({ type: String }) backgroundColor?: string;
 
   protected async updated(changedProperties: any) {
     super.updated(changedProperties);
     await this.updateComplete;
+
+    if (changedProperties.has('backgroundColor') && this.backgroundColor) {
+      this.style.backgroundColor = this.backgroundColor;
+    }
   }
 
   render() {
@@ -39,28 +40,25 @@ export class UHeader extends LitElement {
     
     return html`
       <div class="headline">
-        ${this.renderToggler()}
+        ${this.renderPrefix()}
         ${this.renderTitle()}
       </div>
       <div class="breadcrumb">
         ${this.renderBreadcrumbs()}
       </div>
       <div class="flex">
-        <slot name="extra"></slot>
+        <slot name="center"></slot>
       </div>
       <div class="action">
-        ${this.renderHelp()}
-        ${this.renderLocale()}
-        ${this.renderTheme()}
-        ${this.renderUser()}
+        ${this.renderAction()}
       </div>
       <slot name="progress"></slot>
     `;
   }
 
-  private renderToggler() {
+  private renderPrefix() {
     if (this.option?.noMenuToggle) return nothing;
-    return html`<slot name="toggler"></slot>`;
+    return html`<slot name="prefix"></slot>`;
   }
 
   private renderTitle() {
@@ -73,24 +71,20 @@ export class UHeader extends LitElement {
     return html`<header-breadcrumb .model=${this.breadcrumbs}></header-breadcrumb>`;
   }
 
-  private renderHelp() {
-    if (this.option?.noHelp || !this.help) return nothing;
-    return html`<help-button .model=${this.help}></help-button>`;
-  }
-
-  private renderLocale() {
-    if (this.option?.noLocale) return nothing;
-    return html`<locale-button .model=${this.locale}></locale-button>`;
-  }
-
-  private renderTheme() {
-    if (this.option?.noTheme) return nothing;
-    return html`<theme-button></theme-button>`;
-  }
-
-  private renderUser() {
-    if (this.option?.noUser) return nothing;
-    return html`<user-button .model=${this.user}></user-button>`;
+  private renderAction() {
+    return Object.entries(this.action || {}).map(([key, value]) => {
+      if (key === 'help' && !this.option?.noHelp) {
+        return html`<help-button .model=${value}></help-button>`;
+      } else if (key === 'locale' && !this.option?.noLocale) {
+        return html`<locale-button .model=${value}></locale-button>`;
+      } else if (key === 'theme' && !this.option?.noTheme) {
+        return html`<theme-button .theme=${value}></theme-button>`;
+      } else if (key === 'user' && !this.option?.noUser) {
+        return html`<user-button .model=${value}></user-button>`;
+      } else {
+        return nothing;
+      }
+    });
   }
 
   static styles = css`
@@ -101,6 +95,8 @@ export class UHeader extends LitElement {
       align-items: center;
       justify-content: space-between;
       box-sizing: border-box;
+      background-color: var(--sl-color-neutral-0);
+      border-bottom: 1px solid var(--sl-color-gray-200);
       user-select: none;
     }
     :host([screen="small"]) .breadcrumb {

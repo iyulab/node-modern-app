@@ -5,7 +5,7 @@ import { convertReact } from "@iyulab/u-components/utils";
 @customElement('u-page')
 export class UPage extends LitElement {
 
-  @property({ type: Boolean, reflect: true }) showElevator: boolean = false;
+  @property({ type: Boolean, reflect: true }) show: boolean = false;
   @property({ type: String }) headline?: string;
 
   connectedCallback() {
@@ -27,10 +27,12 @@ export class UPage extends LitElement {
       <slot></slot>
 
       <!-- elevator button -->
-      <div class="elevator">
+      <div class="elevator"
+        @click=${this.scrollToTop}>
         <u-icon
           type="system"
-          name="arrow-up"
+          name="chevron-up"
+          size="18px"
         ></u-icon>
       </div>
     `;
@@ -45,11 +47,15 @@ export class UPage extends LitElement {
     `;
   }
 
+  private scrollToTop = () => {
+    this.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   private handleScroll = () => {
-    if (this.scrollTop <= 20) {
-      this.showElevator = false;
-    } else {
-      this.showElevator = true;
+    if (this.scrollTop <= 20 && this.show) {
+      this.show = false;
+    } else if (this.scrollTop > 20 && !this.show) {
+      this.show = true;
     }
   }
 
@@ -61,22 +67,49 @@ export class UPage extends LitElement {
       display: block;
       overflow: auto;
     }
-    :host([showElevator]) .elevator {
-      display: block;
+    :host::-webkit-scrollbar {
+      width: 10px;
+    }
+    :host::-webkit-scrollbar-thumb {
+      background-color: var(--sl-color-gray-500);
+    }
+    :host([show]) .elevator {
+      display: flex;
     }
 
     .title {
-      padding: 20px;
+      padding: 24px;
       font-size: 24px;
-      font-weight: bold;
-      border-bottom: 1px solid #ccc;
+      line-height: 1;
+      font-weight: 600;
     }
 
     .elevator {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
       display: none;
+      position: fixed;
+      z-index: 10;
+      right: 30px;
+      bottom: 20px;
+      width: 35px;
+      height: 35px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: var(--sl-color-neutral-0);
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+      cursor: pointer;
+    }
+    .elevator:hover u-icon {
+      animation: bounce 1s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
     }
   `;
 }

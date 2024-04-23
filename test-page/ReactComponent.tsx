@@ -4,7 +4,7 @@ import { ReactChannel } from "../test/router/Channel";
 export const ReactComponent = ReactChannel(({ params, pathname, data }) => {
   console.log(params, pathname, data);
   return (
-    <Page>
+    <Page headline="Hello">
       <div style={{
         display: 'flex',
         flexDirection: 'column',

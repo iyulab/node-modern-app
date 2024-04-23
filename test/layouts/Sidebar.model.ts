@@ -15,14 +15,14 @@ export interface SidebarOption {
 
 export interface SidebarModel {
 
-  backgroundColor?: string;
-
   header?: typeof LitElement | string;
 
   footer?: typeof LitElement | string;
 
-  menuItem?: MenuItem[];
+  menu?: MenuItem[];
 
   option?: SidebarOption;
+
+  backgroundColor?: string;
 
 }

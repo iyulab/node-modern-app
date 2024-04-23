@@ -5,46 +5,30 @@ if (!globalThis.URLPattern) {
   await import("urlpattern-polyfill");
 }
 
-import type { Route, RouteInfo } from './model';
-import type { ULayout } from '../layouts/Layout';
+import type { LitElement } from 'lit';
+import type { Route, RouteInfo, RouterConfig } from './Model';
 import type { UOutlet } from './Outlet';
 import { combinePath, parseURL } from './Utils';
 
-export interface RouterConfig {
-  rootElement: ULayout;
-  basepath?: string;
-  fallback?: any;
-  routes: Route[];
-}
-
 export class Router {
-  private readonly rootElement: ULayout;
-  private readonly fallback?: any;
-
+  private readonly _rootElement: LitElement;
+  private readonly _fallback: LitElement;
   private readonly _basepath: string;
   private readonly _routes: Route[] = [];
-  private _currentRoute?: Route;
   private _routeInfo?: RouteInfo;
 
   public get basepath() {
     return this._basepath;
-  }
-  public get routes() {
-    return this._routes;
-  }
-  public get currentRoute() {
-    return this._currentRoute;
   }
   public get routeInfo() {
     return this._routeInfo;
   }
 
   constructor(config: RouterConfig) {
-    this.rootElement = config.rootElement;    
-    this.fallback = config.fallback;
+    this._rootElement = config.rootElement;
+    this._fallback = config.fallback;
     this._basepath = combinePath(config.basepath || '/');
     this._routes = this.setRoutes(config.routes, this._basepath);
-    this.connect();
   }
 
   /**
@@ -63,45 +47,81 @@ export class Router {
   }
 
   /**
+   * 라우트 URLPattern 생성
+   */
+  private setRoutes(routes: Route[], basepath: string) {
+    for (const route of routes) {
+      route.path = route.index ? '' : route.path;
+      route.path = combinePath(basepath, route.path);
+      route.pattern ||= new URLPattern({ pathname: route.path });
+      if (route.children && route.children.length > 0) {
+        route.children = this.setRoutes(route.children, route.path);
+      }
+    }
+    return routes;
+  }
+
+  /**
+   * 경로와 일치하는 라우트를 찾습니다.
+   * URLPattern을 사용하여 경로를 비교하고 재귀적으로 자식 라우트도 검색합니다.
+   */
+  private getRoutes(pathname: string, routes: Route[] = this._routes): Route[] {
+    for (const route of routes) {
+      if (route.pattern?.test({ pathname: pathname })) {
+        return [route];
+      }
+      if (route.children) {
+        const childRoutes = this.getRoutes(pathname, route.children);
+        if (childRoutes.length > 0) {
+          return [route, ...childRoutes];
+        }
+      }
+    }
+    return [];
+  }
+
+  /**
    * 지정한 경로로 이동
    * - 상대경로일 경우 basepath와 조합되어 이동합니다.
    * @param href 이동할 경로
    */
   public async go(href: string) {
     // URL 분석
-    const routeInfo = parseURL(href);
+    const routeInfo = parseURL(href, this._basepath);
 
     // 동일한 경로로 이동하는 경우 동작하지 않음
     if (routeInfo.href === this._routeInfo?.href) return;
 
     // 일치하는 라우트 찾기
-    const route = this.getRoute(routeInfo.pathname);
-    if(!route && routeInfo.pathname !== this._basepath) {
-      throw new Error(`No route found for pathname: ${routeInfo.pathname}`);
+    const routes = this.getRoutes(routeInfo.pathname);
+    if(routes.length < 1) {
+      throw new Error(`경로에 해당하는 라우트 정보를 찾을 수 없습니다: ${routeInfo.pathname}`);
     }
 
     // 데이터 로딩 및 라우팅 정보 업데이트
-    routeInfo.params = route?.pattern?.exec({
-      pathname: routeInfo.pathname,
-    })?.pathname.groups || {};
-    if (typeof route?.loader === 'function') {
+    const route = routes[routes.length - 1];
+    routeInfo.params = route.pattern?.exec({ pathname: routeInfo.pathname })?.pathname.groups || {};
+    if (typeof route.loader === 'function') {
       routeInfo.data = await route.loader(routeInfo);
     }
-    this._currentRoute = route;
     this._routeInfo = routeInfo;
-    document.title = route?.title || document.title;
-    window.history.pushState({}, '', routeInfo.href);
+    document.title = route.title || document.title;
+    window.history.pushState({ basepath: routeInfo.basepath }, '', routeInfo.href);
     document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
 
-    // 페이지 렌더링
-    await this.rootElement.updateComplete;
-    const outlet = this.rootElement.shadowRoot?.querySelector('u-outlet') as UOutlet;
-    if(route?.component) {
-      outlet.renderReactComponent(route.component);
-    } else if (route?.element) {
-      outlet.renderLitElement(route.element);
-    } else {
-      outlet.removeDom();
+    // 렌더링...(부모 route부터 u-outlet을 찾아서 렌더링합니다.)
+    await this._rootElement.updateComplete;
+    let outlet = this._rootElement.shadowRoot?.querySelector('u-outlet') as UOutlet;
+    for (const route of routes) {
+      if(route?.component) {
+        const component = await outlet.renderComponent(route.component);
+        outlet = component.querySelector('u-outlet') || outlet;
+      } else if (route?.element) {
+        const element = await outlet.renderElement(route.element) as UOutlet;
+        outlet = element.shadowRoot?.querySelector('u-outlet') || outlet;
+      } else {
+        outlet.clearDom();
+      }
     }
   }
 
@@ -109,39 +129,7 @@ export class Router {
    * 라우터 기본 경로로 이동
    */
   public async goBase() {
-    await this.go(this._basepath);
-  }
-
-  /**
-   * 라우터 경로 재설정 및 URLPattern 생성
-   */
-  private setRoutes(routes: Route[], basepath: string) {
-    routes.forEach((route) => {
-      route.path = route.index ? '' : route.path;
-      route.pattern ||= new URLPattern({
-        pathname: combinePath(basepath, route.path),
-      });
-    });
-    return [...this._routes, ...routes];
-  }
-
-  /**
-   * 경로와 일치하는 라우트를 찾습니다.
-   * URLPattern을 사용하여 경로를 비교합니다.
-   */
-  private getRoute(pathname: string) {
-    const route = this._routes.find((route) => route.pattern?.test({ pathname: pathname }));
-    if (route) {
-      return route;
-    } else if (this.fallback) {
-      return {
-        path: '*',
-        pattern: new URLPattern({ pathname: '*' }),
-        element: this.fallback,
-      } as Route;
-    } else {
-      return undefined;
-    }
+    await this.go(this._routeInfo?.basepath || this._basepath);
   }
 
   /**
@@ -183,7 +171,7 @@ export class Router {
   //   e.preventDefault();
   //   if (href !== window.location.href) {
   //     window.history.pushState({}, '', href);
-  //     this.goto(anchor.pathname);
+  //     this.go(anchor.pathname);
   //   }
   // };
   

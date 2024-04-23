@@ -1,6 +1,6 @@
 import { observable, IObservableValue } from 'mobx';
 
-import type { Route } from "./router/model";
+import type { Route } from "./router/Model";
 import type { HeaderModel } from "./layouts/Header.model";
 import type { SidebarModel } from "./layouts/Sidebar.model";
 
@@ -52,6 +52,7 @@ export class App {
       basepath: config.basepath || '/',
       routes: config.routes,
     });
+    this.router.connect();
   }
 
   public static dispose() {

@@ -26,8 +26,8 @@ export class UOutlet extends LitElement {
   /**
    * 기존 렌더링된 DOM을 제거하고, LitElement를 삽입합니다.
    */
-  public async renderLitElement(element: typeof LitElement | string) {
-    this.removeDom();
+  public async renderElement(element: typeof LitElement | string) {
+    this.clearDom();
     this.type = 'lit';
     let template;
     if (typeof element === 'string') {
@@ -35,27 +35,29 @@ export class UOutlet extends LitElement {
     } else if(element.prototype instanceof LitElement) {
       template = new element();
     } else {
-      throw new Error('Provided element is neither a string nor a LitElement.');
+      throw new Error('라우터에 제공된 엘리먼트의 형식이 잘못되었습니다.');
     }
     render(html`${template}`, this.litDom);
     await this.updateComplete;
-    return this.litDom.firstChild;
+    return template;
   }
 
   /**
    * 기존 렌더링된 DOM을 제거하고, React 컴포넌트를 삽입합니다.
    */
-  public async renderReactComponent(component: ComponentType) {
-    this.removeDom();
+  public async renderComponent(component: ComponentType) {
+    this.clearDom();
     this.type = 'react';
     this.containerDom = createRoot(this.reactDom);
     this.containerDom.render(createElement(component));
     await this.updateComplete;
-    return this.reactDom.firstChild;
+    return this.reactDom;
   }
 
-  // 기존 렌더링된 DOM을 제거합니다.
-  public removeDom() {
+  /**
+   * 기존 렌더링된 DOM을 제거합니다.
+   */
+  public clearDom() {
     if(this.containerDom) {
       this.containerDom.unmount();
       this.containerDom = undefined;
@@ -72,6 +74,11 @@ export class UOutlet extends LitElement {
     }
     :host([type="lit"]) #react {
       display: none;
+    }
+
+    #react, #lit {
+      width: 100%;
+      height: 100%;
     }
   `;
   

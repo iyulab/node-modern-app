@@ -123,6 +123,15 @@ export interface RouteURL {
   origin: string;
 
   /**
+   * 라우터 URL 기본 경로
+   * - 라우터의 현재 basepath입니다.
+   * @example 
+   * if basepath is /app/:id
+   * set basepath to /app/123
+   */
+  basepath: string;
+
+  /**
    * 라우터 URL 전체 경로
    * - 도메인 이름을 제외한 URL의 전체 경로입니다.
    * @example /home/user/1?name=iyu#profile
@@ -175,4 +184,14 @@ export interface RouteInfo extends RouteURL {
    * 엘리먼트 또는 컴포넌트 렌더링 전에 호출되는 함수에서 반환된 데이터
    */
   data?: any;
+}
+
+/**
+ * 라우터 설정
+ */
+export interface RouterConfig {
+  rootElement: LitElement;
+  basepath?: string;
+  routes: Route[];
+  fallback?: any;
 }

@@ -1,4 +1,5 @@
 import type { LitElement } from "lit";
+import type { AppTheme } from "../App";
 import type { 
   BreadcrumbModel,
   HeaderTitleModel,
@@ -9,31 +10,34 @@ import type {
 
 export interface HeaderOption {
   noHeader?: boolean;
+  noMenuToggle?: boolean;
   noTitle?: boolean;
   noBreadcrumbs?: boolean;
   noHelp?: boolean;
   noLocale?: boolean;
   noTheme?: boolean;
   noUser?: boolean;
-  noMenuToggle?: boolean;
+}
+
+export interface HeaderAction {
+  help?: HelpModel;
+  locale?: LocaleModel;
+  theme?: AppTheme;
+  user?: UserModel;
 }
 
 export interface HeaderModel {
 
-  backgroundColor?: string;
-  
   title?: HeaderTitleModel;
   
   breadcrumbs?: BreadcrumbModel;
-  
-  help?: HelpModel;
 
-  locale?: LocaleModel;
+  center?: typeof LitElement | string;
 
-  user?: UserModel;
-
-  extra?: typeof LitElement | string;
+  action?: HeaderAction;
 
   option?: HeaderOption;
+
+  backgroundColor?: string;
 
 }

@@ -22,18 +22,22 @@ App.load({
         return path + ' Page';
       }
     },
-    help: {
-      href: '/help',
-      target: '_top'
-    },
-    locale: 'en',
-    user: {
-      name: 'John Doe',
-      avatar: 'https://avatars.githubusercontent.com/u/1066040?v=4'
+    
+    action: {
+      theme: 'dark',
+      help: {
+        href: '/help',
+        target: '_top'
+      },
+      locale: 'en',
+      user: {
+        name: 'John Doe',
+        avatar: 'https://avatars.githubusercontent.com/u/1066040?v=4'
+      },
     }
   },
   sidebar: {
-    menuItem: [
+    menu: [
       { type: 'single', display:'Home', path: '/app' },
       { type: 'divider', text: 'Group', height: "50px" },
       { type: 'group', display: 'Group', items: [

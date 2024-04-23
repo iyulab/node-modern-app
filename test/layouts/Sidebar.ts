@@ -4,7 +4,7 @@ import { convertReact } from '@iyulab/u-components/utils';
 
 import { type AppScreen } from '../App';
 import type { SidebarOption, MenuItem } from './Sidebar.model';
-import { RouteInfo } from '../router/model';
+import { RouteInfo } from '../router/Model';
 import { GroupMenuItemModel, SingleMenuModel } from '../components/sidebar-parts';
 import { combinePath } from '../router/Utils';
 
@@ -21,8 +21,9 @@ export class USidebar extends LitElement {
   @property({ type: Boolean }) collapsed: boolean = false;
 
   @property({ type: String }) basepath?: string;
-  @property({ type: Array }) menuItem?: MenuItem[];
+  @property({ type: Array }) menu?: MenuItem[];
   @property({ type: Object }) option?: SidebarOption;  
+  @property({ type: String }) backgroundColor?: string;
 
   connectedCallback() {
     super.connectedCallback();
@@ -38,10 +39,11 @@ export class USidebar extends LitElement {
     super.updated(changedProperties);
     await this.updateComplete;
 
-    if (changedProperties.has('menuItem') && this.menuItem) {
-      this.topMenu = this.menuItem?.filter((item) => item.position === 'top' || !item.position);
-      this.bottomMenu = this.menuItem?.filter((item) => item.position === 'bottom');
-      this.initializeUrlPatterns(this.menuItem);
+    if (changedProperties.has('backgroundColor') && this.backgroundColor) {
+      this.style.backgroundColor = this.backgroundColor;
+    }
+    if (changedProperties.has('menu') && this.menu) {
+      this.initializeUrlPatterns(this.menu);
     }
     if (changedProperties.has('open')) {
       this.collapsed = !this.open && this.screen !== 'small';
@@ -55,7 +57,7 @@ export class USidebar extends LitElement {
       <slot name="header"></slot>
       <div class="menu">
         <u-icon class="up-elevator" 
-          type="system" name="arrow-down"
+          type="system" name="chevron-up"
         ></u-icon>
         ${this.renderMenuItems(this.topMenu)}
         <div class="flex"></div>
@@ -115,7 +117,7 @@ export class USidebar extends LitElement {
     const routeInfo = (event as CustomEvent).detail as RouteInfo;
     const pathname = routeInfo.pathname;
     if (this.urlPatterns.size === 0) {
-      this.initializeUrlPatterns(this.menuItem!);
+      this.initializeUrlPatterns(this.menu);
     }
     this.urlPatterns.forEach((pattern, path) => {
       if (pattern.test({ pathname: pathname })) {
@@ -125,6 +127,8 @@ export class USidebar extends LitElement {
   }
 
   private initializeUrlPatterns(items: MenuItem[]): void {
+    this.topMenu = items.filter((item) => item.position === 'top' || !item.position);
+    this.bottomMenu = items.filter((item) => item.position === 'bottom');
     items.forEach(item => {
       if (item.type === 'divider') return;
       if (item.type === 'single' || !item.type) {
@@ -146,13 +150,14 @@ export class USidebar extends LitElement {
   static styles = css`
     :host {
       position: relative;
-      width: 100%;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       overflow: hidden;
       box-sizing: border-box;
+      background-color: var(--sl-color-neutral-0);
+      border-right: 1px solid var(--sl-color-gray-200);
       user-select: none;
     }
 
