@@ -27,7 +27,9 @@ export class GroupMenuItem extends LitElement {
       position: relative;
       width: 100%;
       display: block;
+      background-color: var(--sl-color-neutral-0);
       cursor: pointer;
+      --padding-left: 50px;
     }
     :host(:hover) {
       background-color: var(--sl-color-gray-100);
@@ -43,13 +45,16 @@ export class GroupMenuItem extends LitElement {
     }
     :host([active]) u-link {
       font-weight: 600;
+      background-color: var(--sl-color-gray-200);
     }
     
     u-link {
+      padding-left: var(--padding-left);
       width: 100%;
-      padding-left: 50px;
       font-size: 14px;
-      line-height: 40px;
+      line-height: 30px;
+      box-sizing: border-box;
+      white-space: nowrap;
     }
   `;
 

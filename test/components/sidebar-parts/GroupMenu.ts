@@ -26,32 +26,22 @@ export class GroupMenu extends LitElement {
     super.updated(changedProperties);
     await this.updateComplete;
     
-    if (changedProperties.has('active') && this.active) {
+    if (changedProperties.has('active') && this.active && !this.collapsed) {
       this.open = true;
     }
   }
 
   render() {
-    const content = this.renderContent();
-
-    if (this.collapsed)
-      return this.renderDropdownWith(content);
-    else
-      return content;
+    if (this.collapsed) {
+      return this.renderCollapsedMenu();
+    } else {
+      return this.renderExpandedMenu();
+    }
   }
 
-  private renderDropdownWith(content: any) {
+  private renderExpandedMenu() {
     return html`
-      <u-dropdown hoist placement="right-start">
-        ${content}
-      </u-dropdown>
-    `;
-  }
-
-  private renderContent() {
-    return html`
-      <div class="header" slot="trigger"
-        @click=${this.handleOpenGroup}>
+      <div class="header" @click=${() => this.open = !this.open}>
         <div class="icon">
           ${this.renderIcon()}
         </div>
@@ -60,12 +50,31 @@ export class GroupMenu extends LitElement {
         </div>
         <u-icon class="arrow"
           type="system" 
-          name="arrow-down"
+          name="chevron-down"
         ></u-icon>
       </div>
       <div class="menu">
         <slot></slot>
       </div>
+    `;
+  }
+
+  private renderCollapsedMenu() {
+    return html`
+      <u-dropdown hoist placement="right-start">
+        <div class="header" slot="trigger">
+          <div class="icon">
+            ${this.renderIcon()}
+          </div>
+        </div>
+        <div class="drop-menu">
+          <div class="display">
+            ${this.display}
+          </div>
+          <u-divider spacing="0"></u-divider>
+          <slot></slot>
+        </div>
+      </u-dropdown>
     `;
   }
 
@@ -75,30 +84,16 @@ export class GroupMenu extends LitElement {
     : html`<u-icon type="system" name="box"></u-icon>`;
   }
 
-  private handleOpenGroup() {
-    if (this.collapsed) return;
-    this.open = !this.open;
-  }
-
-  private renderMenuItem() {
-    if (this.collapsed)
-      return html``;
-  }
-
   static styles = css`
     :host {
       position: relative;
       display: block;
       width: 100%;
-      background-color: inherit;
-    }
-    :host([collapsed]) .header .display {
-      display: none;
-    }
-    :host([collapsed]) .header .arrow {
-      display: none;
     }
     :host([active]) .header .display {
+      font-weight: 600;
+    }
+    :host([active]) .drop-menu .display {
       font-weight: 600;
     }
     :host([active])::before {
@@ -111,7 +106,7 @@ export class GroupMenu extends LitElement {
       background-color: var(--sl-color-gray-400);
     }
     :host([open]) .menu {
-      height: auto;
+      display: block;
     }
     :host([open]) .header .arrow {
       transform: rotate(-180deg);
@@ -139,6 +134,9 @@ export class GroupMenu extends LitElement {
         font-size: 14px;
         line-height: 50px;
         font-weight: 400;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       .arrow {
@@ -156,10 +154,31 @@ export class GroupMenu extends LitElement {
 
     .menu {
       width: 100%;
-      height: 0px;
+      display: none;
+    }
+
+    .drop-menu {
+      max-width: 210px;
       overflow: hidden;
-      transition: height 0.3s ease-in-out;
-      background-color: inherit;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--sl-color-neutral-0);
+      border-radius: 5px;
+      border: 1px solid var(--sl-color-gray-200);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+
+      .display {
+        padding-left: 30px;
+        font-size: 14px;
+        line-height: 40px;
+        font-weight: 400;
+        box-sizing: border-box;
+        white-space: nowrap;
+      }
+    }
+    .drop-menu slot::slotted(*) {
+      --padding-left: 30px;
     }
   `;
 

@@ -2,17 +2,19 @@ import { ReactComponent } from './test-page/ReactComponent';
 import { App } from './test/App';
 import './test-page/LitElement';
 
+console.log('App load');
+
 App.load({
   basepath: '/app/:id',
   routes: [
     { title: "React!", path: '/react', component: ReactComponent },
-    { path: '/lit', element: 'u-lit', loader: async (url) => {
+    { title: "Lit!", path: '/lit', element: 'u-lit', loader: async (url) => {
       return "hello lit" + url.pathname;
     }},
   ],
   header: {
     title: {
-      text: 'Hello World',
+      text: 'Hello World tiem sads ccsss',
       path: '/app'
     },
     breadcrumbs: {
@@ -22,17 +24,20 @@ App.load({
         return path + ' Page';
       }
     },
-    
     action: {
+      locale: 'en',
       theme: 'dark',
       help: {
         href: '/help',
         target: '_top'
       },
-      locale: 'en',
       user: {
         name: 'John Doe',
-        avatar: 'https://avatars.githubusercontent.com/u/1066040?v=4'
+        email: 'wwww',
+        setting: '/setting',
+        logout: '/logout',
+        privacy: '/privacy',
+        terms: '/terms',
       },
     }
   },
@@ -40,7 +45,7 @@ App.load({
     menu: [
       { display:'Home', path: '/app' },
       { type: 'divider', line: true, text: 'Components', height: '100px'},
-      { display: 'Group', items: [
+      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
         { display: 'Lit Element', path: 'lit' },
         { display: 'React Component', path: 'react' },
       ]},

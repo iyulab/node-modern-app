@@ -82,7 +82,9 @@ export class Router {
 
   /**
    * 지정한 경로로 이동
+   * - 클라이언트 사이드 라우팅을 수행합니다.
    * - 상대경로일 경우 basepath와 조합되어 이동합니다.
+   * - 라우터에 포함되지 않은 경로로 이동할 경우 다른 방법으로 처리하세요.
    * @param href 이동할 경로
    */
   public async go(href: string) {

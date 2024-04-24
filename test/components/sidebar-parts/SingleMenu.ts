@@ -86,6 +86,7 @@ export class SingleMenu extends LitElement {
       }
 
       .display {
+        flex: 1;
         font-size: 14px;
         line-height: 1.5;
         font-weight: 400;

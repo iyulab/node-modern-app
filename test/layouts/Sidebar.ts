@@ -2,11 +2,31 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { convertReact } from '@iyulab/u-components/utils';
 
-import { type AppScreen } from '../App';
-import type { SidebarOption, MenuItem } from './Sidebar.model';
+import type { AppScreen } from '../App';
+import type { 
+  MenuDividerModel, 
+  SingleMenuModel, 
+  GroupMenuModel, 
+  GroupMenuItemModel
+} from "../components/sidebar-parts";
 import { RouteInfo } from '../router/Model';
-import { GroupMenuItemModel, SingleMenuModel } from '../components/sidebar-parts';
 import { combinePath } from '../router/Utils';
+
+export type MenuItem = ( SingleMenuModel | GroupMenuModel | MenuDividerModel ) & {
+  position?: 'top' | 'bottom';
+}
+
+export interface SidebarOption {
+  noSidebar?: boolean;
+}
+
+export interface SidebarModel {
+  header?: typeof LitElement | string;
+  footer?: typeof LitElement | string;
+  menu?: MenuItem[];
+  option?: SidebarOption;
+  backgroundColor?: string;
+}
 
 @customElement('u-sidebar')
 export class USidebar extends LitElement {
@@ -68,7 +88,7 @@ export class USidebar extends LitElement {
         <div class="flex"></div>
         ${this.renderMenuItems(this.bottomMenu)}
         <u-icon class="elevator down" 
-          type="system" name="arrow-down"
+          type="system" name="chevron-down"
           @click=${this.handleScrollBottom}
         ></u-icon>
       </div>

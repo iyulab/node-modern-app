@@ -6,13 +6,40 @@ import type {
   AppScreen,
 } from '../App';
 import type {
+  AppTheme,
   BreadcrumbModel,
-  HeaderTitleModel
+  HeaderTitleModel,
+  HelpModel,
+  LocaleModel,
+  UserModel
 } from '../components/header-parts';
-import type {
-  HeaderOption,
-  HeaderAction
-} from './Header.model';
+
+export interface HeaderOption {
+  noHeader?: boolean;
+  noMenuToggle?: boolean;
+  noTitle?: boolean;
+  noBreadcrumbs?: boolean;
+  noHelp?: boolean;
+  noLocale?: boolean;
+  noTheme?: boolean;
+  noUser?: boolean;
+}
+
+export interface HeaderAction {
+  help?: HelpModel;
+  locale?: LocaleModel;
+  theme?: AppTheme;
+  user?: UserModel;
+}
+
+export interface HeaderModel {
+  title?: HeaderTitleModel;
+  breadcrumbs?: BreadcrumbModel;
+  center?: typeof LitElement | string;
+  action?: HeaderAction;
+  option?: HeaderOption;
+  backgroundColor?: string;
+}
 
 @customElement('u-header')
 export class UHeader extends LitElement {
@@ -90,6 +117,7 @@ export class UHeader extends LitElement {
   static styles = css`
     :host {
       position: relative;
+      width: 100%;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -107,29 +135,38 @@ export class UHeader extends LitElement {
     }
 
     .headline {
+      height: inherit;
       display: flex;
       flex-direction: row;
-      align-items: center;
       justify-content: flex-start;
+      align-items: center;
+      overflow: hidden;
+      padding: 8px;
+      box-sizing: border-box;
     }
 
     .breadcrumb {
-      margin-left: 20px;
+      height: inherit;
       display: flex;
       flex-direction: row;
-      align-items: center;
       justify-content: flex-start;
+      align-items: center;
+      overflow: hidden;
     }
 
     .flex {
       flex: 1;
+      height: inherit;
     }
 
     .action {
+      height: inherit;
       display: flex;
       flex-direction: row;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
+      padding: 8px;
+      box-sizing: border-box;
     }
   `;
 }

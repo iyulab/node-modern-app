@@ -3,8 +3,8 @@ import { customElement, property } from 'lit/decorators.js';
 import { autorun } from 'mobx';
 import { convertReact } from '@iyulab/u-components/utils';
 
-import type { HeaderModel } from './Header.model';
-import type { SidebarModel } from './Sidebar.model';
+import type { HeaderModel } from './Header';
+import type { SidebarModel } from './Sidebar';
 import { App, type AppScreen } from '../App';
 
 import "@iyulab/u-components/components/icon";
@@ -55,7 +55,6 @@ export class ULayout extends LitElement {
     }
   }
 
-  // @ts-ignore
   render() {
     return html`
       <u-header
@@ -182,7 +181,6 @@ export class ULayout extends LitElement {
 
     u-header {
       position: relative;
-      width: 100%;
       height: var(--header-height);
     }
 

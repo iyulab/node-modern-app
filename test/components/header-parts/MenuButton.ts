@@ -16,8 +16,20 @@ export class MenuButton extends LitElement {
 
   static styles = css`
     :host {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      padding: 5px;
       cursor: pointer;
     }
+    :host(:hover) {
+      background-color: var(--sl-color-gray-200);
+    }
+    :host(:hover) u-icon {
+      color: var(--sl-color-primary-600);
+    }
+
   `;
 
 }

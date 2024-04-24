@@ -10,13 +10,16 @@ export class LocaleButton extends LitElement {
   
   @property({ type: Object }) model?: LocaleModel;
 
+  @property({ type: String }) locale: string = '한국어';
+
   render() {
     return html`
-      <u-dropdown distance="10" placement="bottom-end">
-        <u-icon-button slot="trigger"
-          type="system" name="global"
-          size="24px" tooltip="언어 설정"
-        ></u-icon-button>
+      <u-dropdown placement="bottom-end">
+        <div class="locale" slot="trigger">
+          <u-icon type="system" name="translate"></u-icon>
+          ${this.locale}
+          <u-icon type="system" name="chevron-down"></u-icon>
+        </div>
         <u-menu>
           <u-menu-item>
             한국어
@@ -34,12 +37,25 @@ export class LocaleButton extends LitElement {
       display: inline-flex;
     }
 
-    u-dropdown {
-      height: 24px;
+    .locale {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 5px;
+      box-sizing: border-box;
+      font-size: 16px;
+      color: var(--sl-color-gray-600);
+      cursor: pointer;
+    }
+    .locale:hover {
+      color: var(--sl-color-primary-600);
     }
 
     u-menu {
       padding: 0;
+      width: 120px;
     }
     u-menu-item::part(submenu-icon) {
       display: none;
