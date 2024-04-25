@@ -222,7 +222,6 @@ export abstract class ApiClientBase {
     
     const url = this.buildUrl(address);
 
-    try {
       const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -266,9 +265,6 @@ export abstract class ApiClientBase {
           value: data,
         };
       }
-    } catch (error) {
-      throw error;
-    }
   }
   
 }

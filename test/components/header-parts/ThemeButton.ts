@@ -18,6 +18,7 @@ export class ThemeButton extends LitElement {
     this.changeTheme(this.theme);
     this.media.addEventListener('change', this.onChangeColorScheme);
   }
+  
   disconnectedCallback() {
     this.media.removeEventListener('change', this.onChangeColorScheme);
     super.disconnectedCallback();

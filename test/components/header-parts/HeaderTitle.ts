@@ -1,6 +1,5 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { App } from "../../App";
 
 export interface HeaderTitleModel {  
   logo?: string;
@@ -33,7 +32,7 @@ export class HeaderTitle extends LitElement {
 
   render() {
     return html`
-      <u-link .href=${this.path || App.router?.basepath}>
+      <u-link .href=${this.path}>
         <img class="logo" 
           src=${this.logo || '/favicon.ico'} 
           alt="app-logo" 

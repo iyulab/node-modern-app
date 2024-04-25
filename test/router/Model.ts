@@ -190,8 +190,28 @@ export interface RouteInfo extends RouteURL {
  * 라우터 설정
  */
 export interface RouterConfig {
+  /**
+   * 라우터가 연결될 LitElement
+   * - 현재 라우터는 LitElement를 기반으로 작성되었습니다.
+   */
   rootElement: LitElement;
+  
+  /**
+   * 라우터의 기본 경로
+   * - 라우터의 기본 경로는 URL의 시작점입니다.
+   * - URLPattern을 사용하여 경로를 탐색합니다.
+   */
   basepath?: string;
+  
+  /**
+   * 라우트 설정
+   * - 라우트는 URLPattern을 사용하여 경로를 탐색합니다.
+   * - 라우트는 렌더링할 엘리먼트 또는 컴포넌트를 지정합니다.
+   */
   routes: Route[];
-  fallback?: any;
+
+  /**
+   * 라우터가 URL을 찾지 못했을 때 렌더링할 엘리먼트
+   */
+  notfound: typeof LitElement | string;
 }

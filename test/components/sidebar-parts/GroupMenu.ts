@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { GroupMenuItemModel } from "./GroupMenuItem";
+import type { GroupMenuItemModel } from "./GroupMenuItem";
 
 export interface GroupMenuModel {
   type?: 'menu';

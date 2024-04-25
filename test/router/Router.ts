@@ -12,10 +12,11 @@ import { combinePath, parseURL } from './Utils';
 
 export class Router {
   private readonly _rootElement: LitElement;
-  private readonly _fallback: LitElement;
+  private readonly _notfound: typeof LitElement | string;
   private readonly _basepath: string;
-  private readonly _routes: Route[] = [];
+  private readonly _routes: Route[];
   private _routeInfo?: RouteInfo;
+  private requestID?: string;
 
   public get basepath() {
     return this._basepath;
@@ -26,7 +27,7 @@ export class Router {
 
   constructor(config: RouterConfig) {
     this._rootElement = config.rootElement;
-    this._fallback = config.fallback;
+    this._notfound = config.notfound;
     this._basepath = combinePath(config.basepath || '/');
     this._routes = this.setRoutes(config.routes, this._basepath);
   }
@@ -88,44 +89,62 @@ export class Router {
    * @param href 이동할 경로
    */
   public async go(href: string) {
+    // 요청 ID 생성
+    const requestID = window.crypto.randomUUID();
+    this.requestID = requestID;
+
     // URL 분석
     const routeInfo = parseURL(href, this._basepath);
-
-    // 동일한 경로로 이동하는 경우 동작하지 않음
     if (routeInfo.href === this._routeInfo?.href) return;
+    if(this.requestID !== requestID) return;
+    this.dispatchProgress(0.1);
 
     // 일치하는 라우트 찾기
     const routes = this.getRoutes(routeInfo.pathname);
-    const route = routes[routes.length - 1];
-    // if(routes.length < 1) {
-    //   throw new Error(`경로에 해당하는 라우트 정보를 찾을 수 없습니다: ${routeInfo.pathname}`);
-    // }
+    const lastRoute = routes[routes.length - 1];
+    if(this.requestID !== requestID) return;
+    this.dispatchProgress(0.3);
 
     // 데이터 로딩 및 라우팅 정보 업데이트
-    routeInfo.params = route?.pattern?.exec({ pathname: routeInfo.pathname })?.pathname.groups || {};
-    if (typeof route?.loader === 'function') {
-      routeInfo.data = await route.loader(routeInfo);
+    routeInfo.params = lastRoute?.pattern?.exec({ pathname: routeInfo.pathname })?.pathname.groups || {};
+    if (typeof lastRoute?.loader === 'function') {
+      routeInfo.data = await lastRoute.loader(routeInfo);
     }
+    if(this.requestID !== requestID) return;
+    this.dispatchProgress(0.5);
     this._routeInfo = routeInfo;
     
-    // 렌더링...(부모 route부터 u-outlet을 찾아서 렌더링합니다.)
+    // Outlet 렌더링(부모 route부터 u-outlet을 찾아서 렌더링합니다.)
     await this._rootElement.updateComplete;
     let outlet = this._rootElement.shadowRoot?.querySelector('u-outlet') as UOutlet;
-    for (const route of routes) {
-      if(route?.component) {
-        const component = await outlet.renderComponent(route.component);
-        outlet = component.querySelector('u-outlet') || outlet;
-      } else if (route?.element) {
-        const element = await outlet.renderElement(route.element) as UOutlet;
-        outlet = element.shadowRoot?.querySelector('u-outlet') || outlet;
-      } else {
-        outlet.clearDom();
+    if (routes.length === 0) {
+      if(this.requestID !== requestID) return;
+      this.dispatchProgress(1);
+      this._notfound ? outlet.renderElement(this._notfound) : outlet.clearDom();
+    } else {
+      for (const route of routes) {
+        if(this.requestID !== requestID) return;
+        this.dispatchProgress(0.5 + 0.5 * ((routes.indexOf(route) + 1) / routes.length));
+        if(route.component) {
+          const component = await outlet.renderComponent(route.component);
+          outlet = component.querySelector('u-outlet') || outlet;
+        } else if (route.element) {
+          const element = await outlet.renderElement(route.element) as UOutlet;
+          outlet = element.shadowRoot?.querySelector('u-outlet') || outlet;
+        } else {
+          outlet.clearDom();
+        }
       }
     }
-
+    
     // 브라우저 히스토리 및 이벤트 발생
-    document.title = route?.title || document.title;
-    window.history.pushState({ basepath: routeInfo.basepath }, '', routeInfo.href);
+    if(this.requestID !== requestID) return;
+    if (routeInfo.href !== window.location.href) {
+      window.history.pushState({ basepath: routeInfo.basepath }, '', routeInfo.href);
+    } else {
+      window.history.replaceState({ basepath: routeInfo.basepath }, '', routeInfo.href);
+    }
+    document.title = lastRoute?.title || document.title;
     document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
   }
 
@@ -137,11 +156,18 @@ export class Router {
   }
 
   /**
+   * 라우팅 진행률 Dispatch
+   */
+  private dispatchProgress(value: number) {
+    document.dispatchEvent(new CustomEvent('route-progress', { detail: value })); 
+  }
+
+  /**
    * 브라우저 히스토리 이벤트가 발생했을 때 라우팅 처리
    */
-  private onPopstate = () => {
+  private onPopstate = async () => {
     const href = window.location.href;
-    this.go(href);
+    await this.go(href);
   };
 
   /**

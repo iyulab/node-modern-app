@@ -1,10 +1,7 @@
 import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { convertReact } from '@iyulab/u-components/utils';
 
-import type { 
-  AppScreen,
-} from '../App';
+import type { AppScreen } from '../App';
 import type {
   AppTheme,
   BreadcrumbModel,
@@ -66,22 +63,30 @@ export class UHeader extends LitElement {
     if (this.option?.noHeader) return nothing;
     
     return html`
+      <!-- 헤더 타이틀 -->
       <div class="headline">
         ${this.renderPrefix()}
         ${this.renderTitle()}
       </div>
+      
+      <!-- 헤더 경로 표시줄 -->
       <div class="breadcrumb">
         ${this.renderBreadcrumbs()}
       </div>
+      
+      <!-- 사용자 지정 엘리먼트 -->
       <div class="flex">
         <slot name="center"></slot>
       </div>
+
+      <!-- 헤더 버튼 엘리먼트 -->
       <div class="action">
         ${this.renderAction()}
       </div>
-      <slot name="progress"></slot>
     `;
   }
+
+  // ===== 렌더링 메서드 ===== //
 
   private renderPrefix() {
     if (this.option?.noMenuToggle) return nothing;
@@ -170,8 +175,3 @@ export class UHeader extends LitElement {
     }
   `;
 }
-
-export const Header = convertReact({
-  elementClass: UHeader,
-  tagName: 'u-header',
-});

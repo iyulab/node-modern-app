@@ -1,41 +1,42 @@
 import { LitElement, css, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 import { autorun } from 'mobx';
-import { convertReact } from '@iyulab/u-components/utils';
 
 import type { HeaderModel } from './Header';
 import type { SidebarModel } from './Sidebar';
 import { App, type AppScreen } from '../App';
 
-import "@iyulab/u-components/components/icon";
-import "@iyulab/u-components/components/button";
-import "@iyulab/u-components/components/dropdown";
-import "@iyulab/u-components/components/menu";
-import "@iyulab/u-components/components/breadcrumb";
-import "@iyulab/u-components/components/divider";
-
-import './Header';
-import './Sidebar';
-import './Page';
 import '../components/header-parts';
 import '../components/sidebar-parts';
 import '../router/Link';
 import '../router/Outlet';
+import './Header';
+import './Sidebar';
+import './Page';
 
 @customElement('u-layout')
 export class ULayout extends LitElement {
+
+  @query('.progress-bar') progressbar!: HTMLDivElement;
 
   @property({ type: String, reflect: true }) screen?: AppScreen;
   @property({ type: Boolean, reflect: true }) open: boolean = true;
   
   @property({ type: String }) basepath?: string;
-  @property({ type: Object }) progress?: any;
   @property({ type: Object }) header?: HeaderModel;
   @property({ type: Object }) sidebar?: SidebarModel;
 
   connectedCallback() {
     super.connectedCallback();
     document.body.style.margin = '0';
+    document.addEventListener('route-progress',this.handleProgressChange);
+    document.addEventListener('route-change',this.handleRouteChange);
+  }
+
+  disconnectedCallback() {
+    document.removeEventListener('route-progress',this.handleProgressChange);
+    document.removeEventListener('route-change',this.handleRouteChange);
+    super.disconnectedCallback();
   }
 
   protected async firstUpdated(changedProperties: any) {
@@ -57,6 +58,10 @@ export class ULayout extends LitElement {
 
   render() {
     return html`
+      <!-- 라우터 진행률 표시 -->
+      <div class="progress-bar"></div>
+
+      <!-- 레이아웃 헤드 엘리먼트 -->
       <u-header
         .screen=${this.screen}
         .basepath=${this.basepath}
@@ -70,10 +75,12 @@ export class ULayout extends LitElement {
           @click=${() => this.open = !this.open}
         ></menu-button>
         ${this.renderHeaderCenter()}
-        ${this.renderHeaderProgress()}
       </u-header>
       
+      <!-- 레이아웃 메인 엘리먼트 -->
       <div class="main">
+
+        <!-- 레이아웃 사이드바 엘리먼트 -->
         <u-sidebar
           .open=${this.open}
           .screen=${this.screen}
@@ -86,20 +93,19 @@ export class ULayout extends LitElement {
           ${this.renderSidebarFooter()}
         </u-sidebar>
 
+        <!-- 레이아웃 컨텐츠 페이지 엘리먼트 -->
         <u-outlet></u-outlet>
 
+        <!-- 레이아웃 메뉴 오버레이 -->
         <div class="overlay"
           @click=${() => this.open = false}
         ></div>
+
       </div>
     `;
   }
 
-  private renderHeaderProgress() {
-    if (!this.progress) return;
-    this.progress.setAttribute('slot', 'progress');
-    return html`${this.progress}`;
-  }
+  // ===== 렌더링 메서드 ===== //
 
   private renderHeaderCenter() {
     if (!this.header?.center) return;
@@ -128,8 +134,27 @@ export class ULayout extends LitElement {
     } else if (typeof element === 'function') {
       return new element();
     } else {
-      throw new Error(' Lit Element의 형식이 잘못되었습니다.');
+      throw new Error('Lit Element의 형식이 잘못되었습니다.');
     }
+  }
+
+  // ===== 라우팅 이벤트 핸들러 ===== //
+
+  private handleProgressChange = (event: Event) => {
+    const progress = (event as CustomEvent).detail;
+    const opacity = this.progressbar.style.opacity;
+    if (!opacity || opacity === '0') {
+      this.progressbar.style.opacity = '1';
+    }
+    this.progressbar.style.transform = `scaleX(${progress})`;
+  }
+
+  private handleRouteChange = () => {
+    if (this.screen !== 'large' && this.open) {
+      this.open = false;
+    }
+    this.progressbar.style.transform = `scaleX(1)`;
+    this.progressbar.style.opacity = '0';
   }
 
   static styles = css`
@@ -179,6 +204,20 @@ export class ULayout extends LitElement {
       display: block;
     }
 
+    .progress-bar {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--sl-color-primary-700);
+      opacity: 0;
+      transform: scaleX(1);
+      transform-origin: left;
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    }
+
     u-header {
       position: relative;
       height: var(--header-height);
@@ -213,8 +252,3 @@ export class ULayout extends LitElement {
     }
   `;
 }
-
-export const Layout = convertReact({
-  elementClass: ULayout,
-  tagName: 'u-layout',
-});

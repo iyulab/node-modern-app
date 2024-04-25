@@ -20,8 +20,11 @@ App.load({
     breadcrumbs: {
       'react': 'React Component',
       'lit': 'Lit Element',
-      '/^d+/': async (path: any) => {
-        return path + ' Page';
+      '^\\d{6}$': async (path: any) => {
+        return {
+          icon: 'gom',
+          display: `digital number: ${path}`
+        }
       }
     },
     action: {
@@ -43,6 +46,30 @@ App.load({
   },
   sidebar: {
     menu: [
+      { display:'Home', path: '/app' },
+      { type: 'divider', line: true, text: 'Components', height: '100px'},
+      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
+        { display: 'Lit Element', path: 'lit' },
+        { display: 'React Component', path: 'react' },
+      ]},
+      { display:'Home', path: '/app' },
+      { type: 'divider', line: true, text: 'Components', height: '100px'},
+      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
+        { display: 'Lit Element', path: 'lit' },
+        { display: 'React Component', path: 'react' },
+      ]},
+      { display:'Home', path: '/app' },
+      { type: 'divider', line: true, text: 'Components', height: '100px'},
+      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
+        { display: 'Lit Element', path: 'lit' },
+        { display: 'React Component', path: 'react' },
+      ]},
+      { display:'Home', path: '/app' },
+      { type: 'divider', line: true, text: 'Components', height: '100px'},
+      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
+        { display: 'Lit Element', path: 'lit' },
+        { display: 'React Component', path: 'react' },
+      ]},
       { display:'Home', path: '/app' },
       { type: 'divider', line: true, text: 'Components', height: '100px'},
       { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [

@@ -1,9 +1,9 @@
 import { LitElement, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-import { RouteInfo } from "../../router/Model";
-import { App } from "../../App";
 import { until } from "lit/directives/until.js";
+
+import type { RouteInfo } from "../../router/Model";
+import { App } from "../../App";
 
 export interface BreadcrumbItem {
   icon: string;
@@ -48,7 +48,10 @@ export class HeaderBreadcrumb extends LitElement {
     return html`
       <u-breadcrumb>
         ${this.renderBaseItem()}
-        ${until(this.renderItem(this.pathname), nothing)}
+        ${until(
+          this.renderItem(this.pathname), 
+          html`<u-spinner size="24px"></u-spinner>`
+        )}
       </u-breadcrumb>
     `;
   }
@@ -86,6 +89,7 @@ export class HeaderBreadcrumb extends LitElement {
     return items;
   }
 
+  // Breadcrumb 모델을 Regex로 변환하여 저장
   private setValue(model: BreadcrumbModel) {
     this.regexes = Object.entries(model).map(([key, value]) => {
       const regex = new RegExp(key);
@@ -93,6 +97,7 @@ export class HeaderBreadcrumb extends LitElement {
     });
   }
 
+  // pathname에 매칭되는 Breadcrumb Value를 반환
   private async getValue(pathname: string) {
     for (const { key, value } of this.regexes) {
       if (key.test(pathname)) {
@@ -102,6 +107,7 @@ export class HeaderBreadcrumb extends LitElement {
     return pathname;
   }
 
+  // Route 변경 이벤트 핸들러 - basepath와 pathname을 업데이트
   private onChangeRoute = (event: Event) => {
     const routeInfo = (event as CustomEvent).detail as RouteInfo;
     this.basepath = routeInfo.basepath;

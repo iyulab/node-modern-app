@@ -20,13 +20,13 @@ export class UPage extends LitElement {
 
   render() {
     return html`
-      <!-- page title -->
+      <!-- 페이지 타이틀 -->
       ${this.renderTitle()}
 
-      <!-- main -->
+      <!-- 메인 컨텐츠 -->
       <slot></slot>
 
-      <!-- elevator button -->
+      <!-- 페이지 스크롤 버튼 -->
       <div class="elevator"
         @click=${this.scrollToTop}>
         <u-icon
@@ -47,16 +47,16 @@ export class UPage extends LitElement {
     `;
   }
 
-  private scrollToTop = () => {
-    this.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
   private handleScroll = () => {
     if (this.scrollTop <= 20 && this.show) {
       this.show = false;
     } else if (this.scrollTop > 20 && !this.show) {
       this.show = true;
     }
+  }
+
+  private scrollToTop = () => {
+    this.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   static styles = css`

@@ -46,8 +46,8 @@
   },
   "dependencies": {
     "@iyulab/u-components": "^0.0.62",
-    "@lit/localize": "^0.12.1",
     "@lit/react": "^1.0.4",
+    "i18next": "^23.11.2",
     "lit": "^3.1.2",
     "mobx": "^6.12.3",
     "mobx-react": "^9.1.1",
