@@ -1,6 +1,7 @@
 import { ReactComponent } from './test-page/ReactComponent';
 import { App } from './test/App';
 import './test-page/LitElement';
+import { t } from '@iyulab/u-components';
 
 console.log('App load');
 
@@ -19,7 +20,7 @@ App.load({
     },
     breadcrumbs: {
       'react': 'React Component',
-      'lit': 'Lit Element',
+      'lit': t('Lit Element'),
       '^\\d{6}$': async (path: any) => {
         return {
           icon: 'gom',
@@ -28,12 +29,9 @@ App.load({
       }
     },
     action: {
-      locale: 'en',
-      theme: 'dark',
-      help: {
-        href: '/help',
-        target: '_top'
-      },
+      locale: true,
+      theme: true,
+      help: '/help',
       user: {
         name: 'John Doe',
         email: 'wwww',
@@ -46,31 +44,7 @@ App.load({
   },
   sidebar: {
     menu: [
-      { display:'Home', path: '/app' },
-      { type: 'divider', line: true, text: 'Components', height: '100px'},
-      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
-        { display: 'Lit Element', path: 'lit' },
-        { display: 'React Component', path: 'react' },
-      ]},
-      { display:'Home', path: '/app' },
-      { type: 'divider', line: true, text: 'Components', height: '100px'},
-      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
-        { display: 'Lit Element', path: 'lit' },
-        { display: 'React Component', path: 'react' },
-      ]},
-      { display:'Home', path: '/app' },
-      { type: 'divider', line: true, text: 'Components', height: '100px'},
-      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
-        { display: 'Lit Element', path: 'lit' },
-        { display: 'React Component', path: 'react' },
-      ]},
-      { display:'Home', path: '/app' },
-      { type: 'divider', line: true, text: 'Components', height: '100px'},
-      { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
-        { display: 'Lit Element', path: 'lit' },
-        { display: 'React Component', path: 'react' },
-      ]},
-      { display:'Home', path: '/app' },
+      { display: t('Home'), path: '/app' },
       { type: 'divider', line: true, text: 'Components', height: '100px'},
       { display: 'Group kkkkkkkkkkkkkkkkkkkkkkkkkkk', items: [
         { display: 'Lit Element', path: 'lit' },

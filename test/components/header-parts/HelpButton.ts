@@ -1,35 +1,22 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-export interface HelpModel {
-  href: string;
-  target?: "_blank" | "_self" | "_parent" | "_top";
-}
+import { t } from "@iyulab/u-components/localization";
 
 @customElement('help-button')
 export class HelpButton extends LitElement {
-  
-  @property({ type: Object }) model?: HelpModel;
 
   @property({ type: String }) href?: string;
-  @property({ type: String }) target?: "_blank" | "_self" | "_parent" | "_top";
-
-  protected async updated(changedProperties: any) {
-    super.updated(changedProperties);
-    await this.updateComplete;
-
-    if (changedProperties.has('model') && this.model) {
-      Object.assign(this, this.model);
-    }
-  }
 
   render() {
     return html`
-      <u-icon-button
-        type="system" name="question-circle"
-        size="24px" tooltip="도움말"
-        .href=${this.href} .target=${this.target || "_blank"}
-      ></u-icon-button>
+      <u-tooltip .content=${t("app::help")}>
+        <u-link .href=${this.href}>
+          <u-icon 
+            type="system"
+            name="question-circle"
+          ></u-icon>  
+        </u-link>
+      </u-tooltip>
     `;
   }
 
@@ -37,6 +24,15 @@ export class HelpButton extends LitElement {
     :host {
       display: inline-flex;
     }
+
+    u-icon {
+      font-size: 24px;
+      color: var(--sl-color-gray-600);
+    }
+    u-icon:hover {
+      color: var(--sl-color-primary-600);
+    }
+
   `;
 
 }

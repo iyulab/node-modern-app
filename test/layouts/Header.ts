@@ -3,11 +3,8 @@ import { customElement, property } from 'lit/decorators.js';
 
 import type { AppScreen } from '../App';
 import type {
-  AppTheme,
   BreadcrumbModel,
   HeaderTitleModel,
-  HelpModel,
-  LocaleModel,
   UserModel
 } from '../components/header-parts';
 
@@ -16,16 +13,13 @@ export interface HeaderOption {
   noMenuToggle?: boolean;
   noTitle?: boolean;
   noBreadcrumbs?: boolean;
-  noHelp?: boolean;
-  noLocale?: boolean;
-  noTheme?: boolean;
   noUser?: boolean;
 }
 
 export interface HeaderAction {
-  help?: HelpModel;
-  locale?: LocaleModel;
-  theme?: AppTheme;
+  help?: string;
+  locale?: boolean;
+  theme?: boolean;
   user?: UserModel;
 }
 
@@ -105,12 +99,12 @@ export class UHeader extends LitElement {
 
   private renderAction() {
     return Object.entries(this.action || {}).map(([key, value]) => {
-      if (key === 'help' && !this.option?.noHelp) {
-        return html`<help-button .model=${value}></help-button>`;
-      } else if (key === 'locale' && !this.option?.noLocale) {
-        return html`<locale-button .model=${value}></locale-button>`;
-      } else if (key === 'theme' && !this.option?.noTheme) {
-        return html`<theme-button .theme=${value}></theme-button>`;
+      if (key === 'help') {
+        return html`<help-button .href=${value}></help-button>`;
+      } else if (key === 'locale' && value) {
+        return html`<locale-button></locale-button>`;
+      } else if (key === 'theme' && value) {
+        return html`<theme-button></theme-button>`;
       } else if (key === 'user' && !this.option?.noUser) {
         return html`<user-button .model=${value}></user-button>`;
       } else {

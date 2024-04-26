@@ -6,7 +6,7 @@ import { viteStaticCopy } from 'vite-plugin-static-copy';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  publicDir: 'assets',
+  publicDir: resolve(__dirname, 'static'),
   build: {
     minify: true, // 최소화 비활성화 (디버깅: false, 배포: true)
     outDir: 'dist',

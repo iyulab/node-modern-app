@@ -7,6 +7,9 @@
       "import": "./index.es.js",
       "types": "./index.d.ts"
     },
+    "./styles/*": {
+      "import": "./styles/*.css"
+    },
     "./sevices": {
       "import": "./services/index.es.js",
       "types": "./services/index.d.ts"

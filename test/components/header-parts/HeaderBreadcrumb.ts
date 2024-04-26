@@ -1,6 +1,8 @@
 import { LitElement, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { DirectiveResult } from "lit/async-directive.js";
 import { until } from "lit/directives/until.js";
+import { t } from "@iyulab/u-components/localization";
 
 import type { RouteInfo } from "../../router/Model";
 import { App } from "../../App";
@@ -10,7 +12,7 @@ export interface BreadcrumbItem {
   display: string;
 }
 export type BreadcrumbItemLoader = (match: string) => Promise<string | BreadcrumbItem>;
-export type BreadcrumbValue = string | BreadcrumbItem | BreadcrumbItemLoader;
+export type BreadcrumbValue = string | BreadcrumbItem | BreadcrumbItemLoader | DirectiveResult;
 export interface BreadcrumbModel { [key: string]: BreadcrumbValue }
 
 @customElement('header-breadcrumb')
@@ -61,7 +63,7 @@ export class HeaderBreadcrumb extends LitElement {
       <u-breadcrumb-item @click=${() => App.router?.go(this.basepath || App.router.basepath)}>
         <u-icon type="system" name="home" slot="prefix"></u-icon>
         <u-icon type="system" name="chevron-right" slot="separator"></u-icon>
-        Home
+        ${t("app::home")}
       </u-breadcrumb-item>
     `;
   }
@@ -74,8 +76,8 @@ export class HeaderBreadcrumb extends LitElement {
       const isLast = index === pathnames.length - 1;
 
       const item = await this.getValue(decodeURI(rawPathname));
-      const icon = typeof item === 'object' ? item.icon : undefined;
-      const display = typeof item === 'object' ? item.display : item;
+      const icon = typeof item === 'object' && item.icon ? item.icon : undefined;
+      const display = typeof item === 'object' && item.display ? item.display : item;
   
       return html`
         <u-breadcrumb-item @click=${() => App.router?.go(path)}>

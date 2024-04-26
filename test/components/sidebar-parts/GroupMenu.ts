@@ -1,11 +1,12 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { DirectiveResult } from 'lit/async-directive.js';
 import type { GroupMenuItemModel } from "./GroupMenuItem";
 
 export interface GroupMenuModel {
   type?: 'menu';
   icon?: string;
-  display: string;
+  display: string | DirectiveResult;
   items: GroupMenuItemModel[];
 
   path?: undefined;

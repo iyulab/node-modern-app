@@ -1,5 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
+import { t } from "@iyulab/u-components/localization";
 
 export type AppTheme = 'light' | 'dark' | 'system';
 
@@ -44,18 +45,18 @@ export class ThemeButton extends LitElement {
           <u-menu-item class="light"
             @click=${() => this.theme = 'light'}>
             <u-icon slot="prefix" type="system" name="sun"></u-icon>
-            밝은 테마
+            ${t("app::lightTheme")}
           </u-menu-item>
           <u-menu-item class="dark"
             @click=${() => this.theme = 'dark'}>
             <u-icon slot="prefix" type="system" name="moon"></u-icon>
-            어두운 테마
+            ${t("app::darkTheme")}
           </u-menu-item>
           <u-divider spacing="0px"></u-divider>
           <u-menu-item class="system"
             @click=${() => this.theme = 'system'}>
             <u-icon slot="prefix" type="system" name="gear"></u-icon>
-            시스템 테마
+            ${t("app::systemTheme")}
           </u-menu-item>
         </u-menu>
       </u-dropdown>

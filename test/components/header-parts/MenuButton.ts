@@ -9,7 +9,6 @@ export class MenuButton extends LitElement {
       <u-icon 
         type="system" 
         name="menu"
-        size="24px"
       ></u-icon>
     `;
   }
@@ -24,10 +23,15 @@ export class MenuButton extends LitElement {
       cursor: pointer;
     }
     :host(:hover) {
-      background-color: var(--sl-color-gray-200);
+      background-color: var(--sl-color-gray-100);
     }
     :host(:hover) u-icon {
       color: var(--sl-color-primary-600);
+    }
+
+    u-icon {
+      font-size: 24px;
+      color: var(--sl-color-gray-600);
     }
 
   `;

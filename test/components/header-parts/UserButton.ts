@@ -1,5 +1,6 @@
 import { LitElement, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { t } from "@iyulab/u-components/localization";
 
 export interface UserModel {
   name?: string;
@@ -16,7 +17,7 @@ export class UserButton extends LitElement {
   
   @property({ type: Object }) model?: UserModel;
 
-  @property({ type: String, reflect: true }) name: string = '익명 사용자';
+  @property({ type: String }) name?: string;
   @property({ type: String }) avatar?: string;
   @property({ type: String }) email?: string;
   @property({ type: String }) setting?: string;
@@ -39,14 +40,14 @@ export class UserButton extends LitElement {
         <div class="button" slot="trigger">
           ${this.avatar
             ? html`<img src=${this.avatar} alt="avatar" />`
-            : html`<div class="name-avatar">${this.name || '익명 사용자'}</div>` }
+            : html`<div class="name-avatar">${this.name || t("app::anonymous")}</div>` }
         </div>
         <div class="menu">
           <div class="profile">
             <div class="avatar">
               ${this.avatar
                 ? html`<img src=${this.avatar} alt="avatar" />`
-                : html`<div class="name-avatar">${this.name || '익명 사용자'}</div>` }
+                : html`<div class="name-avatar">${this.name || t("app::anonymous")}</div>` }
             </div>
             <div class="info">
               <div class="name">${this.name}</div>
@@ -60,23 +61,23 @@ export class UserButton extends LitElement {
               ? html`
                 <u-link .href=${this.model?.setting}>
                   <u-icon type="system" name="user-setting"></u-icon>
-                  계정관리
+                  ${t("app::userSetting")}
                 </u-link>`
               : nothing }
             ${this.model?.logout
               ? html`
                 <u-link .href=${this.model?.logout}>
                   <u-icon type="system" name="logout"></u-icon>
-                  로그아웃
+                  ${t("app::logout")}
                 </u-link>`
               : nothing }
           </div>
           <div class="footer">
             ${this.model?.privacy
-              ? html`<u-link .href=${this.model?.privacy}>개인정보처리방침</u-link>`
+              ? html`<u-link .href=${this.model?.privacy}>${t("app::privacy")}</u-link>`
               : nothing }
             ${this.model?.terms
-              ? html`<u-link .href=${this.model?.terms}>서비스약관</u-link>`
+              ? html`<u-link .href=${this.model?.terms}>${t("app::terms")}</u-link>`
               : nothing }
           </div>
         </div>

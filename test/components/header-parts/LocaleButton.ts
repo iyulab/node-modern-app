@@ -1,16 +1,26 @@
 import { LitElement, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
+import { type Languages, getLocale, setLocale } from "@iyulab/u-components/localization";
 
-export interface LocaleModel {
-  
+type LocaleDisplay = {
+  [langqq in Languages]: string;
 }
 
 @customElement('locale-button')
 export class LocaleButton extends LitElement {
-  
-  @property({ type: Object }) model?: LocaleModel;
+  private readonly display: LocaleDisplay = {
+    'ko': '한국어',
+    'en': 'English',
+  };
 
-  @property({ type: String }) locale: string = '한국어';
+  @query('u-dropdown') dropdown!: any;
+
+  @property({ type: String }) locale: string = this.display.en;
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.locale = this.display[getLocale()] || this.display.en;
+  }
 
   render() {
     return html`
@@ -21,15 +31,20 @@ export class LocaleButton extends LitElement {
           <u-icon type="system" name="chevron-down"></u-icon>
         </div>
         <u-menu>
-          <u-menu-item>
-            한국어
-          </u-menu-item>
-          <u-menu-item>
-            English
-          </u-menu-item>
+          ${Object.keys(this.display).map((lang) => html`
+            <u-menu-item @click=${() => this.changeLocale(lang as Languages)}>
+              ${this.display[lang as Languages]}
+            </u-menu-item>
+          `)}
         </u-menu>
       </u-dropdown>
     `;
+  }
+
+  private changeLocale = async (locale: Languages) => {
+    await setLocale(locale);
+    this.locale = this.display[locale] || this.display.en;
+    this.dropdown?.hide();
   }
 
   static styles = css`
@@ -55,7 +70,7 @@ export class LocaleButton extends LitElement {
 
     u-menu {
       padding: 0;
-      width: 120px;
+      width: 110px;
     }
     u-menu-item::part(submenu-icon) {
       display: none;

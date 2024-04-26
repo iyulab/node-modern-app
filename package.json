@@ -14,6 +14,7 @@
   "types": "src/index.d.ts",
   "scripts": {
     "test": "vite",
+    "scan": "i18next -c i18next.config.js",
     "build": "iyulab build -d dist -b vite",
     "deploy": "iyulab publish -p"
   },
@@ -22,6 +23,9 @@
       "import": "./src/index.js",
       "require": "./src/index.js",
       "types": "./src/index.d.ts"
+    },
+    "./styles/*": {
+      "import": "./static/styles/*.css"
     },
     "./sevices": {
       "import": "./src/services/index.js",
@@ -47,7 +51,6 @@
   "dependencies": {
     "@iyulab/u-components": "^0.0.62",
     "@lit/react": "^1.0.4",
-    "i18next": "^23.11.2",
     "lit": "^3.1.2",
     "mobx": "^6.12.3",
     "mobx-react": "^9.1.1",
@@ -67,6 +70,7 @@
     "devextreme-react": "^23.2.5",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
+    "i18next-parser": "^8.13.0",
     "jspdf": "^2.5.1",
     "postcss": "^8.4.38",
     "postcss-nesting": "^12.1.1",

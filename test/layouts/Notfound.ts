@@ -1,5 +1,6 @@
 import { LitElement, css, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { t } from '@iyulab/u-components/localization';
 
 @customElement('u-notfound')
 export class UNotfound extends LitElement {
@@ -11,14 +12,14 @@ export class UNotfound extends LitElement {
         name="alert-danger"
       ></u-icon>
       <div class="message">
-        페이지를 찾을 수 없습니다.
+        ${t('app::notFound')}
       </div>
       <u-button 
         theme="text"
         size="large"
         @click=${() => window.history.back()}
       >
-        뒤로가기
+        ${t('app::historyBack')}
       </u-button>
     `;
   }
