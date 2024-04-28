@@ -8,6 +8,7 @@ export interface GroupMenuModel {
   icon?: string;
   display: string | DirectiveResult;
   items: GroupMenuItemModel[];
+  open?: boolean;
 
   path?: undefined;
   pattern?: undefined;
@@ -21,7 +22,7 @@ export class GroupMenu extends LitElement {
   @property({ type: Boolean, reflect: true }) open: boolean = false;
 
   @property({ type: String }) icon?: string;
-  @property({ type: String }) display?: string;
+  @property({ type: String }) display?: string | DirectiveResult;
 
   protected async updated(changedProperties: any) {
     super.updated(changedProperties);

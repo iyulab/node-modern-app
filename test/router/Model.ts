@@ -32,10 +32,9 @@ export type NonIndexRoute = {
 }
 
 /**
- * 라우트 기본 타입
- * @todo: children으로 중첩된 라우트(컴포넌트안의 컴포넌트 중첩렌더링) 구현 필요(라우터 구조 변경 필요)
+ * 라우트 타입
  */
-export type BaseRoute = (NonIndexRoute | IndexRoute) & {
+export type Route = (NonIndexRoute | IndexRoute) & {
   /**
    * 라우터에서 사용하는 URLPattern
    */
@@ -56,12 +55,7 @@ export type BaseRoute = (NonIndexRoute | IndexRoute) & {
    * 중첩 라우트
    */
   children?: Route[];
-}
 
-/**
- * LitElement를 렌더링하는 라우트
- */
-export type ElementRoute = BaseRoute & {
   /**
    * 렌더링할 LitElement
    * - LitElement 클래스 또는 태그 이름을 사용합니다.
@@ -74,15 +68,8 @@ export type ElementRoute = BaseRoute & {
    * }
    * ```
    */
-  element: typeof LitElement | string;
-  component?: undefined;
-}
+  element?: typeof LitElement | string;
 
-/**
- * ReactComponent를 렌더링하는 라우트
- */
-export type ComponentRoute = BaseRoute & {
-  element?: undefined;
   /**
    * 렌더링할 ReactComponent
    * - ReactComponent의 모듈을 사용합니다.
@@ -95,13 +82,8 @@ export type ComponentRoute = BaseRoute & {
    * }
    * ```
    */
-  component: ComponentType;
+  component?: ComponentType;
 }
-
-/**
- * 라우트 타입
- */
-export type Route = ElementRoute | ComponentRoute;
 
 /**
  * 라우터 URL 정보

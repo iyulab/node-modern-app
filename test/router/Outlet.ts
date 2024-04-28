@@ -37,6 +37,8 @@ export class UOutlet extends LitElement {
     } else {
       throw new Error('라우터에 제공된 엘리먼트의 형식이 잘못되었습니다.');
     }
+    template.style.width = '100%';
+    template.style.height = '100%';
     render(html`${template}`, this.litDom);
     await this.updateComplete;
     return template;

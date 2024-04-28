@@ -1,7 +1,7 @@
 import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 
-import type { AppScreen } from '../App';
+import type { AppScreen } from '../system/App';
 import type { RouteInfo } from '../router/Model';
 import type { 
   MenuDividerModel, 
@@ -38,9 +38,9 @@ export class USidebar extends LitElement {
   @state() bottomMenu?: MenuItem[];
   @state() activePath?: string;
 
+  @property({ type: Boolean, reflect: true }) collapsed: boolean = false;
   @property({ type: String }) screen?: AppScreen;
   @property({ type: Boolean }) open: boolean = true;
-  @property({ type: Boolean }) collapsed: boolean = false;
 
   @property({ type: String }) basepath?: string;
   @property({ type: Array }) menu?: MenuItem[];
@@ -130,7 +130,8 @@ export class USidebar extends LitElement {
       // ===== 그룹 메뉴 아이템 ===== //
       const isActived = item.items.some(subItem => this.activePath === subItem.path);
       return html`
-        <group-menu 
+        <group-menu
+          ?open=${this.open}
           ?active=${isActived}
           ?collapsed=${this.collapsed}
           .icon=${item.icon}

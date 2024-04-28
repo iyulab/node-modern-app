@@ -1,7 +1,7 @@
 // i18next-parser.config.js
 
 export default {
-  input: ['test/**/*.ts', 'app-test.ts'],
+  input: ['test/**/*.ts'],
   output: 'static/locales/$LOCALE/$NAMESPACE.json',
   locales: ['en', 'ko'],
   defaultNamespace: 'translation',

@@ -125,12 +125,12 @@ export class Router {
       for (const route of routes) {
         if(this.requestID !== requestID) return;
         this.dispatchProgress(0.5 + 0.5 * ((routes.indexOf(route) + 1) / routes.length));
-        if(route.component) {
-          const component = await outlet.renderComponent(route.component);
-          outlet = component.querySelector('u-outlet') || outlet;
-        } else if (route.element) {
+        if(route.element) {
           const element = await outlet.renderElement(route.element) as UOutlet;
           outlet = element.shadowRoot?.querySelector('u-outlet') || outlet;
+        } else if (route.component) {
+          const component = await outlet.renderComponent(route.component);
+          outlet = component.querySelector('u-outlet') || outlet;
         } else {
           outlet.clearDom();
         }

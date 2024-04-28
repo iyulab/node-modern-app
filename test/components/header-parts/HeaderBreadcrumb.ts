@@ -5,7 +5,7 @@ import { until } from "lit/directives/until.js";
 import { t } from "@iyulab/u-components/localization";
 
 import type { RouteInfo } from "../../router/Model";
-import { App } from "../../App";
+import { App } from "../../system/App";
 
 export interface BreadcrumbItem {
   icon: string;

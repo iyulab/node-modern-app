@@ -12,7 +12,7 @@ export interface GroupMenuItemModel {
 export class GroupMenuItem extends LitElement {
   
   @property({ type: Boolean, reflect: true }) active?: boolean;
-  @property({ type: String }) display?: string;
+  @property({ type: String }) display?: string | DirectiveResult;
   @property({ type: String }) path?: string;
 
   render() {
@@ -51,6 +51,7 @@ export class GroupMenuItem extends LitElement {
     
     u-link {
       padding-left: var(--padding-left);
+      padding-right: 20px;
       width: 100%;
       font-size: 14px;
       line-height: 30px;

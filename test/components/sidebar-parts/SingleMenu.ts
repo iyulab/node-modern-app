@@ -19,7 +19,7 @@ export class SingleMenu extends LitElement {
   @property({ type: Boolean, reflect: true }) active: boolean = false;
   
   @property({ type: String }) icon?: string;
-  @property({ type: String }) display?: string;
+  @property({ type: String }) display?: string | DirectiveResult;
   @property({ type: String }) path?: string;
 
   render() {

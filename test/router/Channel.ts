@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { createElement } from "react";
 
 import type { RouteInfo } from './Model';
-import { App } from '../App';
+import { App } from '../system/App';
 
 @customElement('lit-channel')
 export class LitChannel extends LitElement {

@@ -4,7 +4,7 @@ import { autorun } from 'mobx';
 
 import type { HeaderModel } from './Header';
 import type { SidebarModel } from './Sidebar';
-import { App, type AppScreen } from '../App';
+import { App, type AppScreen } from '../system/App';
 
 import '../components/header-parts';
 import '../components/sidebar-parts';

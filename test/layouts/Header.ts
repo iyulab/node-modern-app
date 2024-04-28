@@ -1,7 +1,7 @@
 import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
-import type { AppScreen } from '../App';
+import type { AppScreen } from '../system/App';
 import type {
   BreadcrumbModel,
   HeaderTitleModel,
@@ -127,6 +127,9 @@ export class UHeader extends LitElement {
       user-select: none;
     }
     :host([screen="small"]) .breadcrumb {
+      display: none;
+    }
+    :host([screen="small"]) slot[name="center"] {
       display: none;
     }
     :host([screen="large"]) .headline {
