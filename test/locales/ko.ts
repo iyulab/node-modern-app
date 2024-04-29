@@ -1,6 +1,5 @@
 export const ko = {
   app: {
-    "setConfig": "애플리케이션 구성 저장...",
     "setLanguage": "언어 설정중...",
     "setScreenSize": "화면 크기 계산중...",
     "setLayout": "앱 레이아웃 구성중...",

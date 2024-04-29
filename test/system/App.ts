@@ -52,7 +52,7 @@ export class App {
     // 설정 저장 및 이전 설정 해제
     this.config = config;
     this.unload();
-    loader.step(0.1, t('app::setConfig'));
+    loader.step(0.1, "App Loading");
 
     // 언어 설정
     await ULocalizer.init(config.locale);

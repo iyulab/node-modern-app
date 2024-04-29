@@ -1,6 +1,5 @@
 export const en = {
   app: {
-    "setConfig": "Configure Application...",
     "setLanguage": "Set Language...",
     "setScreenSize": "Calculate Screen Size...",
     "setLayout": "Configure App Layout...",
