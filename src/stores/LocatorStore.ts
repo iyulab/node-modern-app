@@ -211,7 +211,7 @@ export class LocatorStore {
         throw new Error("path or index is required");
       }
 
-      const loaderCopy = route.loader;
+      const loaderCopy = route.loader as any;
       // 2 url 요청시 미들웨어 설정
       route.loader = async ({ request, params }) => {
         let newPage = false;

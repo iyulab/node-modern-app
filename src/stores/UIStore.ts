@@ -149,7 +149,7 @@ export class UIStore {
     this.dialog.label = options?.title || "메시지";
     this.dialog.noHeader = options?.noHeader || false;
     const result = await this.dialog.showAsync(content);
-    return result.success;
+    return result.confirmed;
   }
   
   /**
@@ -161,7 +161,7 @@ export class UIStore {
    * const ui = DI.get(UIStore);
    * const result = await ui.showInputDialogAsync("text", { message: "이름을 입력 하세요" });
    */
-  public async showInputDialogAsync(options?: InputDialogOptions): Promise<UModalResult> {
+  public async showInputDialogAsync<T>(options?: InputDialogOptions): Promise<UModalResult<T>> {
     const content = new InputModalContent(options);
     this.dialog.label = options?.title || "입력 대화 상자";
     this.dialog.noHeader = options?.noHeader || false;
@@ -177,7 +177,7 @@ export class UIStore {
    * const content = new DialogContent(); 
    * const result = await ui.showDialogAsync(content);
    */
-  public async showDialogAsync(content?: UModalContent): Promise<UModalResult> {
+  public async showDialogAsync<T>(content?: UModalContent): Promise<UModalResult<T>> {
     return await this.dialog.showAsync(content);
   }
 
@@ -190,7 +190,7 @@ export class UIStore {
    * const content = new DrawerContent(); 
    * const result = await ui.showDrawerAsync(content);
    */
-  public async showDrawerAsync(content?: UModalContent): Promise<UModalResult> {
+  public async showDrawerAsync<T>(content?: UModalContent): Promise<UModalResult<T>> {
     return await this.drawer.showAsync(content);
   }
   
