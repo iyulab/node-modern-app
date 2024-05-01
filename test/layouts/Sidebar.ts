@@ -65,7 +65,7 @@ export class USidebar extends LitElement {
     if (changedProperties.has('menu') && this.menu) {
       this.setMenu(this.menu);
     }
-    if (changedProperties.has('open')) {
+    if (changedProperties.has('open') || changedProperties.has('screen')) {
       this.collapsed = !this.open && this.screen !== 'small';
     }
     if (changedProperties.has('backgroundColor') && this.backgroundColor) {

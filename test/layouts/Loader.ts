@@ -22,19 +22,22 @@ export class ULoader extends LitElement {
     `;
   }
 
-  public step(progress: number, message: string | DirectiveResult) {
+  public async step(progress: number, message: string | DirectiveResult) {
     this.progress = progress * 100;
     this.message = message;
+    await this.updateComplete;
   }
 
-  public start() {
+  public async start() {
     if (document.body.contains(this)) return;
     document.body.appendChild(this);
+    await this.updateComplete;
     this.step(0, t('app::startLoading'));
   }
 
-  public end() {
+  public async end() {
     this.step(1, t('app::endLoading'));
+    await this.updateComplete;
     this.remove();
   }
 

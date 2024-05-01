@@ -47,23 +47,23 @@ export class App {
    */
   public static async load(config: AppConfig) {
     const loader = new ULoader();
-    loader.start();
+    await loader.start();
 
     // 설정 저장 및 이전 설정 해제
     this.config = config;
     this.unload();
-    loader.step(0.1, "App Loading");
+    await loader.step(0.1, "App Loading");
 
     // 언어 설정
     await ULocalizer.init(config.locale);
     ULocalizer.addResources({ en, ko });
-    loader.step(0.3, t('app::setLanguage'));
+    await loader.step(0.3, t('app::setLanguage'));
     
     // 브라우저 사이즈 설정
     this.breakpoint = config.breakPoint || this.breakpoint;
     this.onResize();
     window.addEventListener('resize', this.onResize);
-    loader.step(0.5, t('app::setScreenSize'));
+    await loader.step(0.5, t('app::setScreenSize'));
 
     // 레이아웃 설정
     const layout = new ULayout();
@@ -72,7 +72,7 @@ export class App {
     layout.sidebar = config.sidebar;
     document.body.appendChild(layout);
     await layout.updateComplete;
-    loader.step(0.7, t('app::setLayout'));
+    await loader.step(0.7, t('app::setLayout'));
 
     // 라우터 설정
     this.router = new Router({
@@ -82,9 +82,9 @@ export class App {
       routes: config.routes,
     });
     this.router.connect();
-    loader.step(0.9, t('app::setRouter'));
+    await loader.step(0.9, t('app::setRouter'));
 
-    loader.end();
+    await loader.end();
   }
 
   /**
