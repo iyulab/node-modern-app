@@ -1,6 +1,6 @@
 // 별도구성
-export * from './components/controls';
-export * from './components/dx';
+// export * from './components/controls';
+// export * from './components/dx';
 
 export * from './data';
 export * from './extensions';
