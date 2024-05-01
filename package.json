@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab, react and lit-element",
-  "version": "0.1.59",
+  "version": "0.1.60",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -25,7 +25,22 @@
       "types": "./src/index.d.ts"
     },
     "./styles/*": {
-      "import": "./static/styles/*.css"
+      "import": "./static/styles/*"
+    },
+    "./apps": {
+      "import": "./src/apps/index.js",
+      "require": "./src/apps/index.js",
+      "types": "./src/apps/index.d.ts"
+    },
+    "./components/dx": {
+      "import": "./src/components/dx/index.js",
+      "require": "./src/components/dx/index.js",
+      "types": "./src/components/dx/index.d.ts"
+    },
+    "./components/controls": {
+      "import": "./src/components/controls/index.js",
+      "require": "./src/components/controls/index.js",
+      "types": "./src/components/controls/index.d.ts"
     },
     "./sevices": {
       "import": "./src/services/index.js",
@@ -36,32 +51,16 @@
       "import": "./src/settings/index.js",
       "require": "./src/settings/index.js",
       "types": "./src/settings/index.d.ts"
-    },
-    "./components/dx": {
-      "import": "./src/components/dx/index.js",
-      "require": "./src/components/dx/index.js",
-      "types": "./src/components/dx/index.d.ts"
-    },
-    "./apps": {
-      "import": "./src/apps/index.js",
-      "require": "./src/apps/index.js",
-      "types": "./src/apps/index.d.ts"
-    },
-    "./test": {
-      "import": "./test/index.js",
-      "require": "./test/index.js",
-      "types": "./test/index.d.ts"
     }
   },
   "dependencies": {
-    "@iyulab/u-components": "^0.0.62",
+    "@iyulab/u-components": "^0.0.63",
     "@lit/react": "^1.0.5",
     "lit": "^3.1.3",
     "mobx": "^6.12.3",
     "mobx-react": "^9.1.1",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.23.0"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@adobe/lit-mobx": "^2.2.2",
@@ -86,8 +85,6 @@
     "typescript": "^5.4.5",
     "urlpattern-polyfill": "^10.0.0",
     "vite": "^5.2.10",
-    "vite-plugin-dts": "^3.9.0",
-    "vite-plugin-lib-inject-css": "^2.0.1",
-    "vite-plugin-static-copy": "^1.0.3"
+    "vite-plugin-dts": "^3.9.0"
   }
 }

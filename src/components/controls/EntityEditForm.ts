@@ -1,13 +1,11 @@
-import { html, unsafeCSS } from "lit";
+import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import type { IEntityHandler, IResultValue } from "../../data";
 import type { UForm } from "@iyulab/u-components/components/form";
 import { UModalContent } from "@iyulab/u-components/components/modal/UModalContent";
-import { UModernApp } from "../../core/UModernApp";
+import { App } from "../../system/App";
 import "@iyulab/u-components/components/form";
-
-import baseStyle from "../../styles/tailwind.css?inline";
 
 export interface IEntityEditFormProps {
   title?: string;
@@ -15,11 +13,7 @@ export interface IEntityEditFormProps {
 }
 
 @customElement("entity-edit-form")
-export class EntityEditForm
-  extends UModalContent
-  implements IEntityEditFormProps
-{
-  static styles = [unsafeCSS(baseStyle)];
+export class EntityEditForm extends UModalContent implements IEntityEditFormProps {
 
   @state() isReady: boolean = false;
   @state() handler: IEntityHandler;
@@ -63,10 +57,10 @@ export class EntityEditForm
         this.close({ success: true, value: this.handler.data });  
       } else {
         const message = r.value ?? r.errors?.join("\n") ?? "Unknown error";
-        UModernApp.error(message);
+        App.error(message);
       }
     } catch (error: any) {
-      UModernApp.error(error.message);
+      App.error(error.message);
     } finally {
       form.loading = false;
     }

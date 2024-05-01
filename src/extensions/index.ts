@@ -1,4 +1,4 @@
-import '../declarations/extensions.d.ts';
+import './extensions.d.ts';
 export * from "./LitElement";
 export * from "./Reflections";
 export * from "./Array";

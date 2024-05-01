@@ -8,7 +8,19 @@
       "types": "./index.d.ts"
     },
     "./styles/*": {
-      "import": "./styles/*.css"
+      "import": "./styles/*"
+    },
+    "./apps": {
+      "import": "./apps/index.es.js",
+      "types": "./apps/index.d.ts"
+    },
+    "./components/dx": {
+      "import": "./components/dx/index.es.js",
+      "types": "./components/dx/index.d.ts"
+    },
+    "./components/controls": {
+      "import": "./components/controls/index.es.js",
+      "types": "./components/controls/index.d.ts"
     },
     "./sevices": {
       "import": "./services/index.es.js",
@@ -17,14 +29,6 @@
     "./settings": {
       "import": "./settings/index.es.js",
       "types": "./settings/index.d.ts"
-    },
-    "./components/dx": {
-      "import": "./components/dx/index.es.js",
-      "types": "./components/dx/index.d.ts"
-    },
-    "./apps": {
-      "import": "./apps/index.es.js",
-      "types": "./apps/index.d.ts"
-    }
+    }    
   }
 }

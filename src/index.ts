@@ -1,15 +1,15 @@
-// dx 는 기본빌드에서 제외합니다. 별도구성
-export * from './components/parts';
+// 별도구성
 export * from './components/controls';
-export * from './components/modals';
-export * from './core';
+export * from './components/dx';
+
 export * from './data';
-export * from './helpers';
-export * from './hooks';
-export * from './layouts';
-export * from './services';
-export * from './stores';
 export * from './extensions';
+export * from './helpers';
+export * from './services';
 export * from './settings';
 
-export { UModernApp as default } from './core/UModernApp';
+export * from './system/App';
+export * from './layouts/Page';
+export * from './router/Channel';
+export * from './router/Link';
+export * from './router/Outlet';

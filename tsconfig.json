@@ -48,10 +48,5 @@
     "vite-env.d.ts",
     "vite.config.ts",
     "src/**/*",
-    
-    // 테스트 코드
-    "test/**/*",
-    "test-page",
-    "app-test.ts"
   ]
 }
