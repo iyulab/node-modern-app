@@ -14,7 +14,7 @@ export const en = {
     "logout": "Log Out",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
-    "notFound": "Page Not Found",
+    "notFound": "Not Found Page",
     "historyBack": "Go Back",
   }
 }

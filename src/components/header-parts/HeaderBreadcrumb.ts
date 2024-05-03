@@ -63,7 +63,7 @@ export class HeaderBreadcrumb extends LitElement {
       <u-breadcrumb-item @click=${() => App.router?.go(this.basepath || App.router.basepath)}>
         <u-icon type="system" name="home" slot="prefix"></u-icon>
         <u-icon type="system" name="chevron-right" slot="separator"></u-icon>
-        ${t("app::home")}
+        ${t("home", { ns: "app", defaultValue: "Home" })}
       </u-breadcrumb-item>
     `;
   }

@@ -12,14 +12,14 @@ export class UNotfound extends LitElement {
         name="alert-danger"
       ></u-icon>
       <div class="message">
-        ${t('app::notFound')}
+        ${t('notFound', { ns: 'app', defaultValue: 'Not found page' })}
       </div>
       <u-button 
         theme="text"
         size="large"
         @click=${() => window.history.back()}
       >
-        ${t('app::historyBack')}
+        ${t('historyBack', { ns: 'app', defaultValue: 'Go back' })}
       </u-button>
     `;
   }

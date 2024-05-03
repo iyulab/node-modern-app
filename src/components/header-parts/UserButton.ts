@@ -40,14 +40,14 @@ export class UserButton extends LitElement {
         <div class="button" slot="trigger">
           ${this.avatar
             ? html`<img src=${this.avatar} alt="avatar" />`
-            : html`<div class="name-avatar">${this.name || t("app::anonymous")}</div>` }
+            : html`<div class="name-avatar">${this.name || t("anonymous", { ns: 'app', defaultValue: 'Anonymous User' })}</div>` }
         </div>
         <div class="menu">
           <div class="profile">
             <div class="avatar">
               ${this.avatar
                 ? html`<img src=${this.avatar} alt="avatar" />`
-                : html`<div class="name-avatar">${this.name || t("app::anonymous")}</div>` }
+                : html`<div class="name-avatar">${this.name || t("anonymous", { ns: 'app', defaultValue: 'Anonymous User' })}</div>` }
             </div>
             <div class="info">
               <div class="name">${this.name}</div>
@@ -61,23 +61,23 @@ export class UserButton extends LitElement {
               ? html`
                 <u-link .href=${this.model?.setting}>
                   <u-icon type="system" name="user-setting"></u-icon>
-                  ${t("app::userSetting")}
+                  ${t("userSetting", { ns: 'app', defaultValue: 'Profile' })}
                 </u-link>`
               : nothing }
             ${this.model?.logout
               ? html`
                 <u-link .href=${this.model?.logout}>
                   <u-icon type="system" name="logout"></u-icon>
-                  ${t("app::logout")}
+                  ${t("logout", { ns: 'app', defaultValue: 'Logout' })}
                 </u-link>`
               : nothing }
           </div>
           <div class="footer">
             ${this.model?.privacy
-              ? html`<u-link .href=${this.model?.privacy}>${t("app::privacy")}</u-link>`
+              ? html`<u-link .href=${this.model?.privacy}>${t("privacy", { ns: 'app', defaultValue: 'Privacy Policy' })}</u-link>`
               : nothing }
             ${this.model?.terms
-              ? html`<u-link .href=${this.model?.terms}>${t("app::terms")}</u-link>`
+              ? html`<u-link .href=${this.model?.terms}>${t("terms", { ns: 'app', defaultValue: 'Terms of Service' })}</u-link>`
               : nothing }
           </div>
         </div>

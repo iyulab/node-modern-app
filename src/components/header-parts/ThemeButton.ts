@@ -45,18 +45,18 @@ export class ThemeButton extends LitElement {
           <u-menu-item class="light"
             @click=${() => this.theme = 'light'}>
             <u-icon slot="prefix" type="system" name="sun"></u-icon>
-            ${t("app::lightTheme")}
+            ${t("lightTheme", { ns: 'app', defaultValue: "Light Theme" })}
           </u-menu-item>
           <u-menu-item class="dark"
             @click=${() => this.theme = 'dark'}>
             <u-icon slot="prefix" type="system" name="moon"></u-icon>
-            ${t("app::darkTheme")}
+            ${t("darkTheme", { ns: 'app', defaultValue: "Dark Theme" })}
           </u-menu-item>
           <u-divider spacing="0px"></u-divider>
           <u-menu-item class="system"
             @click=${() => this.theme = 'system'}>
             <u-icon slot="prefix" type="system" name="gear"></u-icon>
-            ${t("app::systemTheme")}
+            ${t("systemTheme", { ns: 'app', defaultValue: "System Theme" })}
           </u-menu-item>
         </u-menu>
       </u-dropdown>

@@ -9,7 +9,7 @@ export class HelpButton extends LitElement {
 
   render() {
     return html`
-      <u-tooltip .content=${t("app::help")}>
+      <u-tooltip .content=${t("help", { ns: 'app', defaultValue: "Help" })}>
         <u-link .href=${this.href}>
           <u-icon 
             type="system"

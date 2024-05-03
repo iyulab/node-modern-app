@@ -5,8 +5,7 @@ import type { HeaderModel } from "../layouts/Header";
 import type { SidebarModel } from "../layouts/Sidebar";
 import type { ULocalizerConfig } from '@iyulab/u-components/localization';
 import type { ToastPosition, AlertType } from '@iyulab/u-components/components/alert';
-import type { DrawerPosition, UModalContent, UInputDialogModel, UMessageDialogModel } from '@iyulab/u-components/components/modal';
-import type { PropertyMetaType } from '@iyulab/u-components/decorators';
+import type { DrawerPosition, UModalContent, UMessageDialogModel, UInputDialogConfig } from '@iyulab/u-components/components/modal';
 
 import "../settings/UComponentsSetup";
 import { ULocalizer, t } from '@iyulab/u-components/localization';
@@ -57,13 +56,13 @@ export class App {
     // 언어 설정
     await ULocalizer.init(config.locale);
     ULocalizer.addResources({ en, ko });
-    await loader.step(0.3, t('app::setLanguage'));
+    await loader.step(0.3, t('setLanguage', { ns: 'app', defaultValue: 'Set Language' }));
     
     // 브라우저 사이즈 설정
     this.breakpoint = config.breakPoint || this.breakpoint;
     this.onResize();
     window.addEventListener('resize', this.onResize);
-    await loader.step(0.5, t('app::setScreenSize'));
+    await loader.step(0.5, t('setScreenSize', { ns: 'app', defaultValue: 'Set Screen Size' }));
 
     // 레이아웃 설정
     const layout = new ULayout();
@@ -72,7 +71,7 @@ export class App {
     layout.sidebar = config.sidebar;
     document.body.appendChild(layout);
     await layout.updateComplete;
-    await loader.step(0.7, t('app::setLayout'));
+    await loader.step(0.7, t('setLayout', { ns: 'app', defaultValue: 'Set Layout' }));
 
     // 라우터 설정
     this.router = new Router({
@@ -82,7 +81,7 @@ export class App {
       routes: config.routes,
     });
     this.router.connect();
-    await loader.step(0.9, t('app::setRouter'));
+    await loader.step(0.9, t('setRouter', { ns: 'app', defaultValue: 'Set Router' }));
 
     await loader.end();
   }
@@ -159,8 +158,8 @@ export class App {
   /**
    * 입력 대화상자 표시
    */
-  public static async input(type?: PropertyMetaType, option?: UInputDialogModel) {
-    return await UModalController.showInputDialogAsync(type, option);
+  public static async input(option?: UInputDialogConfig) {
+    return await UModalController.showInputDialogAsync(option);
   }
 
   /**
