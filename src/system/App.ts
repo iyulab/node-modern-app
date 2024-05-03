@@ -123,35 +123,35 @@ export class App {
   /**
    * 에러 메시지
    */
-  public static async error(message: string, options?: AlertOption) {
+  public static async error(message: any, options?: AlertOption) {
     await this.toast('danger', message, options);
   }
 
   /**
    * 경고 메시지
    */
-  public static async warn(message: string, options?: AlertOption) {
+  public static async warn(message: any, options?: AlertOption) {
     await this.toast('warning', message, options);
   }
 
   /**
    * 성공 메시지
    */
-  public static async success(message: string, options?: AlertOption) {
+  public static async success(message: any, options?: AlertOption) {
     await this.toast('success', message, options);
   }
 
   /**
    * 시스템 메시지
    */
-  public static async system(message: string, options?: AlertOption) {
+  public static async system(message: any, options?: AlertOption) {
     await this.toast('neutral', message, options);
   }
 
   /**
    * 정보 메시지
    */
-  public static async info(message: string, options?: AlertOption) {
+  public static async info(message: any, options?: AlertOption) {
     await this.toast('primary', message, options);
   }
 
@@ -165,7 +165,7 @@ export class App {
   /**
    * 메시지 대화상자 표시
    */
-  public static async message(message: string, option?: UMessageDialogModel) {
+  public static async message(message: any, option?: UMessageDialogModel) {
     return await UModalController.showMessageDialogAsync(message, option);
   }
 

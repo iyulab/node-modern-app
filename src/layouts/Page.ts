@@ -6,7 +6,7 @@ import { convertReact } from "@iyulab/u-components/utils";
 export class UPage extends LitElement {
 
   @property({ type: Boolean, reflect: true }) show: boolean = false;
-  @property({ type: String }) headline?: string;
+  @property({ type: String }) headline?: any;
 
   connectedCallback() {
     super.connectedCallback();
