@@ -90,7 +90,7 @@ export class Router {
    */
   public async go(href: string) {
     // 요청 ID 생성
-    const requestID = window.crypto.randomUUID();
+    const requestID = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
     this.requestID = requestID;
 
     // URL 분석

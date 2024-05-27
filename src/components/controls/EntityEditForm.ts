@@ -2,7 +2,7 @@ import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import type { IEntityHandler, IResultValue } from "../../data";
-import type { UForm } from "@iyulab/u-components/components/form";
+import { UFormElement } from "@iyulab/u-components/components/form";
 import { UModalContent } from "@iyulab/u-components/components/modal/UModalContent";
 import { App } from "../../system/App";
 import "@iyulab/u-components/components/form";
@@ -48,7 +48,7 @@ export class EntityEditForm extends UModalContent implements IEntityEditFormProp
   }
 
   private async ok(event: CustomEvent) {
-    const form = event.target as UForm;
+    const form = event.target as UFormElement;
     try {
       form.loading = true;
       const r = await this.handler.saveAsync();
