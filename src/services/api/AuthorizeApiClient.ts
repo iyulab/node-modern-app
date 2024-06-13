@@ -9,8 +9,6 @@ export type AuthToken = {
   expires: number // minutes
 };
 
-
-
 export abstract class AuthorizeApiClient extends ApiClientBase {
   
   protected accessToken: string | null = null;
@@ -27,13 +25,6 @@ export abstract class AuthorizeApiClient extends ApiClientBase {
   }
   
   protected async getAccessTokenAsync() {
-    
-    // if (this.accessToken == null) {
-    //   this.accessToken = localStorage.getItem('accessToken');
-    // }
-    // if (this.accessToken == null && this.token?.accessToken != null) {
-    //   this.accessToken = this.token.accessToken;
-    // }    
     return this.accessToken;
   }
 
@@ -64,7 +55,6 @@ export abstract class AuthorizeApiClient extends ApiClientBase {
     
     if (this.token && this.token.refreshToken && this.token.code) {
       const res = await this.post('/identity/refresh-token', {
-        // deviceId: getDeviceId(),
         token: this.token.refreshToken,
         code: this.token.code
       }, {
@@ -166,6 +156,28 @@ export abstract class AuthorizeApiClient extends ApiClientBase {
     } else {
       return res;
     }      
+  }
+
+  protected override async put(
+    address: string, 
+    data?: any, 
+    options: { 
+      refreshToken: boolean, 
+      retry?: number 
+      headers?: {[key: string]: string; }
+    } = { refreshToken: true, retry: 1 }): Promise<IStandardResponse> {
+
+    const res = await super.put(address, data, options);
+    if (res.status == 401 && this.retry(options)) { // Unauthorized
+      const success = await this.refreshTokenAsync();
+      if (success) {
+        return this.put(address, data, options);
+      } else {
+        return res;
+      }
+    } else {
+      return res;
+    }    
   }
 
   public deleteByKey(resourceName: string, _key: string)  {

@@ -12,19 +12,10 @@ export abstract class ApiClientBase {
     return status >= 200 && status < 300;
   }
 
-  // private isRedirect(status: number) {
-  //   return status >= 300 && status < 400;
-  // }
-
   private isClientError(status: number) {
     return status >= 400 && status < 500;
   }
 
-  // private isServerError(status: number) {
-  //   return status >= 500;
-  // }
-
-  
   private asText(v: any) {
     if (typeof v == 'object') {
       return JSON.stringify(v);
@@ -77,15 +68,15 @@ export abstract class ApiClientBase {
         window.URL.revokeObjectURL(downloadUrl);
         document.body.removeChild(a);
             
-            
         return { success: true, status: res.status };
       } else {
         return { success: false, status: res.status };
       }
     } else if (this.isClientError(res.status)) {
       return await this.buildFailResponseAsync(res, contentType);
-    } else //if (this.isServerError(res.status)) {
+    } else {
       return await this.buildFailResponseAsync(res, contentType);
+    }
   }
 
   private async buildFailResponseAsync(res: Response, contentType: string | null) {
@@ -103,7 +94,6 @@ export abstract class ApiClientBase {
   }
   
   protected buildUrl(url : string): string {
-
     if (url.startsWith("http")) {
       return url;
     } else {
@@ -111,7 +101,6 @@ export abstract class ApiClientBase {
       if (host.length < 1 || host == "/") {
         return new URL(url, document.location.origin).href;
       } else {
-        
         let address: string;
         if (host.endsWith("/") || url.startsWith("/")) {
           address = host + url;
@@ -133,7 +122,6 @@ export abstract class ApiClientBase {
   }
   
   protected async get(address : string) : Promise<IStandardResponse> {
-    
     const url = this.buildUrl(address);
     console.debug(`Req|GET ${url}`);
     const headers = await this.buildHeadersAsync();
@@ -155,7 +143,6 @@ export abstract class ApiClientBase {
   protected async post(address: string, data?: any, options?: { 
     headers?: {[key: string]: string; }
   }): Promise<IStandardResponse> {
-
     const url = this.buildUrl(address);
     console.debug(`Req|POST ${url} ${this.asText(data)}`);
     const headers = await this.buildHeadersAsync({
@@ -188,16 +175,41 @@ export abstract class ApiClientBase {
     
     return r;
   }
-  
-  protected getData(result: IStandardResponse) {
-    if (result && result.value) {
-      if (Object.prototype.hasOwnProperty.call(result.value, 'value')) {
-        // OData v4
-        return result.value['value'];
-      } else {
-        return result.value;
+
+  protected async put(address: string, data?: any, options?: { 
+    headers?: {[key: string]: string; }
+  }): Promise<IStandardResponse> {
+    const url = this.buildUrl(address);
+    console.debug(`Req|PUT ${url} ${this.asText(data)}`);
+    const headers = await this.buildHeadersAsync({
+      'Content-Type': 'application/json'
+    });
+
+    if (options && options.headers) {
+      for (const key in options.headers) {
+        const header = options.headers[key];
+        if (typeof header === 'function') continue;
+        headers[key] = header;
       }
     }
+
+    const jsonBody = JSON.stringify(data);
+    const r: IStandardResponse = await fetch(url, {
+      method: 'PUT',
+      headers: headers,
+      body:  jsonBody,
+      redirect: 'follow' // Redirect 를 허용
+    })
+    .then(async res => {
+      const r = await this.onResponseAsync(res);
+      console.debug(`Res|PUT ${url}`, r.status, this.asText(r.value));
+      return r;
+    })
+    .catch(reason => {
+      throw reason;
+    });
+    
+    return r;
   }
 
   protected async delete(address : string) : Promise<IStandardResponse> {
@@ -219,52 +231,48 @@ export abstract class ApiClientBase {
   }
 
   protected async deleteWithKeys(address: string, keys: any[]) : Promise<IStandardResponse> {
-    
     const url = this.buildUrl(address);
-
-      const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          keys: keys
-        })
-      });
-      
-      if (!response.ok) {
-        let message = await response.text();
-        throw new Error(`[${response.status}] ${message}`);
-      }
-      
-      // if content-type is json, return json
-      const contentType = response.headers.get('content-type');
-      if (contentType) {
-        if (contentType.indexOf('application/json') !== -1) {
-          const data = await response.json();
-          return {
-            status: response.status,
-            success: true,
-            value: data,
-          }
-        } else if (contentType.indexOf('text/plain') !== -1) {
-          const data = await response.text();
-          return {
-            status: response.status,
-            success: true,
-            value: data,
-          }
-        } else {
-          throw new Error(`Unsupported content type: ${contentType}`);
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        keys: keys
+      })
+    });
+    
+    if (!response.ok) {
+      let message = await response.text();
+      throw new Error(`[${response.status}] ${message}`);
+    }
+    
+    const contentType = response.headers.get('content-type');
+    if (contentType) {
+      if (contentType.indexOf('application/json') !== -1) {
+        const data = await response.json();
+        return {
+          status: response.status,
+          success: true,
+          value: data,
         }
-      } else {
+      } else if (contentType.indexOf('text/plain') !== -1) {
         const data = await response.text();
         return {
           status: response.status,
           success: true,
           value: data,
-        };
+        }
+      } else {
+        throw new Error(`Unsupported content type: ${contentType}`);
       }
+    } else {
+      const data = await response.text();
+      return {
+        status: response.status,
+        success: true,
+        value: data,
+      };
+    }
   }
-  
 }
