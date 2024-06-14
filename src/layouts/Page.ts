@@ -6,6 +6,7 @@ import { convertReact } from "@iyulab/u-components/utils";
 export class UPage extends LitElement {
 
   @property({ type: Boolean, reflect: true }) show: boolean = false;
+  @property({ type: Boolean, reflect: true }) loading: boolean = false;
   @property({ type: String }) headline?: any;
 
   connectedCallback() {
@@ -19,7 +20,9 @@ export class UPage extends LitElement {
   }
 
   render() {
-    return html`
+    return this.loading
+    ? html`<u-spinner size="5vw" width="5px"></u-spinner>`
+    : html`
       <!-- 페이지 타이틀 -->
       ${this.renderTitle()}
 
@@ -72,6 +75,11 @@ export class UPage extends LitElement {
     }
     :host::-webkit-scrollbar-thumb {
       background-color: var(--sl-color-gray-500);
+    }
+    :host([loading]) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
     :host([show]) .elevator {
       display: flex;
