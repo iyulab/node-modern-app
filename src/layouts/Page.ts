@@ -7,6 +7,8 @@ export class UPage extends LitElement {
 
   @property({ type: Boolean, reflect: true }) show: boolean = false;
   @property({ type: Boolean, reflect: true }) loading: boolean = false;
+  @property({ type: Boolean, reflect: true }) isBusy: boolean = false;
+
   @property({ type: String }) headline?: any;
 
   connectedCallback() {
@@ -37,6 +39,11 @@ export class UPage extends LitElement {
           name="chevron-up"
           size="18px"
         ></u-icon>
+      </div>
+
+      <!-- 페이지 로딩 중 -->
+      <div class="overlay">
+        <u-spinner size="5vw" width="5px"></u-spinner>
       </div>
     `;
   }
@@ -84,6 +91,9 @@ export class UPage extends LitElement {
     :host([show]) .elevator {
       display: flex;
     }
+    :host([isBusy]) .overlay {
+      display: flex;
+    }
 
     .title {
       padding: 24px;
@@ -109,6 +119,19 @@ export class UPage extends LitElement {
     }
     .elevator:hover u-icon {
       animation: bounce 1s ease-in-out infinite;
+    }
+
+    .overlay {
+      display: none;
+      position: absolute;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: var(--sl-overlay-background-color);
+      align-items: center;
+      justify-content: center;
     }
 
     @keyframes bounce {
