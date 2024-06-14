@@ -216,4 +216,61 @@ export class App {
     }
   }
   
+  // 단일 파일 선택
+  public static async showFilePickerAsync(accept: string = '*'): Promise<File> {
+    return new Promise<File>((resolve, reject) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = accept;
+      input.multiple = false;
+      input.style.display = 'none';
+
+      const handleFileChange = () => {
+        if (input.files && input.files.length > 0) {
+          resolve(input.files[0]);
+        } else {
+          reject(new Error("파일 선택이 취소되었습니다."));
+        }
+        cleanup();
+      };
+
+      const cleanup = () => {
+        input.removeEventListener('change', handleFileChange);
+        document.body.removeChild(input);
+      };
+
+      input.addEventListener('change', handleFileChange);
+      document.body.appendChild(input);
+      input.click();
+    });
+  }
+
+  // 다중 파일 선택
+  public static async showFilesPickerAsync(accept: string = '*'): Promise<File[]> {
+    return new Promise<File[]>((resolve, reject) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = accept;
+      input.multiple = true;
+      input.style.display = 'none';
+
+      const handleFileChange = () => {
+        if (input.files) {
+          resolve(Array.from(input.files));
+        } else {
+          reject(new Error("파일 선택이 취소되었습니다."));
+        }
+        cleanup();
+      };
+
+      const cleanup = () => {
+        input.removeEventListener('change', handleFileChange);
+        document.body.removeChild(input);
+      };
+
+      input.addEventListener('change', handleFileChange);
+      document.body.appendChild(input);
+      input.click();
+    });
+  }
 }
