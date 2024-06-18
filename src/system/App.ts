@@ -169,6 +169,15 @@ export class App {
     return await UModalController.showMessageDialogAsync(message, option);
   }
 
+  public static async confirm(message: any, option?: UMessageDialogModel) {
+    option ??= {
+      label: 'Confirm',
+      color: 'red',
+    };
+    
+    return await UModalController.showMessageDialogAsync(message, option);
+  }
+
   /**
    * 대화상자 표시
    * @param content UModalContent를 상속받은 컴포넌트
