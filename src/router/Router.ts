@@ -8,7 +8,7 @@ if (!globalThis.URLPattern) {
 import type { LitElement } from 'lit';
 import type { Route, RouteInfo, RouterConfig } from './Model';
 import type { UOutlet } from './Outlet';
-import { combinePath, parseURL } from './Utils';
+import { combinePath, getRandomID, parseURL } from './Utils';
 
 export class Router {
   private readonly _rootElement: LitElement;
@@ -52,11 +52,15 @@ export class Router {
    */
   private setRoutes(routes: Route[], basepath: string) {
     for (const route of routes) {
+      route.id ||= getRandomID();
       route.path = route.index ? '' : route.path;
       route.path = combinePath(basepath, route.path);
       route.pattern ||= new URLPattern({ pathname: `${route.path}{/}?` });
       if (route.children && route.children.length > 0) {
         route.children = this.setRoutes(route.children, route.path);
+        route.force ||= false;
+      } else {
+        route.force ||= true;
       }
     }
     return routes;
@@ -90,7 +94,7 @@ export class Router {
    */
   public async go(href: string) {
     // 요청 ID 생성
-    const requestID = window.crypto.getRandomValues(new Uint32Array(1))[0].toString(16);
+    const requestID = getRandomID();
     this.requestID = requestID;
 
     // URL 분석
@@ -120,21 +124,21 @@ export class Router {
     if (routes.length === 0) {
       if(this.requestID !== requestID) return;
       this.dispatchProgress(1);
-      this._notfound ? outlet.renderElement(this._notfound) : outlet.clearDom();
+      this._notfound ? outlet.renderElement({ element: this._notfound }) : outlet.clearRoot();
     } else {
       for (const route of routes) {
         if(this.requestID !== requestID) return;
         this.dispatchProgress(0.5 + 0.5 * ((routes.indexOf(route) + 1) / routes.length));
         if(route.element) {
-          const element = await outlet.renderElement(route.element) as UOutlet;
-          outlet = element.shadowRoot?.querySelector('u-outlet') || outlet;
+          const element = await outlet.renderElement({ id: route.id, element: route.element, force: route.force });
+          outlet = element?.shadowRoot?.querySelector('u-outlet') || outlet;
         } else if (route.component) {
-          const component = await outlet.renderComponent(route.component);
-          outlet = component.querySelector('u-outlet') || outlet;
+          const component = await outlet.renderComponent({ id: route.id, component: route.component, force: route.force });
+          outlet = component?.querySelector('u-outlet') || outlet;
         } else if (this._notfound) {
-          await outlet.renderElement(this._notfound);
+          await outlet.renderElement({ element: this._notfound });
         } else {
-          outlet.clearDom();
+          outlet.clearRoot();
         }
       }
     }

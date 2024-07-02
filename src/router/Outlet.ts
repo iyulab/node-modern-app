@@ -1,89 +1,104 @@
-import { LitElement, css, html, nothing, render } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { LitElement, RootPart, html, render } from 'lit';
+import { customElement } from 'lit/decorators.js';
 import { createElement, type ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
 import { convertReact } from '@iyulab/u-components/utils';
 
+interface RenderOption {
+  id?: string;
+  force?: boolean;
+}
+
+interface RenderElementOption extends RenderOption {
+  element: typeof LitElement | string;
+}
+
+interface RenderComponentOption extends RenderOption {
+  component: ComponentType;
+}
+
 @customElement('u-outlet')
 export class UOutlet extends LitElement {
-  // React 컴포넌트를 렌더링할 DOM 컨테이너
-  private containerDom?: ReturnType<typeof createRoot>;
 
-  // React 컴포넌트를 렌더링할 엘리먼트
-  @query('#react') reactDom!: HTMLElement;
-  // LitElement를 렌더링할 엘리먼트
-  @query('#lit') litDom!: HTMLElement;
+  private routeId?: string;
+  private root?: HTMLDivElement;
+  private reactRoot?: ReturnType<typeof createRoot>;
+  private litRoot?: RootPart;
 
-  @property({ type: String, reflect: true }) type?: 'react' | 'lit';
+  protected createRenderRoot() {
+    return this;
+  }
 
   render() {
     return html`
-      <div id="react"></div>
-      <div id="lit"></div>
+      ${this.root}
     `;
   }
 
   /**
    * 기존 렌더링된 DOM을 제거하고, LitElement를 삽입합니다.
+   * - 이전 ID와 동일하고, 강제 렌더링이 아닌 경우, 이전 DOM을 반환합니다.
    */
-  public async renderElement(element: typeof LitElement | string) {
-    this.clearDom();
-    this.type = 'lit';
-    let template;
-    if (typeof element === 'string') {
-      template = document.createElement(element);
-    } else if(element.prototype instanceof LitElement) {
-      template = new element();
-    } else {
-      throw new Error('라우터에 제공된 엘리먼트의 형식이 잘못되었습니다.');
+  public async renderElement({ id, element, force }: RenderElementOption) {
+    if (this.routeId === id && !force) {
+      return this.root?.firstElementChild;
     }
-    template.style.width = '100%';
-    template.style.height = '100%';
-    render(html`${template}`, this.litDom);
+    this.routeId = id;
+    this.clearRoot();
+    const template = typeof element === 'string'
+      ? document.createElement(element)
+      : element.prototype instanceof LitElement
+      ? new element()
+      : undefined;
+    if (!template || !this.root) {
+      throw new Error('DOM이 초기화되지 않았습니다.');
+    }
+    this.litRoot = render(html`${template}`, this.root);
+    this.requestUpdate();
     await this.updateComplete;
     return template;
   }
 
   /**
    * 기존 렌더링된 DOM을 제거하고, React 컴포넌트를 삽입합니다.
+   * - 이전 ID와 동일하고, 강제 렌더링이 아닌 경우, 이전 DOM을 반환합니다.
    */
-  public async renderComponent(component: ComponentType) {
-    this.clearDom();
-    this.type = 'react';
-    this.containerDom = createRoot(this.reactDom);
-    this.containerDom.render(createElement(component));
+  public async renderComponent({ id, component, force }: RenderComponentOption) {
+    if (this.routeId === id && !force) {
+      return this.root;
+    }
+    this.routeId = id;
+    this.clearRoot();
+    const template = createElement(component);
+    if (!template || !this.root) {
+      throw new Error('DOM이 초기화되지 않았습니다.');
+    }
+    this.reactRoot = createRoot(this.root);
+    this.reactRoot.render(template);
+    this.requestUpdate();
     await this.updateComplete;
-    return this.reactDom;
+    return this.root;
   }
 
   /**
-   * 기존 렌더링된 DOM을 제거합니다.
+   * 기존 DOM을 라이프 사이클에 맞게 제거합니다.
    */
-  public clearDom() {
-    if(this.containerDom) {
-      this.containerDom.unmount();
-      this.containerDom = undefined;
+  public clearRoot() {
+    // React DOM이 렌더링된 경우
+    if(this.reactRoot) {
+      this.reactRoot.unmount();
+      this.reactRoot = undefined;
     }
-    render(nothing, this.litDom);
+    // LitElement가 렌더링된 경우
+    if (this.litRoot) {
+      this.litRoot.setConnected(false);
+      this.litRoot = undefined;
+    }
+    // Root 초기화
+    this.root = document.createElement('div');
+    this.root.style.width = '100%';
+    this.root.style.height = '100%';
   }
-
-  static styles = css`
-    :host {
-      display: block;
-    }
-    :host([type="react"]) #lit {
-      display: none;
-    }
-    :host([type="lit"]) #react {
-      display: none;
-    }
-
-    #react, #lit {
-      width: 100%;
-      height: 100%;
-    }
-  `;
-  
 }
 
 export const Outlet = convertReact({

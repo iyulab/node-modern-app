@@ -36,6 +36,18 @@ export type NonIndexRoute = {
  */
 export type Route = (NonIndexRoute | IndexRoute) & {
   /**
+   * 라우터에서 사용하는 식별자
+   */
+  id?: string;
+
+  /**
+   * 라우터 URL 변경시 렌더링을 강제할지 여부
+   * - 기본값으로 children을 가질때 false로 설정되며, children이 없을 경우 true로 설정됩니다.
+   * - true로 설정하면 기존 렌더링을 무시하고 새로 렌더링합니다.
+   */
+  force?: boolean;
+
+  /**
    * 라우터에서 사용하는 URLPattern
    */
   pattern?: URLPattern;

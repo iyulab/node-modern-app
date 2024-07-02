@@ -113,7 +113,7 @@ export class ULayout extends LitElement {
         .open=${this.open}
         .screen=${this.screen}
         .basepath=${this.basepath}
-        .menu=${this.sidebar?.menu}
+        .menu=${this.sidebar?.menu as any}
         .option=${this.sidebar?.option}
         .backgroundColor=${this.sidebar?.backgroundColor}
       >
