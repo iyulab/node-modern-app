@@ -4,10 +4,7 @@ import { AppSettings } from "../settings";
 
 export interface IUser {
   claims: {
-    [key: string]: {
-      type: string;
-      value: string;
-    };
+    [key: string]: string;
   };
 
   readonly id?: string;
@@ -19,10 +16,7 @@ export interface IUser {
 
 export class User implements IUser {
   claims: {
-    [key: string]: {
-      type: string;
-      value: string;
-    };
+    [key: string]: string;
   } = {};
 
   constructor(user: IUser) {
@@ -30,26 +24,23 @@ export class User implements IUser {
   }
 
   get id() {
-    return this.claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]?.value;
+    return this.claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
   }
 
   get name() {
-    return this.claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]?.value;
+    return this.claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
   }
 
   get email() {
-    return this.claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"]?.value;
+    return this.claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"];
   }
 
   get roles() {
-    return Object.values(this.claims)
-      .filter(claim => claim.type === "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
-      .map(claim => claim.value);
+    return this.claims["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]?.split(',');
   }
 
   get SID() {
-    return Object.values(this.claims)
-      .find(claim => claim.type === "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid")?.value;
+    return this.claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"];
   }
 }
 
@@ -64,6 +55,7 @@ export class UserStore {
 
   @action login(user: IUser) {
     this.user = new User(user);
+    return this.user;
   }
   
   async init() {
@@ -89,8 +81,7 @@ export class UserStore {
     if (res.status == 200) {
       if (res.headers.get('content-type')?.startsWith('application/json')) {
         let user = await res.json() as IUser;
-        this.login(user);
-        return user;
+        return this.login(user);
       } else {
         console.error('The session is invalid.', res.status);
         return null;
