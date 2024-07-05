@@ -54,10 +54,18 @@ export class LocalAppSettings extends AppSettingsBase {
 
   override getServiceURL(): string | null {
     if (import.meta.env.DEV === true) {
-      return "https://localhost:7040";
+      return import.meta.env.VITE_HOST;
     } else {
       return null;
     }
-  }  
+  } 
+  
+  override getAccessToken(): string | null {
+    if (import.meta.env.DEV === true) {
+        return import.meta.env.VITE_AUTH;
+      } else {
+        return null;
+      };
+  }
 }
 */

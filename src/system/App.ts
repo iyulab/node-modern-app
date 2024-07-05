@@ -282,4 +282,8 @@ export class App {
       input.click();
     });
   }
+
+  public static toggleTheme() {
+    document.documentElement.classList.toggle('sl-theme-dark');
+  }
 }

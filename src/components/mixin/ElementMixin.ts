@@ -1,8 +1,7 @@
-import { LitElement, unsafeCSS, CSSResultGroup } from "lit";
+import { LitElement, CSSResultGroup } from "lit";
 import { MobxLitElement } from '@adobe/lit-mobx';
 
 import { LitHelper } from '../../extensions/LitElement';
-import baseStyle from '../styles/tailwind.css?inline';
 
 type Constructor<T> = new (...args: any[]) => T;
 
@@ -15,7 +14,7 @@ export const ElementMixin = <T extends Constructor<LitElement>>(superClass: T) =
   class ElementClass extends superClass implements IElement {
 
     static styles = [
-      unsafeCSS(baseStyle),
+      // unsafeCSS(baseStyle),
       (superClass as unknown as typeof LitElement).styles ?? [],
     ] as CSSResultGroup;
 

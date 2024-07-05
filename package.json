@@ -42,6 +42,11 @@
       "require": "./src/components/controls/index.js",
       "types": "./src/components/controls/index.d.ts"
     },
+    "./components/mixin": {
+      "import": "./src/components/mixin/index.js",
+      "require": "./src/components/mixin/index.js",
+      "types": "./src/components/mixin/index.d.ts"
+    },    
     "./sevices": {
       "import": "./src/services/index.js",
       "require": "./src/services/index.js",
