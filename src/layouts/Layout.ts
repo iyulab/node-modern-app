@@ -206,7 +206,7 @@ export class ULayout extends LitElement {
     :host([screen="medium"][open]) u-sidebar {
       width: 260px;
     }
-    :host([screen="medium"]) u-outlet {
+    :host([screen="medium"]) slot::slotted(*) {
       margin-left: 50px;
     }
 
@@ -254,7 +254,7 @@ export class ULayout extends LitElement {
         transition: width 0.3s ease-in-out;
       }
 
-      slot::slotted(u-outlet) {
+      slot::slotted(*) {
         position: relative;
         flex: 1;
       }

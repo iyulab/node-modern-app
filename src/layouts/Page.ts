@@ -5,7 +5,7 @@ import { convertReact } from "@iyulab/u-components/utils";
 @customElement('u-page')
 export class UPage extends LitElement {
 
-  @property({ type: Boolean, reflect: true }) show: boolean = false;
+  @property({ type: Boolean, reflect: true }) showElevator: boolean = false;
   @property({ type: Boolean, reflect: true }) loading: boolean = false;
   @property({ type: Boolean, reflect: true }) isBusy: boolean = false;
 
@@ -58,10 +58,10 @@ export class UPage extends LitElement {
   }
 
   private handleScroll = () => {
-    if (this.scrollTop <= 20 && this.show) {
-      this.show = false;
-    } else if (this.scrollTop > 20 && !this.show) {
-      this.show = true;
+    if (this.scrollTop <= 20 && this.showElevator) {
+      this.showElevator = false;
+    } else if (this.scrollTop > 20 && !this.showElevator) {
+      this.showElevator = true;
     }
   }
 
@@ -88,7 +88,7 @@ export class UPage extends LitElement {
       align-items: center;
       justify-content: center;
     }
-    :host([show]) .elevator {
+    :host([showElevator]) .elevator {
       display: flex;
     }
     :host([isBusy]) .overlay {
