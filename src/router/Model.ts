@@ -185,10 +185,9 @@ export interface RouteInfo extends RouteURL {
  */
 export interface RouterConfig {
   /**
-   * 라우터가 연결될 LitElement
-   * - 현재 라우터는 LitElement를 기반으로 작성되었습니다.
+   * 라우터가 연결될 최상위 엘리먼트
    */
-  rootElement: LitElement;
+  root: HTMLElement;
   
   /**
    * 라우터의 기본 경로

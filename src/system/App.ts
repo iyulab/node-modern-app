@@ -14,6 +14,7 @@ import { UModalController } from '@iyulab/u-components/components/modal';
 
 import { en, ko } from "../locales";
 import { Router } from "../router/Router";
+import { UOutlet } from '../router/Outlet';
 import { ULayout } from "../layouts/Layout";
 import { UNotfound } from '../layouts/Notfound';
 import { ULoader } from '../layouts/Loader';
@@ -66,16 +67,18 @@ export class App {
 
     // 레이아웃 설정
     const layout = new ULayout();
+    const outlet = new UOutlet();
     layout.basepath = config.basepath || '/';
     layout.header = config.header;
     layout.sidebar = config.sidebar;
+    layout.appendChild(outlet);
     document.body.appendChild(layout);
     await layout.updateComplete;
     await loader.step(0.7, t('setLayout', { ns: 'app', defaultValue: 'Set Layout' }));
 
     // 라우터 설정
     this.router = new Router({
-      rootElement: layout,
+      root: layout,
       notfound: UNotfound,
       basepath: config.basepath || '/',
       routes: config.routes,
@@ -166,15 +169,6 @@ export class App {
    * 메시지 대화상자 표시
    */
   public static async message(message: any, option?: UMessageDialogModel) {
-    return await UModalController.showMessageDialogAsync(message, option);
-  }
-
-  public static async confirm(message: any, option?: UMessageDialogModel) {
-    option ??= {
-      label: 'Confirm',
-      color: 'red',
-    };
-    
     return await UModalController.showMessageDialogAsync(message, option);
   }
 
@@ -281,6 +275,15 @@ export class App {
       document.body.appendChild(input);
       input.click();
     });
+  }
+
+  public static async confirm(message: any, option?: UMessageDialogModel) {
+    option ??= {
+      label: 'Confirm',
+      color: 'red',
+    };
+    
+    return await UModalController.showMessageDialogAsync(message, option);
   }
 
   public static toggleTheme() {

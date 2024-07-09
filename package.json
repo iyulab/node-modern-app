@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab, react and lit-element",
-  "version": "0.1.60",
+  "version": "0.1.61",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -16,7 +16,7 @@
     "test": "vite",
     "scan": "i18next -c i18next.config.js",
     "build": "iyulab build -d dist -b vite",
-    "deploy": "iyulab publish -p"
+    "deploy": "iyulab publish"
   },
   "exports": {
     ".": {
@@ -46,7 +46,7 @@
       "import": "./src/components/mixin/index.js",
       "require": "./src/components/mixin/index.js",
       "types": "./src/components/mixin/index.d.ts"
-    },    
+    },
     "./sevices": {
       "import": "./src/services/index.js",
       "require": "./src/services/index.js",
@@ -59,10 +59,10 @@
     }
   },
   "dependencies": {
-    "@iyulab/u-components": "^0.0.63",
+    "@iyulab/u-components": "^0.0.64",
     "@lit/react": "^1.0.5",
-    "lit": "^3.1.3",
-    "mobx": "^6.12.3",
+    "lit": "^3.1.4",
+    "mobx": "^6.13.0",
     "mobx-react": "^9.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -71,25 +71,25 @@
     "@adobe/lit-mobx": "^2.2.2",
     "@iyulab/utils": "^0.0.8",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^20.12.7",
-    "@types/react": "^18.3.1",
+    "@types/node": "^20.14.10",
+    "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "axios": "^1.6.8",
-    "devextreme": "^23.2.5",
-    "devextreme-react": "^23.2.5",
+    "axios": "^1.7.2",
+    "devextreme": "^24.1.3",
+    "devextreme-react": "^24.1.3",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
-    "i18next-parser": "^8.13.0",
+    "i18next-parser": "^9.0.0",
     "jspdf": "^2.5.1",
-    "postcss": "^8.4.38",
-    "postcss-nesting": "^12.1.2",
-    "sass": "^1.75.0",
+    "postcss": "^8.4.39",
+    "postcss-nesting": "^12.1.5",
+    "sass": "^1.77.6",
     "sass-loader": "^14.2.1",
     "shx": "^0.3.4",
-    "tailwindcss": "3.4.3",
-    "typescript": "^5.4.5",
+    "tailwindcss": "3.4.4",
+    "typescript": "^5.5.3",
     "urlpattern-polyfill": "^10.0.0",
-    "vite": "^5.2.10",
-    "vite-plugin-dts": "^3.9.0"
+    "vite": "^5.3.3",
+    "vite-plugin-dts": "^3.9.1"
   }
 }

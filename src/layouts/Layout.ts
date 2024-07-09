@@ -71,7 +71,7 @@ export class ULayout extends LitElement {
         ${this.renderSidebar()}
 
         <!-- 레이아웃 컨텐츠 페이지 엘리먼트 -->
-        <u-outlet></u-outlet>
+        <slot></slot>
 
         <!-- 레이아웃 메뉴 오버레이 -->
         <div class="overlay"
@@ -254,7 +254,7 @@ export class ULayout extends LitElement {
         transition: width 0.3s ease-in-out;
       }
 
-      u-outlet {
+      slot::slotted(u-outlet) {
         position: relative;
         flex: 1;
       }

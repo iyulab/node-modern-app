@@ -11,7 +11,7 @@ import type { UOutlet } from './Outlet';
 import { combinePath, getRandomID, parseURL } from './Utils';
 
 export class Router {
-  private readonly _rootElement: LitElement;
+  private readonly _rootElement: HTMLElement;
   private readonly _notfound: typeof LitElement | string;
   private readonly _basepath: string;
   private readonly _routes: Route[];
@@ -26,7 +26,7 @@ export class Router {
   }
 
   constructor(config: RouterConfig) {
-    this._rootElement = config.rootElement;
+    this._rootElement = config.root;
     this._notfound = config.notfound;
     this._basepath = combinePath(config.basepath || '/');
     this._routes = this.setRoutes(config.routes, this._basepath);
@@ -45,6 +45,87 @@ export class Router {
    */
   public disconnect() {
     window.removeEventListener('popstate', this.onPopstate);
+  }
+
+  /**
+   * 지정한 경로로 이동
+   * - 클라이언트 사이드 라우팅을 수행합니다.
+   * - 상대경로일 경우 basepath와 조합되어 이동합니다.
+   * - 라우터에 포함되지 않은 경로로 이동할 경우 다른 방법으로 처리하세요.
+   * @param href 이동할 경로
+   */
+  public async go(href: string) {
+    // 요청 ID 생성
+    const requestID = getRandomID();
+    this.requestID = requestID;
+
+    // URL 분석
+    const routeInfo = parseURL(href, this._basepath);
+    if (routeInfo.href === this._routeInfo?.href) return;
+    if(this.requestID !== requestID) return;
+    this.dispatchProgress(0.1);
+
+    // 일치하는 라우트 찾기
+    const routes = this.getRoutes(routeInfo.pathname);
+    const lastRoute = routes[routes.length - 1];
+    if(this.requestID !== requestID) return;
+    this.dispatchProgress(0.3);
+
+    // 데이터 로딩 및 라우팅 정보 업데이트
+    routeInfo.params = lastRoute?.pattern?.exec({ pathname: routeInfo.pathname })?.pathname.groups || {};
+    if (typeof lastRoute?.loader === 'function') {
+      try {
+        routeInfo.data = await lastRoute.loader(routeInfo);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    if(this.requestID !== requestID) return;
+    this.dispatchProgress(0.5);
+    this._routeInfo = routeInfo;
+    
+    // Outlet 렌더링(부모 route부터 u-outlet을 찾아서 렌더링합니다.)
+    let outlet = this.getOutlet(this._rootElement);
+    if (!outlet) {
+      console.error('Outlet element not found in root element');
+    } else if (routes.length === 0) {
+      if(this.requestID !== requestID) return;
+      this.dispatchProgress(1);
+      this._notfound ? outlet.renderElement({ element: this._notfound }) : outlet.clearRoot();
+    } else {
+      for (const route of routes) {
+        if(this.requestID !== requestID) return;
+        this.dispatchProgress(0.5 + 0.5 * ((routes.indexOf(route) + 1) / routes.length));
+        if(route.element) {
+          const element = await outlet.renderElement({ id: route.id, element: route.element, force: route.force });
+          outlet = element?.shadowRoot?.querySelector('u-outlet') || outlet;
+        } else if (route.component) {
+          const component = await outlet.renderComponent({ id: route.id, component: route.component, force: route.force });
+          outlet = component?.querySelector('u-outlet') || outlet;
+        } else if (this._notfound) {
+          await outlet.renderElement({ element: this._notfound });
+        } else {
+          outlet.clearRoot();
+        }
+      }
+    }
+    
+    // 브라우저 히스토리 및 이벤트 발생
+    if(this.requestID !== requestID) return;
+    if (routeInfo.href !== window.location.href) {
+      window.history.pushState({ basepath: routeInfo.basepath }, '', routeInfo.href);
+    } else {
+      window.history.replaceState({ basepath: routeInfo.basepath }, '', routeInfo.href);
+    }
+    document.title = lastRoute?.title || document.title;
+    document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
+  }
+
+  /**
+   * 라우터 기본 경로로 이동
+   */
+  public async goBase() {
+    await this.go(this._routeInfo?.basepath || this._basepath);
   }
 
   /**
@@ -86,82 +167,6 @@ export class Router {
   }
 
   /**
-   * 지정한 경로로 이동
-   * - 클라이언트 사이드 라우팅을 수행합니다.
-   * - 상대경로일 경우 basepath와 조합되어 이동합니다.
-   * - 라우터에 포함되지 않은 경로로 이동할 경우 다른 방법으로 처리하세요.
-   * @param href 이동할 경로
-   */
-  public async go(href: string) {
-    // 요청 ID 생성
-    const requestID = getRandomID();
-    this.requestID = requestID;
-
-    // URL 분석
-    const routeInfo = parseURL(href, this._basepath);
-    if (routeInfo.href === this._routeInfo?.href) return;
-    if(this.requestID !== requestID) return;
-    this.dispatchProgress(0.1);
-
-    // 일치하는 라우트 찾기
-    const routes = this.getRoutes(routeInfo.pathname);
-    const lastRoute = routes[routes.length - 1];
-    if(this.requestID !== requestID) return;
-    this.dispatchProgress(0.3);
-
-    // 데이터 로딩 및 라우팅 정보 업데이트
-    routeInfo.params = lastRoute?.pattern?.exec({ pathname: routeInfo.pathname })?.pathname.groups || {};
-    if (typeof lastRoute?.loader === 'function') {
-      routeInfo.data = await lastRoute.loader(routeInfo);
-    }
-    if(this.requestID !== requestID) return;
-    this.dispatchProgress(0.5);
-    this._routeInfo = routeInfo;
-    
-    // Outlet 렌더링(부모 route부터 u-outlet을 찾아서 렌더링합니다.)
-    await this._rootElement.updateComplete;
-    let outlet = this._rootElement.shadowRoot?.querySelector('u-outlet') as UOutlet;
-    if (routes.length === 0) {
-      if(this.requestID !== requestID) return;
-      this.dispatchProgress(1);
-      this._notfound ? outlet.renderElement({ element: this._notfound }) : outlet.clearRoot();
-    } else {
-      for (const route of routes) {
-        if(this.requestID !== requestID) return;
-        this.dispatchProgress(0.5 + 0.5 * ((routes.indexOf(route) + 1) / routes.length));
-        if(route.element) {
-          const element = await outlet.renderElement({ id: route.id, element: route.element, force: route.force });
-          outlet = element?.shadowRoot?.querySelector('u-outlet') || outlet;
-        } else if (route.component) {
-          const component = await outlet.renderComponent({ id: route.id, component: route.component, force: route.force });
-          outlet = component?.querySelector('u-outlet') || outlet;
-        } else if (this._notfound) {
-          await outlet.renderElement({ element: this._notfound });
-        } else {
-          outlet.clearRoot();
-        }
-      }
-    }
-    
-    // 브라우저 히스토리 및 이벤트 발생
-    if(this.requestID !== requestID) return;
-    if (routeInfo.href !== window.location.href) {
-      window.history.pushState({ basepath: routeInfo.basepath }, '', routeInfo.href);
-    } else {
-      window.history.replaceState({ basepath: routeInfo.basepath }, '', routeInfo.href);
-    }
-    document.title = lastRoute?.title || document.title;
-    document.dispatchEvent(new CustomEvent('route-change', { detail: routeInfo }));
-  }
-
-  /**
-   * 라우터 기본 경로로 이동
-   */
-  public async goBase() {
-    await this.go(this._routeInfo?.basepath || this._basepath);
-  }
-
-  /**
    * 라우팅 진행률 Dispatch
    */
   private dispatchProgress(value: number) {
@@ -177,38 +182,14 @@ export class Router {
   };
 
   /**
-   * 전체 문서에서 a 태그의 이벤트가 발생했을 때 라우팅 처리
-   * - 현재 사용하지 않습니다!
+   * Outlet 엘리먼트를 찾습니다.
    */
-  // private onClick = (e: MouseEvent) => {
-  //   // 네비게이션 이벤트가 아닌 경우 리턴
-  //   const isNonNavigationClick = e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey;
-  //   if (e.defaultPrevented || isNonNavigationClick) return;
-
-  //   // 클릭한 타겟이 a 태그가 아닌 경우 리턴
-  //   const anchor = e.composedPath()
-  //     .find((n) => (n as HTMLElement).tagName === 'A') as
-  //     | HTMLAnchorElement | undefined;
-  //   if ( anchor === undefined || anchor.target !== '' ||
-  //     anchor.hasAttribute('download') || anchor.getAttribute('rel') === 'external'
-  //   ) {
-  //     return;
-  //   }
-
-  //   // a 태그의 href 속성이 비어있거나 mailto: 로 시작하는 경우 리턴
-  //   const href = anchor.href;
-  //   if (href === '' || href.startsWith('mailto:')) return;
-
-  //   // a 태그의 origin 속성이 현재 origin과 다른 경우 리턴
-  //   const origin = location.origin || location.protocol + '//' + location.host;
-  //   if (anchor.origin !== origin) return;
-
-  //   // a 태그의 href 속성이 현재 location.href와 다른 경우 라우팅
-  //   e.preventDefault();
-  //   if (href !== window.location.href) {
-  //     window.history.pushState({}, '', href);
-  //     this.go(anchor.pathname);
-  //   }
-  // };
+  private getOutlet(element: HTMLElement): UOutlet | null | undefined {
+    let outlet = element.querySelector('u-outlet') as UOutlet;
+    if (!outlet && element.shadowRoot) {
+      outlet =  element.shadowRoot.querySelector('u-outlet') as UOutlet;
+    }
+    return outlet;
+  }
   
 }

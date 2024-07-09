@@ -8,18 +8,19 @@ type LocaleDisplay = {
 
 @customElement('locale-button')
 export class LocaleButton extends LitElement {
-  private readonly display: LocaleDisplay = {
+  private readonly displayMap: LocaleDisplay = {
     'ko': '한국어',
     'en': 'English',
   };
 
   @query('u-dropdown') dropdown!: any;
 
-  @property({ type: String }) locale: string = this.display.en;
+  @property({ type: String }) display: string = this.displayMap.en;
 
   connectedCallback() {
     super.connectedCallback();
-    this.locale = this.display[getLocale()] || this.display.en;
+    const locale = localStorage.getItem('locale') || getLocale();
+    this.display = this.displayMap[locale as Languages] || this.displayMap.en;
   }
 
   render() {
@@ -27,13 +28,13 @@ export class LocaleButton extends LitElement {
       <u-dropdown placement="bottom-end">
         <div class="locale" slot="trigger">
           <u-icon type="system" name="translate"></u-icon>
-          ${this.locale}
+          ${this.display}
           <u-icon type="system" name="chevron-down"></u-icon>
         </div>
         <u-menu>
-          ${Object.keys(this.display).map((lang) => html`
+          ${Object.keys(this.displayMap).map((lang) => html`
             <u-menu-item @click=${() => this.changeLocale(lang as Languages)}>
-              ${this.display[lang as Languages]}
+              ${this.displayMap[lang as Languages]}
             </u-menu-item>
           `)}
         </u-menu>
@@ -43,7 +44,8 @@ export class LocaleButton extends LitElement {
 
   private changeLocale = async (locale: Languages) => {
     await setLocale(locale);
-    this.locale = this.display[locale] || this.display.en;
+    localStorage.setItem('locale', locale);
+    this.display = this.displayMap[locale] || this.displayMap.en;
     this.dropdown?.hide();
   }
 

@@ -112,7 +112,7 @@ const defaultState: DxGridState = {
 const exportFormats = ["xlsx"]; //, 'pdf'
 
 export class DxGrid extends Component<DxGridProps, DxGridState> {
-  dataGrid: React.RefObject<DataGrid>;
+  dataGrid: React.RefObject<typeof DataGrid>;
 
   constructor(props: DxGridProps) {
     super(props);
@@ -216,6 +216,8 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
   }
 
   refresh() {
+    //?? 일단 무시 처리
+    //@ts-ignore
     this.dataGrid.current?.instance.refresh();
   }
 
@@ -243,7 +245,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
 
     return (
       <DataGrid
-        ref={this.dataGrid}
+        ref={this.dataGrid as any}
         dataSource={dataSource}
         height={this.props.height}
         // defaultColumns={this.initColumns()}
