@@ -32,6 +32,11 @@
       "require": "./src/apps/index.js",
       "types": "./src/apps/index.d.ts"
     },
+    "./components": {
+      "import": "./src/components/index.js",
+      "require": "./src/components/index.js",
+      "types": "./src/components/index.d.ts"
+    },
     "./components/dx": {
       "import": "./src/components/dx/index.js",
       "require": "./src/components/dx/index.js",
@@ -64,6 +69,9 @@
     "lit": "^3.1.4",
     "mobx": "^6.13.0",
     "mobx-react": "^9.1.1",
+    "primeflex": "^3.3.1",
+    "primeicons": "^7.0.0",
+    "primereact": "^10.7.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
