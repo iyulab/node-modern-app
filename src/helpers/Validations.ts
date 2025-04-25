@@ -1,4 +1,4 @@
-import { getPropertyMeta } from "@iyulab/u-components/decorators";
+import { getPropertyMeta } from "@iyulab/components/decorators";
 
 function validateEmail(value: string): boolean {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

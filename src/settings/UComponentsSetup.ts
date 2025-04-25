@@ -1,13 +1,13 @@
-import { UIconController } from "@iyulab/u-components/components/icon";
+import { UIconController } from "@iyulab/components/components/icon";
 
-import "@iyulab/u-components/components/icon";
-import "@iyulab/u-components/components/button";
-import "@iyulab/u-components/components/dropdown";
-import "@iyulab/u-components/components/menu";
-import "@iyulab/u-components/components/breadcrumb";
-import "@iyulab/u-components/components/divider";
-import "@iyulab/u-components/components/progress";
-import "@iyulab/u-components/components/spinner";
+import "@iyulab/components/components/icon";
+import "@iyulab/components/components/button";
+import "@iyulab/components/components/dropdown";
+import "@iyulab/components/components/menu";
+import "@iyulab/components/components/breadcrumb";
+import "@iyulab/components/components/divider";
+import "@iyulab/components/components/progress";
+import "@iyulab/components/components/spinner";
 
 UIconController.assignSystemIcon({
   'menu': { path: `M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z` },

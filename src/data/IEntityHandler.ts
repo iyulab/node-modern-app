@@ -1,6 +1,6 @@
-import type { PropertyMetaType } from "@iyulab/u-components/decorators";
-import type { DatetimeInputFormat } from "@iyulab/u-components/components/input/UDatetimeInput.model";
-import type { NumberInputFormat } from "@iyulab/u-components/components/input/UNumberInput.model";
+import type { PropertyMetaType } from "@iyulab/components/decorators";
+import type { DatetimeInputFormat } from "@iyulab/components/components/input/UDatetimeInput.model";
+import type { NumberInputFormat } from "@iyulab/components/components/input/UNumberInput.model";
 import type { IEntityProperty } from "./EntityMetadata";
 import type { IResultValue } from "./IResultValue";
 

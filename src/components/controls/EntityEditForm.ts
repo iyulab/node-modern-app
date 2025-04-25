@@ -2,10 +2,10 @@ import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
 import type { IEntityHandler, IResultValue } from "../../data";
-import { UFormElement } from "@iyulab/u-components/components/form";
-import { UModalContent } from "@iyulab/u-components/components/modal/UModalContent";
+import { UFormElement } from "@iyulab/components/components/form";
+import { UModalContent } from "@iyulab/components/components/modal/UModalContent";
 import { App } from "../../system/App";
-import "@iyulab/u-components/components/form";
+import "@iyulab/components/components/form";
 
 export interface IEntityEditFormProps {
   title?: string;

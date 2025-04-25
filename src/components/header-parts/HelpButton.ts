@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { t } from "@iyulab/u-components/localization";
+import { t } from "@iyulab/components/localization";
 
 @customElement('help-button')
 export class HelpButton extends LitElement {

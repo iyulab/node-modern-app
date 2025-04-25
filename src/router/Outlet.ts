@@ -2,7 +2,7 @@ import { LitElement, RootPart, html, render } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { createElement, type ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
-import { convertReact } from '@iyulab/u-components/utils';
+import { convertReact } from '@iyulab/components/utils';
 
 interface RenderOption {
   id?: string;

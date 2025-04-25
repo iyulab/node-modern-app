@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { convertReact } from "@iyulab/u-components/utils";
+import { convertReact } from "@iyulab/components/utils";
 
 @customElement('u-page')
 export class UPage extends LitElement {

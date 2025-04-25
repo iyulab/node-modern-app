@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-import { t } from "@iyulab/u-components/localization";
+import { t } from "@iyulab/components/localization";
 
 export type AppTheme = 'light' | 'dark' | 'system';
 

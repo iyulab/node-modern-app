@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab, react and lit-element",
-  "version": "0.1.62",
+  "version": "0.1.63",
   "author": {
     "name": "iyulab",
     "url": "https://www.iyulab.com"
@@ -20,81 +20,81 @@
   },
   "exports": {
     ".": {
-      "import": "./src/index.js",
+      "types": "./src/index.d.ts",
       "require": "./src/index.js",
-      "types": "./src/index.d.ts"
+      "import": "./src/index.js"
     },
     "./styles/*": {
       "import": "./static/styles/*"
     },
     "./apps": {
-      "import": "./src/apps/index.js",
+      "types": "./src/apps/index.d.ts",
       "require": "./src/apps/index.js",
-      "types": "./src/apps/index.d.ts"
+      "import": "./src/apps/index.js"
     },
     "./components": {
-      "import": "./src/components/index.js",
+      "types": "./src/components/index.d.ts",
       "require": "./src/components/index.js",
-      "types": "./src/components/index.d.ts"
+      "import": "./src/components/index.js"
     },
     "./components/dx": {
-      "import": "./src/components/dx/index.js",
+      "types": "./src/components/dx/index.d.ts",
       "require": "./src/components/dx/index.js",
-      "types": "./src/components/dx/index.d.ts"
+      "import": "./src/components/dx/index.js"
     },
     "./components/controls": {
-      "import": "./src/components/controls/index.js",
+      "types": "./src/components/controls/index.d.ts",
       "require": "./src/components/controls/index.js",
-      "types": "./src/components/controls/index.d.ts"
+      "import": "./src/components/controls/index.js"
     },
     "./components/mixin": {
-      "import": "./src/components/mixin/index.js",
+      "types": "./src/components/mixin/index.d.ts",
       "require": "./src/components/mixin/index.js",
-      "types": "./src/components/mixin/index.d.ts"
+      "import": "./src/components/mixin/index.js"
     },
     "./sevices": {
-      "import": "./src/services/index.js",
+      "types": "./src/services/index.d.ts",
       "require": "./src/services/index.js",
-      "types": "./src/services/index.d.ts"
+      "import": "./src/services/index.js"
     },
     "./settings": {
-      "import": "./src/settings/index.js",
+      "types": "./src/settings/index.d.ts",
       "require": "./src/settings/index.js",
-      "types": "./src/settings/index.d.ts"
+      "import": "./src/settings/index.js"
     }
   },
   "dependencies": {
-    "@iyulab/u-components": "^0.0.64",
-    "@lit/react": "^1.0.5",
-    "lit": "^3.1.4",
-    "mobx": "^6.13.0",
-    "mobx-react": "^9.1.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@iyulab/components": "^0.0.2",
+    "@lit/react": "^1.0.7",
+    "lit": "^3.3.0",
+    "mobx": "^6.13.7",
+    "mobx-react": "^9.2.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
     "@adobe/lit-mobx": "^2.2.2",
-    "@iyulab/utils": "^0.0.8",
+    "@iyulab/utils": "^0.0.9",
     "@types/file-saver": "^2.0.7",
-    "@types/node": "^20.14.10",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "axios": "^1.7.2",
-    "devextreme": "^24.1.3",
-    "devextreme-react": "^24.1.3",
+    "@types/node": "^22.15.2",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "axios": "^1.9.0",
+    "devextreme": "^24.2.6",
+    "devextreme-react": "^24.2.6",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
-    "i18next-parser": "^9.0.0",
-    "jspdf": "^2.5.1",
-    "postcss": "^8.4.39",
-    "postcss-nesting": "^12.1.5",
-    "sass": "^1.77.6",
-    "sass-loader": "^14.2.1",
-    "shx": "^0.3.4",
-    "tailwindcss": "3.4.4",
-    "typescript": "^5.5.3",
+    "i18next-parser": "^9.3.0",
+    "jspdf": "^3.0.1",
+    "postcss": "^8.5.3",
+    "postcss-nesting": "^13.0.1",
+    "sass": "^1.87.0",
+    "sass-loader": "^16.0.5",
+    "shx": "^0.4.0",
+    "tailwindcss": "4.1.4",
+    "typescript": "^5.8.3",
     "urlpattern-polyfill": "^10.0.0",
-    "vite": "^5.3.3",
-    "vite-plugin-dts": "^3.9.1"
+    "vite": "^6.3.3",
+    "vite-plugin-dts": "^4.5.3"
   }
 }

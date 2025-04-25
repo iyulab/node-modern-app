@@ -27,7 +27,7 @@ export default defineConfig({
         /^react.*/,
         /^lit.*/,
         /^@lit.*/,
-        /^@iyulab\/u-components*/,
+        /^@iyulab\/components*/,
       ],
       output: {
         chunkFileNames: `chunks/[name].js`

@@ -125,7 +125,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
     this.onSelectedRowKeysChange = this.onSelectedRowKeysChange.bind(this);
     this.onSelectionChanged = this.onSelectionChanged.bind(this);
 
-    this.dataGrid = React.createRef();
+    this.dataGrid = React.createRef() as any;
 
     props.context?.init(this);
   }

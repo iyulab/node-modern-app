@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
-import { type Languages, getLocale, setLocale } from "@iyulab/u-components/localization";
+import { type Languages, getLocale, setLocale } from "@iyulab/components/localization";
 
 type LocaleDisplay = {
   [langqq in Languages]: string;

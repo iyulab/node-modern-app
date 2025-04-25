@@ -1,6 +1,6 @@
 import { LitElement, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { t } from "@iyulab/u-components/localization";
+import { t } from "@iyulab/components/localization";
 
 export interface UserModel {
   name?: string;

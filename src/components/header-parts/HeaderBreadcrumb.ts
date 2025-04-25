@@ -2,7 +2,7 @@ import { LitElement, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { DirectiveResult } from "lit/async-directive.js";
 import { until } from "lit/directives/until.js";
-import { t } from "@iyulab/u-components/localization";
+import { t } from "@iyulab/components/localization";
 
 import type { RouteInfo } from "../../router/Model";
 import { App } from "../../system/App";

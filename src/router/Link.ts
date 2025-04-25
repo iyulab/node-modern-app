@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { convertReact } from "@iyulab/u-components/utils";
+import { convertReact } from "@iyulab/components/utils";
 import { combinePath } from "./Utils";
 
 @customElement('u-link')

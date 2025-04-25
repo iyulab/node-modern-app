@@ -3,14 +3,14 @@ import { observable, IObservableValue } from 'mobx';
 import type { Route } from "../router/Model";
 import type { HeaderModel } from "../layouts/Header";
 import type { SidebarModel } from "../layouts/Sidebar";
-import type { ULocalizerConfig } from '@iyulab/u-components/localization';
-import type { ToastPosition, AlertType } from '@iyulab/u-components/components/alert';
-import type { DrawerPosition, UModalContent, UMessageDialogModel, UInputDialogConfig } from '@iyulab/u-components/components/modal';
+import type { ULocalizerConfig } from '@iyulab/components/localization';
+import type { ToastPosition, AlertType } from '@iyulab/components/components/alert';
+import type { DrawerPosition, UModalContent, UMessageDialogModel, UInputDialogConfig } from '@iyulab/components/components/modal';
 
 import "../settings/UComponentsSetup";
-import { ULocalizer, t } from '@iyulab/u-components/localization';
-import { UAlertController } from '@iyulab/u-components/components/alert';
-import { UModalController } from '@iyulab/u-components/components/modal';
+import { ULocalizer, t } from '@iyulab/components/localization';
+import { UAlertController } from '@iyulab/components/components/alert';
+import { UModalController } from '@iyulab/components/components/modal';
 
 import { en, ko } from "../locales";
 import { Router } from "../router/Router";
