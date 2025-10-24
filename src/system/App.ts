@@ -1,6 +1,6 @@
 import { observable, IObservableValue } from 'mobx';
 
-import type { Route } from "../router/Model";
+import type { Route } from "@iyulab/router";
 import type { HeaderModel } from "../layouts/Header";
 import type { SidebarModel } from "../layouts/Sidebar";
 import type { ULocalizerConfig } from '@iyulab/components/localization';
@@ -13,8 +13,7 @@ import { UAlertController } from '@iyulab/components/components/alert';
 import { UModalController } from '@iyulab/components/components/modal';
 
 import { en, ko } from "../locales";
-import { Router } from "../router/Router";
-import { UOutlet } from '../router/Outlet';
+import { Router, UOutlet } from "@iyulab/router";
 import { ULayout } from "../layouts/Layout";
 import { UNotfound } from '../layouts/Notfound';
 import { ULoader } from '../layouts/Loader';

@@ -247,7 +247,7 @@ export class DxGrid extends Component<DxGridProps, DxGridState> {
       <DataGrid
         ref={this.dataGrid as any}
         dataSource={dataSource}
-        height={this.props.height}
+        height={this.props.height as any}
         // defaultColumns={this.initColumns()}
         // columns={this.initColumns()}
         allowColumnReordering={

@@ -8,8 +8,7 @@ import { App, type AppScreen } from '../system/App';
 
 import '../components/header-parts';
 import '../components/sidebar-parts';
-import '../router/Link';
-import '../router/Outlet';
+import '@iyulab/router';
 import './Header';
 import './Sidebar';
 import './Page';

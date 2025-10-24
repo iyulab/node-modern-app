@@ -2,14 +2,14 @@ import { LitElement, css, html, nothing } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 
 import type { AppScreen } from '../system/App';
-import type { RouteInfo } from '../router/Model';
+import type { RouteInfo } from '@iyulab/router';
 import type { 
   MenuDividerModel, 
   SingleMenuModel, 
   GroupMenuModel, 
   GroupMenuItemModel
 } from "../components/sidebar-parts";
-import { combinePath } from '../router/Utils';
+import { combinePath } from '@iyulab/router';
 
 export type MenuItem = ( SingleMenuModel | GroupMenuModel | MenuDividerModel ) & {
   position?: 'top' | 'bottom';

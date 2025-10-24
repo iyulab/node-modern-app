@@ -4,7 +4,7 @@ import { DirectiveResult } from "lit/async-directive.js";
 import { until } from "lit/directives/until.js";
 import { t } from "@iyulab/components/localization";
 
-import type { RouteInfo } from "../../router/Model";
+import type { RouteInfo } from "@iyulab/router";
 import { App } from "../../system/App";
 
 export interface BreadcrumbItem {

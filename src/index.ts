@@ -10,6 +10,6 @@ export * from './settings';
 
 export * from './system/App';
 export * from './layouts/Page';
-export * from './router/Channel';
-export * from './router/Link';
-export * from './router/Outlet';
+
+// router를 별도 패키지로 분리했으므로 re-export
+export * from '@iyulab/router';
