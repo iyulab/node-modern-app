@@ -13,10 +13,9 @@
   "module": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
-    "test": "vite",
+    "start": "vite",
     "scan": "i18next -c i18next.config.js",
-    "build": "iyulab build -d dist -b vite",
-    "deploy": "iyulab publish"
+    "build": "vite build"
   },
   "exports": {
     ".": {

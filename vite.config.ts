@@ -33,11 +33,6 @@ export default defineConfig({
         chunkFileNames: `chunks/[name].js`
       },
     },
-    terserOptions: {
-      format: {
-        comments: false, // 모든 주석 제거
-      },
-    },
   },
   plugins: [
     dts({

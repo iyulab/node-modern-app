@@ -9,7 +9,6 @@ import type {
   GroupMenuModel, 
   GroupMenuItemModel
 } from "../components/sidebar-parts";
-import { combinePath } from '@iyulab/router';
 
 export type MenuItem = ( SingleMenuModel | GroupMenuModel | MenuDividerModel ) & {
   position?: 'top' | 'bottom';
@@ -173,7 +172,7 @@ export class USidebar extends LitElement {
   }
 
   private setPattern(item: SingleMenuModel | GroupMenuItemModel) {
-    const pathname = item.path.startsWith('/') ? item.path : combinePath(this.basepath || '', item.path);
+    const pathname = item.path.startsWith('/') ? item.path : `${this.basepath || ''}/${item.path}`;
     item.pattern ||= new URLPattern({ pathname: pathname + '*' });
   }
 

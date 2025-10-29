@@ -1,6 +1,6 @@
 import { observable, IObservableValue } from 'mobx';
 
-import type { Route } from "@iyulab/router";
+import type { RouteConfig } from "@iyulab/router";
 import type { HeaderModel } from "../layouts/Header";
 import type { SidebarModel } from "../layouts/Sidebar";
 import type { ULocalizerConfig } from '@iyulab/components/localization';
@@ -13,9 +13,8 @@ import { UAlertController } from '@iyulab/components/components/alert';
 import { UModalController } from '@iyulab/components/components/modal';
 
 import { en, ko } from "../locales";
-import { Router, UOutlet } from "@iyulab/router";
+import { Router } from "@iyulab/router";
 import { ULayout } from "../layouts/Layout";
-import { UNotfound } from '../layouts/Notfound';
 import { ULoader } from '../layouts/Loader';
 
 export interface AlertOption {
@@ -28,7 +27,7 @@ export type AppScreen = 'small' | 'medium' | 'large';
 
 export interface AppConfig {
   basepath?: string;
-  routes: Route[];
+  routes: RouteConfig[];
   locale?: ULocalizerConfig;
   breakPoint?: number[];
   header?: HeaderModel;
@@ -66,7 +65,7 @@ export class App {
 
     // 레이아웃 설정
     const layout = new ULayout();
-    const outlet = new UOutlet();
+    const outlet = document.createElement('u-outlet');
     layout.basepath = config.basepath || '/';
     layout.header = config.header;
     layout.sidebar = config.sidebar;
@@ -78,11 +77,9 @@ export class App {
     // 라우터 설정
     this.router = new Router({
       root: layout,
-      notfound: UNotfound,
       basepath: config.basepath || '/',
       routes: config.routes,
     });
-    this.router.connect();
     await loader.step(0.9, t('setRouter', { ns: 'app', defaultValue: 'Set Router' }));
 
     await loader.end();
@@ -111,7 +108,6 @@ export class App {
     if(layout) document.body.removeChild(layout);
 
     // 라우터 해제
-    this.router?.disconnect();
     this.router = undefined;
   }
 
