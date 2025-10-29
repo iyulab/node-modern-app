@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "@iyulab/components": "^0.0.2",
-    "@iyulab/router": "^0.1.0",
+    "@iyulab/router": "^0.3.0",
     "@lit/react": "^1.0.8",
     "lit": "^3.3.1",
     "mobx": "^6.15.0",
