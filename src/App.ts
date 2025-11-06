@@ -1,287 +1,218 @@
 import { observable, IObservableValue } from 'mobx';
 
-import type { RouteConfig } from "@iyulab/router";
-import type { HeaderModel } from "../layouts/Header";
-import type { SidebarModel } from "../layouts/Sidebar";
-import type { ULocalizerConfig } from '@iyulab/components/localization';
-import type { ToastPosition, AlertType } from '@iyulab/components/components/alert';
-import type { DrawerPosition, UModalContent, UMessageDialogModel, UInputDialogConfig } from '@iyulab/components/components/modal';
+import { Router } from '@iyulab/router';
+import { notifier } from '@iyulab/components/dist/utilities/notifier.js';
+import { AlertType } from '@iyulab/components/dist/components/alert/Alert.js';
+import { importTheme, setTheme } from '@iyulab/components/dist/utilities/theme.js';
+import type { UTheme } from '@iyulab/components/dist/utilities/theme.js';
 
-import "../settings/UComponentsSetup";
-import { ULocalizer, t } from '@iyulab/components/localization';
-import { UAlertController } from '@iyulab/components/components/alert';
-import { UModalController } from '@iyulab/components/components/modal';
+import type { ScreenSize } from './types/AppTypes.js';
+import type { AppConfig } from './types/AppConfigs.js';
+import type { DialogOptions, NotificationOptions } from './types/AppOptions.js';
 
-import { en, ko } from "../locales";
-import { Router } from "@iyulab/router";
-import { ULayout } from "../layouts/Layout";
-import { ULoader } from '../layouts/Loader';
-
-export interface AlertOption {
-  title?: string;
-  duration?: number;
-  position?: ToastPosition;
-}
-
-export type AppScreen = 'small' | 'medium' | 'large';
-
-export interface AppConfig {
-  basepath?: string;
-  routes: RouteConfig[];
-  locale?: ULocalizerConfig;
-  breakPoint?: number[];
-  header?: HeaderModel;
-  sidebar?: SidebarModel;
-}
-
+/**
+ * App 클래스, 싱글톤으로 앱 전체를 관리합니다.
+ */
 export class App {
-  private static config: AppConfig;
-  private static breakpoint: number[] = [768, 1440];
-  public static readonly screen: IObservableValue<AppScreen> = observable.box('large');
-  public static router?: Router;
-  
+  private static _instance: App;
+
+  // 설정
+  private _config?: AppConfig;
+  private _router?: Router;
+  private _layoutElement?: HTMLElement;
+
+  // 반응형 상태
+  public readonly screen: IObservableValue<ScreenSize> = observable.box('large');
+  public readonly theme: IObservableValue<UTheme> = observable.box('light');
+  public readonly isLoading: IObservableValue<boolean> = observable.box(false);
+
+  // 브레이크포인트 기본값 [small, medium]
+  private breakpoints: [number, number] = [768, 1280];
+
+  private constructor() {
+    // private 생성자로 외부에서 인스턴스 생성 방지
+    importTheme();
+  }
+
   /**
-   * 어플리케이션 로드
+   * 싱글톤 인스턴스 반환
    */
-  public static async load(config: AppConfig) {
-    const loader = new ULoader();
-    await loader.start();
+  public static get instance(): App {
+    if (!App._instance) {
+      App._instance = new App();
+    }
+    return App._instance;
+  }
 
-    // 설정 저장 및 이전 설정 해제
-    this.config = config;
-    this.unload();
-    await loader.step(0.1, "App Loading");
+  /**
+   * 앱 설정 getter
+   */
+  public get config(): AppConfig | undefined {
+    return this._config;
+  }
 
-    // 언어 설정
-    await ULocalizer.init(config.locale);
-    ULocalizer.addResources({ en, ko });
-    await loader.step(0.3, t('setLanguage', { ns: 'app', defaultValue: 'Set Language' }));
-    
-    // 브라우저 사이즈 설정
-    this.breakpoint = config.breakPoint || this.breakpoint;
-    this.onResize();
-    window.addEventListener('resize', this.onResize);
-    await loader.step(0.5, t('setScreenSize', { ns: 'app', defaultValue: 'Set Screen Size' }));
+  /**
+   * 앱 로드 및 초기화
+   */
+  public async load(config: AppConfig): Promise<void> {
+    this.isLoading.set(true);
 
-    // 레이아웃 설정
-    const layout = new ULayout();
-    const outlet = document.createElement('u-outlet');
-    layout.basepath = config.basepath || '/';
-    layout.header = config.header;
-    layout.sidebar = config.sidebar;
-    layout.appendChild(outlet);
+    try {
+      // 이전 설정 정리
+      this.unload();
+
+      // 설정 저장
+      this._config = config;
+
+      // 브레이크포인트 설정
+      if (config.breakpoints) {
+        this.breakpoints = config.breakpoints;
+      }
+
+      // 테마 설정
+      this.setTheme("system");
+
+      // 화면 크기 감지 초기화
+      this.handleResize();
+      window.addEventListener('resize', this.handleResize);
+
+      // 레이아웃 생성 (sidebar만 지원)
+      await this.createLayout();
+
+      // 라우터 초기화
+      if (this._layoutElement) {
+        this._router = new Router({
+          root: this._layoutElement,
+          basepath: config.basepath || '/',
+          routes: config.routes,
+        });
+      }
+
+      console.log('✅ App loaded successfully');
+    } catch (error) {
+      console.error('❌ Failed to load app:', error);
+      throw error;
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * 앱 언로드
+   */
+  public unload(): void {
+    // 이벤트 리스너 제거
+    window.removeEventListener('resize', this.handleResize);
+
+    // 레이아웃 제거
+    if (this._layoutElement && this._layoutElement.parentNode) {
+      this._layoutElement.parentNode.removeChild(this._layoutElement);
+    }
+
+    // 라우터 정리
+    this._router = undefined;
+    this._layoutElement = undefined;
+    this._config = undefined;
+  }
+
+  /**
+   * 레이아웃 생성 (Sidebar 레이아웃만 지원)
+   */
+  private async createLayout(): Promise<void> {
+    // 기존 레이아웃 제거
+    const existingLayout = document.body.querySelector('[data-app-layout]');
+    if (existingLayout) {
+      document.body.removeChild(existingLayout);
+    }
+
+    // Sidebar 레이아웃 생성
+    const { SidebarLayout } = await import('./layouts/SidebarLayout.js');
+    const layout = new SidebarLayout();
+
+    // 레이아웃 설정 적용
+    if (this._config?.layout) {
+      (layout as any).config = this._config.layout;
+    }
+
+    layout.setAttribute('data-app-layout', 'true');
     document.body.appendChild(layout);
-    await layout.updateComplete;
-    await loader.step(0.7, t('setLayout', { ns: 'app', defaultValue: 'Set Layout' }));
+    this._layoutElement = layout;
 
-    // 라우터 설정
-    this.router = new Router({
-      root: layout,
-      basepath: config.basepath || '/',
-      routes: config.routes,
-    });
-    await loader.step(0.9, t('setRouter', { ns: 'app', defaultValue: 'Set Router' }));
-
-    await loader.end();
+    // 레이아웃이 완전히 렌더링될 때까지 대기
+    if ('updateComplete' in layout) {
+      await (layout as any).updateComplete;
+    }
   }
 
-  /**
-   * 어플리케이션 설정 변경 및 재로딩
-   */
-  public static reload(config: AppConfig) {
-    this.unload();
-    this.load({
-      ...this.config,
-      ...config
-    });
+  /** 화면 크기 변경 핸들러 */
+  private handleResize = (): void => {
+    const width = window.innerWidth;
+    const [small, medium] = this.breakpoints;
+
+    if (width < small) {
+      this.screen.set('small');
+    } else if (width < medium) {
+      this.screen.set('medium');
+    } else {
+      this.screen.set('large');
+    }
+  };
+
+  /** 테마 설정 */
+  public setTheme(mode: UTheme): void {
+    this.theme.set(mode);
+    setTheme(mode);
   }
 
-  /**
-   * 어플리케이션 해제
-   */
-  public static unload() {
-    // 브라우저 이벤트 해제
-    window.removeEventListener('resize', this.onResize);
-
-    // 레이아웃 해제
-    const layout = document.body.querySelector('u-layout');
-    if(layout) document.body.removeChild(layout);
-
-    // 라우터 해제
-    this.router = undefined;
+  /** 페이지 이동 */
+  public navigate(path: string): void {
+    this._router?.go(path);
   }
 
-  /**
-   * 경로 이동
-   */
-  public static go(pathname: string) {
-    this.router?.go(pathname);
+  /** 뒤로 가기 */
+  public back(): void {
+    window.history.back();
   }
 
-  /**
-   * 에러 메시지
-   */
-  public static async error(message: any, options?: AlertOption) {
-    await this.toast('danger', message, options);
+  /** 앞으로 가기 */
+  public forward(): void {
+    window.history.forward();
   }
 
-  /**
-   * 경고 메시지
-   */
-  public static async warn(message: any, options?: AlertOption) {
-    await this.toast('warning', message, options);
+  /** 성공 메시지 */
+  public async success(message: string, options?: NotificationOptions): Promise<void> {
+    await this.notify('success', message, options);
   }
 
-  /**
-   * 성공 메시지
-   */
-  public static async success(message: any, options?: AlertOption) {
-    await this.toast('success', message, options);
+  /** 에러 메시지 */
+  public async error(message: string, options?: NotificationOptions): Promise<void> {
+    await this.notify('error', message, options);
   }
 
-  /**
-   * 시스템 메시지
-   */
-  public static async system(message: any, options?: AlertOption) {
-    await this.toast('neutral', message, options);
+  /** 경고 메시지 */
+  public async warning(message: string, options?: NotificationOptions): Promise<void> {
+    await this.notify('warning', message, options);
   }
 
-  /**
-   * 정보 메시지
-   */
-  public static async info(message: any, options?: AlertOption) {
-    await this.toast('primary', message, options);
+  /** 정보 메시지 */
+  public async info(message: string, options?: NotificationOptions): Promise<void> {
+    await this.notify('info', message, options);
   }
 
-  /**
-   * 입력 대화상자 표시
-   */
-  public static async input(option?: UInputDialogConfig) {
-    return await UModalController.showInputDialogAsync(option);
-  }
-
-  /**
-   * 메시지 대화상자 표시
-   */
-  public static async message(message: any, option?: UMessageDialogModel) {
-    return await UModalController.showMessageDialogAsync(message, option);
-  }
-
-  /**
-   * 대화상자 표시
-   * @param content UModalContent를 상속받은 컴포넌트
-   */
-  public static async dialog<T>(content: UModalContent) {
-    return await UModalController.showDialogAsync<T>(content);
-  }
-
-  /**
-   * 드로어 표시
-   * @param content UModalContent를 상속받은 컴포넌트
-   * @param position 드로어 위치 (기본값: 'end')
-   */
-  public static async drawer<T>(content: UModalContent, position?: DrawerPosition) {
-    return await UModalController.showDrawerAsync<T>(content, position);
-  }
-
-  // 토스트 메시지
-  private static async toast(type: AlertType, message: string, options?: AlertOption) {
-    await UAlertController.toastAsync({
+  /** 알림 표시 */
+  private async notify(type: AlertType, message: string, options?: NotificationOptions): Promise<void> {
+    await notifier.toast({
       type: type,
       content: message,
       label: options?.title,
-      duration: options?.duration,
-      position: options?.position || 'top-right',
+      duration: options?.duration || 3000,
+      position : options?.position || 'top-right',
     });
   }
 
-  // 브라우저 사이즈 변경 이벤트 핸들러
-  private static onResize = async () => {
-    const width = window.innerWidth;
-    const screen = this.screen.get();
-    if (screen !== 'small' && 
-      width <= (this.breakpoint[0] || 768)
-    ) {
-      this.screen.set('small');
-    } else if (screen !== 'medium' &&
-      (width > (this.breakpoint[0] || 768) && width <= (this.breakpoint[1] || 1440))
-    ) {
-      this.screen.set('medium');
-    } else if (screen !== 'large' &&
-      width > (this.breakpoint[1] || 1440)
-    ) {
-      this.screen.set('large');
-    }
-  }
-  
-  // 단일 파일 선택
-  public static async showFilePickerAsync(accept: string = '*'): Promise<File> {
-    return new Promise<File>((resolve, reject) => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = accept;
-      input.multiple = false;
-      input.style.display = 'none';
-
-      const handleFileChange = () => {
-        if (input.files && input.files.length > 0) {
-          resolve(input.files[0]);
-        } else {
-          reject(new Error("파일 선택이 취소되었습니다."));
-        }
-        cleanup();
-      };
-
-      const cleanup = () => {
-        input.removeEventListener('change', handleFileChange);
-        document.body.removeChild(input);
-      };
-
-      input.addEventListener('change', handleFileChange);
-      document.body.appendChild(input);
-      input.click();
-    });
-  }
-
-  // 다중 파일 선택
-  public static async showFilesPickerAsync(accept: string = '*'): Promise<File[]> {
-    return new Promise<File[]>((resolve, reject) => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = accept;
-      input.multiple = true;
-      input.style.display = 'none';
-
-      const handleFileChange = () => {
-        if (input.files) {
-          resolve(Array.from(input.files));
-        } else {
-          reject(new Error("파일 선택이 취소되었습니다."));
-        }
-        cleanup();
-      };
-
-      const cleanup = () => {
-        input.removeEventListener('change', handleFileChange);
-        document.body.removeChild(input);
-      };
-
-      input.addEventListener('change', handleFileChange);
-      document.body.appendChild(input);
-      input.click();
-    });
-  }
-
-  public static async confirm(message: any, option?: UMessageDialogModel) {
-    option ??= {
-      label: 'Confirm',
-      color: 'red',
-    };
-    
-    return await UModalController.showMessageDialogAsync(message, option);
-  }
-
-  public static toggleTheme() {
-    document.documentElement.classList.toggle('sl-theme-dark');
+  /** 확인 대화상자 */
+  public async confirm(message: string, _options?: DialogOptions): Promise<boolean> {
+    // TODO: Dialog Component 사용하여 확인 대화상자 표시
+    return window.confirm(message);
   }
 }
