@@ -9,58 +9,17 @@
   "homepage": "https://www.iyulab.com",
   "license": "MIT",
   "type": "module",
-  "main": "src/index.js",
-  "module": "src/index.js",
   "types": "src/index.d.ts",
-  "scripts": {
-    "start": "vite",
-    "scan": "i18next -c i18next.config.js",
-    "build": "vite build"
-  },
   "exports": {
     ".": {
       "types": "./src/index.d.ts",
-      "require": "./src/index.js",
       "import": "./src/index.js"
-    },
-    "./styles/*": {
-      "import": "./static/styles/*"
-    },
-    "./apps": {
-      "types": "./src/apps/index.d.ts",
-      "require": "./src/apps/index.js",
-      "import": "./src/apps/index.js"
-    },
-    "./components": {
-      "types": "./src/components/index.d.ts",
-      "require": "./src/components/index.js",
-      "import": "./src/components/index.js"
-    },
-    "./components/dx": {
-      "types": "./src/components/dx/index.d.ts",
-      "require": "./src/components/dx/index.js",
-      "import": "./src/components/dx/index.js"
-    },
-    "./components/controls": {
-      "types": "./src/components/controls/index.d.ts",
-      "require": "./src/components/controls/index.js",
-      "import": "./src/components/controls/index.js"
-    },
-    "./components/mixin": {
-      "types": "./src/components/mixin/index.d.ts",
-      "require": "./src/components/mixin/index.js",
-      "import": "./src/components/mixin/index.js"
-    },
-    "./sevices": {
-      "types": "./src/services/index.d.ts",
-      "require": "./src/services/index.js",
-      "import": "./src/services/index.js"
-    },
-    "./settings": {
-      "types": "./src/settings/index.d.ts",
-      "require": "./src/settings/index.js",
-      "import": "./src/settings/index.js"
     }
+  },
+  "scripts": {
+    "scan": "i18next -c i18next.config.js",
+    "start": "vite",
+    "build": "vite build"
   },
   "dependencies": {
     "@iyulab/components": "^0.0.3",
@@ -73,26 +32,20 @@
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@adobe/lit-mobx": "^2.2.2",
     "@types/file-saver": "^2.0.7",
     "@types/node": "^24.10.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "axios": "^1.13.1",
+    "axios": "^1.13.2",
     "devextreme": "^25.1.6",
     "devextreme-react": "^25.1.6",
     "exceljs": "^4.4.0",
     "file-saver": "^2.0.5",
     "i18next-parser": "^9.3.0",
     "jspdf": "^3.0.3",
-    "postcss": "^8.5.6",
-    "postcss-nesting": "^13.0.2",
-    "sass": "^1.93.3",
-    "sass-loader": "^16.0.6",
     "shx": "^0.4.0",
-    "tailwindcss": "4.1.16",
     "typescript": "^5.9.3",
-    "vite": "^7.1.12",
+    "vite": "^7.2.1",
     "vite-plugin-dts": "^4.5.4"
   }
 }

@@ -5,8 +5,8 @@
     "module": "ESNext",
     "lib": ["ESNext","DOM","DOM.Iterable"],
     "moduleResolution": "Bundler",
-    "jsx": "react-jsx",
     "types": ["vite/client"],
+    "jsx": "react-jsx",
 
     // 엄격한 타입 체킹
     "strict": true,
@@ -35,18 +35,18 @@
 
     // 출력 설정
     "noEmit": true,
-    // "noEmit": false,
-    // "declaration": true,
-    // "emitDeclarationOnly": true,
-    // "declarationDir": "./dist",
     
     // 기타 옵션
     "useDefineForClassFields": false,
     "skipLibCheck": true,
   },
   "include": [
+    "src/**/*",
     "vite-env.d.ts",
     "vite.config.ts",
-    "src/**/*",
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
   ]
 }
