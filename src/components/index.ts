@@ -2,22 +2,22 @@
 
 import { ProgressBar } from './ProgressBar.js';
 import { NavItem } from './NavItem.js';
-import { Logo } from './Logo.js';
+import { SidebarLogo } from './SidebarLogo.js';
 
-ProgressBar.define("app-progress-bar");
-NavItem.define("app-nav-item");
-Logo.define("app-logo");
+ProgressBar.define("u-progress-bar");
+NavItem.define("u-nav-item");
+SidebarLogo.define("sb-logo");
 
 declare global {
   interface HTMLElementTagNameMap {
-    'app-progress-bar': ProgressBar;
-    'app-nav-item': NavItem;
-    'app-logo': Logo;
+    'u-progress-bar': ProgressBar;
+    'u-nav-item': NavItem;
+    'sb-logo': SidebarLogo;
   }
 }
 
 export {
   ProgressBar,
   NavItem,
-  Logo,
+  SidebarLogo,
 };

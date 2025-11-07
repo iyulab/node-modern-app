@@ -3,24 +3,18 @@ import { css } from 'lit';
 export const styles = css`
   :host {
     display: block;
-    width: 100%;
+    position: absolute;
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: var(--u-blue-400, #3b82f6);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: scale 0.3s ease;
   }
-
-  .progress-bar {
-    position: relative;
-    width: 100%;
-    background-color: var(--progress-bar-bg, #e5e7eb);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-
-  .progress-bar__fill {
-    height: 100%;
-    transition: width 0.3s ease;
-    border-radius: 2px;
-  }
-
-  .progress-bar__fill.indeterminate {
+  :host([indeterminate]) {
     animation: indeterminate 1.5s cubic-bezier(0.65, 0.815, 0.735, 0.395) infinite;
   }
 

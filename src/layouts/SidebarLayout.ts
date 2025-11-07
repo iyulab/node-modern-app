@@ -1,11 +1,17 @@
-import { LitElement, html, nothing } from 'lit';
+import { html, nothing, PropertyValues } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import '../components';
-import type { SidebarConfig } from '../types/AppConfigs.js';
-import { app } from '../index.js';
+import { UElement } from '@iyulab/components/dist/internals/UElement.js';
+import { Button } from '@iyulab/components/dist/components/button/Button.js';
+import { IconButton } from '@iyulab/components/dist/components/icon-button/IconButton.js';
+import { RouteDoneEvent, type RouteInfo } from '@iyulab/router';
+import type { ScreenSize } from '../types/AppTypes';
+import type { SidebarLayoutConfig } from './SidebarLayout.types';
 import { styles } from './SidebarLayout.styles.js';
+
+import { app } from '../app.js';
+import '../components';
 
 /**
  * SidebarLayout - 반응형 사이드바 레이아웃
@@ -13,138 +19,104 @@ import { styles } from './SidebarLayout.styles.js';
  * Medium/Large 화면: 일반 collapsible 사이드바
  */
 @customElement('app-sidebar-layout')
-export class SidebarLayout extends LitElement {
-  static styles = styles;
+export class SidebarLayout extends UElement {
+  static styles = [ super.styles, styles ];
+  static dependencies: Record<string, typeof UElement> = {
+    'u-button': Button,
+    'u-icon-button': IconButton,
+  };
   
   private disposers: IReactionDisposer[] = [];
   
   @state() collapsed = false;
-  @state() screenSize: 'small' | 'medium' | 'large' = 'large';
-  @state() isLoading = false;
+  @state() screenSize: ScreenSize = 'large';
+  @state() progressValue = 0;
+  @state() currentRouteInfo?: RouteInfo;
   
-  @property({ type: Object }) config?: SidebarConfig;
+  @property({ type: Object }) config?: SidebarLayoutConfig;
 
   connectedCallback() {
     super.connectedCallback();
     
-    // 반응형 상태 관찰
-    this.disposers.push(
-      autorun(() => {
-        this.screenSize = app.screen.get();
-        // Small 화면에서는 기본적으로 사이드바 숨김
-        if (this.screenSize === 'small' && !this.collapsed) {
-          this.collapsed = true;
-        }
-      })
-    );
-    
-    this.disposers.push(
-      autorun(() => {
-        this.isLoading = app.isLoading.get();
-      })
-    );
-    
-    // 설정 기본값 적용
-    if (this.config?.defaultCollapsed) {
-      this.collapsed = this.config.defaultCollapsed;
-    }
+    this.disposers.push(autorun(() => {
+      this.screenSize = app.screen.get();
+    }));
+    this.disposers.push(autorun(() => {
+      this.progressValue = app.progress.get();
+    }));
+    window.addEventListener('route-done', this.handleRouteDone);
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
     this.disposers.forEach(dispose => dispose());
+    window.removeEventListener('route-done', this.handleRouteDone);
+
+    super.disconnectedCallback();
+  }
+
+  protected willUpdate(changedProperties: PropertyValues): void {
+    super.willUpdate(changedProperties);
+
+    if (changedProperties.has('screenSize')) {
+      if (this.screenSize === 'small') {
+        this.collapsed = true;
+      }
+    }
   }
 
   render() {
-    const sidebarWidth = this.config?.width || 260;
-    const collapsible = this.config?.collapsible !== false;
-    const showMobileHeader = this.screenSize === 'small';
-    
-    this.style.setProperty('--sidebar-width', `${sidebarWidth}px`);
+    if (!this.config) return nothing;
 
     return html`
-      <!-- Loading Progress Bar -->
-      ${this.isLoading ? html`
-        <div class="progress-container">
-          <app-progress-bar indeterminate color="#2563eb"></app-progress-bar>
-        </div>
-      ` : nothing}
-
-      <!-- Mobile Header (Small 화면만) -->
-      <div class="mobile-header ${showMobileHeader ? 'show' : ''}">
-        <button class="menu-toggle" @click="${this.toggleSidebar}">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </button>
-        ${this.config?.logo ? html`
-          <app-logo .src="${this.config.logo}" .size="${32}"></app-logo>
-        ` : nothing}
-        ${this.config?.title ? html`
-          <div class="sidebar-title">${this.config.title}</div>
-        ` : nothing}
-      </div>
-
       <!-- Sidebar -->
-      <aside 
-        class="sidebar ${this.collapsed ? (showMobileHeader ? 'hidden' : 'collapsed') : ''}"
-        @navigate="${this.handleNavigate}"
-      >
+      <aside class="sidebar" ?collapsed="${this.collapsed}" ?hidden="${this.screenSize === 'small' && this.collapsed}">
         <!-- Sidebar Header -->
         <div class="sidebar-header">
-          ${this.config?.logo ? html`
-            <app-logo 
-              .src="${this.config.logo}" 
-              .size="${32}"
-              .collapsed="${this.collapsed}"
-            ></app-logo>
-          ` : nothing}
-          
-          ${this.config?.title && !this.collapsed ? html`
-            <div class="sidebar-title">${this.config.title}</div>
-          ` : nothing}
-          
-          ${collapsible && !showMobileHeader ? html`
-            <button class="collapse-toggle" @click="${this.toggleSidebar}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="15 18 9 12 15 6"></polyline>
-              </svg>
-            </button>
-          ` : nothing}
+          <sb-logo
+            .icon="${this.config.logo.icon}" 
+            .label="${this.config.logo.label}"
+          ></sb-logo>
         </div>
 
         <!-- Sidebar Navigation -->
         <nav class="sidebar-nav">
           ${this.config?.navItems?.map(item => html`
-            <app-nav-item
-              .item="${item}"
-              .activePath="${window.location.pathname}"
-              .collapsed="${this.collapsed}"
-            ></app-nav-item>
+            <u-nav-item
+              ?collapsed="${this.collapsed}"
+              ?selected="${this.currentRouteInfo?.path === item.path}"
+              .icon="${item.icon}"
+              .label="${item.label}"
+              .href="${item.path}"
+            ></u-nav-item>
           `)}
         </nav>
 
         <!-- Sidebar Footer (Buttons) -->
-        ${this.config?.buttons && this.config.buttons.length > 0 ? html`
-          <div class="sidebar-footer">
-            ${this.config.buttons.map(button => html`
-              <button class="footer-button" @click="${button.onClick}">
-                ${button.icon ? html`
-                  <span class="footer-button__icon">
-                    <u-icon remote name="${button.icon}"></u-icon>
-                  </span>
-                ` : nothing}
-                <span class="footer-button__label">${button.label}</span>
-              </button>
-            `)}
-          </div>
-        ` : nothing}
+        <div class="sidebar-footer">
+          ${this.config.buttons?.map(button => html`
+            <u-button @click="${button.onClick}">
+              ${button.icon 
+                ? html`<u-icon remote name="${button.icon}"></u-icon>` 
+                : nothing}
+              ${button.label && !this.collapsed
+                ? html`${button.label}`
+                : nothing}
+            </u-button>
+          `)}
+        </div>
       </aside>
 
       <!-- Main Content -->
-      <div class="main-content">
+      <div class="main">
+        <u-progress-bar 
+          .value="${this.progressValue}"
+        ></u-progress-bar>
+
+        <u-icon-button
+          name="layout-sidebar"
+          @click="${this.toggleSidebar}"
+        ></u-icon-button>
+        
         <u-outlet></u-outlet>
       </div>
     `;
@@ -154,14 +126,7 @@ export class SidebarLayout extends LitElement {
     this.collapsed = !this.collapsed;
   }
 
-  private handleNavigate(e: CustomEvent) {
-    const { path } = e.detail;
-    if (path) {
-      app.navigate(path);
-      // Small 화면에서는 네비게이션 후 사이드바 자동 닫기
-      if (this.screenSize === 'small') {
-        this.collapsed = true;
-      }
-    }
+  private handleRouteDone = (e: RouteDoneEvent) => {
+    this.currentRouteInfo = e.routeInfo;
   }
 }

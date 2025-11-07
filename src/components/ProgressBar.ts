@@ -1,6 +1,5 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
-import { ifDefined } from 'lit/directives/if-defined.js';
 
 import { UElement } from '@iyulab/components/dist/internals/UElement.js';
 import { styles } from './ProgressBar.styles.js';
@@ -11,33 +10,58 @@ import { styles } from './ProgressBar.styles.js';
  */
 export class ProgressBar extends UElement {
   static styles = [ super.styles, styles ];
+  static dependencies: Record<string, typeof UElement> = {};
 
-  /** 진행률 (0-100) */
-  @property({ type: Number }) value = 0;
   /** 불확정 상태 (로딩 애니메이션 표시) */
   @property({ type: Boolean, reflect: true }) indeterminate = false;
-  /** 높이 (px) */
-  @property({ type: Number }) height = 4;
-  /** 진행률 바 색상 */
-  @property({ type: String }) color = '#2563eb';
+  /** 최소값 (기본값: 0) */
+  @property({ type: Number }) minValue = 0;
+  /** 최대값 (기본값: 100) */
+  @property({ type: Number }) maxValue = 100;
+  /** 현재값 */
+  @property({ type: Number }) value = 0;
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    this.setAttribute('role', 'progressbar');
+  }
+
+  protected updated(changedProperties: Map<string, unknown>): void {
+    super.updated(changedProperties);
+
+    if (changedProperties.has('value')) {
+      this.updateProgress();
+      this.setAttribute('aria-valuenow', this.value.toString());
+    }
+    if (changedProperties.has('minValue')) {
+      this.updateProgress();
+      this.setAttribute('aria-valuemax', this.maxValue.toString());
+    }
+    if (changedProperties.has('maxValue')) {
+      this.updateProgress();
+      this.setAttribute('aria-valuemin', this.minValue.toString());
+    }
+
+    if (changedProperties.has('indeterminate')) {
+      this.updateProgress();
+      if (this.indeterminate) {
+        this.setAttribute('aria-busy', 'true');
+        this.removeAttribute('aria-valuenow');
+      } else {
+        this.removeAttribute('aria-busy');
+      }
+    }
+  }
 
   render() {
-    const width = Math.min(100, Math.max(0, this.value));
-    
-    return html`
-      <div 
-        class="progress-bar" 
-        style="height: ${this.height}px"
-        role="progressbar"
-        aria-valuenow="${ifDefined(this.indeterminate ? undefined : this.value)}"
-        aria-valuemin="0"
-        aria-valuemax="100"
-      >
-        <div 
-          class="progress-bar__fill ${this.indeterminate ? 'indeterminate' : ''}"
-          style="width: ${this.indeterminate ? '100%' : `${width}%`}; background-color: ${this.color}"
-        ></div>
-      </div>
-    `;
+    return html`<slot></slot>`;
+  }
+
+  /** 진행 상태 업데이트 */
+  private updateProgress() {
+    if (this.indeterminate) return;
+    const clamped = Math.min(Math.max(this.value, this.minValue), this.maxValue);
+    const progress = (clamped - this.minValue) / (this.maxValue - this.minValue);
+    this.style.transform = `scaleX(${progress})`;
   }
 }

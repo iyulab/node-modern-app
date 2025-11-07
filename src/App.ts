@@ -1,42 +1,38 @@
-import { observable, IObservableValue } from 'mobx';
+import { observable, IObservableValue, runInAction } from 'mobx';
 
 import { Router } from '@iyulab/router';
 import { notifier } from '@iyulab/components/dist/utilities/notifier.js';
 import { AlertType } from '@iyulab/components/dist/components/alert/Alert.js';
-import { importTheme, setTheme } from '@iyulab/components/dist/utilities/theme.js';
-import type { UTheme } from '@iyulab/components/dist/utilities/theme.js';
+import { theme } from '@iyulab/components/dist/utilities/theme.js';
+import { localizer } from '@iyulab/components/dist/utilities/localizer.js';
 
+import { SidebarLayout } from './layouts';
 import type { ScreenSize } from './types/AppTypes.js';
-import type { AppConfig } from './types/AppConfigs.js';
+import type { AppConfig, LayoutConfig } from './types/AppConfigs.js';
 import type { DialogOptions, NotificationOptions } from './types/AppOptions.js';
 
 /**
- * App 클래스, 싱글톤으로 앱 전체를 관리합니다.
+ * 애플리케이션 전역 상태 및 설정 관리 클래스
  */
-export class App {
+class App {
   private static _instance: App;
 
-  // 설정
+  // 설정 및 상태 변수
   private _config?: AppConfig;
   private _router?: Router;
-  private _layoutElement?: HTMLElement;
+  private _root?: HTMLElement;
+  private _breakpoints: [number, number] = [768, 1280];
 
-  // 반응형 상태
   public readonly screen: IObservableValue<ScreenSize> = observable.box('large');
-  public readonly theme: IObservableValue<UTheme> = observable.box('light');
-  public readonly isLoading: IObservableValue<boolean> = observable.box(false);
+  public readonly progress: IObservableValue<number> = observable.box(0);
+  public readonly theme = theme;
 
-  // 브레이크포인트 기본값 [small, medium]
-  private breakpoints: [number, number] = [768, 1280];
-
+  // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {
-    // private 생성자로 외부에서 인스턴스 생성 방지
-    importTheme();
+    theme.import();
   }
 
-  /**
-   * 싱글톤 인스턴스 반환
-   */
+  /** 싱글톤 인스턴스 반환 */
   public static get instance(): App {
     if (!App._instance) {
       App._instance = new App();
@@ -44,139 +40,94 @@ export class App {
     return App._instance;
   }
 
-  /**
-   * 앱 설정 getter
-   */
+  /** 현재 앱 설정 반환 */
   public get config(): AppConfig | undefined {
     return this._config;
   }
 
-  /**
-   * 앱 로드 및 초기화
-   */
+  /** 앱 로드 및 초기화 */
   public async load(config: AppConfig): Promise<void> {
-    this.isLoading.set(true);
+    // 이전 설정 정리
+    this.unload();
 
-    try {
-      // 이전 설정 정리
-      this.unload();
+    // 설정 저장
+    this._config = config;
 
-      // 설정 저장
-      this._config = config;
+    // 브레이크포인트 설정 및 화면 크기 초기화
+    this._breakpoints = config.breakpoints || [768, 1280];
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize(new Event('resize'));
 
-      // 브레이크포인트 설정
-      if (config.breakpoints) {
-        this.breakpoints = config.breakpoints;
-      }
+    // 다국어 초기화
+    await localizer.init(config.locales);
+  
+    // 레이아웃 생성
+    this._root = await this.createLayout(config.layout);
 
-      // 테마 설정
-      this.setTheme("system");
+    // 라우터 초기화
+    this._router = new Router({
+      root: this._root,
+      basepath: config.basepath,
+      routes: config.routes,
+    });
 
-      // 화면 크기 감지 초기화
-      this.handleResize();
-      window.addEventListener('resize', this.handleResize);
-
-      // 레이아웃 생성 (sidebar만 지원)
-      await this.createLayout();
-
-      // 라우터 초기화
-      if (this._layoutElement) {
-        this._router = new Router({
-          root: this._layoutElement,
-          basepath: config.basepath || '/',
-          routes: config.routes,
-        });
-      }
-
-      console.log('✅ App loaded successfully');
-    } catch (error) {
-      console.error('❌ Failed to load app:', error);
-      throw error;
-    } finally {
-      this.isLoading.set(false);
-    }
+    console.log(`✅ App loaded successfully`);
   }
 
-  /**
-   * 앱 언로드
-   */
+  /** 앱 언로드 */
   public unload(): void {
     // 이벤트 리스너 제거
     window.removeEventListener('resize', this.handleResize);
 
     // 레이아웃 제거
-    if (this._layoutElement && this._layoutElement.parentNode) {
-      this._layoutElement.parentNode.removeChild(this._layoutElement);
+    if (this._root) {
+      this._root.remove();
+      this._root = undefined;
     }
 
     // 라우터 정리
-    this._router = undefined;
-    this._layoutElement = undefined;
-    this._config = undefined;
+    if (this._router) {
+      this._router.destroy();
+      this._router = undefined;
+    }
+
+    // 설정 초기화
+    if (this._config) {
+      this._config = undefined;
+    }
   }
 
-  /**
-   * 레이아웃 생성 (Sidebar 레이아웃만 지원)
-   */
-  private async createLayout(): Promise<void> {
+  /** 레이아웃 생성 */
+  private async createLayout(config: LayoutConfig): Promise<HTMLElement> {
     // 기존 레이아웃 제거
-    const existingLayout = document.body.querySelector('[data-app-layout]');
-    if (existingLayout) {
-      document.body.removeChild(existingLayout);
+    let layout = document.body.querySelector('[data-layout]') as HTMLElement;
+    if (layout) {
+      document.body.removeChild(layout);
     }
 
     // Sidebar 레이아웃 생성
-    const { SidebarLayout } = await import('./layouts/SidebarLayout.js');
-    const layout = new SidebarLayout();
-
-    // 레이아웃 설정 적용
-    if (this._config?.layout) {
-      (layout as any).config = this._config.layout;
+    if (config.type === 'sidebar') {
+      const sbLayout = new SidebarLayout();
+      sbLayout.config = config;
+      layout = sbLayout;
+    } else {
+      throw new Error(`Unsupported layout type: ${config.type}`);
     }
 
-    layout.setAttribute('data-app-layout', 'true');
+    // 레이아웃을 body에 추가
+    layout.setAttribute('data-layout', 'true');
     document.body.appendChild(layout);
-    this._layoutElement = layout;
 
     // 레이아웃이 완전히 렌더링될 때까지 대기
     if ('updateComplete' in layout) {
       await (layout as any).updateComplete;
     }
-  }
-
-  /** 화면 크기 변경 핸들러 */
-  private handleResize = (): void => {
-    const width = window.innerWidth;
-    const [small, medium] = this.breakpoints;
-
-    if (width < small) {
-      this.screen.set('small');
-    } else if (width < medium) {
-      this.screen.set('medium');
-    } else {
-      this.screen.set('large');
-    }
-  };
-
-  /** 테마 설정 */
-  public setTheme(mode: UTheme): void {
-    this.theme.set(mode);
-    setTheme(mode);
+    return layout;
   }
 
   /** 페이지 이동 */
   public navigate(path: string): void {
     this._router?.go(path);
-  }
-
-  /** 뒤로 가기 */
-  public back(): void {
-    window.history.back();
-  }
-
-  /** 앞으로 가기 */
-  public forward(): void {
-    window.history.forward();
   }
 
   /** 성공 메시지 */
@@ -199,6 +150,12 @@ export class App {
     await this.notify('info', message, options);
   }
 
+  /** 확인 대화상자 */
+  public async confirm(message: string, _options?: DialogOptions): Promise<boolean> {
+    // TODO: Dialog Component 사용하여 확인 대화상자 표시
+    return window.confirm(message);
+  }
+
   /** 알림 표시 */
   private async notify(type: AlertType, message: string, options?: NotificationOptions): Promise<void> {
     await notifier.toast({
@@ -210,9 +167,24 @@ export class App {
     });
   }
 
-  /** 확인 대화상자 */
-  public async confirm(message: string, _options?: DialogOptions): Promise<boolean> {
-    // TODO: Dialog Component 사용하여 확인 대화상자 표시
-    return window.confirm(message);
-  }
+  /** 화면 크기 변경 핸들러 */
+  private handleResize = (_: Event): void => {
+    const width = window.innerWidth;
+    const [small, medium] = this._breakpoints;
+
+    runInAction(() => {
+      if (width < small) {
+        this.screen.set('small');
+      } else if (width < medium) {
+        this.screen.set('medium');
+      } else {
+        this.screen.set('large');
+      }
+    });
+  };
 }
+
+/** 
+ * 전역 어플리케이션 설정 및 관리 인스턴스
+ */
+export const app = App.instance;
