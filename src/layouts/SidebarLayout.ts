@@ -1,66 +1,99 @@
-import { html, nothing, PropertyValues } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { html, nothing, PropertyValues, TemplateResult } from 'lit';
+import { customElement, property, state, query } from 'lit/decorators.js';
+import { repeat } from 'lit/directives/repeat.js';
 import { autorun, IReactionDisposer } from 'mobx';
 
-import { UElement } from '@iyulab/components/dist/internals/UElement.js';
-import { Button } from '@iyulab/components/dist/components/button/Button.js';
+import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { IconButton } from '@iyulab/components/dist/components/icon-button/IconButton.js';
-import { RouteDoneEvent, type RouteInfo } from '@iyulab/router';
-import type { ScreenSize } from '../types/AppTypes';
-import type { SidebarLayoutConfig } from './SidebarLayout.types';
-import { styles } from './SidebarLayout.styles.js';
 
 import { app } from '../app.js';
-import '../components';
+import { ExtendedBaseElement } from '../internals/ExtendedBaseElement';
+import type { ScreenSize } from '../types/AppTypes';
+import { ProgressBar } from '../components/ProgressBar';
+import { UnsafeContent } from '../components/UnsafeContent';
+import { SidebarLogo } from '../components/SidebarLogo';
+import { SidebarSection } from '../components/SidebarSection';
+import { SidebarGroup } from '../components/SidebarGroup';
+import { SidebarLink } from '../components/SidebarLink';
+import { SidebarButton } from '../components/SidebarButton';
+import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
+import { styles } from './SidebarLayout.styles.js';
+
+/** 엘리먼트 타입 매핑 */
+declare global {
+  interface HTMLElementTagNameMap {
+    'u-progress-bar': ProgressBar;
+    'u-unsafe-content': UnsafeContent;
+    'u-sidebar-logo': SidebarLogo;
+    'u-sidebar-section': SidebarSection;
+    'u-sidebar-group': SidebarGroup;
+    'u-sidebar-link': SidebarLink;
+    'u-sidebar-button': SidebarButton;
+  }
+}
 
 /**
  * SidebarLayout - 반응형 사이드바 레이아웃
- * Small 화면: 사이드바 완전 collapsed, 상단 버튼으로 토글
- * Medium/Large 화면: 일반 collapsible 사이드바
+ * - large: docked / slim
+ * - medium: slim / modal
+ * - small: closed / modal
+ * 
+ * - docked: 사이드바가 펼침 상태로 표시됨
+ * - slim: 아이콘만 표시되는 슬림 모드
+ * - modal: 오버레이로 사이드바가 펼침 상태로 표시되는 모달 모드, 백드롭 클릭 시 닫힘
+ * - closed: 사이드바가 왼쪽에 완전히 숨겨진 상태
  */
 @customElement('app-sidebar-layout')
-export class SidebarLayout extends UElement {
+export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof UElement> = {
-    'u-button': Button,
+  static dependencies: Record<string, typeof BaseElement> = {
     'u-icon-button': IconButton,
+    'u-progress-bar': ProgressBar,
+    'u-unsafe-content': UnsafeContent,
+    'u-sidebar-logo': SidebarLogo,
+    'u-sidebar-section': SidebarSection,
+    'u-sidebar-group': SidebarGroup,
+    'u-sidebar-link': SidebarLink,
+    'u-sidebar-button': SidebarButton,
   };
   
+  /** 반응형 상태 관리를 위한 MobX 반응 해제 함수들 */
   private disposers: IReactionDisposer[] = [];
   
-  @state() collapsed = false;
-  @state() screenSize: ScreenSize = 'large';
-  @state() progressValue = 0;
-  @state() currentRouteInfo?: RouteInfo;
+  @query('u-progress-bar') progressEl?: ProgressBar;
+
+  /** 사이드바 상태 */
+  @state() state: SidebarState = 'docked';
   
+  /** 사이드바 레이아웃 설정 */
   @property({ type: Object }) config?: SidebarLayoutConfig;
 
   connectedCallback() {
     super.connectedCallback();
-    
+
     this.disposers.push(autorun(() => {
-      this.screenSize = app.screen.get();
+      const screen = app.screen.get();
+      this.updateState(screen);
     }));
     this.disposers.push(autorun(() => {
-      this.progressValue = app.progress.get();
+      const progress = app.progress.get();
+      if (!this.progressEl) return;
+      this.progressEl.value = progress;
     }));
-    window.addEventListener('route-done', this.handleRouteDone);
+    window.addEventListener('route-begin', this.handleCloseModal);
   }
 
   disconnectedCallback() {
     this.disposers.forEach(dispose => dispose());
-    window.removeEventListener('route-done', this.handleRouteDone);
-
+    window.removeEventListener('route-begin', this.handleCloseModal);
     super.disconnectedCallback();
   }
 
-  protected willUpdate(changedProperties: PropertyValues): void {
-    super.willUpdate(changedProperties);
+  protected updated(changedProperties: PropertyValues): void {
+    super.updated(changedProperties);
 
-    if (changedProperties.has('screenSize')) {
-      if (this.screenSize === 'small') {
-        this.collapsed = true;
-      }
+    if (changedProperties.has('config')) {
+      this.styles = this.config?.styles;
     }
   }
 
@@ -69,64 +102,155 @@ export class SidebarLayout extends UElement {
 
     return html`
       <!-- Sidebar -->
-      <aside class="sidebar" ?collapsed="${this.collapsed}" ?hidden="${this.screenSize === 'small' && this.collapsed}">
+      <aside class="sidebar" part="sidebar" state=${this.state}>
         <!-- Sidebar Header -->
-        <div class="sidebar-header">
-          <sb-logo
-            .icon="${this.config.logo.icon}" 
+        <div class="sidebar-header" part="sidebar-header">
+          <u-sidebar-logo
+            .compact="${this.state === 'slim'}"
+            .type=${this.config.logo.type}
+            .image="${this.config.logo.image}"
+            .icon="${this.config.logo.icon}"
             .label="${this.config.logo.label}"
-          ></sb-logo>
+            .styles="${this.config.logo.styles as any}"
+            @click="${this.config.logo.onClick}"
+          ></u-sidebar-logo>
+          <u-icon-button class="sidebar-toggler" part="sidebar-toggler"
+            name=${this.state === 'closed' ? 'chevron-right' : 'layout-sidebar'}
+            @click="${this.toggleState}"
+          ></u-icon-button>
         </div>
 
-        <!-- Sidebar Navigation -->
-        <nav class="sidebar-nav">
-          ${this.config?.navItems?.map(item => html`
-            <u-nav-item
-              ?collapsed="${this.collapsed}"
-              ?selected="${this.currentRouteInfo?.path === item.path}"
-              .icon="${item.icon}"
-              .label="${item.label}"
-              .href="${item.path}"
-            ></u-nav-item>
-          `)}
+        <!-- Sidebar Navigation Menu -->
+        <nav class="sidebar-menu" part="sidebar-menu">
+          ${repeat(this.config.menu ?? [], 
+            (_, idx) => idx,
+            (item, _) => this.renderItem(item))}
         </nav>
 
-        <!-- Sidebar Footer (Buttons) -->
-        <div class="sidebar-footer">
-          ${this.config.buttons?.map(button => html`
-            <u-button @click="${button.onClick}">
-              ${button.icon 
-                ? html`<u-icon remote name="${button.icon}"></u-icon>` 
-                : nothing}
-              ${button.label && !this.collapsed
-                ? html`${button.label}`
-                : nothing}
-            </u-button>
-          `)}
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer" part="sidebar-footer">
+          ${repeat(this.config.footer ?? [], 
+            (_, idx) => idx,
+            (item, _) => this.renderItem(item))}
         </div>
       </aside>
 
       <!-- Main Content -->
-      <div class="main">
-        <u-progress-bar 
-          .value="${this.progressValue}"
-        ></u-progress-bar>
+      <div class="main" part="main">
+        <u-progress-bar part="progress"></u-progress-bar>
 
-        <u-icon-button
-          name="layout-sidebar"
-          @click="${this.toggleSidebar}"
-        ></u-icon-button>
-        
         <u-outlet></u-outlet>
       </div>
+
+      <!-- Backdrop for modal state -->
+      <div class="backdrop"
+        ?hidden="${this.state !== 'modal'}"
+        @click="${this.handleCloseModal}"
+      ></div>
     `;
   }
 
-  private toggleSidebar() {
-    this.collapsed = !this.collapsed;
+  /** 사이드바 아이템 렌더링 */
+  private renderItem(item: SidebarItem): TemplateResult<1> | typeof nothing {
+    if (!item) return nothing;
+
+    if(item.type === 'group') {
+      return html`
+        <u-sidebar-group
+          ?compact=${this.state === 'slim'}
+          ?collapsed="${item.collapsed ?? false}"
+          .icon="${item.icon}"
+          .label="${item.label}"
+          .items="${item.items}"
+          .styles="${item.styles as any}">
+          ${repeat(item.items, 
+            (_, idx) => idx,
+            (subItem, _) => this.renderItem(subItem))}
+        </u-sidebar-group>
+      `;
+    } else if(item.type === 'section') {
+      return html`
+        <u-sidebar-section
+          ?compact=${this.state === 'slim'}
+          .mainTitle="${item.title}"
+          .subTitle="${item.subTitle}"
+          .items="${item.items}"
+          .styles="${item.styles as any}">
+          ${repeat(item.items, 
+            (_, idx) => idx,
+            (subItem, _) => this.renderItem(subItem))}
+        </u-sidebar-section>
+      `;
+    } else if(item.type === 'button') {
+      return html`
+        <u-sidebar-button
+          ?compact=${this.state === 'slim'}
+          .icon="${item.icon}"
+          .label="${item.label}"
+          .styles="${item.styles as any}"
+          @click="${item.onClick}"
+        ></u-sidebar-button>
+      `;
+    } else if(item.type === 'content') {
+      return html`
+        <u-sidebar-content
+          ?compact=${this.state === 'slim'}
+          .content="${item.content}"
+        ></u-sidebar-content>
+      `;
+    } else {
+      return html`
+        <u-sidebar-link
+          ?compact=${this.state === 'slim'}
+          .icon="${item.icon}"
+          .label="${item.label}"
+          .href="${item.href}"
+          .pattern="${item.pattern}"
+          .styles="${item.styles as any}"
+        ></u-sidebar-link>
+      `;
+    }
   }
 
-  private handleRouteDone = (e: RouteDoneEvent) => {
-    this.currentRouteInfo = e.routeInfo;
+  /** 화면 크기 변경에 따른 사이드바 상태 업데이트 */
+  private updateState(screen: ScreenSize) {
+    if (screen === 'large') {
+      this.state = 'docked';
+    } else if (screen === 'medium') {
+      this.state = 'slim';
+    } else if (screen === 'small') {
+      this.state = 'closed';
+    } else {
+      console.warn('Unknown screen size:', screen);
+    }
+  }
+
+  /** 사이드바 토글 핸들러 */
+  private toggleState = () => {
+    const screen = app.screen.get();
+    if (screen === 'large') {
+      this.state = this.state === 'docked' ? 'slim' : 'docked';
+    } else if (screen === 'medium') {
+      this.state = this.state === 'slim' ? 'modal' : 'slim';
+    } else if (screen === 'small') {
+      this.state = this.state === 'closed' ? 'modal' : 'closed';
+    } else {
+      console.warn('Unknown screen size:', screen);
+    }
+  }
+
+  /** 
+   * 모달 상태에서 사이드바 닫기
+   * 백드롭 클릭 or 라우트 변경 시
+   */
+  private handleCloseModal = () => {
+    const screen = app.screen.get();
+    if (this.state !== 'modal') return;
+
+    if (screen === 'medium') {
+      this.state = 'slim';
+    } else if (screen === 'small') {
+      this.state = 'closed';
+    }
   }
 }

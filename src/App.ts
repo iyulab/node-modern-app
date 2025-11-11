@@ -6,7 +6,6 @@ import { AlertType } from '@iyulab/components/dist/components/alert/Alert.js';
 import { theme } from '@iyulab/components/dist/utilities/theme.js';
 import { localizer } from '@iyulab/components/dist/utilities/localizer.js';
 
-import { SidebarLayout } from './layouts';
 import type { ScreenSize } from './types/AppTypes.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs.js';
 import type { DialogOptions, NotificationOptions } from './types/AppOptions.js';
@@ -21,11 +20,6 @@ class App {
   private _config?: AppConfig;
   private _router?: Router;
   private _root?: HTMLElement;
-  private _breakpoints: [number, number] = [768, 1280];
-
-  public readonly screen: IObservableValue<ScreenSize> = observable.box('large');
-  public readonly progress: IObservableValue<number> = observable.box(0);
-  public readonly theme = theme;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {
@@ -40,9 +34,22 @@ class App {
     return App._instance;
   }
 
+  /** 현재 화면 크기 상태 */
+  public readonly screen: IObservableValue<ScreenSize> = observable.box('large');
+  /** 로딩 진행 상태 (0 - 100) */
+  public readonly progress: IObservableValue<number> = observable.box(0);
+
   /** 현재 앱 설정 반환 */
   public get config(): AppConfig | undefined {
     return this._config;
+  }
+  /** 라우터 인스턴스 반환 */
+  public get router(): Router | undefined {
+    return this._router;
+  }
+  /** 테마 유틸리티 반환 */
+  public get theme() {
+    return theme;
   }
 
   /** 앱 로드 및 초기화 */
@@ -53,10 +60,9 @@ class App {
     // 설정 저장
     this._config = config;
 
-    // 브레이크포인트 설정 및 화면 크기 초기화
-    this._breakpoints = config.breakpoints || [768, 1280];
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize(new Event('resize'));
+    // 화면 크기 초기화
+    window.addEventListener('resize', this.handleWindowResize);
+    this.handleWindowResize(new Event('resize'));
 
     // 다국어 초기화
     await localizer.init(config.locales);
@@ -77,7 +83,7 @@ class App {
   /** 앱 언로드 */
   public unload(): void {
     // 이벤트 리스너 제거
-    window.removeEventListener('resize', this.handleResize);
+    window.removeEventListener('resize', this.handleWindowResize);
 
     // 레이아웃 제거
     if (this._root) {
@@ -107,9 +113,10 @@ class App {
 
     // Sidebar 레이아웃 생성
     if (config.type === 'sidebar') {
-      const sbLayout = new SidebarLayout();
-      sbLayout.config = config;
-      layout = sbLayout;
+      const { SidebarLayout } = await import('./layouts/SidebarLayout.js');
+      const SbLayout = new SidebarLayout();
+      SbLayout.config = config;
+      layout = SbLayout;
     } else {
       throw new Error(`Unsupported layout type: ${config.type}`);
     }
@@ -168,9 +175,9 @@ class App {
   }
 
   /** 화면 크기 변경 핸들러 */
-  private handleResize = (_: Event): void => {
+  private handleWindowResize = (_: Event): void => {
     const width = window.innerWidth;
-    const [small, medium] = this._breakpoints;
+    const [small, medium] = this._config?.breakpoints || [768, 1024];
 
     runInAction(() => {
       if (width < small) {

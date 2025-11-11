@@ -19,10 +19,9 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [
-        /^react.*/,
+        /^@iyulab.*/,
         /^lit.*/,
-        /^@lit.*/,
-        /^@iyulab\/components*/,
+        /^mobx.*/,
       ],
       output: {
         preserveModules: true,
