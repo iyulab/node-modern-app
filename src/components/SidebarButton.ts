@@ -1,5 +1,6 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
+import type { DirectiveResult } from 'lit/directive.js';
 
 import { Icon } from '@iyulab/components/dist/components/Icon/Icon.js';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
@@ -14,7 +15,7 @@ type ElementParts = 'host' | 'base' | 'icon' | 'label';
 export interface SidebarButtonConfig {
   type: 'button';
   icon?: string;
-  label: string;
+  label?: string | DirectiveResult;
   styles?: StyleMap<ElementParts>;
   onClick?: (event?: Event) => void;
 }
@@ -33,7 +34,7 @@ export class SidebarButton extends ExtendedBaseElement<ElementParts> {
   /** 기본 u-icon 경로의 아이콘 이름 */
   @property({ type: String }) icon?: string;
   /** 버튼 텍스트 라벨 */
-  @property({ type: String }) label = '';
+  @property({ type: String }) label?: string | DirectiveResult;
   
   render() {
     return html`

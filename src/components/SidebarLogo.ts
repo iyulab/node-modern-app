@@ -1,5 +1,6 @@
 import { html, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
+import type { DirectiveResult } from 'lit/directive.js';
 
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { Icon } from '@iyulab/components/dist/components/icon/Icon.js';
@@ -14,7 +15,7 @@ export interface SidebarLogoConfig {
   type: 'image' | 'icon';
   image?: string;
   icon?: string;
-  label?: string;
+  label?: string | DirectiveResult;
   styles?: StyleMap<ElementParts>;
   onClick?: (e: MouseEvent) => void;
 }
@@ -37,7 +38,7 @@ export class SidebarLogo extends ExtendedBaseElement<ElementParts> {
   /** 로고 아이콘 svg 이름 */
   @property({ type: String }) icon?: string;
   /** 로고 아이콘 텍스트 */
-  @property({ type: String }) label?: string;
+  @property({ type: String }) label?: string | DirectiveResult;
 
   render() {
     return html`
@@ -49,14 +50,14 @@ export class SidebarLogo extends ExtendedBaseElement<ElementParts> {
           />`
         : this.type === 'icon' && this.icon ? html`
           <u-icon part="icon" 
-            remote 
+            .remote=${true}
             .name=${this.icon}
-          ></u-icon>
-          <span part="label"
-            ?hidden=${this.compact}>
-            ${this.label}
-          </span>`
+          ></u-icon>`
         : nothing}
+        <span part="label"
+          ?hidden=${this.compact || !this.label}>
+          ${this.label}
+        </span>
       </div>
     `;
   }

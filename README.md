@@ -2,6 +2,8 @@
 
 A modern web application framework by iyulab, built on React and Lit Element.
 
+For complete examples and documentation, visit our demo site: [https://modern-app.iyulab.com](https://modern-app.iyulab.com)
+
 ## Installation
 
 ```bash
@@ -27,10 +29,6 @@ await app.load({
   }
 });
 ```
-
-## Demo
-
-For complete examples and documentation, visit our demo site: [https://modern-app.iyulab.com](https://modern-app.iyulab.com)
 
 ## License
 

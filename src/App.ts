@@ -1,12 +1,12 @@
-import { observable, IObservableValue, runInAction } from 'mobx';
+import { runInAction } from 'mobx';
+import i18next from 'i18next';
 
 import { Router } from '@iyulab/router';
 import { notifier } from '@iyulab/components/dist/utilities/notifier.js';
 import { AlertType } from '@iyulab/components/dist/components/alert/Alert.js';
-import { theme } from '@iyulab/components/dist/utilities/theme.js';
-import { localizer } from '@iyulab/components/dist/utilities/localizer.js';
+import { theme, ThemeType } from '@iyulab/components/dist/utilities/theme.js';
 
-import type { ScreenSize } from './types/AppTypes.js';
+import { progress, screen } from './internals/observers.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs.js';
 import type { DialogOptions, NotificationOptions } from './types/AppOptions.js';
 
@@ -22,9 +22,7 @@ class App {
   private _root?: HTMLElement;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
-  private constructor() {
-    theme.import();
-  }
+  private constructor() {}
 
   /** 싱글톤 인스턴스 반환 */
   public static get instance(): App {
@@ -34,11 +32,6 @@ class App {
     return App._instance;
   }
 
-  /** 현재 화면 크기 상태 */
-  public readonly screen: IObservableValue<ScreenSize> = observable.box('large');
-  /** 로딩 진행 상태 (0 - 100) */
-  public readonly progress: IObservableValue<number> = observable.box(0);
-
   /** 현재 앱 설정 반환 */
   public get config(): AppConfig | undefined {
     return this._config;
@@ -47,9 +40,25 @@ class App {
   public get router(): Router | undefined {
     return this._router;
   }
-  /** 테마 유틸리티 반환 */
+
+  /** 스타일 테마 반환 */
   public get theme() {
-    return theme;
+    const current = theme.get();
+    if (!current) {
+      throw new Error('No theme is set, cannot get theme.');
+    }
+    return current;
+  }
+  /** 스타일 테마 설정 */
+  public set theme(value: ThemeType) {
+    theme.set(value);
+  }
+
+  /** 현재 진행바 설정 */
+  public set progress(value: number) {
+    runInAction(() => {
+      progress.set(value);
+    });
   }
 
   /** 앱 로드 및 초기화 */
@@ -60,12 +69,20 @@ class App {
     // 설정 저장
     this._config = config;
 
+    // 초기 테마 설정
+    theme.init(config.theme);
+
+    // 다국어 초기화
+    if (config.locales) {
+      for (const plugin of config.locales.plugins || []) {
+        i18next.use(plugin);
+      }
+      await i18next.init(config.locales);
+    }
+
     // 화면 크기 초기화
     window.addEventListener('resize', this.handleWindowResize);
     this.handleWindowResize(new Event('resize'));
-
-    // 다국어 초기화
-    await localizer.init(config.locales);
   
     // 레이아웃 생성
     this._root = await this.createLayout(config.layout);
@@ -103,35 +120,6 @@ class App {
     }
   }
 
-  /** 레이아웃 생성 */
-  private async createLayout(config: LayoutConfig): Promise<HTMLElement> {
-    // 기존 레이아웃 제거
-    let layout = document.body.querySelector('[data-layout]') as HTMLElement;
-    if (layout) {
-      document.body.removeChild(layout);
-    }
-
-    // Sidebar 레이아웃 생성
-    if (config.type === 'sidebar') {
-      const { SidebarLayout } = await import('./layouts/SidebarLayout.js');
-      const SbLayout = new SidebarLayout();
-      SbLayout.config = config;
-      layout = SbLayout;
-    } else {
-      throw new Error(`Unsupported layout type: ${config.type}`);
-    }
-
-    // 레이아웃을 body에 추가
-    layout.setAttribute('data-layout', 'true');
-    document.body.appendChild(layout);
-
-    // 레이아웃이 완전히 렌더링될 때까지 대기
-    if ('updateComplete' in layout) {
-      await (layout as any).updateComplete;
-    }
-    return layout;
-  }
-
   /** 페이지 이동 */
   public navigate(path: string): void {
     this._router?.go(path);
@@ -163,6 +151,35 @@ class App {
     return window.confirm(message);
   }
 
+  /** 레이아웃 생성 */
+  private async createLayout(config: LayoutConfig): Promise<HTMLElement> {
+    // 기존 레이아웃 제거
+    let layout = document.body.querySelector('[data-layout]') as HTMLElement;
+    if (layout) {
+      document.body.removeChild(layout);
+    }
+
+    // Sidebar 레이아웃 생성
+    if (config.type === 'sidebar') {
+      const { SidebarLayout } = await import('./layouts/SidebarLayout.js');
+      const SbLayout = new SidebarLayout();
+      SbLayout.config = config;
+      layout = SbLayout;
+    } else {
+      throw new Error(`Unsupported layout type: ${config.type}`);
+    }
+
+    // 레이아웃을 body에 추가
+    layout.setAttribute('data-layout', 'true');
+    document.body.appendChild(layout);
+
+    // 레이아웃이 완전히 렌더링될 때까지 대기
+    if ('updateComplete' in layout) {
+      await (layout as any).updateComplete;
+    }
+    return layout;
+  }
+
   /** 알림 표시 */
   private async notify(type: AlertType, message: string, options?: NotificationOptions): Promise<void> {
     await notifier.toast({
@@ -177,15 +194,15 @@ class App {
   /** 화면 크기 변경 핸들러 */
   private handleWindowResize = (_: Event): void => {
     const width = window.innerWidth;
-    const [small, medium] = this._config?.breakpoints || [768, 1024];
+    const [small, medium] = this._config?.layout.breakpoints || [768, 1024];
 
     runInAction(() => {
       if (width < small) {
-        this.screen.set('small');
+        screen.set('small');
       } else if (width < medium) {
-        this.screen.set('medium');
+        screen.set('medium');
       } else {
-        this.screen.set('large');
+        screen.set('large');
       }
     });
   };

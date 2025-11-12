@@ -1,5 +1,6 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
+import { DirectiveResult } from 'lit/directive.js';
 
 import { RouteBeginEvent, RouteDoneEvent } from '@iyulab/router';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
@@ -14,7 +15,7 @@ type ElementParts = 'host' | 'base' | 'icon' | 'label';
 export interface SidebarLinkConfig {
   type?: 'link';
   icon?: string;
-  label: string;
+  label: string | DirectiveResult;
   href: string;
   pattern?: string | URLPattern;
   styles?: StyleMap<ElementParts>;
@@ -37,7 +38,7 @@ export class SidebarLink extends ExtendedBaseElement<ElementParts> {
   /** 네비게이션 아이템 데이터 */
   @property({ type: String }) icon?: string;
   /** 네비게이션 아이템 데이터 */
-  @property({ type: String }) label?: string;
+  @property({ type: String }) label?: string | DirectiveResult;
   /** 네비게이션 링크 */
   @property({ type: String }) href?: string;
   /** 네비게이션 패턴 매칭 */

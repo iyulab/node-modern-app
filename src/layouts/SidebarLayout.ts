@@ -6,7 +6,7 @@ import { autorun, IReactionDisposer } from 'mobx';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { IconButton } from '@iyulab/components/dist/components/icon-button/IconButton.js';
 
-import { app } from '../app.js';
+import { progress, screen } from '../internals/observers.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement';
 import type { ScreenSize } from '../types/AppTypes';
 import { ProgressBar } from '../components/ProgressBar';
@@ -72,13 +72,13 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
     super.connectedCallback();
 
     this.disposers.push(autorun(() => {
-      const screen = app.screen.get();
-      this.updateState(screen);
+      const screenSize = screen.get();
+      this.updateState(screenSize);
     }));
     this.disposers.push(autorun(() => {
-      const progress = app.progress.get();
+      const progressValue = progress.get();
       if (!this.progressEl) return;
-      this.progressEl.value = progress;
+      this.progressEl.value = progressValue;
     }));
     window.addEventListener('route-begin', this.handleCloseModal);
   }
@@ -227,15 +227,15 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
 
   /** 사이드바 토글 핸들러 */
   private toggleState = () => {
-    const screen = app.screen.get();
-    if (screen === 'large') {
+    const screenSize = screen.get();
+    if (screenSize === 'large') {
       this.state = this.state === 'docked' ? 'slim' : 'docked';
-    } else if (screen === 'medium') {
+    } else if (screenSize === 'medium') {
       this.state = this.state === 'slim' ? 'modal' : 'slim';
-    } else if (screen === 'small') {
+    } else if (screenSize === 'small') {
       this.state = this.state === 'closed' ? 'modal' : 'closed';
     } else {
-      console.warn('Unknown screen size:', screen);
+      console.warn('Unknown screen size:', screenSize);
     }
   }
 
@@ -244,12 +244,12 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
    * 백드롭 클릭 or 라우트 변경 시
    */
   private handleCloseModal = () => {
-    const screen = app.screen.get();
+    const screenSize = screen.get();
     if (this.state !== 'modal') return;
 
-    if (screen === 'medium') {
+    if (screenSize === 'medium') {
       this.state = 'slim';
-    } else if (screen === 'small') {
+    } else if (screenSize === 'small') {
       this.state = 'closed';
     }
   }

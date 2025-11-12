@@ -1,5 +1,6 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
+import { DirectiveResult } from 'lit/directive.js';
 
 import { Icon } from '@iyulab/components/dist/components/Icon/Icon.js';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
@@ -16,8 +17,8 @@ export interface SidebarGroupConfig {
   type: 'group';
   /** 기본 접힘 상태 */
   collapsed?: boolean;
-  icon?: string;
-  label: string;
+  icon: string;
+  label: string | DirectiveResult;
   items: SidebarLinkConfig[];
   styles?: StyleMap<ElementParts>;
 }
@@ -32,13 +33,13 @@ export class SidebarGroup extends ExtendedBaseElement<ElementParts> {
   };
 
   /** 콤팩트 모드 여부 */
-  @property({ type: Boolean, reflect: true }) compact = false;
+  @property({ type: Boolean, reflect: true }) compact: boolean = false;
   /** collapsed 상태 */
-  @property({ type: Boolean, reflect: true }) collapsed = false;
+  @property({ type: Boolean, reflect: true }) collapsed: boolean = true;
   /** 네비게이션 아이템 데이터 */
   @property({ type: String }) icon?: string;
   /** 네비게이션 아이템 데이터 */
-  @property({ type: String }) label?: string;
+  @property({ type: String }) label?: string | DirectiveResult;
   
   render() {
     return html`

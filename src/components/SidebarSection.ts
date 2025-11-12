@@ -1,5 +1,6 @@
 import { html } from 'lit';
 import { property } from 'lit/decorators.js';
+import { DirectiveResult } from 'lit/directive.js';
 
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
@@ -13,8 +14,8 @@ type ElementParts = 'host' | 'container' | 'header' | 'title' | 'subtitle' | 'it
 /** 섹션: 섹션 내에는 그룹 또는 링크들만 허용 */
 export interface SidebarSectionConfig {
   type: 'section';
-  title: string;
-  subTitle?: string;
+  title: string | DirectiveResult;
+  subTitle?: string | DirectiveResult;
   items: (SidebarGroupConfig | SidebarLinkConfig)[];
   styles?: StyleMap<ElementParts>;
 }
@@ -29,9 +30,9 @@ export class SidebarSection extends ExtendedBaseElement<ElementParts> {
   /** 콤팩트 모드 여부 */
   @property({ type: Boolean }) compact = false;
   /** 네비게이션 아이템 데이터 */
-  @property({ type: String }) mainTitle?: string;
+  @property({ type: String }) mainTitle?: string | DirectiveResult;
   /** 네비게이션 아이템 데이터 */
-  @property({ type: String }) subTitle?: string;
+  @property({ type: String }) subTitle?: string | DirectiveResult;
   
   render() {
     return html`

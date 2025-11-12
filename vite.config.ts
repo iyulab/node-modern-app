@@ -22,6 +22,7 @@ export default defineConfig({
         /^@iyulab.*/,
         /^lit.*/,
         /^mobx.*/,
+        /^i18next.*/,
       ],
       output: {
         preserveModules: true,
