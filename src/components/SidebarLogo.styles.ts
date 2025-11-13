@@ -27,10 +27,14 @@ export const styles = css`
   }
 
   img {
-    width: 100%;
+    width: auto;
     height: 1em;
     object-fit: contain;
     flex-shrink: 0;
+  }
+  img[compact] {
+    width: 1em;
+    height: auto;
   }
 
   u-icon {

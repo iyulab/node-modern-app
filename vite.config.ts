@@ -7,7 +7,7 @@ export default defineConfig({
     target: 'esnext',
     outDir: 'dist',
     emptyOutDir: true,
-    minify: true, // 최소화 비활성화 (디버깅: false, 배포: true)
+    minify: true,
     lib: {
       entry: [
         resolve(__dirname, 'src/index.ts'),
@@ -32,7 +32,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      include: 'src/**/*'
+      include: ['src/**/*']
     }),
   ],
 })

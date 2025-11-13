@@ -6,7 +6,7 @@ import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
 /** 
  * i18next의 초기화 옵션과 플러그인 배열을 포함한 다국어 설정 
  */
-export type LocaleInitOptions = InitOptions & {
+export type LocalizationInitOptions = InitOptions & {
   /** 
    * i18next 플러그인 배열
    * @description i18next.use() 메서드에 전달될 플러그인들의 배열입니다.
@@ -51,7 +51,7 @@ export interface AppConfig {
    * @description i18next의 InitOptions와 플러그인 배열을 포함합니다. i18next를 사용하지 않는 경우 이 설정은 생략할 수 있습니다.
    * @see 설정에 대한 자세한 내용은 {@link https://www.i18next.com/overview/configuration-options} 참조하십시오.
    */
-  locales?: LocaleInitOptions;
+  localization?: LocalizationInitOptions;
 
   /**
    * 애플리케이션을 구성하기 위한 레이아웃 설정

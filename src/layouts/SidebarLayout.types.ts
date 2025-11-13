@@ -4,7 +4,6 @@ import type { SidebarLinkConfig } from "../components/SidebarLink";
 import type { SidebarSectionConfig } from "../components/SidebarSection";
 import type { SidebarGroupConfig } from "../components/SidebarGroup";
 import type { SidebarButtonConfig } from "../components/SidebarButton";
-import type { UnsafeContentConfig } from "../components/UnsafeContent";
 
 /** 사이드바 레이아웃 컴포넌트의 요소(part) 타입 */
 export type SidebarParts = 'host' | 'sidebar' | 'sidebar-toggler' | 'sidebar-header' | 'sidebar-menu' | 'sidebar-footer' | 'main' | 'progress';
@@ -12,13 +11,19 @@ export type SidebarParts = 'host' | 'sidebar' | 'sidebar-toggler' | 'sidebar-hea
 /** 사이드바 상태 타입 */
 export type SidebarState = 'docked' | 'modal' | 'slim' | 'closed';
 
+/** 사이드바 컨텐츠 커스텀 HTML 타입 */
+export interface SidebarContentConfig {
+  type: 'content';
+  content: string;
+}
+
 /** union: section | group | link | button */
 export type SidebarItem = (
   SidebarLinkConfig | 
   SidebarSectionConfig |
   SidebarGroupConfig |
   SidebarButtonConfig |
-  UnsafeContentConfig
+  SidebarContentConfig
 );
 
 /** 사이드바 전체 설정 (루트) */

@@ -1,8 +1,7 @@
-/**
- * 전역으로 관리되는 상태 관찰자들
- */
 import { IObservableValue, observable } from "mobx";
-import { ScreenSize } from "../types/AppTypes";
+
+/** 화면 크기 타입 */
+export type ScreenSize = 'small' | 'medium' | 'large';
 
 /** 
  * 현재 화면 크기 상태 

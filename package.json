@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab based on react, lit-element",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "keywords": [
     "iyulab",
     "web-framework",
@@ -22,14 +22,14 @@
     "LICENSE"
   ],
   "type": "module",
-  "types": "src/index.d.ts",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./src/index.d.ts",
       "import": "./src/index.js"
     },
     "./dist/*": {
-      "types": "./src/*",
+      "types": "./src/*.d.ts",
       "import": "./src/*"
     }
   },
@@ -38,8 +38,8 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@iyulab/components": "^0.1.0",
-    "@iyulab/router": "^0.5.0",
+    "@iyulab/components": "^0.1.2",
+    "@iyulab/router": "^0.5.1",
     "lit": "^3.3.1",
     "mobx": "^6.15.0",
     "i18next": "^25.6.2"

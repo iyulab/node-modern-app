@@ -45,6 +45,7 @@ export class SidebarLogo extends ExtendedBaseElement<ElementParts> {
       <div class="container" part="container">
         ${this.type === 'image' && this.image ? html`
           <img part="image"
+            ?compact=${this.compact}
             src=${this.image}
             alt="App Logo"
           />`

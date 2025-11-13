@@ -4,11 +4,11 @@ import i18next from 'i18next';
 import { Router } from '@iyulab/router';
 import { notifier } from '@iyulab/components/dist/utilities/notifier.js';
 import { AlertType } from '@iyulab/components/dist/components/alert/Alert.js';
-import { theme, ThemeType } from '@iyulab/components/dist/utilities/theme.js';
+import { theme } from '@iyulab/components/dist/utilities/theme.js';
 
-import { progress, screen } from './internals/observers.js';
+import { progress, screen } from './internals/observables.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs.js';
-import type { DialogOptions, NotificationOptions } from './types/AppOptions.js';
+import type { NotificationOptions } from './types/AppOptions.js';
 
 /**
  * 애플리케이션 전역 상태 및 설정 관리 클래스
@@ -40,25 +40,13 @@ class App {
   public get router(): Router | undefined {
     return this._router;
   }
-
-  /** 스타일 테마 반환 */
+  /** 스타일 테마 관리 유틸리티 객체 반환 */
   public get theme() {
-    const current = theme.get();
-    if (!current) {
-      throw new Error('No theme is set, cannot get theme.');
-    }
-    return current;
+    return theme;
   }
-  /** 스타일 테마 설정 */
-  public set theme(value: ThemeType) {
-    theme.set(value);
-  }
-
-  /** 현재 진행바 설정 */
-  public set progress(value: number) {
-    runInAction(() => {
-      progress.set(value);
-    });
+  /** 현재 언어 코드 반환 (i18next.language) */
+  public get language() {
+    return i18next.language;
   }
 
   /** 앱 로드 및 초기화 */
@@ -70,14 +58,14 @@ class App {
     this._config = config;
 
     // 초기 테마 설정
-    theme.init(config.theme);
+    await theme.init(config.theme);
 
     // 다국어 초기화
-    if (config.locales) {
-      for (const plugin of config.locales.plugins || []) {
+    if (config.localization) {
+      for (const plugin of config.localization.plugins || []) {
         i18next.use(plugin);
       }
-      await i18next.init(config.locales);
+      await i18next.init(config.localization);
     }
 
     // 화면 크기 초기화
@@ -125,6 +113,33 @@ class App {
     this._router?.go(path);
   }
 
+  /** 언어 설정 변경(i18next.changeLanguage 호출) */
+  public async setLanguage(lang: string): Promise<void> {
+    await i18next.changeLanguage(lang);
+  }
+
+  /** 레이아웃 진행바 설정 */
+  public progress(value: number) {
+    runInAction(() => {
+      progress.set(value);
+    });
+  }
+
+  /** 공지 메시지 */
+  public async notice(message: string, options?: NotificationOptions): Promise<void> {
+    await this.notify('notice', message, options);
+  }
+
+  /** 정보 메시지 */
+  public async info(message: string, options?: NotificationOptions): Promise<void> {
+    await this.notify('info', message, options);
+  }
+
+  /** 경고 메시지 */
+  public async warning(message: string, options?: NotificationOptions): Promise<void> {
+    await this.notify('warning', message, options);
+  }
+
   /** 성공 메시지 */
   public async success(message: string, options?: NotificationOptions): Promise<void> {
     await this.notify('success', message, options);
@@ -133,22 +148,6 @@ class App {
   /** 에러 메시지 */
   public async error(message: string, options?: NotificationOptions): Promise<void> {
     await this.notify('error', message, options);
-  }
-
-  /** 경고 메시지 */
-  public async warning(message: string, options?: NotificationOptions): Promise<void> {
-    await this.notify('warning', message, options);
-  }
-
-  /** 정보 메시지 */
-  public async info(message: string, options?: NotificationOptions): Promise<void> {
-    await this.notify('info', message, options);
-  }
-
-  /** 확인 대화상자 */
-  public async confirm(message: string, _options?: DialogOptions): Promise<boolean> {
-    // TODO: Dialog Component 사용하여 확인 대화상자 표시
-    return window.confirm(message);
   }
 
   /** 레이아웃 생성 */

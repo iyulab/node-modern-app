@@ -2,7 +2,7 @@ import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
-import { RouteBeginEvent, RouteDoneEvent } from '@iyulab/router';
+import { RouteBeginEvent } from '@iyulab/router';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { Icon } from '@iyulab/components/dist/components/Icon/Icon.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
@@ -47,12 +47,10 @@ export class SidebarLink extends ExtendedBaseElement<ElementParts> {
   connectedCallback(): void {
     super.connectedCallback();
     window.addEventListener('route-begin', this.handleRouteBegin);
-    window.addEventListener('route-done', this.handleRouteDone);
   }
 
   disconnectedCallback(): void {
     window.removeEventListener('route-begin', this.handleRouteBegin);
-    window.removeEventListener('route-done', this.handleRouteDone);
     super.disconnectedCallback();
   }
   
@@ -75,12 +73,7 @@ export class SidebarLink extends ExtendedBaseElement<ElementParts> {
   }
 
   /** 라우트 변경 이벤트 핸들러 */
-  private handleRouteBegin = (_: RouteBeginEvent) => {
-    this.selected = false;
-  }
-
-  /** 라우트 변경 이벤트 핸들러 */
-  private handleRouteDone = (event: RouteDoneEvent) => {
+  private handleRouteBegin = (event: RouteBeginEvent) => {
     this.pattern ||= this.href;
     if (this.pattern) {
       this.pattern = typeof this.pattern === 'string'
