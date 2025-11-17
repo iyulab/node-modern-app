@@ -2,11 +2,11 @@ import { runInAction } from 'mobx';
 import i18next from 'i18next';
 
 import { Router } from '@iyulab/router';
+import { theme } from '@iyulab/components/dist/utilities/theme.js';
 import { notifier } from '@iyulab/components/dist/utilities/notifier.js';
 import { AlertType } from '@iyulab/components/dist/components/alert/Alert.js';
-import { theme } from '@iyulab/components/dist/utilities/theme.js';
 
-import { progress, screen } from './internals/observables.js';
+import { screen } from './internals/observables.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs.js';
 import type { NotificationOptions } from './types/AppOptions.js';
 
@@ -18,8 +18,8 @@ class App {
 
   // 설정 및 상태 변수
   private _config?: AppConfig;
+  private _layout?: HTMLElement;
   private _router?: Router;
-  private _root?: HTMLElement;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {}
@@ -44,9 +44,9 @@ class App {
   public get theme() {
     return theme;
   }
-  /** 현재 언어 코드 반환 (i18next.language) */
-  public get language() {
-    return i18next.language;
+  /** 다국어 로컬라이저(i18next) 반환 */
+  public get localizer() {
+    return i18next;
   }
 
   /** 앱 로드 및 초기화 */
@@ -73,16 +73,15 @@ class App {
     this.handleWindowResize(new Event('resize'));
   
     // 레이아웃 생성
-    this._root = await this.createLayout(config.layout);
+    this._layout = await this.createLayout(config.layout);
 
     // 라우터 초기화
     this._router = new Router({
-      root: this._root,
+      root: this._layout,
       basepath: config.basepath,
       routes: config.routes,
+      fallback: config.fallback,
     });
-
-    console.log(`✅ App loaded successfully`);
   }
 
   /** 앱 언로드 */
@@ -91,9 +90,9 @@ class App {
     window.removeEventListener('resize', this.handleWindowResize);
 
     // 레이아웃 제거
-    if (this._root) {
-      this._root.remove();
-      this._root = undefined;
+    if (this._layout) {
+      this._layout.remove();
+      this._layout = undefined;
     }
 
     // 라우터 정리
@@ -111,18 +110,6 @@ class App {
   /** 페이지 이동 */
   public navigate(path: string): void {
     this._router?.go(path);
-  }
-
-  /** 언어 설정 변경(i18next.changeLanguage 호출) */
-  public async setLanguage(lang: string): Promise<void> {
-    await i18next.changeLanguage(lang);
-  }
-
-  /** 레이아웃 진행바 설정 */
-  public progress(value: number) {
-    runInAction(() => {
-      progress.set(value);
-    });
   }
 
   /** 공지 메시지 */

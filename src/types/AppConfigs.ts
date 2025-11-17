@@ -1,5 +1,5 @@
 import type { InitOptions, Module, Newable, NewableModule } from "i18next";
-import type { RouteConfig } from "@iyulab/router";
+import type { RouteConfig, FallbackRouteConfig } from "@iyulab/router";
 import type { ThemeInitOptions } from "@iyulab/components/dist/utilities/theme.js";
 import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
 
@@ -9,7 +9,7 @@ import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
 export type LocalizationInitOptions = InitOptions & {
   /** 
    * i18next 플러그인 배열
-   * @description i18next.use() 메서드에 전달될 플러그인들의 배열입니다.
+   * @description i18next.use() 메서드에 전달되는 플러그인들의 배열입니다.
    */
   plugins?: (Module | NewableModule<Module> | Newable<Module>)[];
 };
@@ -39,7 +39,12 @@ export interface AppConfig {
   /**
    * 클라이언트 사이드 라우팅을 위한 설정 배열
    */
-  routes: RouteConfig[];
+  routes?: RouteConfig[];
+
+  /**
+   * 라우팅 실패 시 대체 컨텐츠 설정
+   */
+  fallback?: FallbackRouteConfig;
 
   /**
    * 애플리케이션의 스타일 테마 설정

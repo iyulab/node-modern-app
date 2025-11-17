@@ -101,6 +101,25 @@ export const styles = css`
     border-top: 1px solid var(--u-border-color-weak);
   }
 
+  /* Main Content */
+  .main {
+    position: relative;
+    flex: 1;
+    display: block;
+    overflow: hidden;
+    background: var(--u-bg-color);
+  }
+
+  .main u-progress-bar {
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    height: 4px;
+    border-radius: 0;
+    background-color: transparent;
+  }
+
   /* Backdrop for modal mode */
   .backdrop {
     content: '';
@@ -111,14 +130,5 @@ export const styles = css`
     right: 0;
     bottom: 0;
     background: var(--u-overlay-bg-color);
-  }
-
-  /* Main Content */
-  .main {
-    position: relative;
-    flex: 1;
-    display: block;
-    overflow: hidden;
-    background: var(--u-bg-color);
   }
 `;

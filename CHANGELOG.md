@@ -1,7 +1,11 @@
 # Changelog
 
 ## [Unreleased]
-- No changes yet
+- (No changes yet)
+
+## 0.2.2 (2025-11-17)
+- added `fallback` config in `AppConfig` type
+- improved route-progress handling in layout component
 
 ## 0.2.1 (2025-11-13)
 - Fixed few component and sidebar styles

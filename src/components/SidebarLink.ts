@@ -5,6 +5,7 @@ import { DirectiveResult } from 'lit/directive.js';
 import { RouteBeginEvent } from '@iyulab/router';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { Icon } from '@iyulab/components/dist/components/Icon/Icon.js';
+
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
 import type { StyleMap } from '../types/AppTypes.js';
 import { styles } from './SidebarLink.styles.js';
@@ -79,7 +80,7 @@ export class SidebarLink extends ExtendedBaseElement<ElementParts> {
       this.pattern = typeof this.pattern === 'string'
         ? new URLPattern(this.pattern, window.location.origin)
         : this.pattern;
-      this.selected = this.pattern.test(event.routeInfo.path, window.location.origin);
+      this.selected = this.pattern.test(event.context.path, window.location.origin);
     } else {
       this.selected = false;
     }

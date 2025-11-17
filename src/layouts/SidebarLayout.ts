@@ -1,14 +1,16 @@
 import { html, nothing, PropertyValues } from 'lit';
-import { customElement, property, state, query } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
+import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { autorun, IReactionDisposer } from 'mobx';
 
+import { RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { IconButton } from '@iyulab/components/dist/components/icon-button/IconButton.js';
+import { ProgressBar } from '@iyulab/components/dist/components/progress-bar/ProgressBar.js';
 
-import { progress, screen, type ScreenSize } from '../internals/observables.js';
+import { screen, type ScreenSize } from '../internals/observables.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement';
-import { ProgressBar } from '../components/ProgressBar';
 import { SidebarLogo } from '../components/SidebarLogo';
 import { SidebarSection } from '../components/SidebarSection';
 import { SidebarGroup } from '../components/SidebarGroup';
@@ -16,11 +18,11 @@ import { SidebarLink } from '../components/SidebarLink';
 import { SidebarButton } from '../components/SidebarButton';
 import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
 import { styles } from './SidebarLayout.styles.js';
-import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 
-/** 엘리먼트 타입 매핑 */
+/** 엘리먼트 타입 매핑 (for deveveloper experience) */
 declare global {
   interface HTMLElementTagNameMap {
+    'u-icon-button': IconButton,
     'u-progress-bar': ProgressBar;
     'u-sidebar-logo': SidebarLogo;
     'u-sidebar-section': SidebarSection;
@@ -56,8 +58,8 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
   
   /** 반응형 상태 관리를 위한 MobX 반응 해제 함수들 */
   private disposers: IReactionDisposer[] = [];
-  
-  @query('u-progress-bar') progressEl?: ProgressBar;
+
+  @query('u-progress-bar') progressBarEl!: ProgressBar;
 
   /** 사이드바 상태 */
   @state() state: SidebarState = 'docked';
@@ -72,17 +74,16 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
       const screenSize = screen.get();
       this.updateState(screenSize);
     }));
-    this.disposers.push(autorun(() => {
-      const progressValue = progress.get();
-      if (!this.progressEl) return;
-      this.progressEl.value = progressValue;
-    }));
-    window.addEventListener('route-begin', this.toggleStateIfModalState);
+    window.addEventListener('route-begin', this.handleRouteBegin);
+    window.addEventListener('route-done', this.handleRouteDone);
+    window.addEventListener('route-progress', this.handleRouteProgress);
   }
 
   disconnectedCallback() {
     this.disposers.forEach(dispose => dispose());
-    window.removeEventListener('route-begin', this.toggleStateIfModalState);
+    window.removeEventListener('route-begin', this.handleRouteBegin);
+    window.removeEventListener('route-done', this.handleRouteDone);
+    window.removeEventListener('route-progress', this.handleRouteProgress);
     super.disconnectedCallback();
   }
 
@@ -104,12 +105,12 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
         <div class="sidebar-header" part="sidebar-header">
           <u-sidebar-logo
             .compact="${this.state === 'slim'}"
-            .type=${this.config.logo.type}
-            .image="${this.config.logo.image}"
-            .icon="${this.config.logo.icon}"
-            .label="${this.config.logo.label}"
-            .styles="${this.config.logo.styles as any}"
-            @click="${this.config.logo.onClick}"
+            .type=${this.config.logo?.type || 'icon'}
+            .image="${this.config.logo?.image}"
+            .icon="${this.config.logo?.icon}"
+            .label="${this.config.logo?.label}"
+            .styles="${this.config.logo?.styles as any}"
+            @click="${this.config.logo?.onClick}"
           ></u-sidebar-logo>
           <u-icon-button class="sidebar-toggler" part="sidebar-toggler"
             name=${this.state === 'closed' ? 'chevron-right' : 'layout-sidebar'}
@@ -247,5 +248,21 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
     } else if (screenSize === 'small') {
       this.state = 'closed';
     }
+  }
+
+  /** 라우트 변경 시작 핸들러 */
+  private handleRouteBegin = (_: RouteBeginEvent) => {
+    this.progressBarEl.value = 0;
+    this.toggleStateIfModalState();
+  }
+
+  /** 라우트 변경 진행 핸들러 */
+  private handleRouteProgress = (event: RouteProgressEvent) => {
+    this.progressBarEl.value = event.progress;
+  }
+
+  /** 라우트 변경 완료 핸들러 */
+  private handleRouteDone = (_: RouteDoneEvent) => {
+    this.progressBarEl.value = 100;
   }
 }

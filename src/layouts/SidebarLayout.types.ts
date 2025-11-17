@@ -30,7 +30,7 @@ export type SidebarItem = (
 export interface SidebarLayoutConfig {
   type: 'sidebar';
   /** 최상단 앱 로고 */
-  logo: SidebarLogoConfig;
+  logo?: SidebarLogoConfig;
   /** 상단/메인 메뉴 항목들 */
   menu?: SidebarItem[];
   /** 하단(footer)에 고정해서 렌더할 항목들 */
