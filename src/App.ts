@@ -73,7 +73,8 @@ class App {
     this.handleWindowResize(new Event('resize'));
   
     // 레이아웃 생성
-    this._layout = await this.createLayout(config.layout);
+    const root = config.root || document.body;
+    this._layout = await this.createLayout(root, config.layout);
 
     // 라우터 초기화
     this._router = new Router({
@@ -137,12 +138,30 @@ class App {
     await this.notify('error', message, options);
   }
 
+  /** 알림 표시 */
+  private async notify(type: AlertType, message: string, options?: NotificationOptions): Promise<void> {
+    await notifier.toast({
+      type: type,
+      content: message,
+      label: options?.title,
+      duration: options?.duration || 3000,
+      position : options?.position || 'top-right',
+    });
+  }
+
   /** 레이아웃 생성 */
-  private async createLayout(config: LayoutConfig): Promise<HTMLElement> {
+  private async createLayout(root: Element, config: LayoutConfig): Promise<HTMLElement> {
+    // 최상위 루트인 경우 기본 스타일 적용
+    if (root === document.body) {
+      document.body.style.margin = '0';
+      document.body.style.width = '100vw';
+      document.body.style.height = '100vh';
+    }
+
     // 기존 레이아웃 제거
-    let layout = document.body.querySelector('[data-layout]') as HTMLElement;
+    let layout = root.querySelector('[data-layout]') as HTMLElement;
     if (layout) {
-      document.body.removeChild(layout);
+      root.removeChild(layout);
     }
 
     // Sidebar 레이아웃 생성
@@ -155,26 +174,15 @@ class App {
       throw new Error(`Unsupported layout type: ${config.type}`);
     }
 
-    // 레이아웃을 body에 추가
+    // 레이아웃을 루트에 추가
     layout.setAttribute('data-layout', 'true');
-    document.body.appendChild(layout);
+    root.appendChild(layout);
 
     // 레이아웃이 완전히 렌더링될 때까지 대기
     if ('updateComplete' in layout) {
       await (layout as any).updateComplete;
     }
     return layout;
-  }
-
-  /** 알림 표시 */
-  private async notify(type: AlertType, message: string, options?: NotificationOptions): Promise<void> {
-    await notifier.toast({
-      type: type,
-      content: message,
-      label: options?.title,
-      duration: options?.duration || 3000,
-      position : options?.position || 'top-right',
-    });
   }
 
   /** 화면 크기 변경 핸들러 */

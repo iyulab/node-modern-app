@@ -46,6 +46,18 @@ export interface AppConfig {
    */
   fallback?: FallbackRouteConfig;
 
+  /** 
+   * 애플리케이션이 렌더링될 루트 HTML 요소
+   * @description 지정하지 않을 경우 document.body가 사용됩니다.
+   */
+  root?: Element;
+
+  /**
+   * 애플리케이션을 구성하기 위한 레이아웃 설정
+   * @description 현재는 사이드바 레이아웃만 지원합니다.
+   */
+  layout: LayoutConfig;
+
   /**
    * 애플리케이션의 스타일 테마 설정
    */
@@ -57,10 +69,4 @@ export interface AppConfig {
    * @see 설정에 대한 자세한 내용은 {@link https://www.i18next.com/overview/configuration-options} 참조하십시오.
    */
   localization?: LocalizationInitOptions;
-
-  /**
-   * 애플리케이션을 구성하기 위한 레이아웃 설정
-   * @description 현재는 사이드바 레이아웃만 지원합니다.
-   */
-  layout: LayoutConfig;
 }

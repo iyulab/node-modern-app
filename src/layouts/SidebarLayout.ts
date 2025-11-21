@@ -43,7 +43,7 @@ declare global {
  * - modal: 오버레이로 사이드바가 펼침 상태로 표시되는 모달 모드, 백드롭 클릭 시 닫힘
  * - closed: 사이드바가 왼쪽에 완전히 숨겨진 상태
  */
-@customElement('app-sidebar-layout')
+@customElement('u-sidebar-layout')
 export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
@@ -153,10 +153,9 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
   private renderItem(item: SidebarItem): any {
     if (!item) return nothing;
 
-    if(item.type === 'content') {
-      return this.state === 'slim' 
-        ? nothing 
-        : unsafeHTML(item.content);
+    if(item.type === 'innerHtml') {
+      const content = item.render(this.state);
+      return typeof content === 'string' ? unsafeHTML(content) : html`${content}`;
     } else if(item.type === 'button') {
       return html`
         <u-sidebar-button

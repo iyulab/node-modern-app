@@ -11,10 +11,10 @@ export type SidebarParts = 'host' | 'sidebar' | 'sidebar-toggler' | 'sidebar-hea
 /** 사이드바 상태 타입 */
 export type SidebarState = 'docked' | 'modal' | 'slim' | 'closed';
 
-/** 사이드바 컨텐츠 커스텀 HTML 타입 */
-export interface SidebarContentConfig {
-  type: 'content';
-  content: string;
+/** 사이드바 안에 HTML 또는 엘리먼트를 직접 렌더링하는 설정 */
+export interface SidebarInnerHtmlConfig {
+  type: 'innerHtml';
+  render: (state: SidebarState) => HTMLElement | string;
 }
 
 /** union: section | group | link | button */
@@ -23,7 +23,7 @@ export type SidebarItem = (
   SidebarSectionConfig |
   SidebarGroupConfig |
   SidebarButtonConfig |
-  SidebarContentConfig
+  SidebarInnerHtmlConfig
 );
 
 /** 사이드바 전체 설정 (루트) */

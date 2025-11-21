@@ -1,7 +1,7 @@
 # Changelog
 
 ## [Unreleased]
-- (No changes yet)
+- added `root` option in `AppConfig` type to set application root element
 
 ## 0.2.2 (2025-11-17)
 - added `fallback` config in `AppConfig` type
