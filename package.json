@@ -42,12 +42,12 @@
     "@iyulab/router": "^0.5.2",
     "lit": "^3.3.1",
     "mobx": "^6.15.0",
-    "i18next": "^25.6.3"
+    "i18next": "^25.7.1"
   },
   "devDependencies": {
     "@types/node": "^24.10.1",
     "typescript": "^5.9.3",
-    "vite": "^7.2.4",
+    "vite": "^7.2.6",
     "vite-plugin-dts": "^4.5.4"
   }
 }
