@@ -38,16 +38,16 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@iyulab/components": "^0.1.7",
+    "@iyulab/components": "^0.1.8",
     "@iyulab/router": "^0.5.3",
     "lit": "^3.3.1",
     "mobx": "^6.15.0",
-    "i18next": "^25.7.2"
+    "i18next": "^25.7.3"
   },
   "devDependencies": {
-    "@types/node": "^25.0.1",
+    "@types/node": "^25.0.3",
     "typescript": "^5.9.3",
-    "vite": "^7.2.7",
+    "vite": "^7.3.0",
     "vite-plugin-dts": "^4.5.4"
   }
 }
