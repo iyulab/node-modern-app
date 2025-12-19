@@ -3,7 +3,7 @@ import { property } from 'lit/decorators.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
-import { UIcon } from '@iyulab/components/dist/components/Icon/UIcon.component.js';
+import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
 import type { StyleMap } from '../types/AppTypes.js';
 import { styles } from './SidebarButton.styles.js';

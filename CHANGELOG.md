@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.4 (2025-12-19)
+- fix import path, modified correct case-sensitive paths
+
 ## 0.2.3 (2025-12-19)
 - added `root` option in `AppConfig` type to set application root element
 - update `@iyulab/components` to v0.1.10
