@@ -1,7 +1,8 @@
 # Changelog
 
-## [Unreleased]
+## 0.2.3 (2025-12-19)
 - added `root` option in `AppConfig` type to set application root element
+- update `@iyulab/components` to v0.1.10
 
 ## 0.2.2 (2025-11-17)
 - added `fallback` config in `AppConfig` type

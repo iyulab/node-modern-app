@@ -6,8 +6,8 @@ import { autorun, IReactionDisposer } from 'mobx';
 
 import { RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
-import { IconButton } from '@iyulab/components/dist/components/icon-button/IconButton.js';
-import { ProgressBar } from '@iyulab/components/dist/components/progress-bar/ProgressBar.js';
+import { UIconButton } from '@iyulab/components/dist/components/icon-button/UIconButton.component.js';
+import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.component.js';
 
 import { screen, type ScreenSize } from '../internals/observables.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement';
@@ -22,8 +22,8 @@ import { styles } from './SidebarLayout.styles.js';
 /** 엘리먼트 타입 매핑 (for deveveloper experience) */
 declare global {
   interface HTMLElementTagNameMap {
-    'u-icon-button': IconButton,
-    'u-progress-bar': ProgressBar;
+    'u-icon-button': UIconButton,
+    'u-progress-bar': UProgressBar;
     'u-sidebar-logo': SidebarLogo;
     'u-sidebar-section': SidebarSection;
     'u-sidebar-group': SidebarGroup;
@@ -47,8 +47,8 @@ declare global {
 export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
-    'u-icon-button': IconButton,
-    'u-progress-bar': ProgressBar,
+    'u-icon-button': UIconButton,
+    'u-progress-bar': UProgressBar,
     'u-sidebar-logo': SidebarLogo,
     'u-sidebar-section': SidebarSection,
     'u-sidebar-group': SidebarGroup,
@@ -59,7 +59,7 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
   /** 반응형 상태 관리를 위한 MobX 반응 해제 함수들 */
   private disposers: IReactionDisposer[] = [];
 
-  @query('u-progress-bar') progressBarEl!: ProgressBar;
+  @query('u-progress-bar') progressBarEl!: UProgressBar;
 
   /** 사이드바 상태 */
   @state() state: SidebarState = 'docked';
@@ -113,6 +113,7 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
             @click="${this.config.logo?.onClick}"
           ></u-sidebar-logo>
           <u-icon-button class="sidebar-toggler" part="sidebar-toggler"
+            lib="internal"
             name=${this.state === 'closed' ? 'chevron-right' : 'layout-sidebar'}
             @click="${this.toggleState}"
           ></u-icon-button>

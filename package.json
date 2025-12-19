@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab based on react, lit-element",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "keywords": [
     "iyulab",
     "web-framework",
@@ -38,7 +38,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@iyulab/components": "^0.1.8",
+    "@iyulab/components": "^0.1.10",
     "@iyulab/router": "^0.5.3",
     "lit": "^3.3.1",
     "mobx": "^6.15.0",

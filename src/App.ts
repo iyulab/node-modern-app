@@ -4,7 +4,7 @@ import i18next from 'i18next';
 import { Router } from '@iyulab/router';
 import { theme } from '@iyulab/components/dist/utilities/theme.js';
 import { notifier } from '@iyulab/components/dist/utilities/notifier.js';
-import { AlertType } from '@iyulab/components/dist/components/alert/Alert.js';
+import type { AlertType } from '@iyulab/components/dist/components/alert/UAlert.component.js';
 
 import { screen } from './internals/observables.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs.js';
@@ -143,7 +143,7 @@ class App {
     await notifier.toast({
       type: type,
       content: message,
-      label: options?.title,
+      heading: options?.title,
       duration: options?.duration || 3000,
       position : options?.position || 'top-right',
     });

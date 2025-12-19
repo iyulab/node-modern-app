@@ -6,7 +6,7 @@ export const styles = css`
     width: 100%;
     padding: 8px 12px;
     font-size: 14px;
-    color: var(--u-text-color);
+    color: var(--u-txt-color);
     background: transparent;
     border: none;
     border-radius: 8px;
@@ -22,7 +22,7 @@ export const styles = css`
     gap: 0;
   }
   :host(:hover) {
-    color: var(--u-text-color-hover);
+    color: var(--u-txt-color-hover);
     background-color: var(--u-bg-color-hover);
   }
   :host(:active) {
@@ -39,7 +39,7 @@ export const styles = css`
     gap: 12px;
   }
   button:focus-visible {
-    outline: 2px solid var(--u-input-border-focus);
+    outline: 2px solid #6666ff;
     outline-offset: 2px;
   }
   

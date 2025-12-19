@@ -4,24 +4,24 @@ export const styles = css`
   :host {
     display: block;
     border-radius: 8px;
-    color: var(--u-text-color);
+    color: var(--u-txt-color);
     text-decoration: none;
     transition: all 0.2s ease;
     cursor: pointer;
   }
   :host(:hover) {
-    color: var(--u-text-color-hover);
+    color: var(--u-txt-color-hover);
     background-color: var(--u-bg-color-hover);
   }
   :host([selected]) {
-    color: var(--u-text-color-inverse);
+    color: var(--u-txt-color-inverse);
     background-color: var(--u-blue-600);
-    box-shadow: 0 1px 3px var(--u-shadow-weak);
+    box-shadow: 0 1px 3px var(--u-shadow-color-weak);
   }
   :host([selected]:hover) {
-    color: var(--u-text-color-inverse);
+    color: var(--u-txt-color-inverse);
     background-color: var(--u-blue-700);
-    box-shadow: 0 2px 6px var(--u-shadow-normal);
+    box-shadow: 0 2px 6px var(--u-shadow-color-normal);
   }
   
   u-link {

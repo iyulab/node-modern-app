@@ -22,7 +22,7 @@ export const styles = css`
     height: 100vh;
     background: var(--u-panel-bg-color);
     border-right: 1px solid var(--u-border-color);
-    box-shadow: 0 2px 8px var(--u-shadow-weak);
+    box-shadow: 0 2px 8px var(--u-shadow-color-weak);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   /* Sidebar states */

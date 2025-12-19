@@ -2,9 +2,10 @@ import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
-import { Icon } from '@iyulab/components/dist/components/Icon/Icon.js';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
-import { app } from '../app.js';
+import { UIcon } from '@iyulab/components/dist/components/Icon/UIcon.component.js';
+
+import { app } from '../App.js';
 import type { StyleMap } from '../types/AppTypes.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
 import { SidebarLink, type SidebarLinkConfig } from './SidebarLink.js';
@@ -29,7 +30,7 @@ export interface SidebarGroupConfig {
 export class SidebarGroup extends ExtendedBaseElement<ElementParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
-    'u-icon': Icon
+    'u-icon': UIcon
   };
 
   /** 콤팩트 모드 여부 */
@@ -48,13 +49,13 @@ export class SidebarGroup extends ExtendedBaseElement<ElementParts> {
           @click=${this.handleButtonClick}>
           <u-icon class="icon" part="icon"
             ?hidden=${!this.icon}
-            ?remote=${true}
             .name=${this.icon}
           ></u-icon>
           <span class="label" part="label">
             ${this.label}
           </span>
           <u-icon class="toggler" part="toggler"
+            lib="internal"
             name="chevron-down"
           ></u-icon>
         </button>

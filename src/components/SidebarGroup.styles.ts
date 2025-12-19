@@ -41,7 +41,7 @@ export const styles = css`
     gap: 12px;
     width: 100%;
     padding: 8px 12px;
-    color: var(--u-text-color);
+    color: var(--u-txt-color);
     font-family: inherit;
     background: transparent;
     border: none;
@@ -51,7 +51,7 @@ export const styles = css`
   }
   button:hover {
     background-color: var(--u-bg-color-hover);
-    color: var(--u-text-color-hover);
+    color: var(--u-txt-color-hover);
   }
 
   .icon {

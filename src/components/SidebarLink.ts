@@ -4,7 +4,7 @@ import { DirectiveResult } from 'lit/directive.js';
 
 import { RouteBeginEvent } from '@iyulab/router';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
-import { Icon } from '@iyulab/components/dist/components/Icon/Icon.js';
+import { UIcon } from '@iyulab/components/dist/components/Icon/UIcon.component.js';
 
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
 import type { StyleMap } from '../types/AppTypes.js';
@@ -29,7 +29,7 @@ export interface SidebarLinkConfig {
 export class SidebarLink extends ExtendedBaseElement<ElementParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
-    'u-icon': Icon
+    'u-icon': UIcon
   };
 
   /** selected 상태 */
@@ -62,7 +62,6 @@ export class SidebarLink extends ExtendedBaseElement<ElementParts> {
         ?compact=${this.compact}>
         <u-icon part="icon"
           ?hidden=${!this.icon}
-          ?remote=${true}
           .name=${this.icon}
         ></u-icon>
         <span part="label"

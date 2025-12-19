@@ -5,16 +5,16 @@ export const styles = css`
     display: block;
     min-width: 0;
     font-size: 32px;
-    color: var(--u-text-color);
+    color: var(--u-txt-color);
     user-select: none;
     cursor: pointer;
     transition: all 0.2s ease;
   }
   :host(:hover) {
-    color: var(--u-text-color-hover);
+    color: var(--u-txt-color-hover);
   }
   :host(:active) {
-    color: var(--u-text-color-active);
+    color: var(--u-txt-color-active);
   }
 
   .container {

@@ -2,8 +2,8 @@ import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
-import { Icon } from '@iyulab/components/dist/components/Icon/Icon.js';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
+import { UIcon } from '@iyulab/components/dist/components/Icon/UIcon.component.js';
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
 import type { StyleMap } from '../types/AppTypes.js';
 import { styles } from './SidebarButton.styles.js';
@@ -26,7 +26,7 @@ export interface SidebarButtonConfig {
 export class SidebarButton extends ExtendedBaseElement<ElementParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
-    'u-icon': Icon
+    'u-icon': UIcon
   };
 
   /** 콤팩트 모드 여부 */
@@ -41,7 +41,6 @@ export class SidebarButton extends ExtendedBaseElement<ElementParts> {
       <button part="base">
         <u-icon part="icon"
           ?hidden=${!this.icon}
-          ?remote=${true}
           .name=${this.icon}
         ></u-icon>
         <span part="label"

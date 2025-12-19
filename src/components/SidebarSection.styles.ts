@@ -22,7 +22,7 @@ export const styles = css`
   .title {
     font-size: 12px;
     font-weight: 700;
-    color: var(--u-soft-text-color);
+    color: var(--u-txt-color-weak);
     text-transform: uppercase;
     letter-spacing: 0.5px;
     margin: 0;
@@ -30,7 +30,7 @@ export const styles = css`
   
   .subtitle {
     font-size: 11px;
-    color: var(--u-text-color-disabled);
+    color: var(--u-txt-color-disabled);
     margin: 0;
   }
 

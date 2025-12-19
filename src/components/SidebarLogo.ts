@@ -3,7 +3,8 @@ import { property } from 'lit/decorators.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
-import { Icon } from '@iyulab/components/dist/components/icon/Icon.js';
+import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
+
 import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
 import type { StyleMap } from '../types/AppTypes.js';
 import { styles } from './SidebarLogo.styles.js';
@@ -26,7 +27,7 @@ export interface SidebarLogoConfig {
 export class SidebarLogo extends ExtendedBaseElement<ElementParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
-    'u-icon': Icon,
+    'u-icon': UIcon,
   };
 
   /** 콤팩트 모드 여부 */
@@ -50,8 +51,7 @@ export class SidebarLogo extends ExtendedBaseElement<ElementParts> {
             alt="App Logo"
           />`
         : this.type === 'icon' && this.icon ? html`
-          <u-icon part="icon" 
-            .remote=${true}
+          <u-icon part="icon"
             .name=${this.icon}
           ></u-icon>`
         : nothing}
