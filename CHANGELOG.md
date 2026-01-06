@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.2.5 (2026-01-06)
+- Updated `@iyulab/components` to v0.1.11
+
 ## 0.2.4 (2025-12-19)
 - fix import path, modified correct case-sensitive paths
 
