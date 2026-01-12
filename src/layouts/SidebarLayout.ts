@@ -6,7 +6,8 @@ import { autorun, IReactionDisposer } from 'mobx';
 
 import { RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
-import { UIconButton } from '@iyulab/components/dist/components/icon-button/UIconButton.component.js';
+import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
+import { UButton } from '@iyulab/components/dist/components/button/UButton.component.js';
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.component.js';
 
 import { screen, type ScreenSize } from '../internals/observables.js';
@@ -22,7 +23,8 @@ import { styles } from './SidebarLayout.styles.js';
 /** 엘리먼트 타입 매핑 (for deveveloper experience) */
 declare global {
   interface HTMLElementTagNameMap {
-    'u-icon-button': UIconButton,
+    'u-icon': UIcon;
+    'u-button': UButton;
     'u-progress-bar': UProgressBar;
     'u-sidebar-logo': SidebarLogo;
     'u-sidebar-section': SidebarSection;
@@ -47,7 +49,8 @@ declare global {
 export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
-    'u-icon-button': UIconButton,
+    'u-icon': UIcon,
+    'u-button': UButton,
     'u-progress-bar': UProgressBar,
     'u-sidebar-logo': SidebarLogo,
     'u-sidebar-section': SidebarSection,
@@ -112,11 +115,12 @@ export class SidebarLayout extends ExtendedBaseElement<SidebarParts> {
             .styles="${this.config.logo?.styles as any}"
             @click="${this.config.logo?.onClick}"
           ></u-sidebar-logo>
-          <u-icon-button class="sidebar-toggler" part="sidebar-toggler"
-            lib="internal"
-            name=${this.state === 'closed' ? 'chevron-right' : 'layout-sidebar'}
-            @click="${this.toggleState}"
-          ></u-icon-button>
+          <u-button class="sidebar-toggler" part="sidebar-toggler"
+            @click="${this.toggleState}">
+            <u-icon lib="internal"
+              name=${this.state === 'closed' ? 'chevron-right' : 'layout-sidebar'}>
+            </u-icon>
+          </u-button>
         </div>
 
         <!-- Sidebar Navigation Menu -->
