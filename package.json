@@ -39,15 +39,15 @@
   },
   "dependencies": {
     "@iyulab/components": "^0.1.11",
-    "@iyulab/router": "^0.5.3",
+    "@iyulab/router": "^0.6.0",
     "lit": "^3.3.2",
     "mobx": "^6.15.0",
-    "i18next": "^25.7.3"
+    "i18next": "^25.7.4"
   },
   "devDependencies": {
-    "@types/node": "^25.0.3",
+    "@types/node": "^25.0.8",
     "typescript": "^5.9.3",
-    "vite": "^7.3.0",
+    "vite": "^7.3.1",
     "vite-plugin-dts": "^4.5.4"
   }
 }

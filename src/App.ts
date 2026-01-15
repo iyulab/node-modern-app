@@ -2,8 +2,8 @@ import { runInAction } from 'mobx';
 import i18next from 'i18next';
 
 import { Router } from '@iyulab/router';
-import { theme } from '@iyulab/components/dist/utilities/theme.js';
-import { notifier } from '@iyulab/components/dist/utilities/notifier.js';
+import { Theme } from '@iyulab/components/dist/utilities/Theme.js';
+import { Notifier } from '@iyulab/components/dist/utilities/Notifier.js';
 import type { AlertType } from '@iyulab/components/dist/components/alert/UAlert.component.js';
 
 import { screen } from './internals/observables.js';
@@ -42,7 +42,7 @@ class App {
   }
   /** 스타일 테마 관리 유틸리티 객체 반환 */
   public get theme() {
-    return theme;
+    return Theme;
   }
   /** 다국어 로컬라이저(i18next) 반환 */
   public get localizer() {
@@ -58,7 +58,7 @@ class App {
     this._config = config;
 
     // 초기 테마 설정
-    await theme.init(config.theme);
+    await Theme.init(config.theme);
 
     // 다국어 초기화
     if (config.localization) {
@@ -140,7 +140,7 @@ class App {
 
   /** 알림 표시 */
   private async notify(type: AlertType, message: string, options?: NotificationOptions): Promise<void> {
-    await notifier.toast({
+    await Notifier.toast({
       type: type,
       content: message,
       heading: options?.title,
