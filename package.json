@@ -38,7 +38,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@iyulab/components": "^0.1.11",
+    "@iyulab/components": "^0.2.0",
     "@iyulab/router": "^0.6.0",
     "lit": "^3.3.2",
     "mobx": "^6.15.0",
