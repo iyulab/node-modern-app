@@ -12,7 +12,7 @@ type ElementParts = 'host' | 'base' | 'icon' | 'label';
 
 /** 링크 항목 디폴트 타입 */
 export interface SidebarLinkConfig {
-  type?: 'link';
+  type: 'link';
   icon?: string;
   label: string | DirectiveResult;
   href: string;
