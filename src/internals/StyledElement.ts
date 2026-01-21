@@ -1,14 +1,18 @@
-import { property } from "lit/decorators.js";
 import { PropertyValues } from "lit";
+import { property } from "lit/decorators.js";
 
 import { BaseElement } from "@iyulab/components/dist/components/BaseElement.js";
-import type { StyleMap, StyleValue } from "../types/AppTypes";
+
+/** 스타일 값 타입 */
+export type StyleValue = Record<string, string> | Partial<CSSStyleDeclaration>;
+
+/** 스타일 맵 타입 */
+export type StyleMap<T extends string> = Partial<Record<T, StyleValue>>;
 
 /**
- * ExtendedBaseElement - BaseElement를 확장한 클래스
- * - 부분별 스타일링 지원
+ * StyledBaseElement - BaseElement의 확장으로 부분별 스타일링 기능 추가
  */
-export class ExtendedBaseElement<T extends string> extends BaseElement {
+export class StyledElement<T extends string> extends BaseElement {
   static styles = super.styles;
   static dependencies: Record<string, typeof BaseElement> = {};
   
@@ -16,9 +20,9 @@ export class ExtendedBaseElement<T extends string> extends BaseElement {
   @property({ type: Object, attribute: false }) styles?: StyleMap<T>;
 
   protected updated(changedProperties: PropertyValues): void {
-    super.updated?.(changedProperties);
+    super.updated(changedProperties);
 
-    if (changedProperties.has('styles')) {
+    if (changedProperties.has('styles') && this.styles) {
       this.applyToParts(this.styles);
     }
   }
@@ -26,9 +30,7 @@ export class ExtendedBaseElement<T extends string> extends BaseElement {
   /**
    * 현재 스타일 구성을 각 파트에 적용, host 포함
    */
-  private applyToParts(styles?: StyleMap<T>) {
-    if (!styles) return;
-
+  private applyToParts(styles: StyleMap<T>) {
     // 타입 단언: Object.entries는 [string, any][] 타입을 반환하므로 T로 단언
     const entries = Object.entries(styles) as [T, StyleValue][];
 

@@ -4,8 +4,7 @@ import type { DirectiveResult } from 'lit/directive.js';
 
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
-import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
-import type { StyleMap } from '../types/AppTypes.js';
+import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { styles } from './SidebarButton.styles.js';
 
 /** 버튼 항목 부분 */
@@ -23,7 +22,7 @@ export interface SidebarButtonConfig {
 /**
  * SidebarButton 컴포넌트는 사이드바 내의 버튼을 표시합니다.
  */
-export class SidebarButton extends ExtendedBaseElement<ElementParts> {
+export class SidebarButton extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
     'u-icon': UIcon
@@ -38,13 +37,11 @@ export class SidebarButton extends ExtendedBaseElement<ElementParts> {
   
   render() {
     return html`
-      <button part="base">
-        <u-icon part="icon"
-          ?hidden=${!this.icon}
+      <button part="base" ?compact=${this.compact}>
+        <u-icon part="icon" ?hidden=${!this.icon}
           .name=${this.icon}
         ></u-icon>
-        <span part="label"
-          ?hidden=${this.compact}>
+        <span part="label" ?hidden=${this.compact}>
           ${this.label}
         </span>
       </button>

@@ -2,90 +2,85 @@ import { css } from 'lit';
 
 export const styles = css`
   :host {
-    display: block;
-  }
-  :host([compact]) button {
-    justify-content: center;
-    padding: 8px;
-  }
-  :host([compact]) .label {
-    display: none;
-  }
-  :host([compact]) .toggler {
-    display: none;
-  }
-  :host([compact]) .items {
-    display: none;
-  }
-  :host(:not([compact])[collapsed]) .toggler {
-    transform: rotate(-90deg);
-  }
-  :host(:not([compact])[collapsed]) .items {
-    height: 0;
-    margin-top: 0;
-    opacity: 0;
-  }
-
-  .container {
     display: flex;
     flex-direction: column;
+    color: var(--u-neutral-800);
   }
 
   button {
     all: unset;
-    position: relative;
+    width: 100%;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    width: 100%;
     padding: 8px 12px;
-    color: var(--u-txt-color);
-    font-family: inherit;
-    background: transparent;
+    background-color: transparent;
     border: none;
     border-radius: 8px;
     transition: all 0.2s ease;
     cursor: pointer;
   }
+  button[compact] {
+    justify-content: center;
+    gap: 0;
+    padding: 8px;
+  }
+  button[selected] {
+    color: var(--u-blue-700);
+  }
   button:hover {
-    background-color: var(--u-bg-color-hover);
     color: var(--u-txt-color-hover);
+    background-color: var(--u-bg-color-hover);
+  }
+  button:active {
+    background-color: var(--u-bg-color-active);
+  }
+  button:focus-visible {
+    outline: 2px solid #6666ff;
+    outline-offset: 2px;
   }
 
   .icon {
-    font-size: 20px;
-    color: inherit;
     flex-shrink: 0;
+    color: inherit;
+    font-size: 20px;
   }
 
   .label {
     flex: 1;
-    color: inherit;
     font-size: 14px;
-    font-weight: 600;
     line-height: 20px;
-    text-align: left;
+    font-weight: 600;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
 
-  .toggler {
+  .caret {
+    color: inherit;
     font-size: 16px !important;
     transition: transform 0.2s ease;
+  }
+  .caret[collapsed] {
+    transform: rotate(-90deg);
   }
 
   .items {
     display: flex;
     flex-direction: column;
-    margin-left: 32px;
-    margin-top: 4px;
     gap: 4px;
-    overflow: hidden;
-    transition: all 0.3s ease;
+    margin-top: 4px;
+    margin-left: 32px;
     border-left: 2px solid var(--u-border-color-weak);
     padding-left: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .items[collapsed] {
+    margin-top: 0;
+    height: 0;
+    opacity: 0;
   }
 `;

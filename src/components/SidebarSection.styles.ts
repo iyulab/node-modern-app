@@ -2,41 +2,36 @@ import { css } from 'lit';
 
 export const styles = css`
   :host {
-    display: block;
-    margin: 8px 0;
-  }
-
-  .container {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    margin: 8px 0;
   }
 
   .header {
     display: flex;
     flex-direction: column;
-    gap: 2px;
     padding: 8px 12px 4px;
   }
 
   .title {
+    color: var(--u-neutral-700);
     font-size: 12px;
     font-weight: 700;
-    color: var(--u-txt-color-weak);
-    text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   .subtitle {
+    color: var(--u-neutral-600);
     font-size: 11px;
-    color: var(--u-txt-color-disabled);
-    margin: 0;
+    font-weight: 300;
   }
 
   .items {
     display: flex;
     flex-direction: column;
-    gap: 2px;
   }
 `;

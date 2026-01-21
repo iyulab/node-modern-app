@@ -1,14 +1,14 @@
-import { runInAction } from 'mobx';
 import i18next from 'i18next';
 
 import { Router } from '@iyulab/router';
+import { setDefaultBaseUrl } from '@iyulab/components/dist/utilities/IconRegistry.js';
 import { Theme } from '@iyulab/components/dist/utilities/Theme.js';
 import { Notifier } from '@iyulab/components/dist/utilities/Notifier.js';
 import type { AlertType } from '@iyulab/components/dist/components/alert/UAlert.component.js';
 
-import { screen } from './internals/observables.js';
-import type { AppConfig, LayoutConfig } from './types/AppConfigs.js';
-import type { NotificationOptions } from './types/AppOptions.js';
+import { ScreenObserver, type ScreenSize } from './internals/ScreenObserver';
+import type { AppConfig, LayoutConfig } from './types/AppConfigs';
+import type { NotificationOptions } from './types/AppOptions';
 
 /**
  * 애플리케이션 전역 상태 및 설정 관리 클래스
@@ -20,6 +20,7 @@ class App {
   private _config?: AppConfig;
   private _layout?: HTMLElement;
   private _router?: Router;
+  private _screen?: ScreenObserver;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {}
@@ -40,12 +41,16 @@ class App {
   public get router(): Router | undefined {
     return this._router;
   }
+  /** 화면 크기 반환 */
+  public get screen(): ScreenSize | undefined {
+    return this._screen?.get();
+  }
   /** 스타일 테마 관리 유틸리티 객체 반환 */
   public get theme() {
     return Theme;
   }
   /** 다국어 로컬라이저(i18next) 반환 */
-  public get localizer() {
+  public get i18n() {
     return i18next;
   }
 
@@ -60,21 +65,28 @@ class App {
     // 초기 테마 설정
     await Theme.init(config.theme);
 
-    // 다국어 초기화
-    if (config.localization) {
-      for (const plugin of config.localization.plugins || []) {
-        i18next.use(plugin);
-      }
-      await i18next.init(config.localization);
+    // 아이콘 경로 설정
+    if (config.iconBasepath) {
+      setDefaultBaseUrl(config.iconBasepath);
     }
 
-    // 화면 크기 초기화
-    window.addEventListener('resize', this.handleWindowResize);
-    this.handleWindowResize(new Event('resize'));
+    // 다국어 초기화
+    if (config.i18n) {
+      for (const plugin of config.i18n.plugins || []) {
+        i18next.use(plugin);
+      }
+      await i18next.init(config.i18n);
+    }
   
     // 레이아웃 생성
     const root = config.root || document.body;
     this._layout = await this.createLayout(root, config.layout);
+
+    // 화면 크기 관찰 시작
+    this._screen = new ScreenObserver({
+      element: root,
+      breakpoints: config.layout.breakpoints || [768, 1024],
+    });
 
     // 라우터 초기화
     this._router = new Router({
@@ -87,8 +99,11 @@ class App {
 
   /** 앱 언로드 */
   public unload(): void {
-    // 이벤트 리스너 제거
-    window.removeEventListener('resize', this.handleWindowResize);
+    // 화면 크기 관찰 중단
+    if (this._screen) {
+      this._screen.destroy();
+      this._screen = undefined;
+    }
 
     // 레이아웃 제거
     if (this._layout) {
@@ -158,12 +173,7 @@ class App {
       document.body.style.height = '100vh';
     }
 
-    // 기존 레이아웃 제거
-    let layout = root.querySelector('[data-layout]') as HTMLElement;
-    if (layout) {
-      root.removeChild(layout);
-    }
-
+    let layout: HTMLElement;
     // Sidebar 레이아웃 생성
     if (config.type === 'sidebar') {
       const { SidebarLayout } = await import('./layouts/SidebarLayout.js');
@@ -175,7 +185,6 @@ class App {
     }
 
     // 레이아웃을 루트에 추가
-    layout.setAttribute('data-layout', 'true');
     root.appendChild(layout);
 
     // 레이아웃이 완전히 렌더링될 때까지 대기
@@ -184,22 +193,6 @@ class App {
     }
     return layout;
   }
-
-  /** 화면 크기 변경 핸들러 */
-  private handleWindowResize = (_: Event): void => {
-    const width = window.innerWidth;
-    const [small, medium] = this._config?.layout.breakpoints || [768, 1024];
-
-    runInAction(() => {
-      if (width < small) {
-        screen.set('small');
-      } else if (width < medium) {
-        screen.set('medium');
-      } else {
-        screen.set('large');
-      }
-    });
-  };
 }
 
 /** 

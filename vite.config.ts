@@ -3,10 +3,12 @@ import { resolve } from 'path'
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
+  publicDir: 'public',
   build: {
     target: 'esnext',
     outDir: 'dist',
     emptyOutDir: true,
+    copyPublicDir: false,
     minify: true,
     lib: {
       entry: [
@@ -21,7 +23,6 @@ export default defineConfig({
       external: [
         /^@iyulab.*/,
         /^lit.*/,
-        /^mobx.*/,
         /^i18next.*/,
       ],
       output: {

@@ -34,15 +34,14 @@
     }
   },
   "scripts": {
-    "start": "vite",
+    "test": "vite",
     "build": "vite build"
   },
   "dependencies": {
     "@iyulab/components": "^0.2.0",
-    "@iyulab/router": "^0.6.0",
+    "@iyulab/router": "^0.6.2",
     "lit": "^3.3.2",
-    "mobx": "^6.15.0",
-    "i18next": "^25.7.4"
+    "i18next": "^25.8.0"
   },
   "devDependencies": {
     "@types/node": "^25.0.9",

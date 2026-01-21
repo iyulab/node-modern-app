@@ -5,13 +5,11 @@ import { DirectiveResult } from 'lit/directive.js';
 import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
 import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
 
-import { app } from '../App.js';
-import type { StyleMap } from '../types/AppTypes.js';
-import { ExtendedBaseElement } from '../internals/ExtendedBaseElement.js';
+import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { SidebarLink, type SidebarLinkConfig } from './SidebarLink.js';
 import { styles } from './SidebarGroup.styles.js';
 
-type ElementParts = 'host' | 'container' | 'base' | 'icon' | 'label' | 'toggler' | 'items';
+type ElementParts = 'host' | 'header' | 'icon' | 'label' | 'caret' | 'items';
 
 /** 그룹: 하위 링크들 묶음 */
 export interface SidebarGroupConfig {
@@ -27,7 +25,7 @@ export interface SidebarGroupConfig {
 /**
  * SidebarGroup 컴포넌트는 네비게이션 그룹 아이템을 표시합니다.
  */
-export class SidebarGroup extends ExtendedBaseElement<ElementParts> {
+export class SidebarGroup extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
   static dependencies: Record<string, typeof BaseElement> = {
     'u-icon': UIcon
@@ -35,6 +33,8 @@ export class SidebarGroup extends ExtendedBaseElement<ElementParts> {
 
   /** 콤팩트 모드 여부 */
   @property({ type: Boolean, reflect: true }) compact: boolean = false;
+  /** 선택된 상태 */
+  @property({ type: Boolean, reflect: true }) selected: boolean = false;
   /** collapsed 상태 */
   @property({ type: Boolean, reflect: true }) collapsed: boolean = true;
   /** 네비게이션 아이템 데이터 */
@@ -44,25 +44,26 @@ export class SidebarGroup extends ExtendedBaseElement<ElementParts> {
   
   render() {
     return html`
-      <div class="container" part="container">
-        <button part="base"
-          @click=${this.handleButtonClick}>
-          <u-icon class="icon" part="icon"
-            ?hidden=${!this.icon}
-            .name=${this.icon}
-          ></u-icon>
-          <span class="label" part="label">
-            ${this.label}
-          </span>
-          <u-icon class="toggler" part="toggler"
-            lib="internal"
-            name="chevron-down"
-          ></u-icon>
-        </button>
-        
-        <div class="items" part="items">
-          <slot></slot>
-        </div>
+      <button part="header"
+        ?compact=${this.compact}
+        ?selected=${this.selected}
+        @click=${this.handleButtonClick}>
+        <u-icon class="icon" part="icon" ?hidden=${!this.icon}
+          .name=${this.icon}
+        ></u-icon>
+        <span class="label" part="label" ?hidden=${this.compact}>
+          ${this.label}
+        </span>
+        <u-icon class="caret" part="caret" ?hidden=${this.compact}
+          ?collapsed=${this.collapsed}
+          lib="internal"
+          name="chevron-down"
+        ></u-icon>
+      </button>
+      
+      <div class="items" part="items" ?hidden=${this.compact}
+        ?collapsed=${this.collapsed}>
+        <slot></slot>
       </div>
     `;
   }
@@ -70,9 +71,10 @@ export class SidebarGroup extends ExtendedBaseElement<ElementParts> {
   /** 버튼 클릭 핸들러 */
   private handleButtonClick = (_: MouseEvent) => {
     if (this.compact) {
-      const link = this.shadowRoot?.querySelector('slot')?.assignedElements({ flatten: true })
+      const slink = this.shadowRoot?.querySelector('slot')?.assignedElements({ flatten: true })
         .find(el => el instanceof SidebarLink) as SidebarLink | undefined;
-      app.navigate(link?.href || '/');
+      const ulink = slink?.renderRoot.querySelector('u-link') as HTMLElement | undefined;
+      ulink?.click(); 
     } else {
       this.collapsed = !this.collapsed;
     }
