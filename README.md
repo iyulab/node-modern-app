@@ -10,6 +10,24 @@ For complete examples and documentation, visit our demo site: [https://modern-ap
 npm install @iyulab/modern-app
 ```
 
+## Architecture
+
+`@iyulab/modern-app` is a **client-side SPA framework** built on Lit Element. It is designed for:
+
+✅ **Suitable for:**
+- Single Page Applications (SPA)
+- Admin dashboards and internal tools
+- Progressive Web Apps (PWA)
+- Projects where SEO is not a primary concern
+
+❌ **Not suitable for:**
+- Server-Side Rendering (SSR) frameworks (Next.js, Nuxt, SvelteKit, etc.)
+- Static Site Generation (SSG)
+- SEO-critical public-facing pages
+- Projects requiring initial HTML content for search engines
+
+This is by design — Lit components render on the client side. If you need SSR capabilities, consider using Lit's experimental SSR support separately or choose a framework designed for SSR from the start.
+
 ## Quick Start
 
 ```typescript
