@@ -41,8 +41,7 @@
     "@iyulab/components": "^0.3.0",
     "@iyulab/router": "^0.7.2",
     "i18next": "^25.8.13",
-    "lit": "^3.3.2",
-    "quill": "2.0.3"
+    "lit": "^3.3.2"
   },
   "devDependencies": {
     "@types/node": "^25.3.0",
