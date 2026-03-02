@@ -1,8 +1,8 @@
-import { html } from 'lit';
+﻿import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
-import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
+import { UElement } from '@iyulab/components/dist/components/UElement.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarLinkConfig } from './SidebarLink.js';
 import type { SidebarGroupConfig } from './SidebarGroup.js';
@@ -24,7 +24,7 @@ export interface SidebarSectionConfig {
  */
 export class SidebarSection extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof BaseElement> = {};
+  static dependencies: Record<string, typeof UElement> = {};
 
   /** 콤팩트 모드 여부 */
   @property({ type: Boolean }) compact = false;

@@ -1,8 +1,8 @@
-import { html } from 'lit';
+﻿import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
-import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
+import { UElement } from '@iyulab/components/dist/components/UElement.js';
 import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
 
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
@@ -27,7 +27,7 @@ export interface SidebarGroupConfig {
  */
 export class SidebarGroup extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof BaseElement> = {
+  static dependencies: Record<string, typeof UElement> = {
     'u-icon': UIcon
   };
 

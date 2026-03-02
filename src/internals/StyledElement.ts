@@ -1,7 +1,7 @@
-import { PropertyValues } from "lit";
+﻿import { PropertyValues } from "lit";
 import { property } from "lit/decorators.js";
 
-import { BaseElement } from "@iyulab/components/dist/components/BaseElement.js";
+import { UElement } from "@iyulab/components/dist/components/UElement.js";
 
 /** 스타일 값 타입 */
 export type StyleValue = Record<string, string> | Partial<CSSStyleDeclaration>;
@@ -12,9 +12,9 @@ export type StyleMap<T extends string> = Partial<Record<T, StyleValue>>;
 /**
  * StyledBaseElement - BaseElement의 확장으로 부분별 스타일링 기능 추가
  */
-export class StyledElement<T extends string> extends BaseElement {
+export class StyledElement<T extends string> extends UElement {
   static styles = super.styles;
-  static dependencies: Record<string, typeof BaseElement> = {};
+  static dependencies: Record<string, typeof UElement> = {};
   
   /** 부분별 스타일 구성 */
   @property({ type: Object, attribute: false }) styles?: StyleMap<T>;

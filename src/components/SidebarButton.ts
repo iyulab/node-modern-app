@@ -1,8 +1,8 @@
-import { html } from 'lit';
+﻿import { html } from 'lit';
 import { property } from 'lit/decorators.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
-import { BaseElement } from '@iyulab/components/dist/components/BaseElement.js';
+import { UElement } from '@iyulab/components/dist/components/UElement.js';
 import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { styles } from './SidebarButton.styles.js';
@@ -24,7 +24,7 @@ export interface SidebarButtonConfig {
  */
 export class SidebarButton extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof BaseElement> = {
+  static dependencies: Record<string, typeof UElement> = {
     'u-icon': UIcon
   };
 
