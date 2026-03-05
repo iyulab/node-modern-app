@@ -1,11 +1,10 @@
 {
   "name": "@iyulab/modern-app",
-  "description": "web-framework by iyulab based on react, lit-element",
-  "version": "0.3.0",
+  "description": "web-framework by iyulab based on lit-element",
+  "version": "0.3.1",
   "keywords": [
     "iyulab",
     "web-framework",
-    "react",
     "lit-element"
   ],
   "license": "MIT",
@@ -39,7 +38,7 @@
   },
   "dependencies": {
     "@iyulab/components": "^0.4.0",
-    "@iyulab/router": "^0.7.2",
+    "@iyulab/router": "^0.7.4",
     "i18next": "^25.8.13",
     "lit": "^3.3.2"
   },

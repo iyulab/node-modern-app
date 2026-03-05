@@ -1,4 +1,4 @@
-import type { ScreenPosition } from "@iyulab/components/dist/utilities/notifier.js";
+import type { ScreenPosition } from "@iyulab/components/dist/utilities/Notifier.js";
 
 // 알림 옵션
 export interface NotificationOptions {

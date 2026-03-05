@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.3.1 (2026-03-05)
+
+### Breaking Changes
+- **Slot 기반 Outlet 구조**: `SidebarLayout` 내부의 `<u-outlet>`을 `<slot>`으로 변경하고, `App`에서 Light DOM에 `<u-outlet>`을 추가하는 방식으로 전환. 이를 통해 React 라우팅 시 외부 CSS가 정상적으로 적용됨
+
+### Changes
+- **BaseElement → UElement 마이그레이션**: 모든 컴포넌트의 기반 클래스를 `BaseElement`에서 `UElement`로 변경
+- **SidebarLinkConfig**: `type` 속성을 optional에서 required로 변경
+- **import 경로 수정**: `Theme.js`, `Notifier.js` 등 대소문자 교정
+
+### Dependencies
+- `@iyulab/components` ^0.2.0 → ^0.4.0
+- `@iyulab/router` ^0.6.2 → ^0.7.2
+- `i18next` ^25.8.0 → ^25.8.13
+- `@types/node` ^25.0.9 → ^25.3.2
+
+### Fixes
+- `SidebarButton.styles.ts`에서 중복된 `color` 속성 제거
+- `repeat` 디렉티브의 미사용 콜백 파라미터 정리
+
 ## 0.3.0 (2026-01-21)
 
 ### Breaking Changes

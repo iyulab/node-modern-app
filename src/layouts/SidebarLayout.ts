@@ -151,16 +151,16 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
         <!-- Sidebar Navigation Menu -->
         <nav class="sidebar-main" part="sidebar-main" scrollable>
-          ${repeat(this.config.main ?? [], 
+          ${repeat(this.config.main ?? [],
             (_, idx) => idx,
-            (item, _) => this.renderItem(item))}
+            (item) => this.renderItem(item))}
         </nav>
 
         <!-- Sidebar Footer -->
         <div class="sidebar-footer" part="sidebar-footer">
-          ${repeat(this.config.footer ?? [], 
+          ${repeat(this.config.footer ?? [],
             (_, idx) => idx,
-            (item, _) => this.renderItem(item))}
+            (item) => this.renderItem(item))}
         </div>
       </aside>
 
@@ -168,7 +168,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       <div class="main" part="main" scrollable>
         <u-progress-bar part="progress"></u-progress-bar>
 
-        <u-outlet></u-outlet>
+        <slot></slot>
       </div>
 
       <!-- Backdrop for modal state -->
@@ -217,9 +217,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .mainTitle="${item.title}"
           .subTitle="${item.subTitle}"
           .styles="${item.styles as any}">
-          ${repeat(item.items, 
+          ${repeat(item.items,
             (_, idx) => idx,
-            (subItem, _) => this.renderItem(subItem))}
+            (subItem) => this.renderItem(subItem))}
         </u-sidebar-section>
       `;
     } else if(item.type === 'group') {
@@ -232,9 +232,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .icon="${item.icon}"
           .label="${item.label}"
           .styles="${item.styles as any}">
-          ${repeat(item.items, 
+          ${repeat(item.items,
             (_, idx) => idx,
-            (subItem, _) => this.renderItem(subItem))}
+            (subItem) => this.renderItem(subItem))}
         </u-sidebar-group>
       `;
     } else {

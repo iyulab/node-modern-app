@@ -1,6 +1,6 @@
 import type { InitOptions, Module, Newable, NewableModule } from "i18next";
 import type { RouteConfig, FallbackRouteConfig } from "@iyulab/router";
-import type { ThemeInitOptions } from "@iyulab/components/dist/utilities/theme.js";
+import type { ThemeInitOptions } from "@iyulab/components/dist/utilities/Theme.js";
 import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
 
 /** 

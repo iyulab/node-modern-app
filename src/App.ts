@@ -88,6 +88,10 @@ class App {
       breakpoints: config.layout.breakpoints || [768, 1024],
     });
 
+    // Outlet을 Light DOM에 추가 (외부 CSS 적용 가능)
+    const outlet = document.createElement('u-outlet');
+    this._layout.appendChild(outlet);
+
     // 라우터 초기화
     this._router = new Router({
       root: this._layout,

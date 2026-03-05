@@ -5,7 +5,6 @@ export const styles = css`
     display: block;
     width: 100%;
     color: var(--u-txt-color);
-    color: var(--u-neutral-800);
     background-color: transparent;
     border: none;
     border-radius: 8px;
