@@ -32,18 +32,6 @@ declare global {
   }
 }
 
-// 아이콘 등록
-import { IconRegistry } from '@iyulab/components/dist/utilities/IconRegistry.js';
-IconRegistry.register('sidebar-app', (name) => {
-  return name === 'layout-sidebar' 
-    ? `<svg viewBox="0 0 16 16"><path d="M0 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm5-1v12h9a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1zM4 2H2a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h2z"/></svg>`
-    : name === 'list' 
-    ? `<svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H2a1 1 0 0 1-1-1 m0 5a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H2a1 1 0 0 1-1-1 m0 5a1 1 0 0 1 1-1h12a1 1 0 0 1 0 2H2a1 1 0 0 1-1-1"/></svg>`
-    : name === 'x-lg'
-    ? `<svg viewBox="0 0 16 16"><path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/></svg>`
-    : ``;
-});
-
 /**
  * 반응형 사이드바 레이아웃 컴포넌트
  * 
@@ -123,7 +111,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         <u-button class="toggler"
           @click=${this.handleToggleButtonClick}>
           <u-icon 
-            lib="sidebar-app" 
+            lib="bootstrap" 
             name=${this.state === 'mobile-open' ? 'x-lg' : 'list'}
           ></u-icon>
         </u-button>
@@ -143,7 +131,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           <u-button class="toggler"
             @click=${this.handleToggleButtonClick}>
             <u-icon 
-              lib="sidebar-app" 
+              lib="bootstrap" 
               name="layout-sidebar"
             ></u-icon>
           </u-button>

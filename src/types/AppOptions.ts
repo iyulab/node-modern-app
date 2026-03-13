@@ -1,10 +1,10 @@
-import type { ScreenPosition } from "@iyulab/components/dist/utilities/Notifier.js";
+import type { ToastPosition } from "@iyulab/components/dist/utilities/Toast.js";
 
 // 알림 옵션
 export interface NotificationOptions {
   title?: string;
   duration?: number;
-  position?: ScreenPosition;
+  position?: ToastPosition;
 }
 
 // 대화상자 옵션
