@@ -4,7 +4,7 @@ import { Router } from '@iyulab/router';
 import { setDefaultBaseUrl } from '@iyulab/components/dist/utilities/IconRegistry.js';
 import { Theme } from '@iyulab/components/dist/utilities/Theme.js';
 import { Notifier } from '@iyulab/components/dist/utilities/Notifier.js';
-import type { AlertType } from '@iyulab/components/dist/components/alert/UAlert.component.js';
+import type { AlertVariant } from '@iyulab/components/dist/components/alert/UAlert.component.js';
 
 import { ScreenObserver, type ScreenSize } from './internals/ScreenObserver';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs';
@@ -158,9 +158,9 @@ class App {
   }
 
   /** 알림 표시 */
-  private async notify(type: AlertType, message: string, options?: NotificationOptions): Promise<void> {
+  private async notify(variant: AlertVariant, message: string, options?: NotificationOptions): Promise<void> {
     await Notifier.toast({
-      type: type,
+      variant: variant,
       content: message,
       heading: options?.title,
       duration: options?.duration || 3000,
