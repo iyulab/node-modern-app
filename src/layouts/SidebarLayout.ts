@@ -87,8 +87,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     super.disconnectedCallback();
   }
 
-  protected updated(changedProperties: PropertyValues): void {
-    super.updated(changedProperties);
+  protected willUpdate(changedProperties: PropertyValues): void {
+    super.willUpdate(changedProperties);
 
     if (changedProperties.has('config')) {
       this.styles = this.config?.styles;
