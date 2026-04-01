@@ -1,0 +1,121 @@
+# Routing
+
+`@iyulab/modern-app` uses `@iyulab/router` under the hood. Routes are declared as plain objects passed to `app.load()`.
+
+---
+
+## `RouteConfig`
+
+```typescript
+interface RouteConfig {
+  /** Match the root path — equivalent to `path: ''`. */
+  index?: boolean;
+
+  /**
+   * Path string. Segments starting with `:` are captured as named params.
+   * Example: `'users/:id'`, `'org/:orgId/repo/:repoId'`
+   */
+  path?: string;
+
+  /** Set `document.title` when the route activates. */
+  title?: string;
+
+  /** Force a re-render even when the path has not changed. */
+  force?: boolean;
+
+  /** Render function. May be async. Must return a Lit `TemplateResult`. */
+  render: (context: RouteContext) => TemplateResult | Promise<TemplateResult>;
+}
+```
+
+---
+
+## `RouteContext`
+
+The `render` function receives a `RouteContext` on every navigation:
+
+```typescript
+interface RouteContext {
+  /** Full URL string of the current page. */
+  href: string;
+
+  /** Pathname portion of the URL (after origin, before query string). */
+  pathname: string;
+
+  /** The `basepath` value configured in `AppConfig`. */
+  basepath: string;
+
+  /** Named URL parameters extracted from the path pattern. */
+  params: Record<string, string>;
+
+  /**
+   * Report loading progress (0–100).
+   * Drives the linear progress bar in the layout header.
+   * Call with 100 (or any final value) to dismiss the bar.
+   */
+  progress: (value: number) => void;
+}
+```
+
+---
+
+## Examples
+
+### Static route
+
+```typescript
+{ path: 'about', render: () => html`<about-page></about-page>` }
+```
+
+### Route with URL params
+
+```typescript
+{
+  path: 'users/:id',
+  render: (ctx) => html`<user-detail .userId=${ctx.params.id}></user-detail>`,
+}
+```
+
+### Async route with progress
+
+```typescript
+{
+  path: 'dashboard',
+  title: 'Dashboard',
+  render: async (ctx) => {
+    ctx.progress(20);
+    const stats = await fetchStats();
+    ctx.progress(100);
+    return html`<dashboard-page .stats=${stats}></dashboard-page>`;
+  },
+}
+```
+
+### Index route
+
+```typescript
+{ index: true, render: () => html`<home-page></home-page>` }
+```
+
+### Fallback (404 / error)
+
+```typescript
+fallback: {
+  render: (ctx) => html`<error-page .error=${ctx.error}></error-page>`,
+}
+```
+
+---
+
+## Programmatic navigation
+
+```typescript
+// Preferred shorthand
+app.navigate('/users/42');
+
+// Direct router access
+app.router?.go('/users/42');
+app.router?.basepath;   // configured base path
+app.router?.context;    // current RouteContext
+app.router?.routes;     // registered RouteConfig array
+```

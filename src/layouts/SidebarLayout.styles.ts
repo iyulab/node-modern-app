@@ -151,14 +151,25 @@ export const styles = css`
   }
 
   .main u-progress-bar {
+    --progress-bar-height: 4px;
+    --progres-bar-track-color: transparent;
+    
     position: absolute;
     z-index: 100;
     top: 0;
     left: 0;
     right: 0;
-    height: 4px;
-    border-radius: 0;
-    background-color: transparent;
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  .main u-progress-bar[visible] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .main u-progress-bar[error] {
+    --progress-bar-color: var(--u-red-500);
   }
 
   /* Backdrop for modal mode */

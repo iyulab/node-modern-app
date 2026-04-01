@@ -1,8 +1,6 @@
-# Modern App
+# @iyulab/modern-app
 
-A modern web application framework by iyulab, built on React and Lit Element.
-
-For complete examples and documentation, visit our demo site: [https://modern-app.iyulab.com](https://modern-app.iyulab.com)
+A client-side SPA framework built on [Lit Element](https://lit.dev/) by iyulab. It bundles routing, a responsive sidebar layout, theme management, toast notifications, and i18n into a single `app` singleton.
 
 ## Installation
 
@@ -10,166 +8,118 @@ For complete examples and documentation, visit our demo site: [https://modern-ap
 npm install @iyulab/modern-app
 ```
 
-## Architecture
+## When to use it
 
-`@iyulab/modern-app` is a **client-side SPA framework** built on Lit Element. It is designed for:
-
-✅ **Suitable for:**
-- Single Page Applications (SPA)
-- Admin dashboards and internal tools
-- Progressive Web Apps (PWA)
-- Projects where SEO is not a primary concern
-
-❌ **Not suitable for:**
-- Server-Side Rendering (SSR) frameworks (Next.js, Nuxt, SvelteKit, etc.)
-- Static Site Generation (SSG)
-- SEO-critical public-facing pages
-- Projects requiring initial HTML content for search engines
-
-This is by design — Lit components render on the client side. If you need SSR capabilities, consider using Lit's experimental SSR support separately or choose a framework designed for SSR from the start.
+| ✅ Good fit | ❌ Not a good fit |
+|-------------|-----------------|
+| Single Page Applications (SPA) | SSR frameworks (Next.js, Nuxt, SvelteKit) |
+| Admin dashboards and internal tools | Static Site Generation (SSG) |
+| Progressive Web Apps (PWA) | SEO-critical public-facing pages |
 
 ## Quick Start
 
 ```typescript
 import { app } from '@iyulab/modern-app';
+import { html } from 'lit';
 
 await app.load({
   basepath: '/',
   layout: {
     type: 'sidebar',
-    // ...layout configuration
+    logo: '/assets/logo.svg',
+    title: 'My App',
+    main: [
+      { type: 'link', icon: 'home',  label: 'Home',  href: '/' },
+      { type: 'link', icon: 'users', label: 'Users', href: '/users' },
+    ],
   },
   routes: [
-    { index: true, render: () => html`<home-page></home-page>` },
-    { path: 'about', render: () => html`<about-page></about-page>` },
+    { index: true,       render: () => html`<home-page></home-page>` },
+    { path: 'users',     render: () => html`<users-page></users-page>` },
+    { path: 'users/:id', render: (ctx) => html`<user-detail .userId=${ctx.params.id}></user-detail>` },
   ],
+  fallback: {
+    render: (ctx) => html`<error-page .error=${ctx.error}></error-page>`,
+  },
+  theme: { default: 'system' },
 });
 ```
 
-## API Reference
+## Skills Usage
+
+AI agent skills for this package are located in `skills/modern-app/`. Install them with `npx skills`:
+
+**From GitHub:**
+```bash
+npx skills add iyulab/node-modern-app
+```
+
+**From local `node_modules`:**
+```bash
+npx skills add ./node_modules/@iyulab/modern-app
+```
+
+## Core API
 
 ### Navigation
 
 ```typescript
-// Navigate to a path
-app.navigate('/path');
-
-// Access router instance
-app.router?.go('/path');
-app.router?.basepath;   // Get base path
-app.router?.routes;     // Get registered routes
-app.router?.context;    // Get current route context
+app.navigate('/users/42');     // push a route
+app.router?.go('/users/42');   // via router instance
+app.router?.context;           // current RouteContext
 ```
 
-### Theme Management
+### Theme
 
 ```typescript
-// Get current theme
-app.theme.get();  // Returns: 'system' | 'light' | 'dark' | undefined
-
-// Set theme
-app.theme.set('dark');   // 'system' | 'light' | 'dark'
-
-// Check initialization status
-app.theme.isInitialized;
+app.theme.get();         // 'system' | 'light' | 'dark' | undefined
+app.theme.set('dark');
+app.theme.isInitialized; // boolean
 ```
 
 ### Notifications
 
 ```typescript
-// Display notifications (returns Promise<void>)
-await app.notice('Notice message');
+await app.success('Saved!', { title: 'Done', duration: 4000, position: 'top-right' });
+await app.error('Something went wrong');
 await app.info('Info message');
-await app.success('Success message');
-await app.warning('Warning message');
-await app.error('Error message');
+await app.warning('Double-check this');
+await app.notice('Neutral notice');
+```
 
-// With options
-await app.success('Saved!', {
-  title: 'Success',
-  duration: 5000,  // milliseconds (default: 3000)
-  position: 'top-right'  // 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left'
+### Localization (i18next)
+
+```typescript
+// Pass i18next plugins and InitOptions
+await app.load({
+  // ...
+  i18n: {
+    plugins: [i18nextHttpBackend],
+    lng: 'en',
+    backend: { loadPath: '/locales/{{lng}}/{{ns}}.json' },
+  },
 });
-```
 
-### Localization
+// Access i18next
+app.i18n.t('common::greeting');
+app.i18n.changeLanguage('ko');
 
-```typescript
-// Access i18next instance
-app.localizer;  // i18next instance
-
-// Usage with lit-i18n
+// Reactive translations in Lit templates
 import { translate } from 'lit-i18n';
-html`<p>${translate('namespace::key')}</p>`;
+html`<p>${translate('common::greeting')}</p>`;
 ```
 
-## Configuration
+## Documentation
 
-### AppConfig
-
-```typescript
-interface AppConfig {
-  root?: Element;              // Root element (default: document.body)
-  basepath?: string;           // Base path for routing (default: '/')
-  routes: RouteConfig[];       // Route definitions
-  fallback?: FallbackConfig;   // Error fallback route
-  theme?: ThemeInitOptions;    // Theme configuration
-  localization?: i18next.InitOptions;  // i18next options
-  layout: LayoutConfig;        // Layout configuration
-}
-```
-
-### Theme Options
-
-```typescript
-interface ThemeInitOptions {
-  default?: 'system' | 'light' | 'dark';  // Default theme
-  debug?: boolean;                         // Enable debug logging
-  store?: false | {                        // Persist theme preference
-    type: 'cookie' | 'localStorage' | 'sessionStorage';
-    prefix?: string;
-  };
-  useBuiltIn?: boolean;  // Use built-in styles (default: true)
-}
-```
-
-### Layout Configuration (Sidebar)
-
-```typescript
-interface SidebarLayoutConfig {
-  type: 'sidebar';
-  breakpoints?: [number, number];  // [small, medium] (default: [768, 1024])
-  logo?: {
-    type: 'icon' | 'image';
-    icon?: string;
-    src?: string;
-    label?: string;
-    onClick?: () => void;
-  };
-  menu?: MenuItem[];     // Navigation menu items
-  footer?: FooterItem[]; // Footer buttons/items
-}
-```
-
-### Route Configuration
-
-```typescript
-interface RouteConfig {
-  index?: boolean;           // Index route
-  path?: string;             // Route path (supports :param patterns)
-  title?: string;            // Document title
-  force?: boolean;           // Force re-render
-  render: (context: RouteContext) => RenderResult | Promise<RenderResult>;
-}
-
-interface RouteContext {
-  href: string;              // Full URL
-  pathname: string;          // Path portion
-  basepath: string;          // Base path
-  params: Record<string, string>;  // URL parameters
-  progress: (value: number) => void;  // Progress callback (0-100)
-}
-```
+| Guide | Description |
+|-------|-------------|
+| [getting-started.md](./docs/getting-started.md) | Bootstrap, architecture, entry point setup |
+| [routing.md](./docs/routing.md) | Route config, URL params, async routes, progress |
+| [layout.md](./docs/layout.md) | Sidebar layout, all menu item types, responsive behaviour |
+| [theme.md](./docs/theme.md) | Theme init, runtime switching, CSS tokens |
+| [notifications.md](./docs/notifications.md) | Toast methods and options |
+| [i18n.md](./docs/i18n.md) | i18next setup, plugins, lit-i18n usage |
+| [configuration.md](./docs/configuration.md) | Full TypeScript interface reference |
 
 ## License
 

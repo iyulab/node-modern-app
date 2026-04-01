@@ -1,11 +1,19 @@
 # Changelog
 
+## 0.3.4 (2026-04-01)
+
+### Features
+- Progress bar now fades in/out with CSS transition on route begin/done
+- Progress bar shows error state (red) on `route-error` and auto-dismisses
+
+### Documentation
+- Added `docs/` topic guides and `skills/modern-app/` agent skill package
+- Rewrote `README.md` with accurate API and links to docs/skills
+
 ## 0.3.3 (2026-04-01)
 
 ### Fixes
-- **Sidebar 컴포넌트 customElement 등록명 수정**: `sidebar-*` → `u-sidebar-*` 접두사 추가
-  - `SidebarButton`, `SidebarGroup`, `SidebarLink`, `SidebarSection` 4개 컴포넌트
-  - `SidebarLayout` 템플릿에서 `u-sidebar-*`로 참조하지만 등록은 `sidebar-*`로 되어 있어 렌더링 안 되던 버그 수정
+- Fixed missing `u-` prefix in `customElement` registration for `SidebarButton`, `SidebarGroup`, `SidebarLink`, and `SidebarSection` — components were referenced as `u-sidebar-*` in the template but registered as `sidebar-*`, causing them not to render
 
 ## 0.3.2 (2026-04-01)
 

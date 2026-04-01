@@ -10,7 +10,7 @@ import '../components/SidebarButton';
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import '@iyulab/components/dist/components/button/UButton.js';
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
-import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
+import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent, RouteErrorEvent } from '@iyulab/router';
 import { app } from '../App.js';
 import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
 import { StyledElement } from '../internals/StyledElement.js';
@@ -52,6 +52,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     window.addEventListener('route-begin', this.handleRouteBegin);
     window.addEventListener('route-done', this.handleRouteDone);
     window.addEventListener('route-progress', this.handleRouteProgress);
+    window.addEventListener('route-error', this.handleRouteError);
     window.addEventListener('screen-resize', this.handleScreenResize);
   }
 
@@ -59,6 +60,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     window.removeEventListener('route-begin', this.handleRouteBegin);
     window.removeEventListener('route-done', this.handleRouteDone);
     window.removeEventListener('route-progress', this.handleRouteProgress);
+    window.removeEventListener('route-error', this.handleRouteError);
     window.removeEventListener('screen-resize', this.handleScreenResize);
     super.disconnectedCallback();
   }
@@ -245,6 +247,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** 라우트 변경 시작 핸들러 */
   private handleRouteBegin = (event: RouteBeginEvent) => {
+    this.progressBarEl.setAttribute('visible', '');
     this.progressBarEl.value = 0;
     if (this.state === 'modal') {
       this.state = 'slim';
@@ -263,6 +266,19 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   /** 라우트 변경 완료 핸들러 */
   private handleRouteDone = (_: RouteDoneEvent) => {
     this.progressBarEl.value = 100;
+    setTimeout(() => {
+      this.progressBarEl.removeAttribute('visible');
+    }, 300);
+  }
+
+  /** 라우트 에러 핸들러 */
+  private handleRouteError = (_: RouteDoneEvent) => {
+    this.progressBarEl.setAttribute('error', '');
+    this.progressBarEl.value = 100;
+    setTimeout(() => {
+      this.progressBarEl.removeAttribute('visible');
+      this.progressBarEl.removeAttribute('error');
+    }, 300);
   }
 
   /** 화면 크기 변경에 따른 사이드바 상태 업데이트 */
