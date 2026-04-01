@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.3 (2026-04-01)
+
+### Fixes
+- **Sidebar 컴포넌트 customElement 등록명 수정**: `sidebar-*` → `u-sidebar-*` 접두사 추가
+  - `SidebarButton`, `SidebarGroup`, `SidebarLink`, `SidebarSection` 4개 컴포넌트
+  - `SidebarLayout` 템플릿에서 `u-sidebar-*`로 참조하지만 등록은 `sidebar-*`로 되어 있어 렌더링 안 되던 버그 수정
+
 ## 0.3.2 (2026-04-01)
 
 ### Breaking Changes

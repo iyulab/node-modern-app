@@ -22,7 +22,7 @@ export interface SidebarLinkConfig {
  * SidebarLink 컴포넌트는 계층형 네비게이션 아이템을 표시합니다.
  * 아이콘, 레이블, 하위 아이템을 지원합니다.
  */
-@customElement('sidebar-link')
+@customElement('u-sidebar-link')
 export class SidebarLink extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
 

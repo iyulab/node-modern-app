@@ -21,7 +21,7 @@ export interface SidebarSectionConfig {
 /**
  * SidebarSection 컴포넌트는 사이드바의 섹션 헤더를 표시합니다.
  */
-@customElement('sidebar-section')
+@customElement('u-sidebar-section')
 export class SidebarSection extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
 

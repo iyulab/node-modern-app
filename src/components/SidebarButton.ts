@@ -21,7 +21,7 @@ export interface SidebarButtonConfig {
 /**
  * SidebarButton 컴포넌트는 사이드바 내의 버튼을 표시합니다.
  */
-@customElement('sidebar-button')
+@customElement('u-sidebar-button')
 export class SidebarButton extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
 

@@ -23,7 +23,7 @@ export interface SidebarGroupConfig {
 /**
  * SidebarGroup 컴포넌트는 네비게이션 그룹 아이템을 표시합니다.
  */
-@customElement('sidebar-group')
+@customElement('u-sidebar-group')
 export class SidebarGroup extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
 
