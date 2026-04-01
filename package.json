@@ -37,7 +37,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "@iyulab/components": "^0.4.0",
+    "@iyulab/components": "^1.0.0",
     "@iyulab/router": "^0.7.4",
     "i18next": "^25.10.10",
     "lit": "^3.3.2"

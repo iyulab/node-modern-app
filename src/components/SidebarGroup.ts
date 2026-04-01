@@ -1,10 +1,8 @@
 ﻿import { html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
-import { UElement } from '@iyulab/components/dist/components/UElement.js';
-import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
-
+import '@iyulab/components/dist/components/icon/UIcon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { SidebarLink, type SidebarLinkConfig } from './SidebarLink.js';
 import { styles } from './SidebarGroup.styles.js';
@@ -25,11 +23,9 @@ export interface SidebarGroupConfig {
 /**
  * SidebarGroup 컴포넌트는 네비게이션 그룹 아이템을 표시합니다.
  */
+@customElement('sidebar-group')
 export class SidebarGroup extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof UElement> = {
-    'u-icon': UIcon
-  };
 
   /** 콤팩트 모드 여부 */
   @property({ type: Boolean, reflect: true }) compact: boolean = false;

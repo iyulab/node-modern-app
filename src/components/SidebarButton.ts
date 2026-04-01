@@ -1,9 +1,8 @@
 ﻿import { html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
-import { UElement } from '@iyulab/components/dist/components/UElement.js';
-import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
+import '@iyulab/components/dist/components/icon/UIcon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { styles } from './SidebarButton.styles.js';
 
@@ -22,11 +21,9 @@ export interface SidebarButtonConfig {
 /**
  * SidebarButton 컴포넌트는 사이드바 내의 버튼을 표시합니다.
  */
+@customElement('sidebar-button')
 export class SidebarButton extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof UElement> = {
-    'u-icon': UIcon
-  };
 
   /** 콤팩트 모드 여부 */
   @property({ type: Boolean, reflect: true }) compact = false;

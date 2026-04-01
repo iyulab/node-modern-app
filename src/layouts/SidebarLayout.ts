@@ -3,34 +3,19 @@ import { customElement, property, query, state } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { repeat } from 'lit/directives/repeat.js';
 
+import '../components/SidebarSection';
+import '../components/SidebarGroup';
+import '../components/SidebarLink';
+import '../components/SidebarButton';
+import '@iyulab/components/dist/components/icon/UIcon.js';
+import '@iyulab/components/dist/components/button/UButton.js';
+import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
 import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
-import { UElement } from '@iyulab/components/dist/components/UElement.js';
-import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
-import { UButton } from '@iyulab/components/dist/components/button/UButton.component.js';
-import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.component.js';
-
 import { app } from '../App.js';
 import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
 import { StyledElement } from '../internals/StyledElement.js';
-import { SidebarSection } from '../components/SidebarSection';
-import { SidebarGroup } from '../components/SidebarGroup';
-import { SidebarLink } from '../components/SidebarLink';
-import { SidebarButton } from '../components/SidebarButton';
 import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
 import { styles } from './SidebarLayout.styles.js';
-
-/** 엘리먼트 타입 매핑 (for devevelop experience) */
-declare global {
-  interface HTMLElementTagNameMap {
-    'u-icon': UIcon;
-    'u-button': UButton;
-    'u-progress-bar': UProgressBar;
-    'u-sidebar-section': SidebarSection;
-    'u-sidebar-group': SidebarGroup;
-    'u-sidebar-link': SidebarLink;
-    'u-sidebar-button': SidebarButton;
-  }
-}
 
 /**
  * 반응형 사이드바 레이아웃 컴포넌트
@@ -50,25 +35,16 @@ declare global {
 @customElement('u-sidebar-layout')
 export class SidebarLayout extends StyledElement<SidebarParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof UElement> = {
-    'u-icon': UIcon,
-    'u-button': UButton,
-    'u-progress-bar': UProgressBar,
-    'u-sidebar-section': SidebarSection,
-    'u-sidebar-group': SidebarGroup,
-    'u-sidebar-link': SidebarLink,
-    'u-sidebar-button': SidebarButton,
-  };
+
+  /** 사이드바 상태 */
+  @property({ type: String, reflect: true }) state: SidebarState = 'default';
+  /** 사이드바 레이아웃 설정 */
+  @property({ type: Object }) config?: SidebarLayoutConfig;
 
   @query('u-progress-bar') progressBarEl!: UProgressBar;
 
   /** 현재 라우터 컨텍스트 */
   @state() context: RouteContext | null = null;
-  
-  /** 사이드바 상태 */
-  @property({ type: String, reflect: true }) state: SidebarState = 'default';
-  /** 사이드바 레이아웃 설정 */
-  @property({ type: Object }) config?: SidebarLayoutConfig;
 
   connectedCallback() {
     super.connectedCallback();

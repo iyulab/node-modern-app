@@ -4,7 +4,6 @@ import { Router } from '@iyulab/router';
 import { setDefaultBaseUrl } from '@iyulab/components/dist/utilities/icons.js';
 import { Theme } from '@iyulab/components/dist/utilities/Theme.js';
 import { Toast } from '@iyulab/components/dist/utilities/Toast.js';
-import type { AlertStatus } from '@iyulab/components/dist/components/alert/UAlert.component.js';
 
 import { ScreenObserver, type ScreenSize } from './internals/ScreenObserver';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs';
@@ -134,36 +133,27 @@ class App {
 
   /** 공지 메시지 */
   public async notice(message: string, options?: NotificationOptions): Promise<void> {
-    await this.notify('notice', message, options);
+    await Toast.notice(message, { ...options });
   }
 
   /** 정보 메시지 */
   public async info(message: string, options?: NotificationOptions): Promise<void> {
-    await this.notify('info', message, options);
+    await Toast.info(message, { ...options });
   }
 
   /** 경고 메시지 */
   public async warning(message: string, options?: NotificationOptions): Promise<void> {
-    await this.notify('warning', message, options);
+    await Toast.warning(message, { ...options });
   }
 
   /** 성공 메시지 */
   public async success(message: string, options?: NotificationOptions): Promise<void> {
-    await this.notify('success', message, options);
+    await Toast.success(message, { ...options });
   }
 
   /** 에러 메시지 */
   public async error(message: string, options?: NotificationOptions): Promise<void> {
-    await this.notify('error', message, options);
-  }
-
-  /** 알림 표시 */
-  private async notify(status: AlertStatus, message: string, options?: NotificationOptions): Promise<void> {
-    await Toast.show(status, message, {
-      title: options?.title,
-      duration: options?.duration || 3000,
-      position: options?.position || 'top-right',
-    });
+    await Toast.error(message, { ...options });
   }
 
   /** 레이아웃 생성 */

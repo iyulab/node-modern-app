@@ -1,8 +1,7 @@
 ﻿import { html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
-import { UElement } from '@iyulab/components/dist/components/UElement.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarLinkConfig } from './SidebarLink.js';
 import type { SidebarGroupConfig } from './SidebarGroup.js';
@@ -22,9 +21,9 @@ export interface SidebarSectionConfig {
 /**
  * SidebarSection 컴포넌트는 사이드바의 섹션 헤더를 표시합니다.
  */
+@customElement('sidebar-section')
 export class SidebarSection extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof UElement> = {};
 
   /** 콤팩트 모드 여부 */
   @property({ type: Boolean }) compact = false;

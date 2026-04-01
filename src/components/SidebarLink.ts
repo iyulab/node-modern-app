@@ -1,10 +1,8 @@
 ﻿import { html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
-import { UElement } from '@iyulab/components/dist/components/UElement.js';
-import { UIcon } from '@iyulab/components/dist/components/icon/UIcon.component.js';
-
+import '@iyulab/components/dist/components/icon/UIcon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { styles } from './SidebarLink.styles.js';
 
@@ -24,11 +22,9 @@ export interface SidebarLinkConfig {
  * SidebarLink 컴포넌트는 계층형 네비게이션 아이템을 표시합니다.
  * 아이콘, 레이블, 하위 아이템을 지원합니다.
  */
+@customElement('sidebar-link')
 export class SidebarLink extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
-  static dependencies: Record<string, typeof UElement> = {
-    'u-icon': UIcon
-  };
 
   /** selected 상태 */
   @property({ type: Boolean, reflect: true }) selected = false;

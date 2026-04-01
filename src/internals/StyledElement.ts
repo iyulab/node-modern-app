@@ -14,7 +14,6 @@ export type StyleMap<T extends string> = Partial<Record<T, StyleValue>>;
  */
 export class StyledElement<T extends string> extends UElement {
   static styles = super.styles;
-  static dependencies: Record<string, typeof UElement> = {};
   
   /** 부분별 스타일 구성 */
   @property({ type: Object, attribute: false }) styles?: StyleMap<T>;
