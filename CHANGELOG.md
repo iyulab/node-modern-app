@@ -3,7 +3,7 @@
 ## [0.3.5] - 2026-04-07
 
 ### Changed
-- Updated dependencies: `@iyulab/components` ^1.0.0 → ^1.0.2
+- Updated dependencies: `@iyulab/components` ^1.0.1 → ^1.0.3, `@iyulab/router` ^0.7.4 → ^0.9.1
 
 ## [0.3.4] - 2026-04-01
 
