@@ -148,6 +148,7 @@ export const styles = css`
     flex: 1;
     background: var(--u-bg-color);
     overflow: auto;
+    outline: none;
   }
 
   .main u-progress-bar {

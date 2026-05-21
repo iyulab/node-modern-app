@@ -10,7 +10,7 @@ import '../components/SidebarButton';
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import '@iyulab/components/dist/components/button/UButton.js';
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
-import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent, RouteErrorEvent } from '@iyulab/router';
+import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
 import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
 import { StyledElement } from '../internals/StyledElement.js';
@@ -131,7 +131,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       </aside>
 
       <!-- Main Content -->
-      <div class="main" part="main" scrollable>
+      <div class="main" part="main" scrollable tabindex="-1" @keydown=${this._handleMainKeydown}>
         <u-progress-bar part="progress"></u-progress-bar>
 
         <slot></slot>
@@ -269,6 +269,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     setTimeout(() => {
       this.progressBarEl.removeAttribute('visible');
     }, 300);
+    // Move focus to .main so keyboard scrolling works without a mouse click
+    const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
+    main?.focus({ preventScroll: true });
   }
 
   /** 라우트 에러 핸들러 */
@@ -279,6 +282,25 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       this.progressBarEl.removeAttribute('visible');
       this.progressBarEl.removeAttribute('error');
     }, 300);
+  }
+
+  /** .main 키보드 스크롤 핸들러 (WCAG 2.1 SC 2.1.1) */
+  private _handleMainKeydown = (e: KeyboardEvent) => {
+    const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
+    if (!main) return;
+    const page = main.clientHeight;
+    const step = 80;
+    switch (e.key) {
+      case ' ':
+      case 'PageDown': main.scrollTop += e.shiftKey ? -page : page; break;
+      case 'PageUp':   main.scrollTop -= page; break;
+      case 'End':      main.scrollTop = main.scrollHeight; break;
+      case 'Home':     main.scrollTop = 0; break;
+      case 'ArrowDown': main.scrollTop += step; break;
+      case 'ArrowUp':   main.scrollTop -= step; break;
+      default: return;
+    }
+    e.preventDefault();
   }
 
   /** 화면 크기 변경에 따른 사이드바 상태 업데이트 */
