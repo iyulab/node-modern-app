@@ -32,6 +32,22 @@ import { styles } from './SidebarLayout.styles.js';
  * - mobile: 모바일에서 헤더만 표시되는 상태, 사이드바는 숨겨짐
  * - mobile-open: 모바일에서 사이드바가 펼침 상태로 표시되는 모드
  */
+
+/**
+ * 해당 요소가 키 입력을 소비하는 편집/입력 컨트롤인지 판정한다.
+ * true면 메인 영역의 스크롤 단축키(Space·화살표 등)가 그 요소의 입력을 가로채지 않는다.
+ */
+function isEditableElement(el: HTMLElement): boolean {
+  const tag = el.tagName;
+  if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+  if (el.isContentEditable) return true;
+  const role = el.getAttribute('role');
+  if (role === 'textbox' || role === 'searchbox' || role === 'combobox' || role === 'spinbutton') {
+    return true;
+  }
+  return false;
+}
+
 @customElement('u-sidebar-layout')
 export class SidebarLayout extends StyledElement<SidebarParts> {
   static styles = [ super.styles, styles ];
@@ -286,6 +302,14 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** .main 키보드 스크롤 핸들러 (WCAG 2.1 SC 2.1.1) */
   private _handleMainKeydown = (e: KeyboardEvent) => {
+    // 편집 가능한 요소(input/textarea/select/contenteditable/ARIA textbox 등)에서의
+    // Space·화살표·Home/End·PageUp/Down은 그 요소의 텍스트 입력·커서 이동이다.
+    // 스크롤 단축키로 가로채면 입력 자체가 막히므로(예: 폼 필드에서 띄어쓰기 불가) 건너뛴다.
+    // web component shadow DOM 내부의 native input까지 잡기 위해, retarget된 e.target 대신
+    // composedPath()[0](조합 경로상 실제 발신 요소)을 검사한다.
+    const origin = e.composedPath()[0];
+    if (origin instanceof HTMLElement && isEditableElement(origin)) return;
+
     const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
     if (!main) return;
     const page = main.clientHeight;
