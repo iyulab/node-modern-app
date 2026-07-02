@@ -97,6 +97,9 @@ class App {
       basepath: config.basepath,
       routes: config.routes,
       fallback: config.fallback,
+      enter: config.enter,
+      initialLoad: config.initialLoad,
+      useIntercept: config.useIntercept,
     });
   }
 

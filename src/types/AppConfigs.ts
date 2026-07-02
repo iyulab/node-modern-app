@@ -1,5 +1,5 @@
 import type { InitOptions, Module, Newable, NewableModule } from "i18next";
-import type { RouteConfig, FallbackRouteConfig } from "@iyulab/router";
+import type { RouteConfig, FallbackRouteConfig, RouteContext } from "@iyulab/router";
 import type { ThemeInitOptions } from "@iyulab/components/dist/utilities/Theme.js";
 import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
 
@@ -52,7 +52,37 @@ export interface AppConfig {
    */
   fallback?: FallbackRouteConfig;
 
-  /** 
+  /**
+   * 모든 라우트 전환 전에 호출되는 전역 인증/권한 가드입니다.
+   * - `string` 반환: 해당 경로로 redirect
+   * - `false` 반환: 네비게이션 취소(403)
+   * - `true`/무반환: 통과
+   * @example
+   * ```typescript
+   * app.load({
+   *   enter: (ctx) => isAuthenticated() || `/login?returnTo=${encodeURIComponent(ctx.pathname)}`,
+   *   routes: [
+   *     { path: '/login', render: () => html`<login-page></login-page>` },
+   *     // ...
+   *   ],
+   * });
+   * ```
+   */
+  enter?: (ctx: RouteContext) => Promise<string | boolean> | string | boolean;
+
+  /**
+   * 초기 로드 시 현재 URL로 라우팅을 자동으로 수행할지 여부를 설정합니다.
+   * @default true
+   */
+  initialLoad?: boolean;
+
+  /**
+   * `a` 태그 클릭 시 클라이언트 라우팅을 수행할지 여부를 설정합니다.
+   * @default true
+   */
+  useIntercept?: boolean;
+
+  /**
    * 애플리케이션이 렌더링될 루트 HTML 요소
    * @default document.body
    */

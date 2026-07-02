@@ -34,7 +34,9 @@
     }
   },
   "scripts": {
-    "test": "vite",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "vite",
     "build": "vite build"
   },
   "dependencies": {
@@ -45,8 +47,10 @@
   },
   "devDependencies": {
     "@types/node": "^25.8.0",
+    "happy-dom": "^20.10.2",
     "typescript": "^5.9.3",
     "vite": "^8.0.13",
-    "vite-plugin-dts": "^5.0.0"
+    "vite-plugin-dts": "^5.0.0",
+    "vitest": "^4.1.8"
   }
 }
