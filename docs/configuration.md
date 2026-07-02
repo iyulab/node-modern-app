@@ -138,6 +138,7 @@ interface RouteContext {
   pathname: string;
   basepath: string;
   params: Record<string, string>;
+  query: URLSearchParams;
   metadata: Record<string, unknown>;
   progress: (value: number) => void;
 }

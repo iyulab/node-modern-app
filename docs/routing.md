@@ -63,6 +63,9 @@ interface RouteContext {
   /** Named URL parameters extracted from the path pattern. */
   params: Record<string, string>;
 
+  /** Parsed query string. `query.get('key')` returns `string | null`. */
+  query: URLSearchParams;
+
   /**
    * Report loading progress (0–100).
    * Drives the linear progress bar in the layout header.
