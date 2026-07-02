@@ -114,7 +114,7 @@ html`<p>${translate('common::greeting')}</p>`;
 | Guide | Description |
 |-------|-------------|
 | [getting-started.md](./docs/getting-started.md) | Bootstrap, architecture, entry point setup |
-| [routing.md](./docs/routing.md) | Route config, URL params, async routes, progress |
+| [routing.md](./docs/routing.md) | Route config, URL params, async routes, progress, auth guards |
 | [layout.md](./docs/layout.md) | Sidebar layout, all menu item types, responsive behaviour |
 | [theme.md](./docs/theme.md) | Theme init, runtime switching, CSS tokens |
 | [notifications.md](./docs/notifications.md) | Toast methods and options |

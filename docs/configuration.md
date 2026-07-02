@@ -33,6 +33,25 @@ interface AppConfig {
   fallback?: FallbackRouteConfig;
 
   /**
+   * Global auth/authorization guard, called before every navigation.
+   * `string` = redirect, `false` = cancel (403), `true`/undefined = proceed.
+   * See [routing.md](./routing.md#authentication--guards).
+   */
+  enter?: (ctx: RouteContext) => Promise<string | boolean> | string | boolean;
+
+  /**
+   * Whether to auto-navigate to the current URL on load.
+   * @default true
+   */
+  initialLoad?: boolean;
+
+  /**
+   * Whether to intercept `<a>` tag clicks for client-side routing.
+   * @default true
+   */
+  useIntercept?: boolean;
+
+  /**
    * Layout configuration.
    * Only 'sidebar' type is currently supported.
    */
@@ -103,6 +122,8 @@ interface RouteConfig {
   path?: string;
   title?: string;
   force?: boolean;
+  metadata?: Record<string, unknown>;
+  enter?: (context: RouteContext) => Promise<string | boolean> | string | boolean;
   render: (context: RouteContext) => TemplateResult | Promise<TemplateResult>;
 }
 ```
@@ -117,6 +138,7 @@ interface RouteContext {
   pathname: string;
   basepath: string;
   params: Record<string, string>;
+  metadata: Record<string, unknown>;
   progress: (value: number) => void;
 }
 ```

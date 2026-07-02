@@ -23,6 +23,21 @@ interface RouteConfig {
   /** Force a re-render even when the path has not changed. */
   force?: boolean;
 
+  /**
+   * Metadata attached to this route. Merged parent → child and exposed
+   * on `RouteContext.metadata`. Use it to carry authorization data
+   * (roles, permission flags) that `enter` guards can read.
+   */
+  metadata?: Record<string, unknown>;
+
+  /**
+   * Guard called before this route activates.
+   * - Return a `string` to redirect.
+   * - Return `false` to cancel navigation (renders a 403 error page).
+   * - Return `true` (or nothing) to proceed.
+   */
+  enter?: (context: RouteContext) => Promise<string | boolean> | string | boolean;
+
   /** Render function. May be async. Must return a Lit `TemplateResult`. */
   render: (context: RouteContext) => TemplateResult | Promise<TemplateResult>;
 }
@@ -119,3 +134,59 @@ app.router?.basepath;   // configured base path
 app.router?.context;    // current RouteContext
 app.router?.routes;     // registered RouteConfig array
 ```
+
+---
+
+## Authentication & Guards
+
+`app.load({ enter })` runs before every navigation — including the initial one.
+Use it as the single authentication gate instead of checking auth and
+conditionally calling `app.load()` from your own bootstrap code.
+
+### Global authentication gate
+
+```typescript
+await app.load({
+  enter: (ctx) => isAuthenticated() || `/login?returnTo=${encodeURIComponent(ctx.pathname)}`,
+  routes: [
+    { path: '/login', render: (ctx) => html`<login-page returnTo=${ctx.query.get('returnTo')}></login-page>` },
+    { path: '/dashboard', render: () => html`<dashboard-page></dashboard-page>` },
+  ],
+  // ...
+});
+```
+
+### Role-based route guard
+
+Combine per-route `metadata` with `enter` to gate individual routes:
+
+```typescript
+{
+  path: '/admin',
+  metadata: { role: 'admin' },
+  enter: (ctx) => currentUser.role === ctx.metadata.role || '/forbidden',
+  render: () => html`<admin-page></admin-page>`,
+}
+```
+
+### Session expiry (401 mid-session)
+
+A route guard only runs on navigation — it does not catch an API call
+returning `401` while the user is already on a page. Handle that at the
+HTTP layer instead, with [`@iyulab/http-client`](https://github.com/iyulab/http-client)'s
+`onResponse` interceptor:
+
+```typescript
+import { HttpClient } from '@iyulab/http-client';
+import { app } from '@iyulab/modern-app';
+
+const client = new HttpClient({
+  baseUrl: '/api',
+  onResponse: (res) => {
+    if (res.status === 401) app.navigate('/login');
+  },
+});
+```
+
+No dedicated `onUnauthorized` hook is needed — `app.navigate()` is the
+same primitive used everywhere else.
