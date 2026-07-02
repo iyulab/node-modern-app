@@ -95,10 +95,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     return html`
       <!-- Mobile Header -->
       <div class="mobile-header" part="mobile-header" ?hidden="${!this.state.startsWith('mobile')}">
-        <u-icon class="logo"
-          .name="${this.config.logo}"
-          @click=${this.handleBrandLogoClick}
-        ></u-icon>
+        ${this.renderLogo()}
         <span class="title">
           ${this.config.title}
         </span>
@@ -115,10 +112,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       <aside class="sidebar" part="sidebar" state="${this.state}">
         <!-- Sidebar Header -->
         <div class="sidebar-header" part="sidebar-header">
-          <u-icon class="logo"
-            .name="${this.config.logo}"
-            @click=${this.handleBrandLogoClick}
-          ></u-icon>
+          ${this.renderLogo()}
           <span class="title" ?hidden=${this.state === 'slim'}>
             ${this.config.title}
           </span>
@@ -235,9 +229,38 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     return pattern.test(this.context.path, window.location.origin);
   }
 
-  /** 브랜드 로고 클릭 핸들러 */
-  private handleBrandLogoClick = () => {
-    app.navigate('');
+  /** 브랜드 로고 클릭 핸들러: `href` 지정 시 해당 경로로, 아니면 홈으로 이동 */
+  private handleBrandLogoClick = (href?: string) => () => {
+    app.navigate(href ?? '');
+  }
+
+  /** 로고 렌더링: 아이콘명(문자열, 기존 동작) | 이미지({src,alt,href}) | 커스텀 렌더 함수 */
+  private renderLogo() {
+    const logo = this.config?.logo;
+
+    if (!logo || typeof logo === 'string') {
+      return html`
+        <u-icon class="logo"
+          .name="${logo}"
+          @click=${this.handleBrandLogoClick()}
+        ></u-icon>
+      `;
+    }
+    if (typeof logo === 'function') {
+      const content = logo(this.state);
+      return html`
+        <span class="logo" @click=${this.handleBrandLogoClick()}>
+          ${typeof content === 'string' ? unsafeHTML(content) : content}
+        </span>
+      `;
+    }
+    return html`
+      <img class="logo"
+        src="${logo.src}"
+        alt="${logo.alt ?? ''}"
+        @click=${this.handleBrandLogoClick(logo.href)}
+      />
+    `;
   }
 
   /** 사이드바 토글 핸들러 */

@@ -23,6 +23,11 @@ export const styles = css`
   .logo:hover {
     color: var(--u-txt-color-hover);
   }
+  img.logo {
+    height: 24px;
+    width: auto;
+    object-fit: contain;
+  }
 
   .title {
     flex: 1;

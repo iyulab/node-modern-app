@@ -14,8 +14,8 @@ The only layout type currently available is `'sidebar'`. It provides a responsiv
 interface SidebarLayoutConfig {
   type: 'sidebar';
 
-  /** URL or path to the logo image. */
-  logo?: string;
+  /** Icon name (string) | image ({ src, alt?, href? }) | custom render function. */
+  logo?: string | { src: string; alt?: string; href?: string } | ((state: SidebarState) => TemplateResult<1> | HTMLElement | string);
 
   /** Application title displayed beside the logo. */
   title?: string;
@@ -29,6 +29,17 @@ interface SidebarLayoutConfig {
   /** Per-part CSS style overrides. */
   styles?: StyleMap<SidebarParts>;
 }
+```
+
+### `logo` variants
+
+Clicking the logo navigates to `/` by default (override with `href` on the image variant).
+
+```typescript
+logo: 'rocket',                                          // icon name (u-icon)
+logo: { src: '/assets/logo.svg', alt: 'Acme' },           // image, click → home
+logo: { src: '/assets/logo.svg', href: '/dashboard' },    // image, click → custom route
+logo: (state) => html`<img src=${state === 'slim' ? '/mark.svg' : '/logo.svg'} />`, // custom render
 ```
 
 Combined with the shared `breakpoints` option from `LayoutConfig`:

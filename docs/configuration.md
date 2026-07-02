@@ -67,7 +67,7 @@ type LayoutConfig = SidebarLayoutConfig & {
 ```typescript
 interface SidebarLayoutConfig {
   type: 'sidebar';
-  logo?: string;
+  logo?: string | { src: string; alt?: string; href?: string } | ((state: SidebarState) => TemplateResult<1> | HTMLElement | string);
   title?: string;
   main?: SidebarItem[];
   footer?: SidebarItem[];

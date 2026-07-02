@@ -35,7 +35,7 @@ await app.load({
   basepath: '/',
   layout: {
     type: 'sidebar',
-    logo: '/assets/logo.svg',
+    logo: { src: '/assets/logo.svg', alt: 'My App' },
     title: 'My App',
     main: [
       { type: 'link', icon: 'home', label: 'Home',     href: '/' },
@@ -157,7 +157,7 @@ Full configuration reference: [references/layout.md](./references/layout.md)
 ```typescript
 layout: {
   type: 'sidebar',
-  logo: '/logo.svg',
+  logo: { src: '/logo.svg', alt: 'App Name' },
   title: 'App Name',
   main: [
     {

@@ -40,7 +40,7 @@ await app.load({
   basepath: '/',
   layout: {
     type: 'sidebar',
-    logo: '/assets/logo.svg',
+    logo: { src: '/assets/logo.svg', alt: 'My App' },
     title: 'My App',
     main: [
       { type: 'link', icon: 'home',     label: 'Home',     href: '/' },

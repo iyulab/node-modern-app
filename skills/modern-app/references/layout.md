@@ -6,8 +6,8 @@
 interface SidebarLayoutConfig {
   type: 'sidebar';
 
-  /** URL or path to the logo image. */
-  logo?: string;
+  /** Icon name (string) | image ({ src, alt?, href? }) | custom render function. Click navigates to `/` by default, or `href` if given (image variant). */
+  logo?: string | { src: string; alt?: string; href?: string } | ((state: SidebarState) => TemplateResult<1> | HTMLElement | string);
 
   /** Application title displayed beside the logo. */
   title?: string;
