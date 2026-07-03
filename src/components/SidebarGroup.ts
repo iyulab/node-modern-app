@@ -5,12 +5,13 @@ import { DirectiveResult } from 'lit/directive.js';
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { SidebarLink, type SidebarLinkConfig } from './SidebarLink.js';
+import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarGroup.styles.js';
 
 type ElementParts = 'host' | 'header' | 'icon' | 'label' | 'caret' | 'items';
 
 /** 그룹: 하위 링크들 묶음 */
-export interface SidebarGroupConfig {
+export interface SidebarGroupConfig extends SidebarPermissionGuard {
   type: 'group';
   /** 기본 접힘 상태 */
   collapsed?: boolean;

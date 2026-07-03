@@ -2,6 +2,7 @@ import type { InitOptions, Module, Newable, NewableModule } from "i18next";
 import type { RouteConfig, FallbackRouteConfig, RouteContext } from "@iyulab/router";
 import type { ThemeInitOptions } from "@iyulab/components/dist/utilities/Theme.js";
 import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
+import type { AuthGateConfig } from "./AuthConfig";
 
 /** 
  * i18next의 초기화 옵션과 플러그인 배열을 포함한 다국어 설정 
@@ -100,9 +101,28 @@ export interface AppConfig {
    */
   theme?: ThemeInitOptions;
 
-  /** 
+  /**
    * i18next의 InitOptions와 플러그인 배열을 포함합니다. i18next를 사용하지 않는 경우 이 설정은 생략할 수 있습니다.
    * @see 설정에 대한 자세한 내용은 {@link https://www.i18next.com/overview/configuration-options} 참조하십시오.
    */
   i18n?: I18nInitOptions;
+
+  /**
+   * 부팅 인증 게이트(선택). 지정하면 앱 셸을 만들기 전에 `me()` 로 세션을 판정하여
+   * 인증 시 셸 로드, 미인증 시 `renderLogin` 으로 로그인 UI 를 띄운다.
+   * @see AuthGateConfig
+   * @example
+   * ```typescript
+   * app.load({
+   *   layout: { type: 'sidebar', ... },
+   *   auth: {
+   *     me: () => authClient.fetchMe(),                 // null → 미인증
+   *     renderLogin: ({ root, onSuccess }) => renderLoginPage(root, onSuccess),
+   *     onAuthenticated: (user) => setPermissions((user as User).Permissions),
+   *   },
+   *   routes: [ ... ],
+   * });
+   * ```
+   */
+  auth?: AuthGateConfig;
 }

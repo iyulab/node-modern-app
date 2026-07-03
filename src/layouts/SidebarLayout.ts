@@ -15,6 +15,7 @@ import { app } from '../App.js';
 import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
+import { filterSidebarItems } from './filterSidebarItems.js';
 import { styles } from './SidebarLayout.styles.js';
 
 /**
@@ -127,14 +128,14 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
         <!-- Sidebar Navigation Menu -->
         <nav class="sidebar-main" part="sidebar-main" scrollable>
-          ${repeat(this.config.main ?? [],
+          ${repeat(filterSidebarItems(this.config.main ?? [], this.config.hasPermission),
             (_, idx) => idx,
             (item) => this.renderItem(item))}
         </nav>
 
         <!-- Sidebar Footer -->
         <div class="sidebar-footer" part="sidebar-footer">
-          ${repeat(this.config.footer ?? [],
+          ${repeat(filterSidebarItems(this.config.footer ?? [], this.config.hasPermission),
             (_, idx) => idx,
             (item) => this.renderItem(item))}
         </div>

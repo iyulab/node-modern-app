@@ -4,6 +4,9 @@ import type { SidebarLinkConfig } from "../components/SidebarLink";
 import type { SidebarSectionConfig } from "../components/SidebarSection";
 import type { SidebarGroupConfig } from "../components/SidebarGroup";
 import type { SidebarButtonConfig } from "../components/SidebarButton";
+import type { SidebarPermissionGuard } from "./SidebarPermission";
+
+export type { SidebarPermissionGuard } from "./SidebarPermission";
 
 /** 사이드바 레이아웃 컴포넌트의 요소(part) 타입 */
 export type SidebarParts = 'host' | 'mobile-header' | 'sidebar' | 'sidebar-header' | 'sidebar-main' | 'sidebar-footer' | 'main' | 'progress';
@@ -12,7 +15,7 @@ export type SidebarParts = 'host' | 'mobile-header' | 'sidebar' | 'sidebar-heade
 export type SidebarState = 'default' | 'slim' | 'modal' | 'mobile' | 'mobile-open';
 
 /** 사이드바 안에 HTML 또는 엘리먼트를 직접 렌더링하는 설정 */
-export interface SidebarHtmlConfig {
+export interface SidebarHtmlConfig extends SidebarPermissionGuard {
   type: 'html';
   render: (state: SidebarState) => TemplateResult<1> | HTMLElement | string;
 }
@@ -51,7 +54,14 @@ export interface SidebarLayoutConfig {
   main?: SidebarItem[];
   /** 하단(footer)에 고정해서 렌더할 항목들 */
   footer?: SidebarItem[];
-  
+
+  /**
+   * 메뉴 항목 권한 필터 판정. 지정하면 `requirePermission`/`requireAnyPermission` 를 만족하지
+   * 않는 항목을 숨기고, 항목이 모두 걸러진 section/group 은 통째로 숨긴다.
+   * 미지정 시 필터링하지 않는다(모든 항목 표시). 보통 `@iyulab/enterprise` 의 `hasPermission` 을 넘긴다.
+   */
+  hasPermission?: (code: string) => boolean;
+
   /** 사이드바 스타일 맵 */
   styles?: StyleMap<SidebarParts>;
 }

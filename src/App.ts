@@ -20,6 +20,8 @@ class App {
   private _layout?: HTMLElement;
   private _router?: Router;
   private _screen?: ScreenObserver;
+  private _user?: unknown;
+  private _loginTeardown?: () => void;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {}
@@ -44,6 +46,10 @@ class App {
   public get screen(): ScreenSize | undefined {
     return this._screen?.get();
   }
+  /** 인증 게이트(`auth`) 사용 시 인증된 현재 사용자. 미인증/미사용이면 undefined. */
+  public get user(): unknown {
+    return this._user;
+  }
   /** 스타일 테마 관리 유틸리티 객체 반환 */
   public get theme() {
     return Theme;
@@ -60,6 +66,23 @@ class App {
 
     // 설정 저장
     this._config = config;
+
+    // 부팅 인증 게이트 — 셸(레이아웃·라우터)을 만들기 전에 세션을 판정한다.
+    if (config.auth) {
+      const user = await config.auth.me();
+      if (user == null) {
+        // 미인증: 로그인 UI 를 그리고 셸 구성은 중단. 성공 시 load 재실행으로 셸을 띄운다.
+        const root = config.root || document.body;
+        const teardown = config.auth.renderLogin({
+          root,
+          onSuccess: () => { void this.load(config); },
+        });
+        if (teardown) this._loginTeardown = teardown;
+        return;
+      }
+      this._user = user;
+      await config.auth.onAuthenticated?.(user);
+    }
 
     // 초기 테마 설정
     await Theme.init(config.theme);
@@ -105,6 +128,13 @@ class App {
 
   /** 앱 언로드 */
   public unload(): void {
+    // 로그인 UI 정리(미인증 상태에서 렌더된 경우)
+    if (this._loginTeardown) {
+      this._loginTeardown();
+      this._loginTeardown = undefined;
+    }
+    this._user = undefined;
+
     // 화면 크기 관찰 중단
     if (this._screen) {
       this._screen.destroy();

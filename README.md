@@ -109,6 +109,61 @@ import { translate } from 'lit-i18n';
 html`<p>${translate('common::greeting')}</p>`;
 ```
 
+### 부팅 인증 게이트 (`auth`)
+
+셸을 만들기 전에 세션을 판정한다. 소비앱이 `app.load()` 앞단에 손으로 짜던 "me 조회 → 미인증이면 로그인, 인증이면 앱 로드" 게이트를 표준화한다. 세션 조회/로그인 HTTP 는 `@iyulab/enterprise` 의 `createAuthClient` 가, 세션-중 401 은 `createODataService` 의 `onUnauthorized` 가 담당한다(프레임워크는 오케스트레이션만 소유).
+
+```typescript
+import { createAuthClient, setPermissions } from '@iyulab/enterprise';
+
+const auth = createAuthClient<User, Cred>({ meUrl: '/api/auth/me', loginUrl: '/api/auth/login', logoutUrl: '/api/auth/logout' });
+
+await app.load({
+  layout: { type: 'sidebar', /* ... */ },
+  auth: {
+    me: () => auth.fetchMe(),                         // null → 미인증 → renderLogin
+    renderLogin: ({ root, onSuccess }) => renderLoginPage(root, auth, onSuccess),
+    onAuthenticated: (user) => setPermissions((user as User).Permissions),
+  },
+  routes: [ /* ... */ ],
+});
+
+app.user; // 인증된 현재 사용자(미인증/미사용 시 undefined)
+```
+
+- `me()` 가 값을 반환하면 셸 로드, `null`/`undefined` 면 `renderLogin({ root, onSuccess })`.
+- 로그인 성공 시 `onSuccess()` 를 호출하면 앱이 재로드되어 셸이 나타나고 로그인 UI 는 정리된다.
+- `auth` 미지정 시 완전히 하위호환(게이트 없이 기존대로 로드).
+
+### 권한 기반 메뉴 필터
+
+모든 사이드바 메뉴 항목에 `requirePermission`/`requireAnyPermission` 를 달고, 레이아웃에 `hasPermission` 판정 함수를 주면 권한 없는 항목이 숨겨진다. 항목이 모두 걸러진 section/group 은 통째로 숨는다. 소비앱이 손으로 짜던 `filterMenu` 를 대체한다.
+
+```typescript
+import { hasPermission } from '@iyulab/enterprise';
+
+await app.load({
+  layout: {
+    type: 'sidebar',
+    hasPermission,                                  // enterprise 권한 store 판정
+    main: [
+      { type: 'link', icon: 'house', label: '홈', href: '/' },
+      { type: 'link', icon: 'gear', label: '설정', href: '/settings', requirePermission: 'admin.maintenance' },
+      {
+        type: 'section', title: '주문',
+        items: [
+          { type: 'link', label: '주문 목록', href: '/orders', requireAnyPermission: ['orders.read', 'orders.write'] },
+        ],
+      },
+    ],
+  },
+  auth: { /* ... */ },
+});
+```
+
+- `hasPermission` 미지정 시 필터링하지 않는다(모든 항목 표시 — 하위호환).
+- 순수 헬퍼 `filterSidebarItems(items, hasPermission)` 를 직접 재사용할 수도 있다.
+
 ## Documentation
 
 | Guide | Description |

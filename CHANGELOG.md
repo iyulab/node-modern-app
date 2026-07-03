@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.6.0] - 2026-07-03
+
+### Added
+- **`AppConfig.auth`** — 부팅 인증 게이트. 지정하면 앱 셸(레이아웃·라우터)을 만들기 전에 `me()` 로 세션을 판정하여, 인증 시 셸을 로드하고 미인증 시 `renderLogin` 으로 로그인 UI 를 띄운다. 로그인 성공 시 `onSuccess()` 를 호출하면 앱이 (재)로드되어 셸이 나타난다. `onAuthenticated(user)` 로 셸 구성 직전 훅(권한 set 등)을 제공한다.
+  - 프레임워크는 인증 **오케스트레이션**(판정→분기→재로드)만 소유. 세션 조회/로그인 HTTP·사용자/권한 형태·세션-중 401 은 앱/`@iyulab/enterprise`(`createAuthClient`/`createODataService`)가 소유한다. 소비앱이 `app.load()` 앞단에 손으로 짜던 부팅 게이트를 표준화.
+- **`app.user`** getter — 인증 게이트 사용 시 인증된 현재 사용자(미인증/미사용이면 `undefined`).
+- **사이드바 네이티브 권한 메뉴 필터** — 모든 메뉴 항목(link/section/group/button/html)에 `requirePermission?`/`requireAnyPermission?` 지원(공통 `SidebarPermissionGuard`). `SidebarLayoutConfig.hasPermission` 판정 함수를 주면 만족하지 않는 항목을 숨기고, 항목이 모두 걸러진 section/group 은 통째로 숨긴다. 소비앱이 손으로 짜던 `filterMenu` 를 표준화. 순수 헬퍼 `filterSidebarItems(items, hasPermission)` 도 export.
+
+### Notes
+- `auth`/`hasPermission` 미지정 시 동작은 완전히 하위호환(게이트·필터 없이 기존대로 셸 로드).
+
 ## [0.5.0] - 2026-07-02
 
 ### Added

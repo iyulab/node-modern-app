@@ -5,12 +5,13 @@ import { DirectiveResult } from 'lit/directive.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarLinkConfig } from './SidebarLink.js';
 import type { SidebarGroupConfig } from './SidebarGroup.js';
+import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarSection.styles.js';
 
 type ElementParts = 'host' | 'header' | 'title' | 'subtitle' | 'items';
 
 /** 섹션 내에는 그룹 또는 링크들만 허용 */
-export interface SidebarSectionConfig {
+export interface SidebarSectionConfig extends SidebarPermissionGuard {
   type: 'section';
   title: string | DirectiveResult;
   subTitle?: string | DirectiveResult;

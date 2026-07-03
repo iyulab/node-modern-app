@@ -4,12 +4,13 @@ import { DirectiveResult } from 'lit/directive.js';
 
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
+import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarLink.styles.js';
 
 type ElementParts = 'host' | 'base' | 'icon' | 'label';
 
 /** 링크 항목 디폴트 타입 */
-export interface SidebarLinkConfig {
+export interface SidebarLinkConfig extends SidebarPermissionGuard {
   type: 'link';
   icon?: string;
   label: string | DirectiveResult;
