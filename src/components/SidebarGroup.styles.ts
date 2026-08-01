@@ -4,7 +4,7 @@ export const styles = css`
   :host {
     display: flex;
     flex-direction: column;
-    color: var(--u-neutral-800);
+    color: var(--u-neutral-800, #424242);
   }
 
   button {
@@ -28,14 +28,14 @@ export const styles = css`
     padding: 8px;
   }
   button[selected] {
-    color: var(--u-blue-700);
+    color: var(--u-blue-700, #1976D2);
   }
   button:hover {
-    color: var(--u-txt-color-hover);
-    background-color: var(--u-bg-color-hover);
+    color: var(--u-txt-color-hover, #1E88E5);
+    background-color: var(--u-bg-color-hover, #F5F5F5);
   }
   button:active {
-    background-color: var(--u-bg-color-active);
+    background-color: var(--u-bg-color-active, #EEEEEE);
   }
   button:focus-visible {
     outline: 2px solid #6666ff;
@@ -73,7 +73,7 @@ export const styles = css`
     gap: 4px;
     margin-top: 4px;
     margin-left: 32px;
-    border-left: 2px solid var(--u-border-color-weak);
+    border-left: 2px solid var(--u-border-color-weak, #EEEEEE);
     padding-left: 8px;
     overflow: hidden;
     transition: all 0.3s ease;

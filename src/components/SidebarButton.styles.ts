@@ -4,7 +4,7 @@ export const styles = css`
   :host {
     display: block;
     width: 100%;
-    color: var(--u-txt-color);
+    color: var(--u-txt-color, #212121);
     background-color: transparent;
     border: none;
     border-radius: 8px;
@@ -12,11 +12,11 @@ export const styles = css`
     cursor: pointer;
   }
   :host(:hover) {
-    color: var(--u-txt-color-hover);
-    background-color: var(--u-bg-color-hover);
+    color: var(--u-txt-color-hover, #1E88E5);
+    background-color: var(--u-bg-color-hover, #F5F5F5);
   }
   :host(:active) {
-    background-color: var(--u-bg-color-active);
+    background-color: var(--u-bg-color-active, #EEEEEE);
   }
 
   button {

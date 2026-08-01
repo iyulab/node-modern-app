@@ -16,12 +16,12 @@ export const styles = css`
   }
 
   .logo {
-    color: var(--u-txt-color);
+    color: var(--u-txt-color, #212121);
     font-size: 24px;
     cursor: pointer;
   }
   .logo:hover {
-    color: var(--u-txt-color-hover);
+    color: var(--u-txt-color-hover, #1E88E5);
   }
   img.logo {
     height: 24px;
@@ -31,7 +31,7 @@ export const styles = css`
 
   .title {
     flex: 1;
-    color: var(--u-txt-color);
+    color: var(--u-txt-color, #212121);
     font-size: 18px;
     line-height: 24px;
     font-weight: 700;
@@ -48,7 +48,7 @@ export const styles = css`
     background: transparent;
   }
   .toggler:hover {
-    color: var(--u-txt-color-hover);
+    color: var(--u-txt-color-hover, #1E88E5);
   }
 
   /* Sidebar Container */
@@ -60,8 +60,8 @@ export const styles = css`
     justify-content: space-between;
     gap: 8px;
     height: 100%;
-    background: var(--u-panel-bg-color);
-    border-right: 1px solid var(--u-border-color);
+    background: var(--u-panel-bg-color, #FFFFFF);
+    border-right: 1px solid var(--u-border-color, #E0E0E0);
     transition: all 0.3s ease;
   }
   /* Sidebar states */
@@ -107,8 +107,8 @@ export const styles = css`
     justify-content: space-between;
     gap: 12px;
     padding: 16px;
-    background: var(--u-panel-bg-color);
-    border-bottom: 1px solid var(--u-border-color-weak);
+    background: var(--u-panel-bg-color, #FFFFFF);
+    border-bottom: 1px solid var(--u-border-color-weak, #EEEEEE);
     user-select: none;
   }
 
@@ -120,7 +120,7 @@ export const styles = css`
     justify-content: space-between;
     gap: 12px;
     padding: 16px;
-    border-bottom: 1px solid var(--u-border-color-weak);
+    border-bottom: 1px solid var(--u-border-color-weak, #EEEEEE);
     user-select: none;
   }
 
@@ -141,7 +141,7 @@ export const styles = css`
     flex-direction: column;
     gap: 4px;
     padding: 8px;
-    border-top: 1px solid var(--u-border-color-weak);
+    border-top: 1px solid var(--u-border-color-weak, #EEEEEE);
   }
   .sidebar-footer:empty {
     display: none;
@@ -151,7 +151,7 @@ export const styles = css`
   .main {
     position: relative;
     flex: 1;
-    background: var(--u-bg-color);
+    background: var(--u-bg-color, #FFFFFF);
     overflow: auto;
     outline: none;
   }
@@ -175,7 +175,7 @@ export const styles = css`
     transform: translateY(0);
   }
   .main u-progress-bar[error] {
-    --progress-bar-color: var(--u-red-500);
+    --progress-bar-color: var(--u-red-500, #F44336);
   }
 
   /* Backdrop for modal mode */
@@ -186,6 +186,6 @@ export const styles = css`
     left: 0;
     right: 0;
     bottom: 0;
-    background: var(--u-overlay-bg-color);
+    background: var(--u-overlay-bg-color, rgba(0, 0, 0, 0.5));
   }
 `;

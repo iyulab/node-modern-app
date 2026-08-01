@@ -15,7 +15,7 @@ export const styles = css`
   }
 
   .title {
-    color: var(--u-neutral-700);
+    color: var(--u-neutral-700, #616161);
     font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.5px;
@@ -25,7 +25,7 @@ export const styles = css`
   }
   
   .subtitle {
-    color: var(--u-neutral-600);
+    color: var(--u-neutral-600, #757575);
     font-size: 11px;
     font-weight: 300;
   }
