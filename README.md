@@ -77,6 +77,15 @@ app.theme.set('dark');
 app.theme.isInitialized; // boolean
 ```
 
+Rebranding the shell is one declaration — the sidebar's active menu follows it:
+
+```css
+:root { --u-primary-color: #7B1FA2; }
+```
+
+Shell surfaces can also be tuned on their own (`--app-sidebar-bg`, `--app-sidebar-width`, …).
+See [theme.md](./docs/theme.md).
+
 ### Notifications
 
 ```typescript
@@ -171,7 +180,7 @@ await app.load({
 | [getting-started.md](./docs/getting-started.md) | Bootstrap, architecture, entry point setup |
 | [routing.md](./docs/routing.md) | Route config, URL params, async routes, progress, auth guards |
 | [layout.md](./docs/layout.md) | Sidebar layout, all menu item types, responsive behaviour |
-| [theme.md](./docs/theme.md) | Theme init, runtime switching, CSS tokens |
+| [theme.md](./docs/theme.md) | Theme init, runtime switching, token layers, shell surface tokens |
 | [notifications.md](./docs/notifications.md) | Toast methods and options |
 | [i18n.md](./docs/i18n.md) | i18next setup, plugins, lit-i18n usage |
 | [configuration.md](./docs/configuration.md) | Full TypeScript interface reference |

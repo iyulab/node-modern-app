@@ -4,7 +4,7 @@ export const styles = css`
   :host {
     display: block;
     width: 100%;
-    color: var(--u-txt-color, #212121);
+    color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
     background-color: transparent;
     border: none;
     border-radius: 8px;
@@ -35,7 +35,7 @@ export const styles = css`
     padding: 8px;
   }
   button:focus-visible {
-    outline: 2px solid #6666ff;
+    outline: 2px solid var(--u-primary-color-weak, #2196F3);
     outline-offset: 2px;
   }
   

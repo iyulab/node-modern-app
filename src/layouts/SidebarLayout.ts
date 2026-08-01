@@ -316,11 +316,14 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** 라우트 에러 핸들러 */
   private handleRouteError = (_: RouteDoneEvent) => {
-    this.progressBarEl.setAttribute('error', '');
+    // u-progress-bar 가 제공하는 status 를 쓴다. 종전에는 API 에 없는 `error` 속성을
+    // 세우고 색을 자체 CSS 로 덮었는데, 그러면 컴포넌트의 위험색 규약(--u-danger-color)
+    // 대신 다른 명도 단이 칠해지고 버퍼 색은 정정되지 않은 채 남는다.
+    this.progressBarEl.status = 'error';
     this.progressBarEl.value = 100;
     setTimeout(() => {
       this.progressBarEl.removeAttribute('visible');
-      this.progressBarEl.removeAttribute('error');
+      this.progressBarEl.status = 'default';
     }, 300);
   }
 

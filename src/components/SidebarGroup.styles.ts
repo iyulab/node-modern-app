@@ -2,9 +2,12 @@ import { css } from 'lit';
 
 export const styles = css`
   :host {
+    /* SidebarLink 과 같은 원천 — 그룹 강조는 활성 링크와 같은 색 계열이어야 한다 */
+    --group-accent: var(--app-sidebar-active-bg, var(--u-primary-color, #1E88E5));
+
     display: flex;
     flex-direction: column;
-    color: var(--u-neutral-800, #424242);
+    color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
   }
 
   button {
@@ -28,7 +31,9 @@ export const styles = css`
     padding: 8px;
   }
   button[selected] {
-    color: var(--u-blue-700, #1976D2);
+    /* 패널 위 텍스트라 강조색을 그대로 쓰면 대비가 부족하다(blue-600 = 3.68:1).
+       활성 배경과 같은 파생식으로 한 단 어둡게 해 AA 를 넘긴다(4.85:1). */
+    color: color-mix(in srgb, var(--group-accent) 85%, black);
   }
   button:hover {
     color: var(--u-txt-color-hover, #1E88E5);
@@ -38,7 +43,7 @@ export const styles = css`
     background-color: var(--u-bg-color-active, #EEEEEE);
   }
   button:focus-visible {
-    outline: 2px solid #6666ff;
+    outline: 2px solid var(--u-primary-color-weak, #2196F3);
     outline-offset: 2px;
   }
 

@@ -60,16 +60,17 @@ export const styles = css`
     justify-content: space-between;
     gap: 8px;
     height: 100%;
-    background: var(--u-panel-bg-color, #FFFFFF);
+    background: var(--app-sidebar-bg, var(--u-panel-bg-color, #FFFFFF));
+    color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
     border-right: 1px solid var(--u-border-color, #E0E0E0);
     transition: all 0.3s ease;
   }
   /* Sidebar states */
   .sidebar[state="default"] {
-    width: 260px;
+    width: var(--app-sidebar-width, 260px);
   }
   .sidebar[state="slim"] {
-    width: 64px;
+    width: var(--app-sidebar-width-slim, 64px);
   }
   .sidebar[state="slim"] .sidebar-header {
     flex-direction: column;
@@ -77,7 +78,7 @@ export const styles = css`
     padding: 16px;
   }
   .sidebar[state="modal"] {
-    width: 260px;
+    width: var(--app-sidebar-width, 260px);
     position: absolute;
     top: 0;
     left: 0;
@@ -107,7 +108,8 @@ export const styles = css`
     justify-content: space-between;
     gap: 12px;
     padding: 16px;
-    background: var(--u-panel-bg-color, #FFFFFF);
+    background: var(--app-header-bg, var(--u-panel-bg-color, #FFFFFF));
+    color: var(--app-header-fg, var(--u-txt-color, #212121));
     border-bottom: 1px solid var(--u-border-color-weak, #EEEEEE);
     user-select: none;
   }
@@ -158,7 +160,7 @@ export const styles = css`
 
   .main u-progress-bar {
     --progress-bar-height: 4px;
-    --progres-bar-track-color: transparent;
+    --progress-bar-track-color: transparent;
     
     position: absolute;
     z-index: 100;
@@ -173,9 +175,6 @@ export const styles = css`
   .main u-progress-bar[visible] {
     opacity: 1;
     transform: translateY(0);
-  }
-  .main u-progress-bar[error] {
-    --progress-bar-color: var(--u-red-500, #F44336);
   }
 
   /* Backdrop for modal mode */
