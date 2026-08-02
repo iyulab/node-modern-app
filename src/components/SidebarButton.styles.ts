@@ -12,7 +12,7 @@ export const styles = css`
     cursor: pointer;
   }
   :host(:hover) {
-    color: var(--u-txt-color-hover, #1E88E5);
+    color: var(--u-txt-color-hover, #1565C0);
     background-color: var(--u-bg-color-hover, #F5F5F5);
   }
   :host(:active) {

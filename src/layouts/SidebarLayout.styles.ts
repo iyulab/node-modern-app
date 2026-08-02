@@ -21,7 +21,7 @@ export const styles = css`
     cursor: pointer;
   }
   .logo:hover {
-    color: var(--u-txt-color-hover, #1E88E5);
+    color: var(--u-txt-color-hover, #1565C0);
   }
   img.logo {
     height: 24px;
@@ -48,7 +48,7 @@ export const styles = css`
     background: transparent;
   }
   .toggler:hover {
-    color: var(--u-txt-color-hover, #1E88E5);
+    color: var(--u-txt-color-hover, #1565C0);
   }
 
   /* Sidebar Container */

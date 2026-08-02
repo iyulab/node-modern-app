@@ -69,8 +69,9 @@ describe('셸 색 계약 — 실제 렌더', () => {
   it('활성 메뉴가 역할 토큰의 색으로 칠해진다', async () => {
     mount('selected');
     await customElements.whenDefined('u-sidebar-link');
-    // #1E88E5 = --u-blue-600 = --u-primary-color (light)
-    expect(bg(el)).toBe('rgb(30, 136, 229)');
+    // #1976D2 = --u-blue-700 = --u-primary-color (light).
+    // ★blue-600 이었으나 components 1.16.0 이 대비로 단을 다시 골랐다 — 흰 글자 3.68 ✗.
+    expect(bg(el)).toBe('rgb(25, 118, 210)');
   });
 
   it('★--u-primary-color 하나만 덮으면 활성 메뉴가 따라온다', async () => {
@@ -106,7 +107,7 @@ describe('셸 색 계약 — 실제 렌더', () => {
     expect(mixed).not.toBe('');            // 무효 인자였다면 빈 문자열/투명이 된다
     expect(mixed).not.toBe('rgba(0, 0, 0, 0)');
     expect(mixed).not.toBe(rest);          // 정지 상태와 구분돼야 hover 가 보인다
-    expect(rgb(mixed)).toEqual([26, 116, 195]); // #1A74C3 — CHANGELOG 가 고지한 값
+    expect(rgb(mixed)).toEqual([21, 100, 179]); // #1564B3 — 주색이 한 단 진해진 만큼 파생도 따라온다
     probe.remove();
   });
 
