@@ -56,7 +56,11 @@ export const styles = css`
 
   /* 상태 슬롯이 비어 있으면 자리를 차지하지 않는다 — 빈 배지 자리가 제목을 밀면
      같은 화면인데 제목 위치가 달라 보인다. */
-  .status:not(:has(*)) {
+  /* 빈 슬롯 래퍼는 접는다.
+     ⚠**CSS ':has()' 로는 못 한다** — <slot> 자신이 자식 요소라 ':has(*)' 가 항상 참이다
+     (실브라우저 테스트로 확인했다. 소스 검사와 jsdom 은 둘 다 통과시킨다).
+     배정 상태는 'slotchange' 로 추적해 '.empty' 클래스로 내려온다 — internals/slotted.ts */
+  .status.empty {
     display: none;
   }
 
@@ -66,6 +70,10 @@ export const styles = css`
     align-items: center;
     gap: var(--u-space-sm, 8px);
     margin-left: auto;
+  }
+  /* 빈 액션 래퍼는 접는다(슬롯 배정은 'slotchange' 로 추적 — internals/slotted.ts). */
+  .actions.empty {
+    display: none;
   }
 
   /* 좁은 화면: 액션이 제목 아래로 내려가고 **왼쪽 정렬**이 된다.

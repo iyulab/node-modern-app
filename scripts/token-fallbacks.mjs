@@ -30,14 +30,26 @@ const SOURCE_GLOB = 'src/**/*.ts';
  * 갖지 않는다. 셸(사이드바·레이아웃)이 컴포넌트 라이브러리의 토큰을 그대로 읽는다.
  *
  * `dist/styles/light.css` 는 배포본에 실리므로(`files: ["dist"]`) 독립 클론에서도
- * 해석된다. 모노레포에서는 워크스페이스 심링크가 같은 경로를 가리킨다.
- * ⚠단 `dist` 는 빌드 산출물이라 **components 를 한 번도 빌드하지 않은 상태**에서는 없다.
- * 그때는 소스 시트로 떨어진다(모노레포 한정).
+ * 해석된다.
+ *
+ * ## ⚠형제 소스가 **먼저**다 — 두 검사기가 같은 시트를 봐야 한다
+ *
+ * 모노레포 루트의 `npm run tokens:sync` 는 정본을 **워크스페이스 소스**
+ * (`packages/components/src/assets/styles/light.css`)로 잡는다. 이 파일이 설치본
+ * (`node_modules/…/dist`)을 먼저 보면, **components 가 값을 바꾸고 아직 게시되지 않은
+ * 구간에서 두 검사기가 반대 방향을 요구한다** — 루트는 새 값으로 고치라 하고, 이 테스트는
+ * 옛 값이 아니라고 실패한다. 서로를 영구히 빨갛게 만든다(실측: 2겹 그림자 전환 직후).
+ *
+ * ⇒ 모노레포에서는 **로컬 소스가 곧 다음 게시본**이므로 그쪽을 정본으로 삼는다.
+ *
+ * ⚠**단독 클론에서는 형제 경로가 없어 설치본으로 떨어진다.** 그 환경에서 이 테스트가
+ * 실패하면 원인은 폴백이 낡은 것이 **아니라 릴리스 순서**다 — 의존(`components`)이
+ * 게시되기 전에 이 패키지를 내보내려는 것이다. 그 신호는 유용하므로 죽이지 않는다.
  */
 const SHEET_CANDIDATES = [
+  '../components/src/assets/styles/light.css',
   'node_modules/@iyulab/components/dist/styles/light.css',
   '../../node_modules/@iyulab/components/dist/styles/light.css',
-  '../components/src/assets/styles/light.css',
 ];
 
 export function resolveSheet(root) {

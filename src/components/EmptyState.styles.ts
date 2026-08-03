@@ -39,7 +39,11 @@ export const styles = css`
     gap: var(--u-space-sm, 8px);
     margin-top: var(--u-space-lg, 16px);
   }
-  .actions:not(:has(*)) {
+  /* 빈 슬롯 래퍼는 접는다.
+     ⚠**CSS ':has()' 로는 못 한다** — <slot> 자신이 자식 요소라 ':has(*)' 가 항상 참이다
+     (실브라우저 테스트로 확인했다. 소스 검사와 jsdom 은 둘 다 통과시킨다).
+     배정 상태는 'slotchange' 로 추적해 '.empty' 클래스로 내려온다 — internals/slotted.ts */
+  .actions.empty {
     display: none;
   }
 `;

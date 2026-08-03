@@ -1,7 +1,8 @@
 import { html, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property, state, customElement } from 'lit/decorators.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
+import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './EmptyState.styles.js';
 
 type ElementParts = 'host' | 'icon' | 'title' | 'description' | 'actions';
@@ -36,6 +37,9 @@ export class EmptyState extends StyledElement<ElementParts> {
   /** 보조 설명. 비우면 variant 기본 문구. */
   @property({ type: String }) description = '';
 
+  /** 액션 슬롯 배정 상태 — CSS `:has()` 로는 알 수 없다(`internals/slotted.ts` 참조). */
+  @state() private hasActions = false;
+
   private get defaults() {
     return this.variant === 'no-results'
       ? { icon: '🔍', title: '조건에 맞는 결과가 없습니다', description: '검색어나 필터를 바꿔 보십시오.' }
@@ -51,7 +55,11 @@ export class EmptyState extends StyledElement<ElementParts> {
       </div>
       <p class="title" part="title">${this.title || d.title}</p>
       ${description ? html`<p class="description" part="description">${description}</p>` : nothing}
-      <div class="actions" part="actions"><slot name="actions"></slot></div>
+      <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
+        <slot name="actions"
+          @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
+        ></slot>
+      </div>
     `;
   }
 }

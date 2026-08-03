@@ -1,7 +1,8 @@
 import { html, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { property, state, customElement } from 'lit/decorators.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
+import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './PageHeader.styles.js';
 
 type ElementParts = 'host' | 'back' | 'heading' | 'title' | 'subtitle' | 'status' | 'actions';
@@ -40,6 +41,13 @@ export class PageHeader extends StyledElement<ElementParts> {
   /** 뒤로가기 링크 문구. */
   @property({ type: String, attribute: 'back-label' }) backLabel = '뒤로';
 
+  /**
+   * 슬롯 배정 상태. ★CSS 로는 알 수 없다 — `<slot>` 자신이 자식이라 `:has(*)` 가
+   * 항상 참이다(실브라우저로 확인). 빈 배지 자리가 남으면 제목 위치가 화면마다 달라진다.
+   */
+  @state() private hasStatus = false;
+  @state() private hasActions = false;
+
   render() {
     return html`
       ${this.back
@@ -48,13 +56,21 @@ export class PageHeader extends StyledElement<ElementParts> {
       <div class="heading" part="heading">
         <div class="title-row">
           <h1 class="title" part="title">${this.title}</h1>
-          <span class="status" part="status"><slot name="status"></slot></span>
+          <span class="status ${this.hasStatus ? '' : 'empty'}" part="status">
+            <slot name="status"
+              @slotchange=${(e: Event) => (this.hasStatus = slotHasContent(e.target as HTMLSlotElement))}
+            ></slot>
+          </span>
         </div>
         ${this.subtitle
           ? html`<p class="subtitle" part="subtitle">${this.subtitle}</p>`
           : nothing}
       </div>
-      <div class="actions" part="actions"><slot name="actions"></slot></div>
+      <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
+        <slot name="actions"
+          @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
+        ></slot>
+      </div>
     `;
   }
 }

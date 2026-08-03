@@ -1,7 +1,8 @@
-import { html, nothing } from 'lit';
-import { property, customElement } from 'lit/decorators.js';
+import { html } from 'lit';
+import { property, state, customElement } from 'lit/decorators.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
+import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './GroupBox.styles.js';
 
 type ElementParts = 'host' | 'header' | 'title' | 'actions' | 'body';
@@ -35,17 +36,25 @@ export class GroupBox extends StyledElement<ElementParts> {
   /** 본문 여백을 없앤다 — 표를 카드 가장자리까지 붙일 때. */
   @property({ type: Boolean }) flush = false;
 
+  /**
+   * 액션 슬롯 배정 상태.
+   * ★종전에는 'render()' 안에서 'this.querySelector()' 로 라이트 DOM 을 읽었다. 그것은
+   *   **자식이 늦게 붙으면 못 본다** — 소비자가 'requestUpdate()' 를 부르지 않는 한
+   *   헤더가 통째로 사라진 채로 남는다. 슬롯 배정은 'slotchange' 가 알려 준다.
+   */
+  @state() private hasActions = false;
+
   render() {
-    const hasHeader = !!this.title || this.querySelector('[slot="actions"]');
+    const hasHeader = !!this.title || this.hasActions;
     return html`
-      ${hasHeader
-        ? html`
-            <div class="header ${this.divider ? 'divider' : ''}" part="header">
-              <h3 class="title" part="title">${this.title}</h3>
-              <div class="actions" part="actions"><slot name="actions"></slot></div>
-            </div>
-          `
-        : nothing}
+      <div class="header ${this.divider ? 'divider' : ''} ${hasHeader ? '' : 'empty'}" part="header">
+        <h3 class="title" part="title">${this.title}</h3>
+        <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
+          <slot name="actions"
+            @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
+          ></slot>
+        </div>
+      </div>
       <div class="body ${this.flush ? 'flush' : ''}" part="body"><slot></slot></div>
     `;
   }
