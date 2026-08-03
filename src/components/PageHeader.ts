@@ -1,0 +1,66 @@
+import { html, nothing } from 'lit';
+import { property, customElement } from 'lit/decorators.js';
+
+import { StyledElement } from '../internals/StyledElement.js';
+import { styles } from './PageHeader.styles.js';
+
+type ElementParts = 'host' | 'back' | 'heading' | 'title' | 'subtitle' | 'status' | 'actions';
+
+/**
+ * 페이지 헤더 — 모든 LOB 화면 최상단의 같은 골격.
+ *
+ * ★**왜 이것이 라이브러리에 있나**: 이 골격은 화면마다 손으로 다시 짜인다. 손으로 짜면
+ *   ⑴제목 크기가 화면마다 달라지고 ⑵액션 정렬이 미묘하게 어긋나고 ⑶좁은 화면 규칙이
+ *   빠진다. 셋 다 개별로는 사소해 보이지만, 화면을 옮겨 다니는 사용자에게는 *"제품이
+ *   하나로 만들어지지 않았다"* 로 읽힌다.
+ *
+ * ```html
+ * <u-page-header title="주문 G-2026-I-0629" subtitle="2026-02-24 접수" back="/orders">
+ *   <span slot="status"><!-- 배지 --></span>
+ *   <span slot="actions"><!-- 버튼 --></span>
+ * </u-page-header>
+ * ```
+ *
+ * 오버라이드: `part`(host·back·heading·title·subtitle·status·actions) + slot 치환.
+ * 값은 전부 토큰을 경유한다 — 리터럴을 두면 소비자가 밀도를 바꿀 수 없다.
+ */
+@customElement('u-page-header')
+export class PageHeader extends StyledElement<ElementParts> {
+  static styles = [super.styles, styles];
+
+  /** 페이지 제목. 타입 스케일의 `display` 단을 쓴다. */
+  @property({ type: String }) title = '';
+  /** 제목 아래 보조 설명. 없으면 렌더하지 않는다. */
+  @property({ type: String }) subtitle?: string;
+  /**
+   * 뒤로가기 링크 주소. 주면 제목 왼쪽에 `← 목록` 형태로 나온다.
+   * ⚠텍스트는 `backLabel` 로 바꾼다 — 기본값이 한국어라 다국어 소비자가 덮어야 한다.
+   */
+  @property({ type: String }) back?: string;
+  /** 뒤로가기 링크 문구. */
+  @property({ type: String, attribute: 'back-label' }) backLabel = '뒤로';
+
+  render() {
+    return html`
+      ${this.back
+        ? html`<a class="back" part="back" href=${this.back}>${this.backLabel}</a>`
+        : nothing}
+      <div class="heading" part="heading">
+        <div class="title-row">
+          <h1 class="title" part="title">${this.title}</h1>
+          <span class="status" part="status"><slot name="status"></slot></span>
+        </div>
+        ${this.subtitle
+          ? html`<p class="subtitle" part="subtitle">${this.subtitle}</p>`
+          : nothing}
+      </div>
+      <div class="actions" part="actions"><slot name="actions"></slot></div>
+    `;
+  }
+}
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'u-page-header': PageHeader;
+  }
+}
