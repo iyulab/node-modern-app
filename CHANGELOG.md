@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.8.2] - 2026-08-03
+
+### Fixed
+
+- **`SidebarLayout` 토글 버튼에 테두리가 남던 문제** — 토글러는 `<u-button>` 을 variant 없이
+  쓰고 있었고, `@iyulab/components` 의 기본값은 `solid` 이라 내부 버튼이
+  `--btn-border-color: var(--btn-color)` 로 **자기 테두리를 그렸다.**
+
+  ⚠**시트의 `.toggler { border: none }` 으로는 지워지지 않는다** — 그 규칙은 `<u-button>`
+  **호스트**에만 닿고, 선을 그리는 것은 그 섀도 루트 안의 `<button>` 이다. 그래서 호스트를
+  재면 `0px` 로 보이고(테스트도 그렇게 통과한다) 화면에는 선이 남는다.
+
+  ⇒ 마크업에 `variant="ghost"` 를 명시해 컴포넌트가 스스로 투명하게 그리도록 했다
+  (실측: 내부 버튼 테두리 `1px solid <주색>` → `1px solid transparent`).
+  중복이 된 `.toggler` 의 `border`·`background` 선언은 걷어냈다. `color: inherit` 는
+  헤더 색을 따르게 하려는 의도이므로 유지한다.
+
+  주색을 진하게 잡은 소비자일수록 눈에 띄던 자리다 — 테두리가 그 주색으로 그려졌다.
+
 ## [0.8.1] - 2026-08-02
 
 ### Fixed

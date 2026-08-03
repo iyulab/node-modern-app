@@ -40,12 +40,21 @@ export const styles = css`
     text-overflow: ellipsis;
   }
 
+  /*
+   * 토글러의 "테두리·배경 없음"은 마크업의 variant="ghost" 가 낸다.
+   *
+   * ★여기에 border/background 를 적는 것으로는 부족했다 — 이 규칙은 <u-button> **호스트**에만
+   *   닿고, 테두리를 실제로 그리는 것은 그 섀도 루트 안의 <button> 이다(solid 기본값이
+   *   --btn-border-color: var(--btn-color) 로 그린다). 호스트만 재면 0px 이라 보이지도 않았다.
+   *   variant 를 명시해 컴포넌트가 스스로 투명하게 그리도록 한다.
+   *
+   * color: inherit 는 유지한다 — 헤더 색을 따라가게 하려는 의도이고 ghost 의 기본 전경
+   * (--u-txt-color)보다 이 레이아웃의 뜻이 앞선다.
+   */
   .toggler {
     color: inherit;
     font-size: 20px;
     padding: 0px;
-    border: none;
-    background: transparent;
   }
   .toggler:hover {
     color: var(--u-txt-color-hover, #1565C0);

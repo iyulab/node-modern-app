@@ -100,10 +100,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         <span class="title">
           ${this.config.title}
         </span>
-        <u-button class="toggler"
+        <u-button class="toggler" variant="ghost"
           @click=${this.handleToggleButtonClick}>
-          <u-icon 
-            lib="bootstrap" 
+          <u-icon
+            lib="bootstrap"
             name=${this.state === 'mobile-open' ? 'x-lg' : 'list'}
           ></u-icon>
         </u-button>
@@ -117,10 +117,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           <span class="title" ?hidden=${this.state === 'slim'}>
             ${this.config.title}
           </span>
-          <u-button class="toggler"
+          <u-button class="toggler" variant="ghost"
             @click=${this.handleToggleButtonClick}>
-            <u-icon 
-              lib="bootstrap" 
+            <u-icon
+              lib="bootstrap"
               name="layout-sidebar"
             ></u-icon>
           </u-button>
