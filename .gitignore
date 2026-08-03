@@ -22,4 +22,8 @@ package-lock.json
 node_modules
 
 # Ignore distribution directory
-distpnpm-lock.yaml
+dist
+
+# npm 전용 — 다른 설치기의 lock 이 섞이면 게시 워크플로가 어긋난다
+pnpm-lock.yaml
+yarn.lock
