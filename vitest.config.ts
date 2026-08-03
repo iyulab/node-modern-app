@@ -20,6 +20,9 @@ export default defineConfig({
           include: ['tests/**/*.test.ts'],
           exclude: ['tests/browser/**'],
           environment: 'node',
+          // 아이콘 리졸버를 결정적으로 만든다 — sidebar 레이아웃이 자기 chrome 으로
+          // 외부 CDN 아이콘을 가져오므로, 없으면 러너의 네트워크 상태에 결과가 달린다.
+          setupFiles: ['./tests/vitest-setup.ts'],
         },
       },
       {
@@ -32,6 +35,7 @@ export default defineConfig({
             instances: [{ browser: 'chromium' }],
           },
           isolate: true,
+          setupFiles: ['./tests/vitest-setup.ts'],
         },
       },
     ],
