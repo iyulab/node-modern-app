@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync, globSync } from 'fs';
+import { readFileSync } from 'fs';
 import { resolve, join } from 'path';
 
 import { isBlank } from '../src/components/InfoField.js';

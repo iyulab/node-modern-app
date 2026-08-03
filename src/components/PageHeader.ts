@@ -2,6 +2,7 @@ import { html, nothing } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
+import { getLocaleStrings } from '../internals/locale.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './PageHeader.styles.js';
 
@@ -35,11 +36,17 @@ export class PageHeader extends StyledElement<ElementParts> {
   @property({ type: String }) subtitle?: string;
   /**
    * 뒤로가기 링크 주소. 주면 제목 왼쪽에 `← 목록` 형태로 나온다.
-   * ⚠텍스트는 `backLabel` 로 바꾼다 — 기본값이 한국어라 다국어 소비자가 덮어야 한다.
+   * ⚠텍스트는 `backLabel` 또는 locale 레지스트리로 바꾼다.
    */
   @property({ type: String }) back?: string;
-  /** 뒤로가기 링크 문구. */
-  @property({ type: String, attribute: 'back-label' }) backLabel = '뒤로';
+  /**
+   * 뒤로가기 링크 문구. 비우면 locale 레지스트리 값, 그것도 없으면 **영어**(`Back`).
+   * ⚠이 패키지는 범용 층이라 특정 언어를 기본값으로 가질 수 없다 —
+   * 한국어는 `registerLocale('ko', { back: '뒤로' })` 로 소비자가 등록한다.
+   */
+  @property({ type: String, attribute: 'back-label' }) backLabel = '';
+  /** 언어 태그. 비우면 `setDefaultLocale()` 값, 그것도 없으면 영어. */
+  @property({ type: String }) locale = '';
 
   /**
    * 슬롯 배정 상태. ★CSS 로는 알 수 없다 — `<slot>` 자신이 자식이라 `:has(*)` 가
@@ -51,7 +58,7 @@ export class PageHeader extends StyledElement<ElementParts> {
   render() {
     return html`
       ${this.back
-        ? html`<a class="back" part="back" href=${this.back}>${this.backLabel}</a>`
+        ? html`<a class="back" part="back" href=${this.back}>${this.backLabel || getLocaleStrings(this.locale || undefined).back}</a>`
         : nothing}
       <div class="heading" part="heading">
         <div class="title-row">
