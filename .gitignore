@@ -22,4 +22,4 @@ package-lock.json
 node_modules
 
 # Ignore distribution directory
-dist
+distpnpm-lock.yaml
