@@ -214,6 +214,20 @@ Sidebar states: `'default'` | `'slim'` | `'modal'` | `'mobile'` | `'mobile-open'
 
 ---
 
+## LOB primitives
+
+Screen-building components this package registers. They exist so the same skeleton is not
+re-assembled per screen — that is where a product stops looking like one product.
+
+- [`u-page-header`](./references/components/page-header.md) — Screen header: back link, title, subtitle, status and action slots
+- [`u-group-box`](./references/components/group-box.md) — Titled card with trailing header actions; the unit detail screens are built from
+- [`u-info-section`](./references/components/info-section.md) — Responsive grid for label/value pairs; container width picks the column count
+- [`u-info-field`](./references/components/info-field.md) — Read-only label/value pair that keeps "not set" and "zero" distinct
+- [`u-empty-state`](./references/components/empty-state.md) — Empty list or empty search, worded differently because they are different facts
+- [`u-action-bar`](./references/components/action-bar.md) — Closing action row with a separated destructive group
+
+---
+
 ## Full `AppConfig` reference
 
 See [references/api.md](./references/api.md) for all TypeScript interfaces.

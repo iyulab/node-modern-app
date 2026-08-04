@@ -24,6 +24,14 @@
   ***그룹 버튼이 통째로 비어 있었다.*** 세 종류를 한 목록으로 도는 회귀 7건을 신설했다
   (종전에는 이 축의 테스트가 **0건**이었고, 그래서 누락이 조용했다).
 
+### Documentation
+
+- 🔴**LOB 프리미티브 6종이 스킬 문서에 아예 없었다** — `u-page-header`·`u-group-box`·
+  `u-info-section`·`u-info-field`·`u-empty-state`·`u-action-bar`. 여섯 다 `index.ts` 에서
+  **공개**되고 화면이 그것으로 서는데, 스킬은 `app.load()` 설정만 설명하고 있었다.
+  스킬은 소비자(그리고 에이전트)가 API 를 찾는 자리이므로 **거기 없으면 없는 것과 같다.**
+  ⇒ `references/components/*.md` 여섯과 목차 절을 더했다.
+
 ### Changed
 
 - **셸 크롬의 타이포가 디자인 토큰 스케일의 단을 읽는다**(`--u-text-*`).
