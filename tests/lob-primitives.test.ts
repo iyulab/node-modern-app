@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { resolve, join } from 'path';
 
 import { isBlank } from '../src/components/InfoField.js';
@@ -7,8 +7,25 @@ import { isBlank } from '../src/components/InfoField.js';
 const root = resolve(__dirname, '..');
 const read = (rel: string) => readFileSync(join(root, rel), 'utf-8');
 
-/** 이 릴리스에서 추가된 LOB 프리미티브. 늘어나면 여기 한 줄이 는다. */
-const PRIMITIVES = ['PageHeader', 'GroupBox', 'InfoSection', 'InfoField', 'EmptyState'];
+/**
+ * LOB 프리미티브 목록 — **도출한다.**
+ *
+ * 🔴**손으로 쓴 배열이었고, 정확히 그 방식이 결함을 숨겼다**(2026-08-04): `u-action-bar` 를
+ * 추가한 사이클에서 이 파일의 계약(색·크기 리터럴 0 · `part` 노출 · `u-` 접두어 · export)이
+ * **그 컴포넌트를 한 번도 검사하지 않은 채** 74건 전부 통과했다.
+ *
+ * ⇒ 이 리포가 이미 두 번 내린 결론과 같다(`tokens:sync` 의 소비자 목록 · `gitignore-check` 의
+ * 산출 디렉터리): ***대상 목록은 도출하고, 규칙 목록만 손으로 쓴다***(cycle-181 의 경계).
+ *
+ * ⚠**셸 부품(`Sidebar*`)은 제외한다** — 그것은 셸 «바깥»이고 이 계약의 대상이 아니다.
+ * 규칙이므로 손으로 적는다.
+ */
+const SHELL_PARTS = /^Sidebar/;
+const PRIMITIVES = readdirSync(join(root, 'src/components'))
+  .filter(f => f.endsWith('.ts') && !f.endsWith('.styles.ts'))
+  .map(f => f.replace(/\.ts$/, ''))
+  .filter(n => !SHELL_PARTS.test(n))
+  .sort();
 
 /**
  * LOB 프리미티브의 계약.

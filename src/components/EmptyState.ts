@@ -25,7 +25,13 @@ type ElementParts = 'host' | 'icon' | 'title' | 'description' | 'actions';
  * <u-empty-state variant="no-results"></u-empty-state>
  * ```
  *
- * ⚠기본 문구는 한국어다 — 다국어 소비자는 `title`·`description` 을 준다.
+ * ⚠**기본 문구는 영어다** — 이 패키지는 범용 층이라 특정 언어를 기본값으로 가질 수 없다.
+ * 한국어는 `registerLocale('ko', …)` 로 소비자가 등록하고, 화면별로 덮으려면
+ * `title`·`description` 을 준다.
+ *
+ * ★이 줄은 «한국어다»라고 적혀 있었고 **같은 파일의 `locale` 프로퍼티 주석이 «영어다»라고
+ * 말하고 있었다** — 로케일 이주(0.9.0) 때 클래스 주석만 낡은 것이다. 이 JSDoc 은
+ * `dist/**.d.ts` 로 게시되므로, 소비자는 **사실과 반대인 문장**을 읽고 있었다.
  */
 @customElement('u-empty-state')
 export class EmptyState extends StyledElement<ElementParts> {
