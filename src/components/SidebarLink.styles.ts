@@ -50,11 +50,16 @@ export const styles = css`
     font-size: 20px;
   }
 
+  /*
+   * ★내비 항목은 «대상의 짧은 이름» = label 단이다(용도 배정 — DL-157-4).
+   * ⚠행 높이는 바뀌지 않는다: 13 x 1.5 = 19.5px < 아이콘 20px 이라 행을 잡는 것은
+   *   여전히 아이콘이다. 접힌 사이드바(아이콘만)와 펼친 사이드바의 행 높이가 같아야 한다.
+   */
   span {
     flex: 1;
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 500;
+    font-size: var(--u-text-label-size, 13px);
+    line-height: var(--u-text-label-leading, 1.5);
+    font-weight: var(--u-text-label-weight, 600);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

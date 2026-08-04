@@ -53,11 +53,16 @@ export const styles = css`
     font-size: 20px;
   }
 
+  /*
+   * ★그룹도 자식 링크와 같은 label 단이다. 종전에는 굵기로 위계를 냈지만(600 vs 500),
+   *   자식은 이미 **32px 들여쓰기 + 2px 레일 + 캐럿**으로 갈린다 — 굵기 한 단을 위계에
+   *   더 쓰면 스케일 밖의 다섯 번째 값이 생긴다. 위계는 배치가 지고 단은 용도가 진다.
+   */
   .label {
     flex: 1;
-    font-size: 14px;
-    line-height: 20px;
-    font-weight: 600;
+    font-size: var(--u-text-label-size, 13px);
+    line-height: var(--u-text-label-leading, 1.5);
+    font-weight: var(--u-text-label-weight, 600);
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
 import '@iyulab/components/dist/components/icon/UIcon.js';
+import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import { SidebarLink, type SidebarLinkConfig } from './SidebarLink.js';
 import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
@@ -45,8 +46,15 @@ export class SidebarGroup extends StyledElement<ElementParts> {
         ?compact=${this.compact}
         ?selected=${this.selected}
         @click=${this.handleButtonClick}>
-        <u-icon class="icon" part="icon" ?hidden=${!this.icon}
+        <!--
+          ⚠ ?hidden 을 걸지 않는다. 접힌 상태에서는 라벨과 캐럿이 모두 숨으므로,
+            아이콘까지 숨기면 **버튼이 통째로 비어 누를 것이 없어진다** — 이것이
+            SidebarLink·SidebarButton 에서 폴백을 도입한 바로 그 결함이고, 이 자리만
+            빠져 있었다.
+        -->
+        <u-icon class="icon" part="icon"
           .name=${this.icon}
+          .fallback=${DEFAULT_NAV_ICON}
         ></u-icon>
         <span class="label" part="label" ?hidden=${this.compact}>
           ${this.label}

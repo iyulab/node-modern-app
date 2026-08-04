@@ -45,11 +45,12 @@ export const styles = css`
     font-size: 20px;
   }
 
+  /* ★SidebarLink 와 같은 자리·같은 단(label). 두 곳이 어긋나면 목록이 계단이 된다. */
   span {
     flex: 1;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
+    font-size: var(--u-text-label-size, 13px);
+    font-weight: var(--u-text-label-weight, 600);
+    line-height: var(--u-text-label-leading, 1.5);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

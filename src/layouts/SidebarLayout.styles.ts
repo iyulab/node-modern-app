@@ -29,12 +29,19 @@ export const styles = css`
     object-fit: contain;
   }
 
+  /*
+   * ★단 배정은 «관측값 근사»가 아니라 «용도»로 한다(DL-157-4) — 이 자리는 앱의 제목이다.
+   *   종전 18px 은 스케일에 없는 값이었고, 같은 판정을 이미 u-dialog·u-drawer 제목에
+   *   내린 적이 있다(L2-3, 18px → subtitle).
+   * ⚠줄 박스는 바뀌지 않는다: 16 x 1.5 = 24px = 종전 line-height. 헤더 높이 불변.
+   */
   .title {
     flex: 1;
     color: var(--u-txt-color, #212121);
-    font-size: 18px;
-    line-height: 24px;
-    font-weight: 700;
+    font-size: var(--u-text-subtitle-size, 16px);
+    line-height: var(--u-text-subtitle-leading, 1.5);
+    font-weight: var(--u-text-subtitle-weight, 600);
+    letter-spacing: var(--u-text-subtitle-tracking, 0);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
