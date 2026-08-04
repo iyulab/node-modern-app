@@ -1,6 +1,23 @@
 # Changelog
 
-## [0.9.1] - 2026-08-04
+## [0.10.0] - 2026-08-04
+
+### Added
+
+- **`u-action-bar` — 상세·편집 화면의 푸터 액션 바.** 초안 R4 의 잔여였다.
+
+  ```html
+  <u-action-bar sticky>
+    <u-button slot="danger" color="danger" variant="ghost">삭제</u-button>
+    <u-button variant="ghost">취소</u-button>
+    <u-button color="primary">저장</u-button>
+  </u-action-bar>
+  ```
+
+  **위험 액션은 왼쪽 끝, 주 액션은 오른쪽 끝** — 같은 무리에 두면 «저장»을 누르려다
+  «삭제»를 누른다. **거리가 안전장치**이므로 이 분리는 취향이 아니라 기능이다.
+  좁아지면 두 무리가 각자 한 줄을 갖고 **주 액션이 위로** 온다(엄지 위치에 위험 액션을
+  두지 않기 위해서다). `sticky` 로 스크롤 컨테이너 하단에 고정한다.
 
 ### Changed
 
