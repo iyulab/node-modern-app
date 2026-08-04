@@ -59,8 +59,17 @@ export const styles = css`
     display: none;
   }
 
+  /* 🔴**본문은 세로 흐름이고, 그 리듬을 여기서 정한다.**
+     종전에는 padding 만 있어 블록 자식이 **간격 없이 붙었고**, 그보다 나쁘게는
+     shrink-to-fit 요소들이 각자 다른 폭으로 앉아 **왼쪽 끝이 어긋났다**(실측: 알림 넷을
+     나란히 두면 계단처럼 내려갔다). 소비자가 그것을 고치려면 자기 CSS 를 쓰게 되고,
+     그 순간 이 패키지가 존재하는 이유가 사라진다.
+     ⇒ flex column + gap. 자식은 폭을 채우고 간격은 토큰이 정한다. */
   .body {
     padding: var(--u-space-xl, 20px);
+    display: flex;
+    flex-direction: column;
+    gap: var(--u-space-md, 12px);
   }
 
   /* 좁을 때: 헤더의 툴바(검색·필터)가 제목 아래로 내려가고 폭을 채운다.

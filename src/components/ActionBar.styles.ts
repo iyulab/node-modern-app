@@ -37,14 +37,20 @@ export const styles = css`
     margin-left: auto;
   }
 
-  /* 화면 하단에 고정 — 긴 폼에서 저장 버튼을 찾아 스크롤하지 않아도 된다. */
+  /* 화면 하단에 고정 — 긴 폼에서 저장 버튼을 찾아 스크롤하지 않아도 된다.
+
+     🔴**음수 마진으로 «가장자리까지 늘리는» 것을 하지 않는다.** 첫 판이
+     margin: 0 calc(-1 * var(--u-space-md, 12px)) 로 좌우를 넘겼는데, 그것은
+     ***부모가 정확히 그만큼의 가로 패딩을 갖고 있다***고 가정하는 것이다. 실측에서
+     그 가정이 깨졌다 — 샘플 화면에서 좌우 12px 씩 넘쳐 **가로 스크롤바가 생기고
+     주 액션(저장)이 잘렸다.** 라이브러리가 소비자의 여백을 알 수는 없다.
+     ⚠이 주석에 백틱을 쓰지 말 것 — css 태그드 템플릿을 그 자리에서 끝낸다. */
   :host([sticky]) {
     position: sticky;
     bottom: 0;
     background-color: var(--u-bg-color, #FFFFFF);
     border-top: 1px solid var(--u-border-color-weak, #EEEEEE);
-    padding: var(--u-space-md, 12px);
-    margin: 0 calc(-1 * var(--u-space-md, 12px));
+    padding: var(--u-space-md, 12px) 0;
   }
 
   /* 좁을 때: 두 무리가 각자 한 줄을 차지하고 주 액션이 위로 온다.

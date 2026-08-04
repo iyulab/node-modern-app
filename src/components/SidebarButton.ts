@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
 import '@iyulab/components/dist/components/icon/UIcon.js';
+import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarButton.styles.js';
@@ -36,8 +37,9 @@ export class SidebarButton extends StyledElement<ElementParts> {
   render() {
     return html`
       <button part="base" ?compact=${this.compact}>
-        <u-icon part="icon" ?hidden=${!this.icon}
+        <u-icon part="icon"
           .name=${this.icon}
+          .fallback=${DEFAULT_NAV_ICON}
         ></u-icon>
         <span part="label" ?hidden=${this.compact}>
           ${this.label}
