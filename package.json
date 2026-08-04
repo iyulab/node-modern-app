@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab based on lit-element",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "keywords": [
     "iyulab",
     "web-framework",
@@ -42,7 +42,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@iyulab/components": "^1.21.0",
+    "@iyulab/components": "^1.24.0",
     "@iyulab/router": "^0.10.2",
     "i18next": "^26.3.6",
     "lit": "^3.3.3"
