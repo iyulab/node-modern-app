@@ -3,6 +3,10 @@ import { css } from 'lit';
 export const styles = css`
   :host {
     display: block;
+    /* 아래 @container 질의의 기준 — 카드는 «화면»이 아니라 «자기 폭»으로 접힌다.
+       사이드바가 열린 1280px 화면의 좁은 본문에서도, 넓은 본문을 가진 태블릿에서도
+       같은 판단을 하려면 기준이 자기 폭이어야 한다. */
+    container-type: inline-size;
     background-color: var(--u-panel-bg-color, #FFFFFF);
     border: 1px solid var(--u-border-color-weak, #EEEEEE);
     /* 면(surface) 단 — 컨트롤과 같은 반경을 쓰면 큰 사각형이 각져 보인다. */
@@ -57,6 +61,19 @@ export const styles = css`
 
   .body {
     padding: var(--u-space-xl, 20px);
+  }
+
+  /* 좁을 때: 헤더의 툴바(검색·필터)가 제목 아래로 내려가고 폭을 채운다.
+     ⚠**제목과 툴바가 한 줄에 남으면 둘 다 읽히지 않는다** — 제목은 잘리고 입력은
+     손가락보다 좁아진다. 초안(R4)이 *"좁은 화면에서 접히는 규칙을 라이브러리가 정한다"*
+     로 요구한 것이 이 자리다. 480px 는 «제목 + 입력»이 함께 설 수 있는 하한이다. */
+  @container (max-width: 480px) {
+    .header {
+      flex-wrap: wrap;
+    }
+    .actions {
+      width: 100%;
+    }
   }
   /* 표를 카드 가장자리까지 붙일 때. 헤더가 있으면 위 여백만 남긴다 —
      0 으로 만들면 제목과 표가 붙어 읽기 어려워진다. */

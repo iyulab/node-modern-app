@@ -7,6 +7,8 @@ export const styles = css`
     gap: var(--u-space-md, 12px);
     flex-wrap: wrap;
     margin-bottom: var(--u-space-2xl, 24px);
+    /* 아래 @container 질의의 기준 — 이 컴포넌트는 «화면»이 아니라 «자기 폭»으로 접힌다. */
+    container-type: inline-size;
   }
 
   .heading {
@@ -76,9 +78,16 @@ export const styles = css`
     display: none;
   }
 
-  /* 좁은 화면: 액션이 제목 아래로 내려가고 **왼쪽 정렬**이 된다.
-     ★오른쪽 정렬을 유지하면 손가락이 닿기 어려운 쪽으로 몰린다. */
-  @media (max-width: 640px) {
+  /* 좁을 때: 액션이 제목 아래로 내려가고 **왼쪽 정렬**이 된다.
+     ★오른쪽 정렬을 유지하면 손가락이 닿기 어려운 쪽으로 몰린다.
+
+     🔴**«화면»이 아니라 «자기 폭»을 본다(@container).** 종전에는 @media 였고, 그러면
+     이 프리미티브가 **자기가 얼마나 좁은지와 무관하게** 접혔다 — 셸 안에서 사이드바가 열려
+     본문이 500px 인 1280px 화면에서는 접히지 않고, 반대로 넓은 본문을 가진 좁은 화면에서는
+     불필요하게 접혔다. 컴포넌트가 스스로 판단할 수 있는 것은 **자기 컨테이너 폭**뿐이다.
+     ⚠container-type: inline-size 는 인라인 축 containment 를 만든다 — 이 호스트는 블록
+     레벨이고 자식이 호스트 폭에 기대므로 무해하다(폭별 회귀 테스트가 감시한다). */
+  @container (max-width: 640px) {
     .actions {
       margin-left: 0;
       width: 100%;
