@@ -16,7 +16,7 @@ type ElementParts = 'host' | 'grid';
  *
  * ```html
  * <u-info-section>
- *   <u-info-field label="파트" value="일반"></u-info-field>
+ *   <u-info-field label="파트" .value=${'일반'}></u-info-field>
  *   <u-info-field label="부수" .value=${0} numeric></u-info-field>
  * </u-info-section>
  * ```
