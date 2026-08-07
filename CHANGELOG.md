@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **`sideEffects` omitted the source-resolved entry barrel.** The allowlist covered the component
+  and layout modules but not the barrel that `exports["."]` resolves to. The published artifacts
+  were unaffected — the shipped allowlist already covered them — but a consumer resolving this
+  package from source (a workspace sibling) could have the barrel elided, dropping the element
+  registrations it pulls in. The failure is silent: no error, and unregistered custom elements
+  render nothing. The source-form entry points are now declared alongside the artifact ones.
+
 ## [0.11.1] - 2026-08-04
 
 ### Fixed

@@ -27,10 +27,12 @@
     "node": ">=20"
   },
   "sideEffects": [
-    "./src/components/*.ts",
-    "./src/layouts/*.ts",
     "./dist/components/*.js",
-    "./dist/layouts/*.js"
+    "./src/components/*.ts",
+    "./dist/index.js",
+    "./src/index.ts",
+    "./dist/layouts/*.js",
+    "./src/layouts/*.ts"
   ],
   "exports": {
     ".": {
