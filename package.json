@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab based on lit-element",
-  "version": "0.11.1",
+  "version": "0.12.0",
   "keywords": [
     "iyulab",
     "web-framework",
