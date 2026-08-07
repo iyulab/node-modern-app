@@ -4,6 +4,12 @@
 
 ### Added
 
+- **`u-info-field` now accepts `value` as a plain HTML attribute**, not just a property binding.
+  `value` was declared `attribute: false`, so `<u-info-field value="42">` was silently ignored —
+  no error, no warning, the field just stayed blank. Property binding (`.value=${x}`) is
+  unaffected and still accepts any type (numbers, dates); the attribute converter only applies
+  when the value arrives as a string attribute.
+
 - **Sidebar links can point outside the app.** `SidebarLinkConfig` accepted only `href` and could
   not say whether that link was a SPA route. `SidebarLink` rendered a `<u-link>` without passing
   `target` either, so even the one escape the lower layer offered was unreachable from config.

@@ -36,8 +36,11 @@ export class InfoField extends StyledElement<ElementParts> {
   /**
    * 값. `null`/`undefined`/빈 문자열이면 `blank` 문구로 대체된다.
    * ⚠`0`·`false` 는 **대체되지 않는다** — 값이기 때문이다.
+   * 속성(`value="…"`)과 프로퍼티(`.value=`) 둘 다 받는다 — HTML 속성은 항상 문자열이라
+   * `type: String` 변환기가 붙어도 `.value=${order.quantity}` 같은 비-문자열 프로퍼티
+   * 바인딩은 그대로 통과한다(변환기는 속성 파싱에만 관여한다). 렌더는 항상 `String(value)`.
    */
-  @property({ attribute: false }) value?: unknown;
+  @property({ type: String }) value?: unknown;
   /** "아직 없음"을 나타낼 문구. */
   @property({ type: String }) blank = '—';
   /**
