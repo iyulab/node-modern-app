@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@iyulab/components": "^1.24.0",
-    "@iyulab/router": "^0.10.2",
+    "@iyulab/router": "^0.11.0",
     "i18next": "^26.3.6",
     "lit": "^3.3.3"
   },

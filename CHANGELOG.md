@@ -28,6 +28,11 @@
   imperative navigation, which loses middle-click and Ctrl+click, address copying, the link role
   for screen readers, and `pattern`-based highlighting, and cannot sit inside a section or group.
 
+### Changed
+
+- **`@iyulab/router` requirement raised to `^0.11.0`.** The sidebar `navigate: 'document'` support
+  above needs `<u-link navigate="document">`, added in that release; `^0.10.2` does not resolve to
+  it (a 0.x range's minor segment behaves like a major boundary under semver).
 
 ### Fixed
 
