@@ -18,6 +18,27 @@ export interface SidebarLinkConfig extends SidebarPermissionGuard {
   href: string;
   pattern?: string | URLPattern;
   styles?: StyleMap<ElementParts>;
+
+  /**
+   * 라우터가 가로채지 않고 브라우저의 문서 이동에 맡긴다 — 같은 오리진의 비-SPA 경로용.
+   *
+   * 실무 앱의 메뉴에는 SPA 화면만 서지 않는다: 도움말/문서 사이트, 리포트 출력 엔드포인트,
+   * 관리 콘솔, 레거시 페이지가 같은 목록에 선다. 종전에는 그것을 **표현할 수 없어서**
+   * 메뉴에 걸면 라우터가 클릭을 가로채 not-found 로 떨어졌다.
+   *
+   * ```ts
+   * { type: 'link', label: '도움말', href: '/help/', navigate: 'document' }
+   * ```
+   */
+  navigate?: 'router' | 'document';
+
+  /**
+   * 앵커 `target`. 새 탭으로 열 때 쓴다.
+   *
+   * ⚠**`navigate` 를 대신하지 못한다** — `_blank` 는 **새 탭을 강제**하므로 「같은 탭에서
+   * 다른 문서로」를 표현할 수 없다. 그것이 종전에 유일한 탈출구였고, 그래서 부족했다.
+   */
+  target?: '_self' | '_blank';
 }
 
 /**
@@ -40,10 +61,22 @@ export class SidebarLink extends StyledElement<ElementParts> {
   @property({ type: String }) href?: string;
   /** 네비게이션 패턴 매칭 */
   @property({ type: String }) pattern?: string | URLPattern;
-  
+  /** 라우터가 가로채지 않고 브라우저 문서 이동에 맡긴다 (같은 오리진의 비-SPA 경로) */
+  @property({ type: String }) navigate?: 'router' | 'document';
+  /** 앵커 target — 새 탭으로 열 때 */
+  @property({ type: String }) target?: '_self' | '_blank';
+
   render() {
+    // ⚠**앵커를 유지하는 것이 요점이다.** 이것이 표현되지 않으면 소비앱은 `type: 'button'` +
+    //   `location.assign()` 으로 우회하게 되는데, 그러면 가운데 클릭·주소 복사·상태바 미리보기·
+    //   스크린리더의 «링크» 역할·`pattern` 기반 선택 표시를 전부 잃고, 섹션·그룹이 `button` 을
+    //   받지 않아 **메뉴 최상위로 밀려난다.**
     return html`
-      <u-link .href=${this.href || '#'}>
+      <u-link
+        .href=${this.href || '#'}
+        .navigate=${this.navigate}
+        .target=${this.target}
+      >
         <div class="container" part="base" ?compact=${this.compact}>
           <u-icon part="icon"
             .name=${this.icon}

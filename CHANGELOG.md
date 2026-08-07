@@ -2,6 +2,27 @@
 
 ## [Unreleased]
 
+### Added
+
+- **Sidebar links can point outside the app.** `SidebarLinkConfig` accepted only `href` and could
+  not say whether that link was a SPA route. `SidebarLink` rendered a `<u-link>` without passing
+  `target` either, so even the one escape the lower layer offered was unreachable from config.
+  A same-origin help site placed in the menu had its click intercepted by the router and fell
+  through to not-found.
+
+  Real menus are not all SPA screens: a documentation site, a report endpoint, an admin console
+  and a legacy page sit in the same list. `navigate: 'document'` hands the click to the browser;
+  `target` is passed through for new-tab links.
+
+  ```ts
+  { type: 'link', icon: 'help', label: 'Help', href: '/help/', navigate: 'document' }
+  ```
+
+  The entry stays an anchor, which is the point — the alternative was a `type: 'button'` with an
+  imperative navigation, which loses middle-click and Ctrl+click, address copying, the link role
+  for screen readers, and `pattern`-based highlighting, and cannot sit inside a section or group.
+
+
 ### Fixed
 
 - **`sideEffects` omitted the source-resolved entry barrel.** The allowlist covered the component

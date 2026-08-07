@@ -41,6 +41,10 @@ interface SidebarLinkConfig {
   icon?: string;
   /** Override the URL matching pattern. Accepts a string or URLPattern. */
   pattern?: string | URLPattern;
+  /** Let the browser navigate instead of the router. For same-origin, non-SPA paths. */
+  navigate?: 'router' | 'document';
+  /** Anchor target. Use for opening in a new tab. */
+  target?: '_self' | '_blank';
   styles?: StyleMap<'host' | 'base' | 'icon' | 'label'>;
 }
 ```
@@ -50,6 +54,22 @@ Example:
 ```typescript
 { type: 'link', icon: 'dashboard', label: 'Dashboard', href: '/' }
 ```
+
+#### Linking outside the app
+
+Not every entry in a real menu is a SPA screen. A help site, a report endpoint, an
+admin console, a legacy page — these sit in the same list. Mark them so the router
+leaves the click alone:
+
+```typescript
+{ type: 'link', icon: 'help', label: 'Help', href: '/help/', navigate: 'document' }
+```
+
+The entry stays an anchor, which is the point: middle-click and Ctrl+click still open
+a tab, the address is copyable, screen readers announce a link, `pattern`-based
+highlighting still works, and it can live inside a section or group. `target: '_blank'`
+is available too, but it is not a substitute — it forces a new tab, so same-tab
+navigation to another document needs `navigate`.
 
 ---
 

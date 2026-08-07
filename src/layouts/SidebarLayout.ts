@@ -184,6 +184,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .label="${item.label}"
           .href="${item.href}"
           .pattern="${item.pattern}"
+          .navigate="${item.navigate}"
+          .target="${item.target}"
           .styles="${item.styles as any}"
         ></u-sidebar-link>
       `;
