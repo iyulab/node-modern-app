@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.13.0] - 2026-08-08
+
+### Added
+
+- **`u-info-field` accepts `format` (`'number' | 'currency' | 'date'`) and `currency`.**
+  When set, the value renders through `@iyulab/components`' `formatNumber`/`formatCurrency`/
+  `formatDate` instead of a plain `String(value)`, and `format="number"`/`"currency"` implies
+  the existing `numeric` (right-aligned, tabular-nums) styling automatically. `currency` has
+  no default — omitting it while `format="currency"` degrades to plain number formatting
+  rather than throwing. Existing usage without `format` is unaffected.
+
 ## [0.12.0] - 2026-08-07
 
 ### Added

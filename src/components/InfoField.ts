@@ -1,10 +1,12 @@
 import { html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
+import { formatNumber, formatCurrency, formatDate } from '@iyulab/components';
 
 import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoField.styles.js';
 
 type ElementParts = 'host' | 'label' | 'value';
+export type InfoFieldFormat = 'number' | 'currency' | 'date';
 
 /** 값이 "아직 없음"인가 — `0` 과 `false` 는 **값이다**. */
 export function isBlank(v: unknown): boolean {
@@ -25,6 +27,7 @@ export function isBlank(v: unknown): boolean {
  * ```html
  * <u-info-field label="부수" .value=${order.quantity} numeric></u-info-field>
  * <u-info-field label="거래처">동서인쇄</u-info-field>   <!-- 슬롯이 value 를 이긴다 -->
+ * <u-info-field label="합계" format="currency" currency="KRW" .value=${order.total}></u-info-field>
  * ```
  */
 @customElement('u-info-field')
@@ -38,7 +41,8 @@ export class InfoField extends StyledElement<ElementParts> {
    * ⚠`0`·`false` 는 **대체되지 않는다** — 값이기 때문이다.
    * 속성(`value="…"`)과 프로퍼티(`.value=`) 둘 다 받는다 — HTML 속성은 항상 문자열이라
    * `type: String` 변환기가 붙어도 `.value=${order.quantity}` 같은 비-문자열 프로퍼티
-   * 바인딩은 그대로 통과한다(변환기는 속성 파싱에만 관여한다). 렌더는 항상 `String(value)`.
+   * 바인딩은 그대로 통과한다(변환기는 속성 파싱에만 관여한다). 렌더는 `format` 이 없으면
+   * 항상 `String(value)`.
    */
   @property({ type: String }) value?: unknown;
   /** "아직 없음"을 나타낼 문구. */
@@ -46,20 +50,47 @@ export class InfoField extends StyledElement<ElementParts> {
   /**
    * 숫자 값 — 우정렬 + 고정폭 숫자(`tabular-nums`).
    * ★자릿수가 세로로 맞아야 크기 비교가 눈으로 된다. LOB 화면은 금액·수량이 절반이다.
+   * `format` 이 `'number'`/`'currency'` 면 이 정렬이 자동으로 함의된다 — 따로 켤 필요 없다.
    */
   @property({ type: Boolean }) numeric = false;
+  /**
+   * Renders the value through `@iyulab/components`' `formatNumber`/`formatCurrency`/
+   * `formatDate`. When unset (default), falls back to plain `String(value)` as before.
+   */
+  @property({ type: String }) format?: InfoFieldFormat;
+  /**
+   * Currency code to use when `format="currency"` (e.g. `'KRW'`). **No default** — if
+   * omitted, degrades to plain number formatting without a currency symbol (does not throw).
+   */
+  @property({ type: String }) currency?: string;
 
   private get hasSlotted(): boolean {
     return this.childNodes.length > 0 &&
       [...this.childNodes].some(n => n.nodeType !== Node.TEXT_NODE || (n.textContent ?? '').trim() !== '');
   }
 
+  private formatValue(): string {
+    if (this.format === 'currency') {
+      return this.currency
+        ? formatCurrency(Number(this.value), this.currency)
+        : formatNumber(Number(this.value));
+    }
+    if (this.format === 'number') {
+      return formatNumber(Number(this.value));
+    }
+    if (this.format === 'date') {
+      return formatDate(this.value as string | Date);
+    }
+    return String(this.value);
+  }
+
   render() {
     const blank = !this.hasSlotted && isBlank(this.value);
+    const numeric = this.numeric || this.format === 'number' || this.format === 'currency';
     return html`
       <div class="label" part="label">${this.label}</div>
-      <div class="value ${this.numeric ? 'numeric' : ''} ${blank ? 'blank' : ''}" part="value">
-        ${this.hasSlotted ? html`<slot></slot>` : blank ? this.blank : String(this.value)}
+      <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''}" part="value">
+        ${this.hasSlotted ? html`<slot></slot>` : blank ? this.blank : this.formatValue()}
       </div>
     `;
   }
