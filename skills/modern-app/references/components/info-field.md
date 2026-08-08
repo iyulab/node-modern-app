@@ -34,9 +34,15 @@ and those are different states of the business. So the component owns the rule.
 | `value` | `unknown` | — | | Value; property only (`attribute: false`) |
 | `blank` | `string` | `'—'` | | Placeholder for null/undefined/empty — **not** for `0` or `false` |
 | `numeric` | `boolean` | `false` | | Right-align with tabular figures so digits line up vertically |
+| `format` | `'number'\|'currency'\|'date'` | — | | Renders `value` through `@iyulab/components`' `formatNumber`/`formatCurrency`/`formatDate`; unset falls back to plain `String(value)` |
+| `currency` | `string` | — | | Currency code for `format="currency"` (e.g. `'KRW'`); omitted degrades to plain number formatting, does not throw |
 
 ⚠ `numeric` earns its keep in **tables**, where columns of figures are compared by eye. On a
 lone field it just pushes the value away from its label.
+
+```html
+<u-info-field label="Total" format="currency" currency="KRW" .value=${order.total}></u-info-field>
+```
 
 ## CSS Parts
 
