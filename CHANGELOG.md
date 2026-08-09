@@ -11,6 +11,11 @@
   no default — omitting it while `format="currency"` degrades to plain number formatting
   rather than throwing. Existing usage without `format` is unaffected.
 
+### Changed
+
+- **`@iyulab/components` dependency floor raised to `^1.27.0`** (the feature above needs
+  `formatNumber`/`formatCurrency`/`formatDate`, added in that release).
+
 ## [0.12.0] - 2026-08-07
 
 ### Added
