@@ -79,7 +79,11 @@ export class InfoField extends StyledElement<ElementParts> {
    * `:host([size="lg"])` styling works.
    */
   @property({ type: String, reflect: true }) size: InfoFieldSize = 'default';
-  /** Trend direction (optional). Renders a trend indicator when set, alongside `trendLabel`. */
+  /**
+   * Trend direction (optional). Renders a trend indicator when set. The directional glyph
+   * (▲/▼) is decorative (`aria-hidden`) — **pair `trend` with `trendLabel`** so the indicator
+   * has an accessible name; `trend` alone conveys direction by color only.
+   */
   @property({ type: String }) trend?: InfoFieldTrend;
   /**
    * Trend copy, e.g. `"+12% vs last month"`. **Wording is the consumer's responsibility** — this

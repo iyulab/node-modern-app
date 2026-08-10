@@ -36,6 +36,10 @@ and those are different states of the business. So the component owns the rule.
 | `numeric` | `boolean` | `false` | | Right-align with tabular figures so digits line up vertically |
 | `format` | `'number'\|'currency'\|'date'` | — | | Renders `value` through `@iyulab/components`' `formatNumber`/`formatCurrency`/`formatDate`; unset falls back to plain `String(value)` |
 | `currency` | `string` | — | | Currency code for `format="currency"` (e.g. `'KRW'`); omitted degrades to plain number formatting, does not throw |
+| `size` | `'default'\|'lg'` | `'default'` | ✓ | `'lg'` renders the value at the `title` type-scale step — for dashboard KPI tiles composed inside `u-info-section` |
+| `trend` | `'up'\|'down'\|'flat'` | — | | Trend direction; renders a trend indicator when set, alongside `trendLabel`; pair with trendLabel for an accessible name — trend alone conveys direction by color only |
+| `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility |
+| `tone` | `'positive'\|'negative'\|'neutral'` | — | | Explicit tone override; resolves from `trend` when unset (`up→positive`, `down→negative`, `flat`/unset→`neutral`) but always wins over inference |
 
 ⚠ `numeric` earns its keep in **tables**, where columns of figures are compared by eye. On a
 lone field it just pushes the value away from its label.
@@ -48,4 +52,4 @@ lone field it just pushes the value away from its label.
 
 | Part | Description |
 |------|-------------|
-| `label` · `value` | The two elements |
+| `label` · `value` · `trend` | The label, the value, and the (optional) trend indicator |
