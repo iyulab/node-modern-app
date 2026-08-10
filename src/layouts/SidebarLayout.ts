@@ -182,6 +182,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           ?compact=${this.state === 'slim'}
           ?selected=${selected}
           .icon="${item.icon}"
+          .lib="${item.lib}"
           .label="${item.label}"
           .href="${item.href}"
           .pattern="${item.pattern}"
@@ -210,6 +211,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           ?selected=${selected}
           ?collapsed="${item.collapsed ?? false}"
           .icon="${item.icon}"
+          .lib="${item.lib}"
           .label="${item.label}"
           .styles="${item.styles as any}">
           ${repeat(item.items,

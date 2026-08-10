@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`SidebarButtonConfig`, `SidebarLinkConfig`, and `SidebarGroupConfig` accept `lib?: string`.**
+  When set, `icon` resolves through `@iyulab/components`' `IconRegistry.resolve(lib, name)`
+  (a named, registered icon library) instead of only the default URL-fetch fallback path.
+  Existing usage without `lib` is unaffected.
+
 ## [0.13.0] - 2026-08-08
 
 ### Added

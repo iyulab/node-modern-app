@@ -17,6 +17,7 @@ export interface SidebarGroupConfig extends SidebarPermissionGuard {
   /** 기본 접힘 상태 */
   collapsed?: boolean;
   icon: string;
+  lib?: string;
   label: string | DirectiveResult;
   items: SidebarLinkConfig[];
   styles?: StyleMap<ElementParts>;
@@ -37,6 +38,8 @@ export class SidebarGroup extends StyledElement<ElementParts> {
   @property({ type: Boolean, reflect: true }) collapsed: boolean = true;
   /** 네비게이션 아이템 데이터 */
   @property({ type: String }) icon?: string;
+  /** `icon`을 해석할 등록 라이브러리 이름 */
+  @property({ type: String }) lib?: string;
   /** 네비게이션 아이템 데이터 */
   @property({ type: String }) label?: string | DirectiveResult;
   
@@ -53,6 +56,7 @@ export class SidebarGroup extends StyledElement<ElementParts> {
             빠져 있었다.
         -->
         <u-icon class="icon" part="icon"
+          .lib=${this.lib}
           .name=${this.icon}
           .fallback=${DEFAULT_NAV_ICON}
         ></u-icon>

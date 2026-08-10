@@ -74,6 +74,7 @@ Full shape:
   label: string;
   href: string;
   icon?: string;
+  lib?: string;
   /** Custom URL match pattern (string or URLPattern). Default: exact match on href. */
   pattern?: string | URLPattern;
 }
@@ -87,6 +88,7 @@ Full shape:
 {
   type: 'group',
   icon: 'settings',
+  lib?: string,
   label: 'Settings',
   collapsed: false,       // default: true
   items: [
@@ -129,6 +131,7 @@ Does not navigate; fires a callback instead.
 {
   type: 'button',
   icon: 'logout',
+  lib?: string,
   label: 'Sign Out',
   onClick: () => auth.signOut(),
 }

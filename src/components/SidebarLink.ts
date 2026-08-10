@@ -14,6 +14,7 @@ type ElementParts = 'host' | 'base' | 'icon' | 'label';
 export interface SidebarLinkConfig extends SidebarPermissionGuard {
   type: 'link';
   icon?: string;
+  lib?: string;
   label: string | DirectiveResult;
   href: string;
   pattern?: string | URLPattern;
@@ -55,6 +56,8 @@ export class SidebarLink extends StyledElement<ElementParts> {
   @property({ type: Boolean }) compact = false;
   /** 네비게이션 아이템 데이터 */
   @property({ type: String }) icon?: string;
+  /** `icon`을 해석할 등록 라이브러리 이름 */
+  @property({ type: String }) lib?: string;
   /** 네비게이션 아이템 데이터 */
   @property({ type: String }) label?: string | DirectiveResult;
   /** 네비게이션 링크 */
@@ -79,6 +82,7 @@ export class SidebarLink extends StyledElement<ElementParts> {
       >
         <div class="container" part="base" ?compact=${this.compact}>
           <u-icon part="icon"
+            .lib=${this.lib}
             .name=${this.icon}
             .fallback=${DEFAULT_NAV_ICON}
           ></u-icon>

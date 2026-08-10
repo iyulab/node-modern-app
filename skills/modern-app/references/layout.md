@@ -39,6 +39,7 @@ interface SidebarLinkConfig {
   label: string | DirectiveResult;
   href: string;
   icon?: string;
+  lib?: string;
   /** Override the URL matching pattern. Accepts a string or URLPattern. */
   pattern?: string | URLPattern;
   /** Let the browser navigate instead of the router. For same-origin, non-SPA paths. */
@@ -81,6 +82,7 @@ Collapsible group that contains links.
 interface SidebarGroupConfig {
   type: 'group';
   icon: string;
+  lib?: string;
   label: string | DirectiveResult;
   items: SidebarLinkConfig[];
   /** Start collapsed. Default: true */
@@ -143,6 +145,7 @@ Action button — triggers a callback instead of navigating.
 interface SidebarButtonConfig {
   type: 'button';
   icon?: string;
+  lib?: string;
   label: string | DirectiveResult;
   onClick: () => void;
   styles?: StyleMap<string>;
