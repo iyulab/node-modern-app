@@ -57,6 +57,7 @@
 | `u-empty-state` | 빈 상태 (`no-data` / `no-results`) | `icon` · `actions` | host · icon · title · description · actions |
 | `u-action-bar` | 푸터 액션 바 — 위험 액션과 주 액션을 **거리로** 가른다 | `danger` · (기본) | host · danger · main |
 | `u-master-detail-layout` | master›detail 반응형 split-pane 셸. `detail` 슬롯이 채워지면 나타나고 비우면 사라진다. 좁은 자기 폭에서 detail 이 전체 오버레이로 전환(`overlayBreakpoint`, 기본 760px) | (기본, master) · `detail` | host · master · divider · detail · detail-close |
+| `u-wizard` | 다단계 흐름의 스텝 인디케이터 + 패널 + Back/Next. `steps`/`active`(controlled)/`linear`. 검증·저장재개는 컴포넌트 밖 — `step-change`(취소 가능)에서 소비자가 처리 | (기본, 스텝 패널들) · `actions` | host · indicator · step · panel · actions |
 
 ### 🔴 접힘은 «화면»이 아니라 «자기 폭»으로 판단한다 (0.10.0)
 
@@ -158,6 +159,31 @@ null · undefined · 빈 문자열   →  —      (아직 없음)
 `detail` 슬롯 내용을 소비자가 갈아끼운다. 좁은 화면에서는 detail 이 master 위 전체 오버레이로
 뜨고, 오버레이의 닫기 버튼이 `detail-close`를 낸다 — 그 이벤트에서 `selected`를 지우는 것도
 소비자 몫이다(컴포넌트는 슬롯 내용을 스스로 비우지 않는다).
+
+### 마법사/스테퍼
+
+```html
+<u-wizard .steps=${[
+  { id: 'info', label: '기본 정보' },
+  { id: 'payment', label: '결제' },
+  { id: 'review', label: '확인' },
+]} .active=${step}
+  @step-change=${(e: CustomEvent<{from: number; to: number}>) => {
+    if (!isStepValid(e.detail.from)) e.preventDefault();
+    else step = e.detail.to;
+  }}>
+  <section>…기본 정보 폼…</section>
+  <section>…결제 폼…</section>
+  <section>…확인…</section>
+</u-wizard>
+```
+
+검증·저장/재개는 컴포넌트가 하지 않는다 — `step-change`(취소 가능, `{from, to}`)에서
+소비자가 검증하고 막을 땐 `preventDefault()`, `active`는 controlled prop이라 소비자가
+외부 상태와 동기화한다(위 예시처럼 이벤트에서 직접 반영하거나, 저장된 값으로 복원).
+`linear`(기본 `true`)는 인디케이터로 미방문 스텝을 건너뛰는 것만 막는다 — `next()`로
+한 스텝씩 나아가는 것은 항상 허용된다. "Submit"이냐 "Next"냐 버튼 문구는 `actions`
+슬롯으로 완전히 대체해 정한다.
 
 ## 오버라이드
 

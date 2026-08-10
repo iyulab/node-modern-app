@@ -32,6 +32,12 @@ export interface ModernAppLocaleStrings {
 
   /** Master-detail layout — accessible label for the overlay-mode close button. */
   detailClose: string;
+
+  /** Wizard — default Back/Next action labels ("Submit" wording is the consumer's call). */
+  wizardBack: string;
+  wizardNext: string;
+  /** Wizard — live-region announcement read out on every step change. */
+  wizardStepAnnouncement: (index: number, total: number, label: string) => string;
 }
 
 const EN: ModernAppLocaleStrings = {
@@ -41,6 +47,9 @@ const EN: ModernAppLocaleStrings = {
   noResultsTitle: 'No matching results',
   noResultsDescription: 'Try changing your search terms or filters.',
   detailClose: 'Close',
+  wizardBack: 'Back',
+  wizardNext: 'Next',
+  wizardStepAnnouncement: (index, total, label) => `Step ${index} of ${total}: ${label}`,
 };
 
 const registry = new Map<string, ModernAppLocaleStrings>();

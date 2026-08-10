@@ -19,6 +19,8 @@ export { InfoField, isBlank } from './components/InfoField.js';
 export { EmptyState } from './components/EmptyState.js';
 export { ActionBar } from './components/ActionBar.js';
 export { MasterDetailLayout } from './components/MasterDetailLayout.js';
+export { Wizard } from './components/Wizard.js';
+export type { WizardStep, WizardStepState, WizardStepChangeDetail } from './components/Wizard.js';
 
 // 로케일 레지스트리 — 이 패키지는 범용 층이라 기본값이 **영어**다.
 // 한국어 등은 소비자가 등록한다: registerLocale('ko', { back: '뒤로', … }).
