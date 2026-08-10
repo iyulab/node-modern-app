@@ -45,4 +45,21 @@ export const styles = css`
   :host([size="lg"]) .value.blank {
     font-weight: var(--u-text-body-weight, 400);
   }
+
+  .trend {
+    font-size: var(--u-text-caption-size, 12px);
+    margin-top: var(--u-space-3xs, 2px);
+  }
+
+  .trend.tone-positive {
+    color: var(--u-success-color-strong, #1B5E20);
+  }
+
+  .trend.tone-negative {
+    color: var(--u-danger-color-strong, #C62828);
+  }
+
+  .trend.tone-neutral {
+    color: var(--u-txt-color-weak, #757575);
+  }
 `;

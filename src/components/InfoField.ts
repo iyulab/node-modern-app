@@ -5,9 +5,17 @@ import { formatNumber, formatCurrency, formatDate } from '@iyulab/components';
 import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoField.styles.js';
 
-type ElementParts = 'host' | 'label' | 'value';
+type ElementParts = 'host' | 'label' | 'value' | 'trend';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
 export type InfoFieldSize = 'default' | 'lg';
+export type InfoFieldTrend = 'up' | 'down' | 'flat';
+export type InfoFieldTone = 'positive' | 'negative' | 'neutral';
+
+function inferTone(trend?: InfoFieldTrend): InfoFieldTone {
+  if (trend === 'up') return 'positive';
+  if (trend === 'down') return 'negative';
+  return 'neutral';
+}
 
 /** 값이 "아직 없음"인가 — `0` 과 `false` 는 **값이다**. */
 export function isBlank(v: unknown): boolean {
@@ -71,6 +79,20 @@ export class InfoField extends StyledElement<ElementParts> {
    * `:host([size="lg"])` styling works.
    */
   @property({ type: String, reflect: true }) size: InfoFieldSize = 'default';
+  /** Trend direction (optional). Renders a trend indicator when set, alongside `trendLabel`. */
+  @property({ type: String }) trend?: InfoFieldTrend;
+  /**
+   * Trend copy, e.g. `"+12% vs last month"`. **Wording is the consumer's responsibility** — this
+   * component does not compose domain phrasing. Setting this alone (without `trend`) still shows
+   * the trend part, toned `neutral` unless `tone` is set.
+   */
+  @property({ type: String }) trendLabel?: string;
+  /**
+   * Explicit tone override. When unset, resolves from `trend` (`up→positive`, `down→negative`,
+   * `flat`/unset→`neutral`). **Always wins over inference** — some metrics invert the usual
+   * direction-to-sentiment mapping (e.g. a falling "open tickets" count is `positive`).
+   */
+  @property({ type: String }) tone?: InfoFieldTone;
 
   private get hasSlotted(): boolean {
     return this.childNodes.length > 0 &&
@@ -95,11 +117,19 @@ export class InfoField extends StyledElement<ElementParts> {
   render() {
     const blank = !this.hasSlotted && isBlank(this.value);
     const numeric = this.numeric || this.format === 'number' || this.format === 'currency';
+    const showTrend = this.trend !== undefined || this.trendLabel !== undefined;
+    const effectiveTone = this.tone ?? inferTone(this.trend);
+    const glyph = this.trend === 'up' ? '▲' : this.trend === 'down' ? '▼' : '';
     return html`
       <div class="label" part="label">${this.label}</div>
       <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''}" part="value">
         ${this.hasSlotted ? html`<slot></slot>` : blank ? this.blank : this.formatValue()}
       </div>
+      ${showTrend ? html`
+        <div class="trend tone-${effectiveTone}" part="trend">
+          ${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
+        </div>
+      ` : ''}
     `;
   }
 }
