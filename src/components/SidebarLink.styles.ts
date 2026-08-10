@@ -46,8 +46,13 @@ export const styles = css`
 
   u-icon {
     flex-shrink: 0;
-    color: inherit;
+    color: var(--link-icon-color, inherit);
     font-size: 20px;
+  }
+  /* Selected always wins over any consumer-supplied --link-icon-color — a
+   * high-contrast icon on the active background matters more than a brand tint. */
+  :host([selected]) u-icon {
+    color: var(--app-sidebar-active-fg, var(--u-txt-color-inverse, #FFFFFF));
   }
 
   /*
