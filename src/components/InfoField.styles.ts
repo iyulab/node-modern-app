@@ -40,4 +40,9 @@ export const styles = css`
     color: var(--u-txt-color-weak, #757575);
     font-weight: var(--u-text-body-weight, 400);
   }
+
+  /* size="lg" 보다 우선해야 한다 — blank 는 lg 모드에서도 계속 de-emphasize 상태를 유지해야 한다. */
+  :host([size="lg"]) .value.blank {
+    font-weight: var(--u-text-body-weight, 400);
+  }
 `;

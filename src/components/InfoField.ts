@@ -65,9 +65,10 @@ export class InfoField extends StyledElement<ElementParts> {
    */
   @property({ type: String }) currency?: string;
   /**
-   * Display size. `'lg'` renders the value at the same type scale as a page title
-   * (`--u-text-title-size`) — intended for dashboard KPI tiles composed inside
-   * `u-info-section`. Reflects to the `size` attribute so `:host([size="lg"])` styling works.
+   * Display size. `'lg'` renders the value at the `title` type-scale step
+   * (`--u-text-title-size`/`--u-text-title-weight`) — intended for dashboard KPI tiles
+   * composed inside `u-info-section`. Reflects to the `size` attribute so
+   * `:host([size="lg"])` styling works.
    */
   @property({ type: String, reflect: true }) size: InfoFieldSize = 'default';
 
