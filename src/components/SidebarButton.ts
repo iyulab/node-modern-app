@@ -15,6 +15,9 @@ type ElementParts = 'host' | 'base' | 'icon' | 'label';
 export interface SidebarButtonConfig extends SidebarPermissionGuard {
   type: 'button';
   icon?: string;
+  /** `icon`을 어느 등록 라이브러리에서 찾을지. 미지정 시 `u-icon`의 기본 URL 경로로
+   *  해석된다(`IconRegistry.register()`로 등록한 이름 있는 세트를 쓰려면 지정해야 함). */
+  lib?: string;
   label?: string | DirectiveResult;
   styles?: StyleMap<ElementParts>;
   onClick?: (event?: Event) => void;
@@ -31,6 +34,8 @@ export class SidebarButton extends StyledElement<ElementParts> {
   @property({ type: Boolean, reflect: true }) compact = false;
   /** 기본 u-icon 경로의 아이콘 이름 */
   @property({ type: String }) icon?: string;
+  /** `icon`을 해석할 등록 라이브러리 이름 */
+  @property({ type: String }) lib?: string;
   /** 버튼 텍스트 라벨 */
   @property({ type: String }) label?: string | DirectiveResult;
   
@@ -38,6 +43,7 @@ export class SidebarButton extends StyledElement<ElementParts> {
     return html`
       <button part="base" ?compact=${this.compact}>
         <u-icon part="icon"
+          .lib=${this.lib}
           .name=${this.icon}
           .fallback=${DEFAULT_NAV_ICON}
         ></u-icon>
