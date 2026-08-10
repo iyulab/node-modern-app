@@ -29,6 +29,9 @@ export interface ModernAppLocaleStrings {
   /** Empty state — records exist but the current query matched none. */
   noResultsTitle: string;
   noResultsDescription: string;
+
+  /** Master-detail layout — accessible label for the overlay-mode close button. */
+  detailClose: string;
 }
 
 const EN: ModernAppLocaleStrings = {
@@ -37,6 +40,7 @@ const EN: ModernAppLocaleStrings = {
   noDataDescription: '',
   noResultsTitle: 'No matching results',
   noResultsDescription: 'Try changing your search terms or filters.',
+  detailClose: 'Close',
 };
 
 const registry = new Map<string, ModernAppLocaleStrings>();

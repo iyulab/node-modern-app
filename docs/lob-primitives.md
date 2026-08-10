@@ -56,6 +56,7 @@
 | `u-info-field` | 읽기 전용 라벨-값 한 쌍(`size="lg"`로 대시보드 통계 타일, `trend`로 추세 표시) | (기본, `value` 를 이긴다) | host · label · value · trend |
 | `u-empty-state` | 빈 상태 (`no-data` / `no-results`) | `icon` · `actions` | host · icon · title · description · actions |
 | `u-action-bar` | 푸터 액션 바 — 위험 액션과 주 액션을 **거리로** 가른다 | `danger` · (기본) | host · danger · main |
+| `u-master-detail-layout` | master›detail 반응형 split-pane 셸. `detail` 슬롯이 채워지면 나타나고 비우면 사라진다. 좁은 자기 폭에서 detail 이 전체 오버레이로 전환(`overlayBreakpoint`, 기본 760px) | (기본, master) · `detail` | host · master · divider · detail · detail-close |
 
 ### 🔴 접힘은 «화면»이 아니라 «자기 폭»으로 판단한다 (0.10.0)
 
@@ -66,6 +67,11 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
 
 ⚠**소비자가 알아야 할 것**: 이 컴포넌트를 좁은 컬럼(분할 뷰·사이드 패널) 안에 넣으면 **이제
 접힌다**. 종전에는 화면이 넓으면 안 접혔다.
+
+⚠**`u-master-detail-layout` 는 같은 "자기 폭" 철학이지만 메커니즘이 다르다** —
+`overlayBreakpoint` 가 **고정 CSS 중단점이 아니라 인스턴스별 prop**이라 `@container` 조건절이
+런타임 값을 못 읽는다. 그래서 `ResizeObserver`로 직접 재고 `overlay` 속성을 반영한다. 결과
+(자기 폭 기준 판단)는 같지만 구현은 다르다는 것을 소스만 보고 착각하지 말 것.
 
 ### 아직 만들지 않은 것과 그 이유
 
@@ -129,6 +135,29 @@ null · undefined · 빈 문자열   →  —      (아직 없음)
 ```
 
 같은 문구로 보여 주면 사용자는 필터가 걸려 있는 줄 모르고 *"데이터가 사라졌다"* 로 읽는다.
+
+### master›detail
+
+```html
+<u-master-detail-layout master-size="24rem">
+  <u-rich-table filterable
+    @selection-change=${(e: SelectionChangeEvent) => (selected = e.detail.selected[0])}>
+    …
+  </u-rich-table>
+  ${selected ? html`
+    <u-group-box slot="detail" title=${selected.name}>
+      <u-info-section min="180">
+        <u-info-field label="상태"><u-badge>${selected.status}</u-badge></u-info-field>
+      </u-info-section>
+    </u-group-box>
+  ` : nothing}
+</u-master-detail-layout>
+```
+
+선택 연동(누르면 상세가 뜨는 것)은 컴포넌트가 하지 않는다 — `selection-change`를 받아
+`detail` 슬롯 내용을 소비자가 갈아끼운다. 좁은 화면에서는 detail 이 master 위 전체 오버레이로
+뜨고, 오버레이의 닫기 버튼이 `detail-close`를 낸다 — 그 이벤트에서 `selected`를 지우는 것도
+소비자 몫이다(컴포넌트는 슬롯 내용을 스스로 비우지 않는다).
 
 ## 오버라이드
 
