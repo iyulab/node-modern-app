@@ -44,11 +44,11 @@ configurable breakpoint means measuring the host's own width in JavaScript and r
 
 ## Properties
 
-| Property | Attribute | Type | Default | Description |
-|----------|-----------|------|---------|-------------|
-| `masterSize` | `master-size` | `string` (CSS length) | `'22rem'` | Fixed width of the master pane |
-| `overlayBreakpoint` | `overlay-breakpoint` | `number` (px) | `760` | Below this self width, detail becomes a full overlay |
-| `locale` | `locale` | `string` | `''` | Language tag for the close button's accessible label |
+| Property | Type | Default | Reflect | Description |
+|----------|------|---------|---------|-------------|
+| `masterSize` | `string` | `'22rem'` | | Fixed width of the master pane, a CSS length (`master-size`) |
+| `overlayBreakpoint` | `number` | `760` | | Below this self width in px, detail becomes a full overlay (`overlay-breakpoint`) |
+| `locale` | `string` | `''` | | Language tag for the close button's accessible label |
 
 ## Events
 
