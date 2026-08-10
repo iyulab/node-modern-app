@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`u-info-field` accepts `size` (`'default' | 'lg'`), `trend` (`'up' | 'down' | 'flat'`),
+  `trendLabel`, and `tone` (`'positive' | 'negative' | 'neutral'`).** `size="lg"` renders the
+  value at title type-scale for dashboard KPI tiles, composed inside the existing
+  `u-info-section` grid — no new component. `tone` resolves from `trend` when unset
+  (`up→positive`, `down→negative`, `flat→neutral`) but an explicit `tone` always wins, since some
+  metrics invert the usual direction-to-sentiment mapping. `trendLabel` wording is the consumer's
+  responsibility. New `trend` part.
+
 ## [0.14.0] - 2026-08-10
 
 ### Added

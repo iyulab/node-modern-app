@@ -53,7 +53,7 @@
 | `u-page-header` | 제목 + 상태 배지 + 우측 액션 + 뒤로가기 | `status` · `actions` | host · back · heading · title · subtitle · status · actions |
 | `u-group-box` | 제목이 붙은 카드 | (기본) · `actions` | host · header · title · actions · body |
 | `u-info-section` | `u-info-field` 들의 반응형 그리드 | (기본) | host · grid |
-| `u-info-field` | 읽기 전용 라벨-값 한 쌍 | (기본, `value` 를 이긴다) | host · label · value |
+| `u-info-field` | 읽기 전용 라벨-값 한 쌍(`size="lg"`로 대시보드 통계 타일, `trend`로 추세 표시) | (기본, `value` 를 이긴다) | host · label · value · trend |
 | `u-empty-state` | 빈 상태 (`no-data` / `no-results`) | `icon` · `actions` | host · icon · title · description · actions |
 | `u-action-bar` | 푸터 액션 바 — 위험 액션과 주 액션을 **거리로** 가른다 | `danger` · (기본) | host · danger · main |
 
@@ -93,6 +93,20 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
   </u-info-section>
 </u-group-box>
 ```
+
+### 대시보드 통계 타일
+
+```html
+<u-info-section min="180">
+  <u-info-field label="이번 달 매출" size="lg" format="currency" currency="KRW" .value=${55000000}
+    trend="up" trendLabel="+12% vs last month"></u-info-field>
+  <u-info-field label="미결 건수" size="lg" .value=${8} numeric
+    trend="down" tone="positive" trendLabel="-3 vs last week"></u-info-field>
+</u-info-section>
+```
+
+두 번째 예시가 `tone="positive"`를 명시하는 이유: `trend="down"`만 있으면 `negative`로 유추되지만,
+"미결 건수 감소"는 업무적으로 좋은 신호라 자동 유추와 반대다 — 이럴 때 `tone`으로 명시 override한다.
 
 ### 🔴 "아직 없음"과 "0"은 다른 사실이다
 
