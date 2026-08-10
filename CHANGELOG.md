@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.14.0] - 2026-08-10
 
 ### Added
 
@@ -8,6 +8,13 @@
   When set, `icon` resolves through `@iyulab/components`' `IconRegistry.resolve(lib, name)`
   (a named, registered icon library) instead of only the default URL-fetch fallback path.
   Existing usage without `lib` is unaffected.
+
+### Fixed
+
+- **`SidebarLink` selected-state icon color no longer gets overridden by a consumer-set
+  icon tint.** Adds a `--link-icon-color` custom property and a `:host([selected]) u-icon`
+  rule so the selected state's contrast wins regardless of an inherited or inline icon
+  color.
 
 ## [0.13.0] - 2026-08-08
 
