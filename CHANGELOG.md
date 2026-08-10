@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.15.0] - 2026-08-11
 
 ### Added
 
@@ -11,6 +11,16 @@
   (`up→positive`, `down→negative`, `flat→neutral`) but an explicit `tone` always wins, since some
   metrics invert the usual direction-to-sentiment mapping. `trendLabel` wording is the consumer's
   responsibility. New `trend` part.
+- **`u-master-detail-layout`** — a responsive master›detail split-pane shell (default slot =
+  master, `slot="detail"` = detail; appears when filled, disappears when emptied). Below
+  `overlayBreakpoint` (self width, default 760px) the detail pane becomes a full overlay with a
+  close button that fires `detail-close`. `masterSize` sets the fixed master-pane width. Parts:
+  `master`, `divider`, `detail`, `detail-close`.
+- **`u-wizard`** — a step indicator + panel + Back/Next for multi-step flows. `steps`/
+  `active`(controlled)/`orientation`/`linear` props; cancelable `step-change` event
+  (`{from, to}`) for validation gating; validation and save/resume stay outside the component.
+  Keyboard-operable end to end, focus moves to the panel on every step change, and an
+  `aria-live` region announces each transition. Parts: `indicator`, `step`, `panel`, `actions`.
 
 ## [0.14.0] - 2026-08-10
 
