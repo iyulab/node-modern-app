@@ -169,6 +169,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         <u-sidebar-button
           ?compact=${this.state === 'slim'}
           .icon="${item.icon}"
+          .lib="${item.lib}"
           .label="${item.label}"
           .styles="${item.styles as any}"
           @click="${item.onClick}"
