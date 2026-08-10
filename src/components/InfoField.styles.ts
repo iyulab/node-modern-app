@@ -28,6 +28,11 @@ export const styles = css`
     font-variant-numeric: tabular-nums;
   }
 
+  :host([size="lg"]) .value {
+    font-size: var(--u-text-title-size, 20px);
+    font-weight: var(--u-text-title-weight, 700);
+  }
+
   /* "아직 없음"은 값보다 약하게 — 다만 **읽을 수 있어야 한다.**
      ⚠더 흐리게 만들고 싶은 유혹이 있는데, 이 자리가 안 읽히면 사용자는 빈 칸인지
      로딩 중인지 구별하지 못한다. */

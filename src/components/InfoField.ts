@@ -7,6 +7,7 @@ import { styles } from './InfoField.styles.js';
 
 type ElementParts = 'host' | 'label' | 'value';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
+export type InfoFieldSize = 'default' | 'lg';
 
 /** 값이 "아직 없음"인가 — `0` 과 `false` 는 **값이다**. */
 export function isBlank(v: unknown): boolean {
@@ -63,6 +64,12 @@ export class InfoField extends StyledElement<ElementParts> {
    * omitted, degrades to plain number formatting without a currency symbol (does not throw).
    */
   @property({ type: String }) currency?: string;
+  /**
+   * Display size. `'lg'` renders the value at the same type scale as a page title
+   * (`--u-text-title-size`) — intended for dashboard KPI tiles composed inside
+   * `u-info-section`. Reflects to the `size` attribute so `:host([size="lg"])` styling works.
+   */
+  @property({ type: String, reflect: true }) size: InfoFieldSize = 'default';
 
   private get hasSlotted(): boolean {
     return this.childNodes.length > 0 &&
