@@ -39,6 +39,10 @@
       "types": "./src/index.d.ts",
       "import": "./src/index.js"
     },
+    "./react": {
+      "types": "./src/react.d.ts",
+      "import": "./src/react.js"
+    },
     "./dist/*": {
       "types": "./src/*.d.ts",
       "import": "./src/*"
@@ -58,10 +62,27 @@
     "i18next": "^26.3.6",
     "lit": "^3.3.3"
   },
+  "peerDependencies": {
+    "@lit/react": ">=1.0.8",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@lit/react": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@lit/react": "^1.0.8",
     "@types/node": "^26.1.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "@vitest/browser-playwright": "^4.1.10",
     "happy-dom": "^20.10.6",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "typescript": "^5.9.3",
     "vite": "^8.1.4",
     "vite-plugin-dts": "^5.0.3",

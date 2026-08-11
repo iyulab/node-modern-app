@@ -13,6 +13,7 @@ export default defineConfig({
     lib: {
       entry: [
         resolve(__dirname, 'src/index.ts'),
+        resolve(__dirname, 'src/react.ts'),
       ],
       formats: ['es'],
       fileName: (format, entry) => {
@@ -24,6 +25,8 @@ export default defineConfig({
         /^@iyulab.*/,
         /^lit.*/,
         /^i18next.*/,
+        /^react.*/,
+        /^@lit\/react.*/,
       ],
       output: {
         preserveModules: true,
