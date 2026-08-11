@@ -1,6 +1,6 @@
 import { html } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
-import { formatNumber, formatCurrency, formatDate } from '@iyulab/components';
+import { formatNumber, formatCurrency, formatDate } from '@iyulab/components/dist/utilities/format.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoField.styles.js';
