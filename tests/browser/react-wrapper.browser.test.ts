@@ -23,7 +23,7 @@ describe('modern-app /react wrapper', () => {
     const config: SidebarLayoutConfig = {
       type: 'sidebar',
       title: 'Test App',
-      main: [{ id: 'home', label: 'Home', href: '/' }],
+      main: [{ type: 'link', label: 'Home', href: '/' }],
     };
     container = document.body.appendChild(document.createElement('div'));
     root = createRoot(container);
