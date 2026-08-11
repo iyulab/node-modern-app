@@ -7,6 +7,10 @@ import type { SidebarButtonConfig } from "../components/SidebarButton";
 import type { SidebarPermissionGuard } from "./SidebarPermission";
 
 export type { SidebarPermissionGuard } from "./SidebarPermission";
+export type { SidebarLinkConfig } from "../components/SidebarLink";
+export type { SidebarSectionConfig } from "../components/SidebarSection";
+export type { SidebarGroupConfig } from "../components/SidebarGroup";
+export type { SidebarButtonConfig } from "../components/SidebarButton";
 
 /** 사이드바 레이아웃 컴포넌트의 요소(part) 타입 */
 export type SidebarParts = 'host' | 'mobile-header' | 'sidebar' | 'sidebar-header' | 'sidebar-main' | 'sidebar-footer' | 'main' | 'progress';

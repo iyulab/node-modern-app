@@ -173,6 +173,38 @@ await app.load({
 - `hasPermission` 미지정 시 필터링하지 않는다(모든 항목 표시 — 하위호환).
 - 순수 헬퍼 `filterSidebarItems(items, hasPermission)` 를 직접 재사용할 수도 있다.
 
+## React
+
+A `@lit/react`-based wrapper for `SidebarLayout` and `Wizard` is available under `/react`.
+Every other exported component works as a plain custom element in JSX; these two specifically
+need the wrapper because `Wizard` dispatches a `step-change` custom event (a raw element maps
+`onStepChange` to a literal `"StepChange"` DOM event it never fires) and both carry object/array
+properties that a raw element only handles correctly under React 19.
+
+`@lit/react` and `react` are optional peer dependencies — install them to use this subpath:
+
+```bash
+npm install @iyulab/modern-app @lit/react react
+```
+
+```tsx
+import { SidebarLayout, Wizard, type SidebarItem, type WizardStep } from '@iyulab/modern-app/react';
+
+const main: SidebarItem[] = [{ type: 'link', label: 'Home', href: '/' }];
+const steps: WizardStep[] = [{ id: 'info', label: 'Info' }, { id: 'review', label: 'Review' }];
+
+export function App() {
+  return (
+    <SidebarLayout config={{ type: 'sidebar', title: 'My App', main }}>
+      <Wizard steps={steps} active={0} onStepChange={(e) => console.log(e.detail)}>
+        <section>Info panel</section>
+        <section>Review panel</section>
+      </Wizard>
+    </SidebarLayout>
+  );
+}
+```
+
 ## Documentation
 
 | Guide | Description |

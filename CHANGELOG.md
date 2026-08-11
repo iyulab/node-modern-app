@@ -5,11 +5,16 @@
 ### Added
 
 - **`/react` subpath**, wrapping `SidebarLayout` and `Wizard` with `@lit/react`'s
-  `createComponent`. Every other exported component already works as a plain custom element in
-  JSX (String/Number/Boolean properties only); these two take an object (`config`) and an array
-  (`steps`) respectively, which a plain JSX attribute would serialize to a string instead of
-  passing through — the same gap `components`, `data-components`, `u-widgets`, and `router`
-  already closed for their own object/array-typed properties.
+  `createComponent`. `Wizard` is the only component that dispatches a custom event
+  (`step-change`) — a raw custom element in JSX maps an `onStepChange` prop to a listener
+  for a literal `"StepChange"` DOM event, which `Wizard` never fires, so the event never
+  reaches a consumer without this wrapper. Both components also carry object/array
+  properties (`config`, `steps`) that a raw custom element handles correctly under React 19
+  (which assigns matching properties directly) but not under React 18 (where non-primitive
+  JSX attributes stringify) — the wrapper keeps that working on both. Every component in
+  this package (not just these two) also inherits an object-typed `styles` property from its
+  base class for part-level style overrides; on React 18 that still needs a ref without a
+  wrapper.
 
 ## [0.16.0] - 2026-08-11
 
