@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.17.0] - 2026-08-11
+
+### Added
+
+- **`/react` subpath**, wrapping `SidebarLayout` and `Wizard` with `@lit/react`'s
+  `createComponent`. Every other exported component already works as a plain custom element in
+  JSX (String/Number/Boolean properties only); these two take an object (`config`) and an array
+  (`steps`) respectively, which a plain JSX attribute would serialize to a string instead of
+  passing through — the same gap `components`, `data-components`, `u-widgets`, and `router`
+  already closed for their own object/array-typed properties.
+
 ## [0.16.0] - 2026-08-11
 
 ### Changed
