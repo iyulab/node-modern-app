@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.16.0] - 2026-08-11
+
+### Changed
+
+- **`SidebarLayout`'s main content area now ships a default padding**
+  (`var(--u-space-3xl, 32px)`) instead of none. Every consumer previously had to add this
+  themselves to keep route content off the viewport/sidebar edge. Full-bleed layouts (e.g. a
+  dashboard whose table should reach the panel edge) can still opt back to `0` via
+  `styles.main`. This is a visible rendering change for any consumer that never set
+  `styles.main` — hence the minor bump rather than a patch.
+
 ## [0.15.0] - 2026-08-11
 
 ### Added

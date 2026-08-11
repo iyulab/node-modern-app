@@ -165,10 +165,19 @@ export const styles = css`
     display: none;
   }
 
-  /* Main Content */
+  /* Main Content
+   * ★기본 패딩을 준다 — 라우트 콘텐츠가 뷰포트/사이드바 경계에 그대로 맞닿아 모든
+   *   소비자가 같은 배선을 재구현하던 문제였다. 값은 이 라이브러리의 spacing 스케일
+   *   상단 근처(3xl)에서 골랐다 — LOB 화면의 표준 여백으로 쓰기에 과하지 않은 최대값.
+   * ⚠«패딩 박스» 기준 절대배치는 이 padding 의 영향을 받지 않는다 — 바로 아래
+   *   u-progress-bar 가 top/left/right:0 으로 여전히 테두리에 꽉 차게 붙는 이유다
+   *   (CSS 2.1 §10.6.4: 절대배치 자손의 containing block 은 가장 가까운 positioned
+   *   조상의 «패딩 박스»이고, 그 경계는 조상 자신의 padding 값에 밀리지 않는다).
+   *   풀블리드를 원하는 소비자는 layout.styles.main = { padding: '0' } 로 되돌린다. */
   .main {
     position: relative;
     flex: 1;
+    padding: var(--u-space-3xl, 32px);
     background: var(--u-bg-color, #FFFFFF);
     overflow: auto;
     outline: none;
