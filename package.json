@@ -32,7 +32,9 @@
     "./dist/index.js",
     "./src/index.ts",
     "./dist/layouts/*.js",
-    "./src/layouts/*.ts"
+    "./src/layouts/*.ts",
+    "./dist/react.js",
+    "./src/react.ts"
   ],
   "exports": {
     ".": {
