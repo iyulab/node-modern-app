@@ -46,6 +46,17 @@ export const styles = css`
     font-weight: var(--u-text-body-weight, 400);
   }
 
+  /* tone은 trend 유무와 무관하게 값 텍스트 자체에도 적용된다(neutral은 무규칙 — 기본
+     .value 색과 시각적으로 같은 자리라 별도 규칙을 두면 오히려 "옅어 보이는" 부작용이
+     생긴다, .trend.tone-neutral과 달리 .value는 이미 강한 색이 기본값이다). */
+  .value.tone-positive {
+    color: var(--u-success-color-strong, #1B5E20);
+  }
+
+  .value.tone-negative {
+    color: var(--u-danger-color-strong, #C62828);
+  }
+
   .trend {
     font-size: var(--u-text-caption-size, 12px);
     margin-top: var(--u-space-3xs, 2px);

@@ -95,6 +95,10 @@ export class InfoField extends StyledElement<ElementParts> {
    * Explicit tone override. When unset, resolves from `trend` (`up→positive`, `down→negative`,
    * `flat`/unset→`neutral`). **Always wins over inference** — some metrics invert the usual
    * direction-to-sentiment mapping (e.g. a falling "open tickets" count is `positive`).
+   *
+   * Colors the value text itself, independent of `trend` — a static "balance due" figure can be
+   * toned `negative` without a trend arrow. `neutral` has no visual effect on the value text
+   * (it already renders at full strength; only `positive`/`negative` stand out from it).
    */
   @property({ type: String }) tone?: InfoFieldTone;
 
@@ -126,7 +130,7 @@ export class InfoField extends StyledElement<ElementParts> {
     const glyph = this.trend === 'up' ? '▲' : this.trend === 'down' ? '▼' : '';
     return html`
       <div class="label" part="label">${this.label}</div>
-      <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''}" part="value">
+      <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} tone-${effectiveTone}" part="value">
         ${this.hasSlotted ? html`<slot></slot>` : blank ? this.blank : this.formatValue()}
       </div>
       ${showTrend ? html`

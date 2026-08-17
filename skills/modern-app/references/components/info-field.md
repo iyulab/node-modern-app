@@ -39,7 +39,7 @@ and those are different states of the business. So the component owns the rule.
 | `size` | `'default'\|'lg'` | `'default'` | ✓ | `'lg'` renders the value at the `title` type-scale step — for dashboard KPI tiles composed inside `u-info-section` |
 | `trend` | `'up'\|'down'\|'flat'` | — | | Trend direction; renders a trend indicator when set, alongside `trendLabel`; pair with trendLabel for an accessible name — trend alone conveys direction by color only |
 | `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility |
-| `tone` | `'positive'\|'negative'\|'neutral'` | — | | Explicit tone override; resolves from `trend` when unset (`up→positive`, `down→negative`, `flat`/unset→`neutral`) but always wins over inference |
+| `tone` | `'positive'\|'negative'\|'neutral'` | — | | Explicit tone override; resolves from `trend` when unset (`up→positive`, `down→negative`, `flat`/unset→`neutral`) but always wins over inference. Colors the value text itself, independent of `trend` — a static figure (e.g. a balance due) can be toned `negative` with no trend arrow |
 
 ⚠ `numeric` earns its keep in **tables**, where columns of figures are compared by eye. On a
 lone field it just pushes the value away from its label.

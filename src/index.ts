@@ -32,5 +32,12 @@ export {
 } from './internals/locale.js';
 export type { ModernAppLocaleStrings } from './internals/locale.js';
 
+// `SidebarLayout`의 반응형 상태 전환(large→slim, medium→modal, small→mobile)은
+// 이 클래스가 쏘는 `screen-resize` 이벤트에 전적으로 의존한다. `app.load()`가 내부적으로
+// 인스턴스화하지만, `app.load()` 없이 `SidebarLayout`만 단독으로 쓰는 소비자(예: `/react`
+// 서브패스)에게는 이것이 반응형을 구동할 유일한 공개 수단이다.
+export { ScreenObserver } from './internals/ScreenObserver.js';
+export type { ScreenSize, ScreenObserverConfig, ScreenResizeEvent } from './internals/ScreenObserver.js';
+
 export { app };
 export default app;

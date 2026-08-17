@@ -127,7 +127,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         </div>
 
         <!-- Sidebar Navigation Menu -->
-        <nav class="sidebar-main" part="sidebar-main" scrollable>
+        <nav class="sidebar-main" part="sidebar-main" scrollable
+          aria-label=${this.config.mainAriaLabel ?? nothing}>
           ${repeat(filterSidebarItems(this.config.main ?? [], this.config.hasPermission),
             (_, idx) => idx,
             (item) => this.renderItem(item))}

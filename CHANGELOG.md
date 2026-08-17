@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.18.0] - 2026-08-17
+
+### Added
+
+- **`SidebarLink` now sets `aria-current="page"` on its inner `<u-link>` when `selected` is
+  true.** Previously `selected` only drove visual emphasis (a host attribute for CSS) — a
+  screen-reader user had no way to tell which item was the current page.
+- **`SidebarLayoutConfig.mainAriaLabel?: string`.** When set, it's reflected as `aria-label`
+  on the sidebar's main `<nav>` landmark. That `<nav>` lives inside `SidebarLayout`'s shadow
+  root, so a consumer had no way to name it from the outside. Unset behaves exactly as
+  before (no landmark name) — not a breaking change.
+- **`InfoField`'s `tone` now colors the value text itself, not just the trend indicator.**
+  Previously `.trend.tone-*` was the only CSS surface for `tone`, so a static figure shown
+  without a `trend` (e.g. a balance due) couldn't be toned at all. `trend`'s existing
+  behavior is unchanged; this only widens where `tone` is visible.
+- **`ScreenObserver` is now exported from both the main entry and `/react`.** `SidebarLayout`'s
+  responsive state (large→slim, medium→modal, small→mobile) depends entirely on the
+  `screen-resize` event this class dispatches; `app.load()` instantiates it internally, but a
+  consumer mounting `SidebarLayout` standalone through `/react` (without `app.load()`) had no
+  public way to drive that behavior.
+
 ## [0.17.0] - 2026-08-11
 
 ### Added

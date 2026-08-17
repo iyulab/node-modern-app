@@ -4,6 +4,13 @@ import { SidebarLayout as SidebarLayoutElement } from './layouts/SidebarLayout.j
 import { Wizard as WizardElement } from './components/Wizard.js';
 import type { WizardStepChangeDetail } from './components/Wizard.js';
 
+// `SidebarLayout`을 `app.load()` 없이 이 서브패스만으로 단독 마운트하는 소비자를 위한
+// 반응형 구동 수단 — `SidebarLayout`의 large→slim/medium→modal/small→mobile 전환은
+// 이 클래스가 쏘는 `screen-resize` 이벤트에 전적으로 의존하며, `app.load()` 경로 밖에서는
+// 이것이 유일한 공개 진입점이다(예: `useEffect`에서 생성하고 정리 시 `destroy()`).
+export { ScreenObserver } from './internals/ScreenObserver.js';
+export type { ScreenSize, ScreenObserverConfig, ScreenResizeEvent } from './internals/ScreenObserver.js';
+
 /**
  * React wrapper for `<u-sidebar-layout>`. `config` is an `@property({ type: Object })` —
  * a raw custom element handles that correctly under React 19 (property assignment) but not

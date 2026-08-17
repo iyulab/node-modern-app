@@ -1,4 +1,4 @@
-﻿import { html } from 'lit';
+﻿import { html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
@@ -50,7 +50,7 @@ export interface SidebarLinkConfig extends SidebarPermissionGuard {
 export class SidebarLink extends StyledElement<ElementParts> {
   static styles = [ super.styles, styles ];
 
-  /** selected 상태 */
+  /** selected 상태. `true`면 내부 `<u-link>`에 `aria-current="page"`도 함께 세팅한다. */
   @property({ type: Boolean, reflect: true }) selected = false;
   /** 콤팩트 모드 여부 */
   @property({ type: Boolean }) compact = false;
@@ -79,6 +79,7 @@ export class SidebarLink extends StyledElement<ElementParts> {
         .href=${this.href || '#'}
         .navigate=${this.navigate}
         .target=${this.target}
+        aria-current=${this.selected ? 'page' : nothing}
       >
         <div class="container" part="base" ?compact=${this.compact}>
           <u-icon part="icon"

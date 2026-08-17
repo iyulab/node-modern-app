@@ -60,6 +60,14 @@ export interface SidebarLayoutConfig {
   footer?: SidebarItem[];
 
   /**
+   * 메인 내비게이션(`<nav class="sidebar-main">`)의 접근 가능한 이름. 지정하면
+   * `aria-label`로 반영돼 스크린리더가 랜드마크를 "주 메뉴" 같은 이름으로 발표한다.
+   * `title`은 사이드바 헤더에 표시되는 브랜드 텍스트일 뿐 이 `<nav>`와 연결되지 않는다 —
+   * 별개 값이다. 미지정 시 종전과 동일하게 랜드마크 이름이 없다(breaking 아님).
+   */
+  mainAriaLabel?: string;
+
+  /**
    * 메뉴 항목 권한 필터 판정. 지정하면 `requirePermission`/`requireAnyPermission` 를 만족하지
    * 않는 항목을 숨기고, 항목이 모두 걸러진 section/group 은 통째로 숨긴다.
    * 미지정 시 필터링하지 않는다(모든 항목 표시). 보통 `@iyulab/enterprise` 의 `hasPermission` 을 넘긴다.
