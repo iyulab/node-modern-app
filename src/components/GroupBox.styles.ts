@@ -7,7 +7,7 @@ export const styles = css`
        사이드바가 열린 1280px 화면의 좁은 본문에서도, 넓은 본문을 가진 태블릿에서도
        같은 판단을 하려면 기준이 자기 폭이어야 한다. */
     container-type: inline-size;
-    background-color: var(--u-panel-bg-color, #FFFFFF);
+    background-color: var(--u-bg-color-raised, #FAFAFA);
     border: 1px solid var(--u-border-color-weak, #EEEEEE);
     /* 면(surface) 단 — 컨트롤과 같은 반경을 쓰면 큰 사각형이 각져 보인다. */
     border-radius: var(--u-radius-2xl, 12px);
