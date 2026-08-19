@@ -14,6 +14,9 @@ type ElementParts = 'host' | 'base' | 'icon' | 'label';
 /** 버튼 항목 구성 */
 export interface SidebarButtonConfig extends SidebarPermissionGuard {
   type: 'button';
+  /** 렌더된 `<u-sidebar-button>` 호스트에 그대로 전달된다 — `u-popover[for="#id"]` 같은
+   *  외부 앵커링에 쓴다. */
+  id?: string;
   icon?: string;
   /** `icon`을 어느 등록 라이브러리에서 찾을지. 미지정 시 `u-icon`의 기본 URL 경로로
    *  해석된다(`IconRegistry.register()`로 등록한 이름 있는 세트를 쓰려면 지정해야 함). */

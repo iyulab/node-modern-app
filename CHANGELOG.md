@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.18.2] - 2026-08-19
+
+### Fixed
+
+- **`SidebarLayout`'s mobile-header and sidebar-header toggle buttons now have an accessible
+  name.** Both are icon-only `<u-button>`s with no `aria-label`, text, or `title` — a
+  screen-reader user only ever heard an unnamed "button". Wired through the same locale
+  registry `MasterDetailLayout.detailClose` already uses (`toggleMobileMenu` /
+  `toggleSidebar`), so translations follow `registerLocale` automatically; default English
+  labels preserve current behavior for everyone who hasn't set a `locale`.
+
+### Added
+
+- **`SidebarButtonConfig.id?: string`.** Passed straight through to the rendered
+  `<u-sidebar-button>` host, so a consumer can anchor a `u-popover` (or any `for="#id"`
+  pattern) to a sidebar button using only public API — previously the only way to get an
+  anchorable id was to reach into the internal, unexported `<u-sidebar-button>` tag name.
+  Unset behaves exactly as before (no `id` attribute) — not a breaking change.
+
 ## [0.18.1] - 2026-08-19
 
 ### Fixed

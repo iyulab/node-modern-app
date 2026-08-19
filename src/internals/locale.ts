@@ -33,6 +33,11 @@ export interface ModernAppLocaleStrings {
   /** Master-detail layout — accessible label for the overlay-mode close button. */
   detailClose: string;
 
+  /** Sidebar layout — accessible label for the mobile-header menu toggle button. */
+  toggleMobileMenu: string;
+  /** Sidebar layout — accessible label for the sidebar-header collapse/expand toggle button. */
+  toggleSidebar: string;
+
   /** Wizard — default Back/Next action labels ("Submit" wording is the consumer's call). */
   wizardBack: string;
   wizardNext: string;
@@ -47,6 +52,8 @@ const EN: ModernAppLocaleStrings = {
   noResultsTitle: 'No matching results',
   noResultsDescription: 'Try changing your search terms or filters.',
   detailClose: 'Close',
+  toggleMobileMenu: 'Toggle menu',
+  toggleSidebar: 'Toggle sidebar',
   wizardBack: 'Back',
   wizardNext: 'Next',
   wizardStepAnnouncement: (index, total, label) => `Step ${index} of ${total}: ${label}`,

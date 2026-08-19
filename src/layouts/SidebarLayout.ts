@@ -2,6 +2,7 @@
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 
 import '../components/SidebarSection';
 import '../components/SidebarGroup';
@@ -13,6 +14,7 @@ import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UP
 import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
 import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
+import { getLocaleStrings } from '../internals/locale.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
 import { filterSidebarItems } from './filterSidebarItems.js';
@@ -57,6 +59,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   @property({ type: String, reflect: true }) state: SidebarState = 'default';
   /** 사이드바 레이아웃 설정 */
   @property({ type: Object }) config?: SidebarLayoutConfig;
+  /** 크롬 문자열(토글 버튼 접근성 라벨 등) 로케일 — `registerLocale`로 등록한 언어 태그 */
+  @property({ type: String }) locale = '';
 
   @query('u-progress-bar') progressBarEl!: UProgressBar;
 
@@ -101,6 +105,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           ${this.config.title}
         </span>
         <u-button class="toggler" variant="ghost"
+          aria-label=${getLocaleStrings(this.locale || undefined).toggleMobileMenu}
           @click=${this.handleToggleButtonClick}>
           <u-icon
             lib="bootstrap"
@@ -118,6 +123,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
             ${this.config.title}
           </span>
           <u-button class="toggler" variant="ghost"
+            aria-label=${getLocaleStrings(this.locale || undefined).toggleSidebar}
             @click=${this.handleToggleButtonClick}>
             <u-icon
               lib="bootstrap"
@@ -168,6 +174,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     } else if(item.type === 'button') {
       return html`
         <u-sidebar-button
+          id=${ifDefined(item.id)}
           ?compact=${this.state === 'slim'}
           .icon="${item.icon}"
           .lib="${item.lib}"
