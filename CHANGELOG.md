@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.18.1] - 2026-08-19
+
+### Fixed
+
+- **`GroupBox`'s background no longer matches the surrounding page/sidebar in light mode, or
+  input fields in dark mode.** It referenced the same token as those surfaces
+  (`--u-panel-bg-color`); switched to `--u-bg-color-raised`, which both themes already define
+  distinctly.
+
 ## [0.18.0] - 2026-08-17
 
 ### Added
