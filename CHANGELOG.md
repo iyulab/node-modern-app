@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.18.3] - 2026-08-22
+
+### Fixed
+
+- **`SidebarButtonConfig.id`'s docs no longer claim external light-DOM `u-popover` anchoring
+  works.** It doesn't: the rendered `<u-sidebar-button>` lives inside `<u-sidebar-layout>`'s own
+  shadow root, and `for="#id"` lookups never cross a shadow boundary — a popover placed outside
+  the layout can never find the anchor, no matter how the `id` is passed. Documents the recipe
+  that does work instead: assemble the trigger and its `u-popover` together inside a single
+  `type: 'html'` item, with `placement` chosen from the sidebar's own state (a sideways flyout
+  has no room once the sidebar widens on mobile; a vertical one always does). Not a code change —
+  `id` still passes through exactly as before.
+
 ## [0.18.2] - 2026-08-19
 
 ### Fixed
