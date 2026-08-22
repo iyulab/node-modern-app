@@ -144,6 +144,7 @@ Action button — triggers a callback instead of navigating.
 ```typescript
 interface SidebarButtonConfig {
   type: 'button';
+  id?: string;
   icon?: string;
   lib?: string;
   label: string | DirectiveResult;
@@ -157,6 +158,12 @@ Example:
 ```typescript
 { type: 'button', icon: 'logout', label: 'Sign Out', onClick: () => auth.signOut() }
 ```
+
+`id` is passed straight through to the rendered `<u-sidebar-button>` host. **It does not enable
+anchoring a `u-popover` you place outside the layout** — the button lives inside
+`<u-sidebar-layout>`'s own shadow root, and `querySelector`/`for="#id"` never crosses a shadow
+boundary. If you need a popover anchored to a sidebar item, use `type: 'html'` and assemble both
+inside the same template — see [popup-style submenus](#popup-style-submenus-u-popover) below.
 
 ---
 
@@ -187,6 +194,38 @@ Example:
   `,
 }
 ```
+
+---
+
+### Popup-style submenus (`u-popover`)
+
+For a submenu that flies out from a sidebar item (rather than expanding in place like
+`SidebarGroupConfig`), assemble a `u-popover` and its trigger together inside a single
+`type: 'html'` item — both then live in the sidebar layout's own shadow root, which is required
+for `for="#id"` anchoring to resolve (see the `id` note above).
+
+```typescript
+{
+  type: 'html',
+  render: (state) => html`
+    <u-sidebar-button id="more-trigger" icon="three-dots" label="More"></u-sidebar-button>
+    <u-popover for="#more-trigger" placement=${state.startsWith('mobile') ? 'bottom-start' : 'right-start'}>
+      <u-menu>
+        <u-menu-item @click=${doA}>Action A</u-menu-item>
+        <u-menu-item @click=${doB}>Action B</u-menu-item>
+      </u-menu>
+    </u-popover>
+  `,
+}
+```
+
+⚠**Pick `placement` based on `state`, not a fixed value.** On `mobile`/`mobile-open`, the sidebar
+itself widens to occupy nearly the full screen — a sideways placement (`right-start`, the natural
+choice for a desktop flyout) then has no room on either side, and `flip()` correctly declines to
+flip when the opposite side has none either. The popover renders off-screen and is invisible. A
+vertical placement (`bottom-start`) has room regardless of sidebar width and works at every state.
+Confirmed empirically in `tests/browser/sidebar-popover-submenu.browser.test.ts` — this is not a
+`strategy="absolute"` vs `"fixed"` distinction, switching strategy does not change the outcome.
 
 ---
 
