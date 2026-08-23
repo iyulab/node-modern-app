@@ -67,6 +67,14 @@ class App {
     // 설정 저장
     this._config = config;
 
+    // 테마·아이콘 초기화 — 인증 여부와 무관한 순수 표시 설정이라, 인증 게이트보다
+    // 먼저 실행한다. `renderLogin`이 그리는 로그인 화면도 `--u-*` 토큰에 의존할 수
+    // 있으므로, 셸이 서기 전(로그인 화면 포함) 모든 렌더 경로에 토큰이 있어야 한다.
+    await Theme.init(config.theme);
+    if (config.iconBasepath) {
+      setDefaultBaseUrl(config.iconBasepath);
+    }
+
     // 부팅 인증 게이트 — 셸(레이아웃·라우터)을 만들기 전에 세션을 판정한다.
     if (config.auth) {
       const user = await config.auth.me();
@@ -82,14 +90,6 @@ class App {
       }
       this._user = user;
       await config.auth.onAuthenticated?.(user);
-    }
-
-    // 초기 테마 설정
-    await Theme.init(config.theme);
-
-    // 아이콘 경로 설정
-    if (config.iconBasepath) {
-      setDefaultBaseUrl(config.iconBasepath);
     }
 
     // 다국어 초기화

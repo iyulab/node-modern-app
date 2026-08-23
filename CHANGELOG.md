@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.4] - 2026-08-23
+
+### Fixed
+
+- **`App.load()` now initializes the theme before checking the `auth` gate.** When `auth.me()`
+  resolves to `null`, `load()` calls `auth.renderLogin()` and returns before the shell is built —
+  but `Theme.init()` used to run only after the auth check passed, so any `renderLogin` screen
+  that relies on `--u-*` design tokens (background, spacing, accent colors) rendered with no
+  stylesheet in the document at all. `Theme.init()` and `iconBasepath` setup are pure display
+  configuration independent of auth state, so they now run unconditionally before the gate —
+  every render path, including the pre-auth login screen, has tokens available.
+
 ## [0.18.3] - 2026-08-22
 
 ### Fixed
