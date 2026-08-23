@@ -67,12 +67,18 @@ class App {
     // 설정 저장
     this._config = config;
 
-    // 테마·아이콘 초기화 — 인증 여부와 무관한 순수 표시 설정이라, 인증 게이트보다
-    // 먼저 실행한다. `renderLogin`이 그리는 로그인 화면도 `--u-*` 토큰에 의존할 수
-    // 있으므로, 셸이 서기 전(로그인 화면 포함) 모든 렌더 경로에 토큰이 있어야 한다.
+    // 테마·아이콘·다국어 초기화 — 인증 여부와 무관한 순수 표시 설정이라, 인증 게이트보다
+    // 먼저 실행한다. `renderLogin`이 그리는 로그인 화면도 `--u-*` 토큰과 `i18next.t()`에
+    // 의존할 수 있으므로, 셸이 서기 전(로그인 화면 포함) 모든 렌더 경로에 둘 다 있어야 한다.
     await Theme.init(config.theme);
     if (config.iconBasepath) {
       setDefaultBaseUrl(config.iconBasepath);
+    }
+    if (config.i18n) {
+      for (const plugin of config.i18n.plugins || []) {
+        i18next.use(plugin);
+      }
+      await i18next.init(config.i18n);
     }
 
     // 부팅 인증 게이트 — 셸(레이아웃·라우터)을 만들기 전에 세션을 판정한다.
@@ -92,14 +98,6 @@ class App {
       await config.auth.onAuthenticated?.(user);
     }
 
-    // 다국어 초기화
-    if (config.i18n) {
-      for (const plugin of config.i18n.plugins || []) {
-        i18next.use(plugin);
-      }
-      await i18next.init(config.i18n);
-    }
-  
     // 레이아웃 생성
     const root = config.root || document.body;
     this._layout = await this.createLayout(root, config.layout);

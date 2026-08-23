@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.18.5] - 2026-08-23
+
+### Fixed
+
+- **`App.load()` now initializes i18next before checking the `auth` gate.** Same ordering bug as
+  `0.18.4`'s theme fix, one layer down: when `auth.me()` resolves to `null`, `load()` renders the
+  login screen and returns before the shell is built, but `i18next.init()` used to run only after
+  the auth check passed. Any `renderLogin` screen that calls `i18next.t()` for its copy rendered
+  with i18next uninitialized (falling back to raw keys or an empty string, depending on
+  `returnEmptyString`/`returnNull`). i18n setup is pure display configuration independent of auth
+  state, so it now runs unconditionally before the gate alongside theme and icon setup — every
+  render path, including the pre-auth login screen, has translations available.
+
 ## [0.18.4] - 2026-08-23
 
 ### Fixed
