@@ -76,7 +76,11 @@ export const styles = css`
     justify-content: space-between;
     gap: 8px;
     height: 100%;
-    background: var(--app-sidebar-bg, var(--u-panel-bg-color, #FFFFFF));
+    /* --u-panel-bg-color 가 아니라 --u-bg-color-raised — 사이드바는 카드·메뉴류의
+       "떠 있는 패널"이 아니라 상시 크롬이고, 그 구분이 정확히 두 토큰이 갈리는 지점이다
+       (light.css 293~298행 참조). 미설정 시 페이지(--u-bg-color)와 같은 흰색으로 앉아
+       사이드바·페이지·카드 삼중 무구분을 만들던 종전 폴백을 대체한다. */
+    background: var(--app-sidebar-bg, var(--u-bg-color-raised, #FAFAFA));
     color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
     border-right: 1px solid var(--u-border-color, #E0E0E0);
     transition: all 0.3s ease;
@@ -124,7 +128,7 @@ export const styles = css`
     justify-content: space-between;
     gap: 12px;
     padding: 16px;
-    background: var(--app-header-bg, var(--u-panel-bg-color, #FFFFFF));
+    background: var(--app-header-bg, var(--u-bg-color-raised, #FAFAFA));
     color: var(--app-header-fg, var(--u-txt-color, #212121));
     border-bottom: 1px solid var(--u-border-color-weak, #EEEEEE);
     user-select: none;

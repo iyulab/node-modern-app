@@ -97,13 +97,13 @@ optional** — when unset it derives from a role token, so an app that only sets
 
 | Token | Default | Applies to |
 |---|---|---|
-| `--app-sidebar-bg` | `--u-panel-bg-color` | Sidebar background |
+| `--app-sidebar-bg` | `--u-bg-color-raised` | Sidebar background |
 | `--app-sidebar-fg` | `--u-txt-color` | Sidebar text and icons |
 | `--app-sidebar-active-bg` | `--u-primary-color` | Active menu background |
 | `--app-sidebar-active-fg` | `--u-txt-color-inverse` | Active menu text |
 | `--app-sidebar-width` | `260px` | Sidebar width (`default` / `modal` states) |
 | `--app-sidebar-width-slim` | `64px` | Sidebar width (`slim` state) |
-| `--app-header-bg` | `--u-panel-bg-color` | Mobile header background |
+| `--app-header-bg` | `--u-bg-color-raised` | Mobile header background |
 | `--app-header-fg` | `--u-txt-color` | Mobile header text |
 
 ```css

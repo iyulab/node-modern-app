@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.18.6] - 2026-08-24
+
+### Fixed
+
+- **`SidebarLayout`'s sidebar and mobile-header backgrounds now fall back to
+  `--u-bg-color-raised` instead of `--u-panel-bg-color`.** The sidebar is persistent chrome, not
+  a floating overlay (card/menu/dialog) — `--u-panel-bg-color`'s light value is the same white as
+  the page background, so an app that never set `--app-sidebar-bg` got a sidebar visually
+  indistinguishable from the page (and, since `u-group-box` also read `--u-panel-bg-color`, from
+  its own cards too — a three-way collapse). `--u-bg-color-raised` is the token this library
+  already documents for chrome surfaces adjacent to the page background, and `u-group-box`
+  switched to it in `0.18.2`; the sidebar now matches. Visual change for any consumer relying on
+  the unset default — light: sidebar goes from `#FFFFFF` to `#FAFAFA`; dark: `#1E1E1E` to
+  `#2A2A2A`, which also fixes the reported card/input collapse (`u-input`'s background stayed on
+  `--u-panel-bg-color`, so the sidebar now reads one step lighter than form fields instead of
+  identical to them). `--app-sidebar-bg`/`--app-header-bg` overrides still take precedence
+  exactly as before.
+
 ## [0.18.5] - 2026-08-23
 
 ### Fixed
