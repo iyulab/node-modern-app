@@ -39,3 +39,17 @@ a left edge without any consumer CSS.
 |------|-------------|
 | `header` · `title` · `actions` | Header row |
 | `body` | Body wrapper |
+
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--u-text-subtitle-size` | Title font size |
+| `--u-text-subtitle-weight` | Title font weight |
+| `--u-text-subtitle-leading` | Title line height |
+| `--u-text-subtitle-tracking` | Title letter spacing |
+| `--u-bg-color-raised` | Surface background |
+| `--u-border-color-weak` | Border and header divider color |
+| `--u-radius-2xl` | Corner radius |
+| `--u-shadow-sm` | Drop shadow |
+| `--u-space-sm` / `--u-space-md` / `--u-space-xl` | Header/body spacing |
