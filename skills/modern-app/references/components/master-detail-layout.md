@@ -64,3 +64,15 @@ configurable breakpoint means measuring the host's own width in JavaScript and r
 | `divider` | Hairline between panes — hidden when there's no detail, or in overlay mode |
 | `detail` | Detail pane |
 | `detail-close` | Overlay-mode close button — hidden outside overlay mode |
+
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--u-border-color-weak` | Divider color |
+| `--u-panel-bg-color` | Detail pane background in overlay mode |
+| `--u-shadow-lg` | Detail pane shadow in overlay mode |
+| `--u-space-sm` | Close-button offset from the overlay edge |
+
+⚠ The master pane's fixed width comes from the `masterSize` property (a CSS length, applied as
+an inline style), not a custom property.

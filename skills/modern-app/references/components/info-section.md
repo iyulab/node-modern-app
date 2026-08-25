@@ -33,3 +33,12 @@ markup works inside a side panel.
 | Part | Description |
 |------|-------------|
 | `grid` | Grid container |
+
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--u-space-lg` / `--u-space-xl` | Grid gap (row / column) |
+
+⚠ Column width is set via the `min` property, not a custom property — it's applied as an inline
+style per instance, so a `--info-min` override in a stylesheet would lose to it.

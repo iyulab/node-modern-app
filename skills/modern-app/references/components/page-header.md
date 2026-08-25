@@ -42,5 +42,21 @@ screens nobody opens.
 | `title` · `subtitle` | Text elements |
 | `status` · `actions` | Slot wrappers |
 
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--u-text-display-size` / `-weight` / `-leading` / `-tracking` | Title typography |
+| `--u-txt-color` | Title color |
+| `--u-text-caption-size` / `-weight` / `-leading` | Subtitle typography |
+| `--u-txt-color-weak` | Subtitle color |
+| `--u-link-txt-color` | Back-link color |
+| `--u-text-label-size` / `-weight` | Back-link typography |
+| `--u-space-2xl` | Host bottom margin |
+| `--u-space-md` | Row gap (heading vs. actions) |
+| `--u-space-sm` | Title-row and actions internal gap |
+| `--u-space-2xs` | Title-to-subtitle spacing |
+| `--u-space-3xs` | Back-arrow-to-label spacing |
+
 ⚠ Built-in strings default to **English** — this package is a generic layer and cannot pick a
 language. Register others with `registerLocale('ko', { back: '뒤로' })`.

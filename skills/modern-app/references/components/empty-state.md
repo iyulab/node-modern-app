@@ -39,5 +39,20 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 |------|-------------|
 | `icon` · `title` · `description` · `actions` | The four regions |
 
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--empty-state-icon-size` | Icon slot font size |
+| `--u-txt-color` | Title color |
+| `--u-txt-color-weak` | Host and description text color |
+| `--u-text-subtitle-size` / `-weight` / `-leading` | Title typography |
+| `--u-text-caption-size` / `-leading` | Description typography |
+| `--u-space-4xl` / `--u-space-xl` | Host padding (vertical / horizontal) |
+| `--u-space-md` | Icon-to-title spacing |
+| `--u-space-2xs` | Title-to-description spacing |
+| `--u-space-lg` | Actions row top spacing |
+| `--u-space-sm` | Gap between actions |
+
 ⚠ Default wording is **English** — register others with `registerLocale('ko', …)`, or pass
 `title`/`description` per screen.

@@ -33,6 +33,15 @@ destructive ones separated on the trailing edge.
 | `main` | Primary action group |
 | `danger` | Destructive action group |
 
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--u-bg-color` | Background when `sticky` |
+| `--u-border-color-weak` | Top border when `sticky` |
+| `--u-space-sm` | Gap between actions within a group |
+| `--u-space-md` | Host and sticky-mode vertical padding |
+
 ⚠ `sticky` adds **vertical** padding only. It deliberately does not stretch to the container
 edges with negative margins — that would assume the parent has exactly that much horizontal
 padding, and when the assumption is wrong the bar overflows and clips its own buttons.

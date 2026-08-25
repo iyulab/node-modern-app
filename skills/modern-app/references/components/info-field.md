@@ -53,3 +53,18 @@ lone field it just pushes the value away from its label.
 | Part | Description |
 |------|-------------|
 | `label` · `value` · `trend` | The label, the value, and the (optional) trend indicator |
+
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--u-text-caption-size` / `-weight` / `-leading` | Label typography |
+| `--u-txt-color-weak` | Label color, and blank-value (`—`) color |
+| `--u-space-3xs` | Label-to-value spacing |
+| `--u-text-body-size` / `-leading` | Value typography at default `size` |
+| `--u-text-label-weight` | Value font weight at default `size` |
+| `--u-text-body-weight` | Value font weight when `blank` |
+| `--u-txt-color` | Value color |
+| `--u-text-title-size` / `-weight` | Value typography when `size="lg"` |
+| `--u-success-color-strong` | `tone="positive"` color (value and trend) |
+| `--u-danger-color-strong` | `tone="negative"` color (value and trend) |

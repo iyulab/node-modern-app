@@ -82,3 +82,21 @@ clicked directly (a non-linear/"editable" stepper).
 | `step` | Each step button (`role="tab"`) |
 | `panel` | Wrapper around the active step's slotted content (`role="tabpanel"`) |
 | `actions` | Back/Next (or overridden) action row |
+
+## CSS Custom Properties
+
+| Property | Description |
+|----------|-------------|
+| `--u-space-xl` | Indicator-to-content gap |
+| `--u-space-lg` | Gap between content rows |
+| `--u-space-sm` | Indicator step gap, marker-to-label gap, actions row gap |
+| `--u-space-2xs` | Step button vertical padding |
+| `--u-txt-color-weak` | Step label color (default state) |
+| `--u-txt-color-disabled` | Step label color (`disabled`) |
+| `--u-border-color-strong` | Marker border (default state) |
+| `--u-primary-color` | Marker border/text and label color (`active`, `state-done`) |
+| `--u-danger-color` | Marker border/text and label color (`state-error`) |
+| `--u-txt-color-inverse` | Marker text color (`state-done`) |
+| `--u-text-caption-size` | Marker font size |
+| `--u-text-label-weight` | Marker font weight |
+| `--u-text-label-size` | Step label font size |
