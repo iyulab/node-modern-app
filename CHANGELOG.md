@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.7] - 2026-08-27
+
+### Fixed
+
+- **`SidebarButton`, `SidebarLink`, and `SidebarGroup` lost their accessible
+  name entirely in compact (icon-only) sidebar mode.** Compact mode hides the
+  visible text label (`part="label"`), and hiding it also removes it from the
+  accessibility tree — with no fallback, a screen reader announced these as
+  unnamed buttons/links. When `label` is a plain string, it is now promoted to
+  `aria-label` while compact; the visible label still drives the name when
+  expanded, so nothing changes there.
+
 ## [0.18.6] - 2026-08-24
 
 ### Fixed
