@@ -1,4 +1,4 @@
-﻿import { html } from 'lit';
+﻿import { html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
@@ -44,10 +44,15 @@ export class SidebarGroup extends StyledElement<ElementParts> {
   @property({ type: String }) label?: string | DirectiveResult;
   
   render() {
+    // ⚠**콤팩트 상태에서 라벨이 숨는 것과 접근 가능한 이름이 사라지는 것은 다르다.**
+    //   `?hidden`이 `part="label"`을 접근성 트리에서도 제거하므로, `label`이 순수
+    //   문자열일 때는 `aria-label`로 승격한다(SidebarButton과 같은 수정, docket #109).
+    const compactLabel = this.compact && typeof this.label === 'string' ? this.label : nothing;
     return html`
       <button part="header"
         ?compact=${this.compact}
         ?selected=${this.selected}
+        aria-label=${compactLabel}
         @click=${this.handleButtonClick}>
         <!--
           ⚠ ?hidden 을 걸지 않는다. 접힌 상태에서는 라벨과 캐럿이 모두 숨으므로,

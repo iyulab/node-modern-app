@@ -71,4 +71,29 @@ describe('접힌 사이드바 — 누를 것이 있다', () => {
       el.remove();
     }
   });
+
+  /**
+   * **접힘이 「누를 것」은 지키지만 「이름」은 지키지 못하고 있었다** (docket #109 실측 —
+   * `SidebarButton`. 같은 파일 안 조사로 `SidebarLink`·`SidebarGroup`도 같은 결함을 겪고
+   * 있음을 확인해 세 종류 전부 함께 고쳤다). `part="label"`이 `?hidden`으로 접근성 트리에서도
+   * 빠지므로, 대체 이름(`aria-label`)이 없으면 스크린리더에는 **이름 없는 버튼**으로 남는다.
+   * 위 목록과 같은 이유로 세 종류를 한 목록으로 돈다.
+   */
+  const accessibleNameHost = (tag: string, el: HTMLElement): HTMLElement =>
+    (tag === 'u-sidebar-link' ? el.shadowRoot!.querySelector('u-link') : pressable(el)) as HTMLElement;
+
+  for (const tag of NAV_ITEMS) {
+    it(`★${tag} — 접힌 상태에서도 aria-label로 접근 가능한 이름이 남는다`, async () => {
+      const el = await mount(tag, { label: '항목', compact: '' });
+      expect(accessibleNameHost(tag, el).getAttribute('aria-label')).toBe('항목');
+    });
+  }
+
+  it('NEGATIVE — 펼친 상태에서는 aria-label을 강제하지 않는다 (보이는 라벨이 이미 이름이다)', async () => {
+    for (const tag of NAV_ITEMS) {
+      const el = await mount(tag, { label: '항목' });
+      expect(accessibleNameHost(tag, el).hasAttribute('aria-label'), tag).toBe(false);
+      el.remove();
+    }
+  });
 });

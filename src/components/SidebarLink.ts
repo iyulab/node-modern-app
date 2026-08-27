@@ -74,12 +74,18 @@ export class SidebarLink extends StyledElement<ElementParts> {
     //   `location.assign()` 으로 우회하게 되는데, 그러면 가운데 클릭·주소 복사·상태바 미리보기·
     //   스크린리더의 «링크» 역할·`pattern` 기반 선택 표시를 전부 잃고, 섹션·그룹이 `button` 을
     //   받지 않아 **메뉴 최상위로 밀려난다.**
+    // ⚠**콤팩트 상태에서 라벨이 숨는 것과 접근 가능한 이름이 사라지는 것은 다르다** —
+    //   `label`이 순수 문자열일 때 `aria-label`로 승격한다(`u-link`가 이미 호스트의
+    //   `aria-label`을 내부 `<a>`로 forwarding한다, docket #45/#75 실측 — SidebarButton/
+    //   SidebarGroup과 같은 수정, docket #109).
+    const compactLabel = this.compact && typeof this.label === 'string' ? this.label : nothing;
     return html`
       <u-link
         .href=${this.href || '#'}
         .navigate=${this.navigate}
         .target=${this.target}
         aria-current=${this.selected ? 'page' : nothing}
+        aria-label=${compactLabel}
       >
         <div class="container" part="base" ?compact=${this.compact}>
           <u-icon part="icon"

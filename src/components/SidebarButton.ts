@@ -1,4 +1,4 @@
-﻿import { html } from 'lit';
+﻿import { html, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
@@ -43,8 +43,14 @@ export class SidebarButton extends StyledElement<ElementParts> {
   @property({ type: String }) label?: string | DirectiveResult;
   
   render() {
+    // ⚠**콤팩트 상태에서 라벨이 숨는 것과 접근 가능한 이름이 사라지는 것은 다르다.**
+    //   `?hidden`은 `part="label"`을 접근성 트리에서도 제거하므로, 라벨을 시각적으로만
+    //   숨기고 싶어도 대체 수단 없이는 버튼이 이름 없는 버튼이 된다(docket #109 실측).
+    //   `label`이 순수 문자열일 때만 `aria-label`로 승격한다 — `DirectiveResult`(마크업)는
+    //   안전하게 평문화할 수 없어 대상 밖이다.
+    const compactLabel = this.compact && typeof this.label === 'string' ? this.label : nothing;
     return html`
-      <button part="base" ?compact=${this.compact}>
+      <button part="base" ?compact=${this.compact} aria-label=${compactLabel}>
         <u-icon part="icon"
           .lib=${this.lib}
           .name=${this.icon}
