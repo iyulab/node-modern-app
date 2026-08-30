@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.8] - 2026-08-30
+
+### Fixed
+
+- **`SidebarLayout` ignored an explicit `collapsed: false` on a group config** — a
+  group always rendered collapsed regardless of the configured initial state.
+  `SidebarGroup.collapsed` defaults to `true`, and the binding used a
+  boolean-attribute directive, which only ever adds the attribute — it never
+  removes an already-absent one to force `false`, so the default silently won.
+  Switched to a direct property binding, which sets the value regardless of the
+  component's own default.
+
 ## [0.18.7] - 2026-08-27
 
 ### Fixed
