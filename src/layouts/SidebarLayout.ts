@@ -213,11 +213,18 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       `;
     } else if(item.type === 'group') {
       const selected = item.items.some(i => this.isMatchedLink(i.pattern || i.href));
+      // `.collapsed=` 는 프로퍼티 바인딩이어야 한다 — `SidebarGroup.collapsed` 의 클래스
+      // 기본값은 true 이고, `?collapsed=${false}` 같은 불리언 속성 지시자는 값이 false 일 때
+      // 속성을 아예 안 붙이므로 attributeChangedCallback 이 불리지 않아 기본값 true 가 그대로
+      // 남는다(docket #145 — 따옴표 제거만으로는 해소되지 않는 자리였다). 미지정(`undefined`)
+      // 시 폴백은 `SidebarGroupConfig.collapsed` 문서("기본 접힘 상태")와 일치하도록 true —
+      // 이 값을 false 로 바꾸면 지금까지 늘 접힌 채로 렌더되던(quote 결함이 우연히 만들어 온)
+      // 기존 소비자 화면이 전부 펼쳐진 채로 바뀌는 하위호환 파괴가 된다.
       return html`
         <u-sidebar-group
           ?compact=${this.state === 'slim'}
           ?selected=${selected}
-          ?collapsed="${item.collapsed ?? false}"
+          .collapsed=${item.collapsed ?? true}
           .icon="${item.icon}"
           .lib="${item.lib}"
           .label="${item.label}"
