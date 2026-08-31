@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.11] - 2026-09-01
+
+### Changed
+
+- Cleaned up an internal reference left in a few source comments by `0.18.10`.
+  No code or type behavior changed.
+
 ## [0.18.10] - 2026-09-01
 
 ### Fixed

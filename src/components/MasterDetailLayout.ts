@@ -127,11 +127,10 @@ declare global {
   }
 }
 
-// React JSX.IntrinsicElements 증강 — 이 파일 안에 직접 둔다(선언 번들러가
-// 다른 파일에서 값으로 아무것도 쓰지 않는 side-effect import를 트리셰이킹해
-// deep-import 소비자에게 증강이 안 닿는 문제를 겪었다, `ISSUE-modern-app-
-// 20260812-*` 재오픈 절 참조 — 같은 파일 안의 선언은 그 문제가 없다). 이 컴포넌트가
-// 정확히 그 재현 케이스였다(house-style이 deep-import로 이 태그를 쓴다).
+// React JSX.IntrinsicElements 증강 — 이 파일 안에 직접 둔다. 다른 파일에서 값으로
+// 아무것도 쓰지 않는 side-effect import로 배선하면, 선언 번들러가 그 import를
+// "미사용"으로 보고 제거해 deep-import 소비자에게 증강이 안 닿는다 — 같은 파일
+// 안의 선언은 그 문제가 없다.
 declare module 'react' {
   namespace JSX {
     interface IntrinsicElements {
