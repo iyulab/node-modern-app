@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.18.9] - 2026-08-31
+
+### Fixed
+
+- **JSX couldn't type-check `InfoField`, `PageHeader`, `EmptyState`, `GroupBox`,
+  `InfoSection`, `ActionBar`, or `MasterDetailLayout` in a `.tsx` consumer** —
+  these seven have no `/react` wrapper by design (plain
+  String/Number/Boolean properties work as a raw custom element in JSX on
+  both React 18 and 19), but only `HTMLElementTagNameMap` was declared for
+  them; `JSX.IntrinsicElements`, what `.tsx` actually checks against, never
+  was. Every one of them failed `TS2339` the moment a consumer wrote it in
+  JSX. Declared now, and pulled in from each component file itself (not just
+  the barrel), so a deep import for tree-shaking still sees it.
+
 ## [0.18.8] - 2026-08-30
 
 ### Fixed
