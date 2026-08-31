@@ -7,6 +7,9 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './MasterDetailLayout.styles.js';
+// 타입 전용 — React JSX.IntrinsicElements 증강을 이 파일을 로드하는 소비자에게 함께
+// 실어 보낸다(deep-import든 barrel import든 이 파일 자체를 거치므로 항상 배선됨).
+import type {} from '../types/jsx.js';
 
 type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
 
