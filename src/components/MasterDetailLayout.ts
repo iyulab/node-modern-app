@@ -7,9 +7,7 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './MasterDetailLayout.styles.js';
-// 타입 전용 — React JSX.IntrinsicElements 증강을 이 파일을 로드하는 소비자에게 함께
-// 실어 보낸다(deep-import든 barrel import든 이 파일 자체를 거치므로 항상 배선됨).
-import type {} from '../types/jsx.js';
+import type React from 'react';
 
 type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
 
@@ -126,5 +124,22 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
 declare global {
   interface HTMLElementTagNameMap {
     'u-master-detail-layout': MasterDetailLayout;
+  }
+}
+
+// React JSX.IntrinsicElements 증강 — 이 파일 안에 직접 둔다(선언 번들러가
+// 다른 파일에서 값으로 아무것도 쓰지 않는 side-effect import를 트리셰이킹해
+// deep-import 소비자에게 증강이 안 닿는 문제를 겪었다, `ISSUE-modern-app-
+// 20260812-*` 재오픈 절 참조 — 같은 파일 안의 선언은 그 문제가 없다). 이 컴포넌트가
+// 정확히 그 재현 케이스였다(house-style이 deep-import로 이 태그를 쓴다).
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'u-master-detail-layout': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        'master-size'?: string;
+        'overlay-breakpoint'?: number | string;
+        locale?: string;
+      };
+    }
   }
 }

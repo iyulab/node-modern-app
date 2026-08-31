@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.18.10] - 2026-09-01
+
+### Fixed
+
+- **`0.18.9`'s `JSX.IntrinsicElements` fix didn't actually reach consumers who
+  deep-import these components** (`import '@iyulab/modern-app/dist/components/
+  MasterDetailLayout.js'` and similar for `InfoField`/`PageHeader`/`EmptyState`/
+  `GroupBox`/`InfoSection`/`ActionBar`). The augmentation lived in a separate
+  file pulled in only via a side-effect-only type import, which the
+  declaration bundler stripped from each component's published `.d.ts` as
+  "unused". Each component's JSX augmentation now lives directly in its own
+  source file instead, so it survives declaration bundling regardless of
+  import path. Verified against the actual published tarball this time
+  (`npm pack`), not just the local workspace.
+
 ## [0.18.9] - 2026-08-31
 
 ### Fixed

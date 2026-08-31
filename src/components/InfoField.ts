@@ -4,9 +4,7 @@ import { formatNumber, formatCurrency, formatDate } from '@iyulab/components/dis
 
 import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoField.styles.js';
-// 타입 전용 — React JSX.IntrinsicElements 증강을 이 파일을 로드하는 소비자에게 함께
-// 실어 보낸다(deep-import든 barrel import든 이 파일 자체를 거치므로 항상 배선됨).
-import type {} from '../types/jsx.js';
+import type React from 'react';
 
 type ElementParts = 'host' | 'label' | 'value' | 'trend';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
@@ -148,5 +146,30 @@ export class InfoField extends StyledElement<ElementParts> {
 declare global {
   interface HTMLElementTagNameMap {
     'u-info-field': InfoField;
+  }
+}
+
+// React JSX.IntrinsicElements 증강 — 이 파일 안에 직접 둔다(선언 번들러가
+// 다른 파일에서 값으로 아무것도 쓰지 않는 side-effect import를 트리셰이킹해
+// deep-import 소비자에게 증강이 안 닿는 문제를 겪었다, `ISSUE-modern-app-
+// 20260812-*` 재오픈 절 참조 — 같은 파일 안의 선언은 그 문제가 없다).
+declare module 'react' {
+  namespace JSX {
+    interface IntrinsicElements {
+      'u-info-field': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        label?: string;
+        value?: string;
+        blank?: string;
+        numeric?: boolean;
+        format?: InfoFieldFormat;
+        currency?: string;
+        size?: InfoFieldSize;
+        trend?: InfoFieldTrend;
+        /** 프로퍼티는 `trendLabel`이지만 Lit 기본 속성명 규칙(소문자화, kebab
+         *  아님)상 실제 HTML 속성명은 `trendlabel`이다. */
+        trendlabel?: string;
+        tone?: InfoFieldTone;
+      };
+    }
   }
 }
