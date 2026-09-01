@@ -6,16 +6,22 @@
 
 ## `RouteConfig`
 
+`modern-app` re-exports `@iyulab/router`'s `RouteConfig` unchanged — the full reference
+(including `id`, `ignoreCase`, and `children` for nested routes, covered below) lives in
+[`@iyulab/router`'s README](https://github.com/iyulab/router#readme). The fields you'll
+reach for day to day:
+
 ```typescript
 interface RouteConfig {
   /** Match the root path — equivalent to `path: ''`. */
   index?: boolean;
 
   /**
-   * Path string. Segments starting with `:` are captured as named params.
+   * Path string or `URLPattern`. A string is converted to `URLPattern`
+   * automatically. Segments starting with `:` are captured as named params.
    * Example: `'users/:id'`, `'org/:orgId/repo/:repoId'`
    */
-  path?: string;
+  path?: string | URLPattern;
 
   /** Set `document.title` when the route activates. */
   title?: string;
@@ -122,6 +128,30 @@ fallback: {
   render: (ctx) => html`<error-page .error=${ctx.error}></error-page>`,
 }
 ```
+
+---
+
+## Nested routes
+
+A route can declare `children: RouteConfig[]`. A matched parent renders a `<u-outlet>`
+of its own to host the matched child's content — routing resolves the whole chain
+(parent basepath → child path) and renders both in one pass.
+
+```typescript
+{
+  path: 'settings',
+  render: () => html`<settings-layout><u-outlet></u-outlet></settings-layout>`,
+  children: [
+    { index: true, render: () => html`<settings-general></settings-general>` },
+    { path: 'billing', render: () => html`<settings-billing></settings-billing>` },
+  ],
+}
+```
+
+Use this instead of a flat route list whenever routes share a layout or a
+`basepath`-relative structure (e.g. `/settings`, `/settings/billing`) — the parent's
+`render()` only needs to be re-run when its own path changes, not on every child
+navigation.
 
 ---
 

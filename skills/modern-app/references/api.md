@@ -72,19 +72,44 @@ interface ThemeInitOptions {
 
 ## `RouteConfig`
 
+`RouteConfig` is re-exported unchanged from `@iyulab/router` — see its README for the full
+reference. Supports `children: RouteConfig[]` for nested routes (a matched parent renders
+its own `<u-outlet>` to host the matched child) — see `docs/routing.md`'s "Nested routes"
+section for an example.
+
 ```typescript
 interface RouteConfig {
   /** Matches the root path (equivalent to `path: ''`). */
   index?: boolean;
 
-  /** Path string. Supports `:param` segments. */
-  path?: string;
+  /** Path string or `URLPattern`. Supports `:param` segments. */
+  path?: string | URLPattern;
 
   /** Sets `document.title` when the route activates. */
   title?: string;
 
   /** Force a re-render even if the path did not change. */
   force?: boolean;
+
+  /** Case-insensitive path matching. Defaults to `false`. */
+  ignoreCase?: boolean;
+
+  /** Identifier used internally by the router (auto-generated if omitted). */
+  id?: string;
+
+  /** Metadata merged parent → child, exposed on `RouteContext.metadata`. */
+  metadata?: Record<string, unknown>;
+
+  /**
+   * Guard called before this route activates.
+   * - Return a `string` to redirect.
+   * - Return `false` to cancel navigation.
+   * - Return `true` (or nothing) to proceed.
+   */
+  enter?: (context: RouteContext) => Promise<string | boolean> | string | boolean;
+
+  /** Child routes, matched relative to this route's path. */
+  children?: RouteConfig[];
 
   /** Render function. May be async. */
   render: (context: RouteContext) => RenderResult | Promise<RenderResult>;
