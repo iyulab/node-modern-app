@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.18.12] - 2026-09-01
+
+### Fixed
+
+- **Routing docs never mentioned nested routes (`RouteConfig.children`).**
+  `@iyulab/router`'s `RouteConfig` supports it and its own README documents
+  it, but `modern-app`'s `docs/routing.md` and `skills/modern-app/references/api.md`
+  only reproduced a partial `RouteConfig` snippet that omitted `children`,
+  `id`, `ignoreCase`, and `enter`, and narrowed `path` to `string` only. A
+  consumer reading only `modern-app`'s docs had no way to discover the
+  feature and would flatten routes that share a layout into a single list.
+  Both docs now cover the full shape and link to `@iyulab/router`'s README
+  as the source of truth, and `docs/routing.md` gained a "Nested routes"
+  section with an example.
+
 ## [0.18.11] - 2026-09-01
 
 ### Changed
