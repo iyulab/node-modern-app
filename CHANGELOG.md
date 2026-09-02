@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.18.15] - 2026-09-02
+
+### Fixed
+
+- **`NotificationOptions.position` documented only 4 of the 9 valid values in
+  four places** (`docs/notifications.md`, `docs/configuration.md`,
+  `skills/modern-app/references/api.md`, `skills/modern-app/SKILL.md`).
+  The field's actual type is `ToastPosition` (`@iyulab/components`, re-exported
+  unchanged) and `App.ts` passes `options` straight through to `Toast.*()` with
+  no restriction — `app.success(msg, { position: 'middle-center' })` genuinely
+  works today. Docs narrowed it to `'top-right' | 'top-left' | 'bottom-right'
+  | 'bottom-left'`, silently hiding `top-center`, `middle-left`,
+  `middle-center`, `middle-right`, and `bottom-center`.
+
 ## [0.18.14] - 2026-09-02
 
 ### Fixed
