@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.18.13] - 2026-09-02
+
+### Fixed
+
+- **`RouteContext`'s documented field list had drifted independently of
+  `RouteConfig`'s.** `0.18.12` fixed `RouteConfig`'s snippet in two of three
+  docs but left `RouteContext` untouched everywhere, and `configuration.md`'s
+  `RouteConfig` snippet was missed entirely. `docs/configuration.md` and
+  `docs/routing.md` were both missing `origin`, `path`, and `hash`
+  (`routing.md` also missing `metadata`, despite `RouteConfig.metadata`'s own
+  doc comment on the line above pointing to it); `skills/modern-app/references/api.md`
+  was missing `origin`, `path`, `query`, `hash`, and `metadata` — a consumer
+  reading only that doc had no way to discover `ctx.query` exists at all.
+  `configuration.md`'s `RouteConfig` snippet gained `id`, `ignoreCase`, and
+  `children`, matching the other two docs. `FallbackRouteConfig`'s `render`
+  callback is now typed `RouteContext & { error: RouteError }` — what
+  `Router.ts` actually passes — instead of plain `RouteContext` or an
+  untyped prose note.
+
 ## [0.18.12] - 2026-09-01
 
 ### Fixed
