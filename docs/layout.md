@@ -26,6 +26,20 @@ interface SidebarLayoutConfig {
   /** Footer (bottom-pinned) items. */
   footer?: SidebarItem[];
 
+  /**
+   * Accessible name for the main nav landmark (`<nav class="sidebar-main">`), reflected as
+   * `aria-label`. Unset by default (no landmark name) — not a breaking change to add later.
+   * Independent of `title`, which is the brand text shown in the sidebar header.
+   */
+  mainAriaLabel?: string;
+
+  /**
+   * Permission filter. When set, items whose `requirePermission`/`requireAnyPermission` fail
+   * are hidden — a section/group left with no visible items is hidden entirely. Unset shows
+   * everything (no filtering). Typically `@iyulab/enterprise`'s `hasPermission` store getter.
+   */
+  hasPermission?: (code: string) => boolean;
+
   /** Per-part CSS style overrides. */
   styles?: StyleMap<SidebarParts>;
 }

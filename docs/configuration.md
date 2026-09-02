@@ -90,11 +90,18 @@ interface SidebarLayoutConfig {
   title?: string;
   main?: SidebarItem[];
   footer?: SidebarItem[];
+
+  /** Accessible name for the main nav landmark, reflected as `aria-label`. Unset by default. */
+  mainAriaLabel?: string;
+
+  /** Permission filter — hides items whose requirement fails. Unset shows everything. */
+  hasPermission?: (code: string) => boolean;
+
   styles?: StyleMap<SidebarParts>;
 }
 ```
 
-See [layout.md](./layout.md) for all `SidebarItem` variants.
+See [layout.md](./layout.md) for all `SidebarItem` variants and the `hasPermission` filter.
 
 ---
 
