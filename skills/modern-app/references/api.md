@@ -189,7 +189,9 @@ type I18nInitOptions = i18next.InitOptions & {
 interface NotificationOptions {
   title?: string;
   duration?: number;   // milliseconds, default 3000
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  position?: 'top-left' | 'top-center' | 'top-right'
+    | 'middle-left' | 'middle-center' | 'middle-right'
+    | 'bottom-left' | 'bottom-center' | 'bottom-right';
 }
 ```
 

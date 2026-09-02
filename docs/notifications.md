@@ -29,7 +29,9 @@ interface NotificationOptions {
   duration?: number;
 
   /** Screen position where the toast appears. Default: 'top-right' */
-  position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
+  position?: 'top-left' | 'top-center' | 'top-right'
+    | 'middle-left' | 'middle-center' | 'middle-right'
+    | 'bottom-left' | 'bottom-center' | 'bottom-right';
 }
 ```
 

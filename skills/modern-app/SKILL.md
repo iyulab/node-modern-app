@@ -105,7 +105,7 @@ await app.warning('Check your input');
 await app.error('Something went wrong');
 ```
 
-`position` values: `'top-right'` | `'top-left'` | `'bottom-right'` | `'bottom-left'`  
+`position` values: `'top-left'` | `'top-center'` | `'top-right'` | `'middle-left'` | `'middle-center'` | `'middle-right'` | `'bottom-left'` | `'bottom-center'` | `'bottom-right'`  
 `duration` default: `3000` ms
 
 ---
