@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.18.16] - 2026-09-03
+
+### Fixed
+
+- **`ThemeInitOptions.store`'s type documented a `'sessionStorage'` value that has
+  never existed.** The field's real type is re-exported unchanged from
+  `@iyulab/components`' `BrowserStorageOptions`, which only supports
+  `'localStorage' | 'cookie'` — confirmed against `BrowserStorage.ts` and its test
+  suite, which uses `'sessionStorage'` specifically as the invalid-type negative
+  case. All three docs (`docs/theme.md`, `docs/configuration.md`,
+  `skills/modern-app/references/api.md`) listed it as valid.
+
 ## [0.18.15] - 2026-09-02
 
 ### Fixed
