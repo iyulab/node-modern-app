@@ -57,11 +57,10 @@ interface ThemeInitOptions {
    * Persist the user's preference.
    * Set to `false` to disable persistence.
    * Default: localStorage with no prefix.
+   * `type: 'cookie'` also accepts path/domain/expires/sameSite/partitioned — see
+   * `@iyulab/components`'s `BrowserStorage` reference. No `'sessionStorage'` backend exists.
    */
-  store?: false | {
-    type: 'cookie' | 'localStorage' | 'sessionStorage';
-    prefix?: string;
-  };
+  store?: false | { type: 'localStorage'; prefix?: string } | { type: 'cookie'; prefix?: string };
 
   /** Apply built-in CSS custom properties. Default: true */
   useBuiltIn?: boolean;

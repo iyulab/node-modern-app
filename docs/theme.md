@@ -31,13 +31,12 @@ interface ThemeInitOptions {
 
   /**
    * Persist the user's preference across sessions.
-   * Set to `false` to disable all persistence.
-   * Omit to use localStorage with no prefix.
+   * Set to `false` to disable all persistence. Omit to use localStorage with no prefix.
+   * `type: 'cookie'` accepts more fields (path/domain/expires/sameSite/partitioned) —
+   * see `@iyulab/components`'s `BrowserStorage` reference for the full shape. Note there
+   * is no `'sessionStorage'` backend — only `'localStorage'` and `'cookie'`.
    */
-  store?: false | {
-    type: 'cookie' | 'localStorage' | 'sessionStorage';
-    prefix?: string;
-  };
+  store?: false | { type: 'localStorage'; prefix?: string } | { type: 'cookie'; prefix?: string };
 
   /**
    * Inject built-in CSS custom property definitions (light.css / dark.css).

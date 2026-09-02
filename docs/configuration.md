@@ -111,10 +111,9 @@ See [layout.md](./layout.md) for all `SidebarItem` variants and the `hasPermissi
 interface ThemeInitOptions {
   default?: 'system' | 'light' | 'dark';
   debug?: boolean;
-  store?: false | {
-    type: 'cookie' | 'localStorage' | 'sessionStorage';
-    prefix?: string;
-  };
+  /** `type: 'cookie'` also accepts path/domain/expires/sameSite/partitioned -- see
+   * @iyulab/components's BrowserStorage reference. No 'sessionStorage' backend exists. */
+  store?: false | { type: 'localStorage'; prefix?: string } | { type: 'cookie'; prefix?: string };
   useBuiltIn?: boolean;
 }
 ```
