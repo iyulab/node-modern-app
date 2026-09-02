@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.18.14] - 2026-09-02
+
+### Fixed
+
+- **`SidebarLayoutConfig`'s `mainAriaLabel` and `hasPermission` fields were
+  undocumented in all three reference docs** (`docs/layout.md`,
+  `docs/configuration.md`, `skills/modern-app/references/layout.md`). Both
+  are real, shipped features — `mainAriaLabel` sets the main nav landmark's
+  `aria-label`, `hasPermission` filters sidebar items by permission — and
+  the README already has a working usage example for `hasPermission`, but
+  a consumer reading only the type reference had no way to discover either
+  field. Added to all three snippets.
+
 ## [0.18.13] - 2026-09-02
 
 ### Fixed
