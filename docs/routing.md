@@ -53,7 +53,10 @@ interface RouteConfig {
 
 ## `RouteContext`
 
-The `render` function receives a `RouteContext` on every navigation:
+The `render` function receives a `RouteContext` on every navigation — re-exported unchanged
+from `@iyulab/router`. The full reference (including `origin`, `path`, and `hash`) lives in
+[`@iyulab/router`'s README](https://github.com/iyulab/router#readme); the fields you'll reach
+for day to day:
 
 ```typescript
 interface RouteContext {
@@ -67,10 +70,16 @@ interface RouteContext {
   basepath: string;
 
   /** Named URL parameters extracted from the path pattern. */
-  params: Record<string, string>;
+  params: Record<string, string | undefined>;
 
   /** Parsed query string. `query.get('key')` returns `string | null`. */
   query: URLSearchParams;
+
+  /**
+   * Merged parent → child metadata from the matched route chain.
+   * See `RouteConfig.metadata` above.
+   */
+  metadata: Record<string, unknown>;
 
   /**
    * Report loading progress (0–100).

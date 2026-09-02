@@ -116,14 +116,28 @@ interface ThemeInitOptions {
 
 ## `RouteConfig`
 
+Re-exported unchanged from `@iyulab/router`. `children` nests routes under a shared layout —
+see [routing.md](./routing.md#nested-routes).
+
 ```typescript
 interface RouteConfig {
+  /** Identifier used internally by the router (auto-generated if omitted). */
+  id?: string;
+
   index?: boolean;
-  path?: string;
+  path?: string | URLPattern;
   title?: string;
   force?: boolean;
+
+  /** Case-insensitive path matching. Default: false */
+  ignoreCase?: boolean;
+
   metadata?: Record<string, unknown>;
   enter?: (context: RouteContext) => Promise<string | boolean> | string | boolean;
+
+  /** Child routes, matched relative to this route's path. */
+  children?: RouteConfig[];
+
   render: (context: RouteContext) => TemplateResult | Promise<TemplateResult>;
 }
 ```
@@ -135,10 +149,22 @@ interface RouteConfig {
 ```typescript
 interface RouteContext {
   href: string;
-  pathname: string;
+
+  /** Domain name portion of the URL (e.g. `https://example.com`). */
+  origin: string;
+
   basepath: string;
-  params: Record<string, string>;
+
+  /** Full path including query string and hash (e.g. `/users/1?tab=info#top`). */
+  path: string;
+
+  pathname: string;
+  params: Record<string, string | undefined>;
   query: URLSearchParams;
+
+  /** Hash portion of the URL, if present (e.g. `#top`). */
+  hash?: string;
+
   metadata: Record<string, unknown>;
   progress: (value: number) => void;
 }
@@ -148,9 +174,12 @@ interface RouteContext {
 
 ## `FallbackRouteConfig`
 
+`context` is a `RouteContext` plus `error: RouteError` (`RouteError` — importable from
+`@iyulab/router`, `code`/`original`/`timestamp` alongside the inherited `message`).
+
 ```typescript
 interface FallbackRouteConfig {
-  render: (context: RouteContext) => TemplateResult | Promise<TemplateResult>;
+  render: (context: RouteContext & { error: RouteError }) => TemplateResult | Promise<TemplateResult>;
 }
 ```
 

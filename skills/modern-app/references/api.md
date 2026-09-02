@@ -125,14 +125,29 @@ interface RouteContext {
   /** Full URL string. */
   href: string;
 
-  /** Pathname portion of the URL. */
-  pathname: string;
+  /** Domain name portion of the URL (e.g. `https://example.com`). */
+  origin: string;
 
   /** Configured basepath. */
   basepath: string;
 
+  /** Full path including query string and hash. */
+  path: string;
+
+  /** Pathname portion of the URL. */
+  pathname: string;
+
   /** Named URL parameters extracted from the path pattern. */
-  params: Record<string, string>;
+  params: Record<string, string | undefined>;
+
+  /** Parsed query string. `query.get('key')` returns `string | null`. */
+  query: URLSearchParams;
+
+  /** Hash portion of the URL, if present. */
+  hash?: string;
+
+  /** Metadata merged parent → child from the matched route chain. */
+  metadata: Record<string, unknown>;
 
   /**
    * Report loading progress (0–100).
@@ -148,12 +163,12 @@ interface RouteContext {
 
 ```typescript
 interface FallbackRouteConfig {
-  render: (context: RouteContext) => RenderResult | Promise<RenderResult>;
+  render: (context: RouteContext & { error: RouteError }) => RenderResult | Promise<RenderResult>;
 }
 ```
 
-The fallback `RouteContext` will include an `error` property when triggered by
-a routing error.
+`RouteError` is importable from `@iyulab/router` (`code`/`original`/`timestamp` alongside the
+inherited `message`) — always populated when the fallback fires.
 
 ---
 
