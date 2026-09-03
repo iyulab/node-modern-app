@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.18.17] - 2026-09-03
+
+### Fixed
+
+- **`AppConfig.auth` (the boot-time auth gate) and its `AuthGateConfig`/`AuthGateContext`
+  types were entirely undocumented in both reference docs** — the feature has a full worked
+  example in the README but no type reference anywhere a consumer would look one up. Also
+  documented `app.user` (the authenticated-user getter), and added `enter`/`initialLoad`/
+  `useIntercept` — three more real `AppConfig` fields missing specifically from
+  `skills/modern-app/references/api.md`.
+- **`FallbackRouteConfig.title` was dropped by `0.18.13`**, which only touched the `render`
+  callback's context type and didn't notice it removed the field. Restored in both docs.
+  Found by a new internal tool (`type-doc-check.js`) that diffs hand-copied TS interface doc
+  snippets against source.
+
 ## [0.18.16] - 2026-09-03
 
 ### Fixed
