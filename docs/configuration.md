@@ -62,6 +62,45 @@ interface AppConfig {
 
   /** i18next options. Omit to skip i18next initialization. See i18n.md. */
   i18n?: I18nInitOptions;
+
+  /**
+   * Boot-time auth gate. When set, resolves the session via `me()` before the app
+   * shell is built — authenticated shows the shell, unauthenticated renders
+   * `renderLogin`'s UI instead. Omit for full backward compatibility (no gate).
+   * See the README's "부팅 인증 게이트" section for a worked example.
+   */
+  auth?: AuthGateConfig;
+}
+```
+
+---
+
+## `AuthGateConfig` / `AuthGateContext`
+
+The framework owns only the orchestration (check → branch → reload) — session lookup/login itself
+(HTTP), the user/permission shape, and mid-session 401 handling belong to the app (or
+`@iyulab/enterprise`'s `createAuthClient`/`createODataService`).
+
+```typescript
+interface AuthGateConfig {
+  /** Resolve the current session. Return a value for authenticated, `null`/`undefined` for not. */
+  me: () => Promise<unknown | null | undefined> | unknown | null | undefined;
+
+  /**
+   * Renders login UI into `context.root` when unauthenticated. Call `context.onSuccess()` on
+   * success. Return a cleanup function to have it called on app load/`unload`.
+   */
+  renderLogin: (context: AuthGateContext) => (() => void) | void;
+
+  /** Called once authenticated, right before the app shell is built. */
+  onAuthenticated?: (user: unknown) => void | Promise<void>;
+}
+
+interface AuthGateContext {
+  /** Root element to render the login UI into (same as `AppConfig.root`, default `document.body`). */
+  root: Element;
+  /** Call on successful login — the app (re)loads and the shell appears. */
+  onSuccess: () => void;
 }
 ```
 
@@ -185,6 +224,9 @@ interface RouteContext {
 
 ```typescript
 interface FallbackRouteConfig {
+  /** Sets `document.title` when the fallback renders. */
+  title?: string;
+
   render: (context: RouteContext & { error: RouteError }) => TemplateResult | Promise<TemplateResult>;
 }
 ```
@@ -235,5 +277,6 @@ interface NotificationOptions {
 | `config` | `AppConfig \| undefined` | Current configuration passed to `load()` |
 | `router` | `Router \| undefined` | Underlying `@iyulab/router` instance |
 | `screen` | `'small' \| 'medium' \| 'large' \| undefined` | Current breakpoint category |
+| `user` | `unknown` | Authenticated user when the `auth` boot gate is used; `undefined` if unauthenticated or unused |
 | `theme` | `Theme` | Theme utility (`get`, `set`, `isInitialized`) |
 | `i18n` | `i18next` | Raw i18next instance |

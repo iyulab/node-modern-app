@@ -19,6 +19,18 @@ interface AppConfig {
   /** Fallback rendered on 404 or unhandled errors. */
   fallback?: FallbackRouteConfig;
 
+  /**
+   * Global auth/authorization guard, called before every navigation.
+   * `string` = redirect, `false` = cancel (403), `true`/undefined = proceed.
+   */
+  enter?: (ctx: RouteContext) => Promise<string | boolean> | string | boolean;
+
+  /** Auto-navigate to the current URL on load. Default: true */
+  initialLoad?: boolean;
+
+  /** Intercept `<a>` tag clicks for client-side routing. Default: true */
+  useIntercept?: boolean;
+
   /** Layout configuration. Currently only 'sidebar' is supported. */
   layout: LayoutConfig;
 
@@ -27,6 +39,12 @@ interface AppConfig {
 
   /** i18next options plus optional plugins array. Omit to skip i18n. */
   i18n?: I18nInitOptions;
+
+  /**
+   * Boot-time auth gate. When set, resolves the session via `me()` before the app shell
+   * is built. Omit for full backward compatibility (no gate). See `AuthGateConfig` below.
+   */
+  auth?: AuthGateConfig;
 }
 ```
 
@@ -162,6 +180,9 @@ interface RouteContext {
 
 ```typescript
 interface FallbackRouteConfig {
+  /** Sets `document.title` when the fallback renders. */
+  title?: string;
+
   render: (context: RouteContext & { error: RouteError }) => RenderResult | Promise<RenderResult>;
 }
 ```
@@ -196,6 +217,37 @@ interface NotificationOptions {
 
 ---
 
+## `AuthGateConfig` / `AuthGateContext`
+
+The framework owns only the orchestration (check → branch → reload) — session lookup/login itself
+(HTTP), the user/permission shape, and mid-session 401 handling belong to the app (or
+`@iyulab/enterprise`'s `createAuthClient`/`createODataService`).
+
+```typescript
+interface AuthGateConfig {
+  /** Resolve the current session. Return a value for authenticated, `null`/`undefined` for not. */
+  me: () => Promise<unknown | null | undefined> | unknown | null | undefined;
+
+  /**
+   * Renders login UI into `context.root` when unauthenticated. Call `context.onSuccess()` on
+   * success. Return a cleanup function to have it called on app load/`unload`.
+   */
+  renderLogin: (context: AuthGateContext) => (() => void) | void;
+
+  /** Called once authenticated, right before the app shell is built. */
+  onAuthenticated?: (user: unknown) => void | Promise<void>;
+}
+
+interface AuthGateContext {
+  /** Root element to render the login UI into (same as `AppConfig.root`, default `document.body`). */
+  root: Element;
+  /** Call on successful login — the app (re)loads and the shell appears. */
+  onSuccess: () => void;
+}
+```
+
+---
+
 ## `app` singleton methods
 
 | Method | Signature | Description |
@@ -216,5 +268,6 @@ interface NotificationOptions {
 | `config` | `AppConfig \| undefined` | Current config passed to `load()` |
 | `router` | `Router \| undefined` | Underlying `@iyulab/router` instance |
 | `screen` | `ScreenSize \| undefined` | Current responsive screen size |
+| `user` | `unknown` | Authenticated user when the `auth` boot gate is used; `undefined` if unauthenticated or unused |
 | `theme` | `Theme` (static) | Theme utility (`get`, `set`, `isInitialized`) |
 | `i18n` | `i18next` | Raw i18next instance |
