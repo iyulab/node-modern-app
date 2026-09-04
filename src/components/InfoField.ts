@@ -158,7 +158,9 @@ declare module 'react' {
     interface IntrinsicElements {
       'u-info-field': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         label?: string;
-        value?: string;
+        /** 클래스 필드와 동일하게 `unknown` — 렌더 로직이 `String(value)`/포맷터로 무엇이
+         *  오든 처리하므로 `null`·숫자를 그대로 넘길 수 있다(위 클래스 필드 JSDoc 참조). */
+        value?: unknown;
         blank?: string;
         numeric?: boolean;
         format?: InfoFieldFormat;
