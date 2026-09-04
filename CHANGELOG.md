@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.18.18] - 2026-09-04
+
+### Fixed
+
+- **The React JSX declaration for `<u-info-field>`'s `value` prop was narrowed to
+  `string`, while the component's own class field type (`unknown`) and documented
+  behavior explicitly accept `null` and numbers.** TypeScript-strict consumers hit
+  `TS2322` passing a nullable or numeric value — a very common shape for
+  API-sourced data — even though rendering already coerces whatever is passed via
+  `String()`/the format helpers. Widened the JSX type to `unknown` to match. Added
+  a compile-only regression fixture (`tests/types/react-consumption.tsx`) covering
+  the `string | null` and `number | undefined` shapes that previously failed.
+
 ## [0.18.17] - 2026-09-03
 
 ### Fixed
