@@ -136,11 +136,20 @@ interface SidebarLayoutConfig {
   /** Permission filter — hides items whose requirement fails. Unset shows everything. */
   hasPermission?: (code: string) => boolean;
 
+  /**
+   * Called on `route-done`, just before focus moves to the main scroll container.
+   * Receives the new route's `RouteContext` and the container itself (same element as
+   * `SidebarLayout.mainElement`) — implement scroll reset/save/restore here. Unset
+   * (default) does nothing, matching Vue Router's unset `scrollBehavior`.
+   */
+  scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
+
   styles?: StyleMap<SidebarParts>;
 }
 ```
 
-See [layout.md](./layout.md) for all `SidebarItem` variants and the `hasPermission` filter.
+See [layout.md](./layout.md) for all `SidebarItem` variants, the `hasPermission` filter, and
+`scrollBehavior`/`mainElement`.
 
 ---
 

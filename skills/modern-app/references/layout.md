@@ -24,6 +24,9 @@ interface SidebarLayoutConfig {
   /** Permission filter — hides items (and emptied section/groups) whose requirement fails. Unset shows everything. See "권한 기반 메뉴 필터" below. */
   hasPermission?: (code: string) => boolean;
 
+  /** Called on `route-done` (before focus moves to the container) with the new route's `RouteContext` and the scroll container itself — implement reset/save/restore here. Unset does nothing (same default as Vue Router's unset `scrollBehavior`). Also reachable outside the hook via the element's `.mainElement` accessor. */
+  scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
+
   /** Per-part style overrides (CSS custom properties / inline styles). */
   styles?: StyleMap<SidebarParts>;
 }

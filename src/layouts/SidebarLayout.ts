@@ -67,6 +67,16 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   /** 현재 라우터 컨텍스트 */
   @state() context: RouteContext | null = null;
 
+  /**
+   * 라우트 컨텐츠의 실제 스크롤 컨테이너(섀도 DOM `[part="main"]`). `scrollTop`을 읽어
+   * 위치를 저장하거나, 써서 복원한다 — `part="main"`은 스타일링용 CSS 훅일 뿐 JS 접근
+   * 계약이 아니었으므로, 소비자가 이 컨테이너에 안정적으로 접근할 공식 수단으로 신설.
+   * 아직 렌더 전이면 `null`.
+   */
+  get mainElement(): HTMLElement | null {
+    return this.shadowRoot?.querySelector<HTMLElement>('.main') ?? null;
+  }
+
   connectedCallback() {
     super.connectedCallback();
 
@@ -324,14 +334,17 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   /** 라우트 변경 완료 핸들러 */
-  private handleRouteDone = (_: RouteDoneEvent) => {
+  private handleRouteDone = (event: RouteDoneEvent) => {
     this.progressBarEl.value = 100;
     setTimeout(() => {
       this.progressBarEl.removeAttribute('visible');
     }, 300);
-    // Move focus to .main so keyboard scrolling works without a mouse click
     const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
-    main?.focus({ preventScroll: true });
+    if (main) {
+      this.config?.scrollBehavior?.(event.context, main);
+      // Move focus to .main so keyboard scrolling works without a mouse click
+      main.focus({ preventScroll: true });
+    }
   }
 
   /** 라우트 에러 핸들러 */

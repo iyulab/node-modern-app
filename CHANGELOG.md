@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.18.19] - 2026-09-04
+
+### Added
+
+- **`SidebarLayout` had no way for a consumer to control scroll position on route
+  change, and no official way to reach its scroll container at all** — only an
+  undocumented shadow-DOM `part="main"` selector, a style-only CSS hook rather than a
+  JS access contract. Added `layout.scrollBehavior(context, main)`, called on every
+  `route-done` before focus moves to the container, and a public `mainElement`
+  accessor on the element for reading/writing scroll position outside the hook (e.g.
+  saving a position from a `route-begin` listener). Unset `scrollBehavior` does
+  nothing, matching Vue Router's own default for an unset `scrollBehavior`.
+
 ## [0.18.18] - 2026-09-04
 
 ### Fixed

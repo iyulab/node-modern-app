@@ -1,4 +1,5 @@
 import type { TemplateResult } from "lit";
+import type { RouteContext } from "@iyulab/router";
 import type { StyleMap } from "../internals/StyledElement";
 import type { SidebarLinkConfig } from "../components/SidebarLink";
 import type { SidebarSectionConfig } from "../components/SidebarSection";
@@ -73,6 +74,15 @@ export interface SidebarLayoutConfig {
    * 미지정 시 필터링하지 않는다(모든 항목 표시). 보통 `@iyulab/enterprise` 의 `hasPermission` 을 넘긴다.
    */
   hasPermission?: (code: string) => boolean;
+
+  /**
+   * 라우트 전환이 끝날 때(`route-done`, 포커스가 메인 스크롤 컨테이너로 옮겨지기 직전)
+   * 호출된다 — 새 라우트의 `RouteContext`와 그 스크롤 컨테이너(`SidebarLayout.mainElement`와
+   * 동일 엘리먼트)를 받는다. 스크롤 위치를 리셋·저장·복원하는 로직은 이 훅 안에서 직접
+   * 구현한다(예: 목록→상세로 갔다가 돌아올 때 스크롤 위치 복원). 미지정 시 기본값은
+   * "아무것도 안 함" — Vue Router의 `scrollBehavior` 미지정 기본값과 동일하다(breaking 아님).
+   */
+  scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
 
   /** 사이드바 스타일 맵 */
   styles?: StyleMap<SidebarParts>;

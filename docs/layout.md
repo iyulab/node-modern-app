@@ -40,6 +40,15 @@ interface SidebarLayoutConfig {
    */
   hasPermission?: (code: string) => boolean;
 
+  /**
+   * Called on `route-done`, just before focus moves to the main scroll container.
+   * Receives the new route's `RouteContext` and the container itself (same element
+   * `mainElement` returns) — implement scroll reset/save/restore in here. Unset
+   * (default) does nothing to the scroll position, matching Vue Router's unset
+   * `scrollBehavior`.
+   */
+  scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
+
   /** Per-part CSS style overrides. */
   styles?: StyleMap<SidebarParts>;
 }
@@ -65,6 +74,35 @@ layout: {
   // ...
 }
 ```
+
+---
+
+### Scroll position on navigation
+
+`SidebarLayout` doesn't reset or restore scroll on route change by default — the same
+default as Vue Router's unset `scrollBehavior`. Two pieces give you full control:
+
+- **`layout.scrollBehavior(context, main)`** — called on every `route-done`, before focus
+  moves to the container. Reset to top, or restore a saved position:
+
+  ```typescript
+  const savedPositions = new Map<string, number>();
+
+  layout: {
+    type: 'sidebar',
+    scrollBehavior(context, main) {
+      const saved = savedPositions.get(context.pathname);
+      main.scrollTop = saved ?? 0; // restore if known, else reset to top
+    },
+  }
+  ```
+
+- **`sidebarLayoutEl.mainElement`** — the `SidebarLayout` element's public accessor for the
+  same scroll container, for reading `scrollTop` outside the hook (e.g. saving a position
+  right before navigating away, in a `route-begin` listener).
+
+Both refer to the same element — the shadow-DOM node also exposed via CSS `part="main"`,
+which remains style-only (not a JS access contract).
 
 ---
 
