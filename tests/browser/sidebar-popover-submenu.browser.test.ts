@@ -117,12 +117,23 @@ describe('원인 B — 섀도 루트 안(type:"html")으로 우회해도, 옆으
     expect(visible).toBe(true);
   });
 
-  it('🔴 모바일(mobile-open)에서는 같은 "right-start" 배치가 뷰포트 밖으로 밀려 보이지 않는다', async () => {
+  it('✅ 모바일(mobile-open)에서도 같은 "right-start" 배치가 화면 안에 머문다 — 축을 넘는 flip 이후', async () => {
     const { visible, rect } = await openAndHitTest('mobile-open', 'right-start');
-    // 사이드바 버튼 자신이 모바일에서는 화면 폭 대부분을 차지해 오른쪽에 펼 자리가 없고,
-    // flip() 도 반대쪽(왼쪽)에 room 이 없어 넘기지 않는다 — 뷰포트 경계를 실제로 넘는다.
-    expect(rect.right, '팝업 오른쪽 끝이 실제 뷰포트 폭을 넘는다').toBeGreaterThan(window.innerWidth);
-    expect(visible, '그 결과 클릭해도 화면에 보이지 않는다').toBe(false);
+    // 🔴이 단언은 «반대» 였다 — 종전에는 «뷰포트를 넘어 보이지 않는다» 를 고정하고 있었다.
+    //
+    // 그때의 분석은 정확했다: 모바일에서 사이드바 버튼이 화면 폭 대부분을 차지해 오른쪽에
+    // 펼 자리가 없고, `flip()` 이 **같은 축의 반대쪽(왼쪽)** 만 후보로 봤는데 거기도 room 이
+    // 없어 넘기지 않았다. 결론은 *"컴포넌트 결함이 아니라 배치 선택의 문제"* 였다.
+    //
+    // ⚠**업스트림이 그 전제를 바꿨다** — `@iyulab/components` 의
+    // `fix: let flip fall back across the axis when neither side has room` 이후,
+    // 양쪽 다 room 이 없으면 flip 이 **축을 넘어**(가로 → 세로) 대안을 찾는다. 그래서
+    // `right-start` 도 모바일에서 화면 안에 머문다.
+    //
+    // ⇒ 결함을 고정하던 테스트를 **해소를 고정하는 테스트로 회수**한다(CLAUDE.md §3 —
+    //   회수 트리거는 «업스트림 릴리스 + 소비앱 업그레이드» 이고 둘 다 충족됐다).
+    expect(rect.right, '팝업 오른쪽 끝이 뷰포트 안에 있다').toBeLessThanOrEqual(window.innerWidth);
+    expect(visible, '그래서 클릭 지점이 실제로 팝업 내용이다').toBe(true);
   });
 
   it('아래로 펼치는 배치("bottom-start")로 바꾸면 모바일에서도 정상 보인다', async () => {

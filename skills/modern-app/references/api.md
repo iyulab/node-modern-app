@@ -269,5 +269,5 @@ interface AuthGateContext {
 | `router` | `Router \| undefined` | Underlying `@iyulab/router` instance |
 | `screen` | `ScreenSize \| undefined` | Current responsive screen size |
 | `user` | `unknown` | Authenticated user when the `auth` boot gate is used; `undefined` if unauthenticated or unused |
-| `theme` | `Theme` (static) | Theme utility (`get`, `set`, `isInitialized`) |
+| `theme` | `Theme` (static) | Theme utility — `get()`, `set()`, `resolved()`, `accent()`, `isInitialized`. Branch on `resolved()` (always `'light'` or `'dark'`), not `get()`, which can be `'system'` |
 | `i18n` | `i18next` | Raw i18next instance |

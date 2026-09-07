@@ -228,13 +228,19 @@ for `for="#id"` anchoring to resolve (see the `id` note above).
 }
 ```
 
-⚠**Pick `placement` based on `state`, not a fixed value.** On `mobile`/`mobile-open`, the sidebar
-itself widens to occupy nearly the full screen — a sideways placement (`right-start`, the natural
-choice for a desktop flyout) then has no room on either side, and `flip()` correctly declines to
-flip when the opposite side has none either. The popover renders off-screen and is invisible. A
-vertical placement (`bottom-start`) has room regardless of sidebar width and works at every state.
-Confirmed empirically in `tests/browser/sidebar-popover-submenu.browser.test.ts` — this is not a
-`strategy="absolute"` vs `"fixed"` distinction, switching strategy does not change the outcome.
+**A fixed `placement` is safe as of `@iyulab/components@1.37.1`.** On `mobile`/`mobile-open`
+the sidebar widens to occupy nearly the full screen, so a sideways placement (`right-start`,
+the natural desktop flyout) has room on neither side. `flip()` now falls back **across the**
+**axis** in exactly that case, landing the popover vertically instead of off-screen.
+
+⚠ Against an older `components` it did render off-screen and invisible — `flip()` only ever
+considered the opposite side on the same axis, found no room there either, and gave up. If you
+pin below `1.37.1`, keep choosing `placement` from `state` as the snippet above does.
+
+Choosing from `state` is still reasonable when you want to *decide* the direction rather than
+let `flip()` pick it. Either way this is not a `strategy="absolute"` vs `"fixed"` distinction —
+switching strategy changes nothing. Both behaviours are pinned in
+`tests/browser/sidebar-popover-submenu.browser.test.ts`.
 
 ---
 
