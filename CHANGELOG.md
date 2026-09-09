@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.19.0] - 2026-09-10
+
+### Changed
+
+- **`@iyulab/components` moved from `dependencies` to `peerDependencies`.** It owns
+  process-global state — the custom element registry and module-level singletons — so a
+  duplicate copy in the install tree splits that state with no error: the notification layer
+  stops seeing overlays that a different copy registered, which is exactly the failure the
+  1.39.0 toast fix addresses. Consumers already installing `@iyulab/components` are unaffected;
+  the declaration now says that this package uses the copy they installed.
+
 ## [0.18.19] - 2026-09-04
 
 ### Added
