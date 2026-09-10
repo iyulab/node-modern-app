@@ -130,6 +130,48 @@ describe('u-master-detail-layout — detail-close', () => {
   });
 });
 
+describe('u-master-detail-layout — overlayBreakpoint is reactive on its own', () => {
+  /**
+   * The width never changes in these two — only the breakpoint does. That is the whole
+   * point: the overlay decision has two inputs, and until cycle-518 it was evaluated
+   * only inside the ResizeObserver callback, so changing the prop alone did nothing
+   * until something happened to resize the element. Every pre-existing test in this
+   * file moves the width, which is exactly why none of them caught it.
+   */
+  it('turns overlay on when the breakpoint rises above a fixed width', async () => {
+    host.style.width = '900px';
+    host.innerHTML = `
+      <u-master-detail-layout overlay-breakpoint="760">
+        master
+        <div slot="detail">detail</div>
+      </u-master-detail-layout>`;
+    const el = host.firstElementChild as MasterDetailLayout;
+    await settle();
+    expect(el.hasAttribute('overlay')).toBe(false);
+
+    el.overlayBreakpoint = Number.MAX_SAFE_INTEGER; // the documented "always overlay" recipe
+    await settle();
+    expect(el.hasAttribute('overlay')).toBe(true);
+    expect(getComputedStyle(partOf(el, 'detail-close')!).display).not.toBe('none');
+  });
+
+  it('turns overlay off again when the breakpoint drops below that width', async () => {
+    host.style.width = '900px';
+    host.innerHTML = `
+      <u-master-detail-layout overlay-breakpoint="1200">
+        master
+        <div slot="detail">detail</div>
+      </u-master-detail-layout>`;
+    const el = host.firstElementChild as MasterDetailLayout;
+    await settle();
+    expect(el.hasAttribute('overlay')).toBe(true);
+
+    el.overlayBreakpoint = 400;
+    await settle();
+    expect(el.hasAttribute('overlay')).toBe(false);
+  });
+});
+
 describe('u-master-detail-layout — masterSize', () => {
   it('applies a custom masterSize to the master panel width', async () => {
     host.style.width = '1200px';

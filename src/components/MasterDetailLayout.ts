@@ -70,13 +70,27 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
   connectedCallback(): void {
     super.connectedCallback();
     this.resizeObserver = new ResizeObserver(entries => {
-      const width = entries[0]?.contentRect.width ?? 0;
-      // width === 0 은 아직 레이아웃되지 않은 과도 상태일 수 있다(예: 조상이 display:none) —
-      // 그 순간의 값으로 오버레이를 강제하지 않는다.
-      if (width === 0) return;
-      this.toggleAttribute('overlay', width < this.overlayBreakpoint);
+      this.applyOverlay(entries[0]?.contentRect.width ?? 0);
     });
     this.resizeObserver.observe(this);
+  }
+
+  /**
+   * 오버레이 판정 한 곳. **두 입력이 있고 둘 다 바뀔 수 있다** — 자기 폭과
+   * `overlayBreakpoint`.
+   *
+   * 🔴**종전에는 이 판정이 ResizeObserver 콜백 «안에만» 있었다.** 그래서 `overlayBreakpoint`
+   * 를 런타임에 바꿔도 **폭이 함께 바뀌지 않으면 아무 일도 일어나지 않았다** — prop 은
+   * 새 값을 갖고 있는데 `overlay` 속성은 옛 판정 그대로다. 값에 반응하는 prop 으로
+   * 선언·문서화해 놓고 실제로는 리사이즈에만 반응한 셈이라, 이 리포가 「선언 ≠ 동작」이라
+   * 부르는 부류다.
+   *
+   * @param width 0 이면 아직 레이아웃되지 않은 과도 상태일 수 있다(예: 조상이 `display:none`)
+   *   — 그 순간의 값으로 오버레이를 강제하지 않는다.
+   */
+  private applyOverlay(width: number): void {
+    if (width === 0) return;
+    this.toggleAttribute('overlay', width < this.overlayBreakpoint);
   }
 
   disconnectedCallback(): void {
@@ -88,6 +102,10 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
     super.updated(changed);
     if (changed.has('masterSize')) {
       this.style.setProperty('--_master-size', this.masterSize);
+    }
+    // 폭이 그대로여도 기준이 바뀌면 판정이 바뀐다 — 리사이즈를 기다리지 않는다.
+    if (changed.has('overlayBreakpoint')) {
+      this.applyOverlay(this.getBoundingClientRect().width);
     }
   }
 

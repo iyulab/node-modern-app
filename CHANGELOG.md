@@ -2,6 +2,15 @@
 
 ## [0.19.0] - 2026-09-10
 
+### Fixed
+
+- **`u-master-detail-layout` ignored a change to `overlayBreakpoint` until the element
+  happened to resize.** The overlay decision has two inputs — the component's own width
+  and the breakpoint — but it was only ever evaluated inside the `ResizeObserver`
+  callback, so setting the prop at runtime left the `overlay` attribute on its previous
+  verdict. Setting it once before first render always worked, which is why the gap went
+  unnoticed. It is now re-evaluated whenever either input changes.
+
 ### Changed
 
 - **`@iyulab/components` moved from `dependencies` to `peerDependencies`.** It owns
