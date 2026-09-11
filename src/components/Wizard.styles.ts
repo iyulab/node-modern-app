@@ -40,7 +40,7 @@ export const styles = css`
     border: none;
     padding: var(--u-space-2xs, 4px) 0;
     font: inherit;
-    color: var(--u-txt-color-weak, #757575);
+    color: var(--u-txt-color-weak, #616161);
     cursor: pointer;
     text-align: left;
   }

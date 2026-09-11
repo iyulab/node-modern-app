@@ -2,6 +2,11 @@
 
 ## [0.19.0] - 2026-09-10
 
+### Changed
+
+- **Fallback literals for `--u-txt-color-weak` follow `@iyulab/components` 1.40.0.** They are
+  only used when that stylesheet is not loaded; with it, nothing changes here.
+
 ### Fixed
 
 - **`u-master-detail-layout` ignored a change to `overlayBreakpoint` until the element

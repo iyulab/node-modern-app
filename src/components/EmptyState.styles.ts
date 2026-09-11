@@ -7,7 +7,7 @@ export const styles = css`
     align-items: center;
     text-align: center;
     padding: var(--u-space-4xl, 40px) var(--u-space-xl, 20px);
-    color: var(--u-txt-color-weak, #757575);
+    color: var(--u-txt-color-weak, #616161);
   }
 
   .icon {

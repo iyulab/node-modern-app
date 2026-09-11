@@ -37,7 +37,7 @@ export const styles = css`
     font-size: var(--u-text-caption-size, 12px);
     font-weight: var(--u-text-caption-weight, 400);
     line-height: var(--u-text-caption-leading, 1.5);
-    color: var(--u-txt-color-weak, #757575);
+    color: var(--u-txt-color-weak, #616161);
   }
 
   .back {

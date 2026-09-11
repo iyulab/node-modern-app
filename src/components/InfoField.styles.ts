@@ -10,7 +10,7 @@ export const styles = css`
     font-size: var(--u-text-caption-size, 12px);
     font-weight: var(--u-text-caption-weight, 400);
     line-height: var(--u-text-caption-leading, 1.5);
-    color: var(--u-txt-color-weak, #757575);
+    color: var(--u-txt-color-weak, #616161);
     margin-bottom: var(--u-space-3xs, 2px);
   }
 
@@ -37,7 +37,7 @@ export const styles = css`
      ⚠더 흐리게 만들고 싶은 유혹이 있는데, 이 자리가 안 읽히면 사용자는 빈 칸인지
      로딩 중인지 구별하지 못한다. */
   .value.blank {
-    color: var(--u-txt-color-weak, #757575);
+    color: var(--u-txt-color-weak, #616161);
     font-weight: var(--u-text-body-weight, 400);
   }
 
@@ -71,6 +71,6 @@ export const styles = css`
   }
 
   .trend.tone-neutral {
-    color: var(--u-txt-color-weak, #757575);
+    color: var(--u-txt-color-weak, #616161);
   }
 `;
