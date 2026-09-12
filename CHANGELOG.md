@@ -2,6 +2,14 @@
 
 ## [0.19.1] - 2026-09-13
 
+### Added
+
+- **Development-mode warning when the sidebar shell has no sized ancestor.** `u-sidebar-layout`
+  fills its parent with `height: 100%`; when a custom root has no height the shell sits at its own
+  chrome height (about 133px) and the route area is a few lines tall, with no error. It now says so
+  once (`[@iyulab/modern-app]`, development builds only) and points at the fix
+  (`#app { height: 100vh }` — `app.load()` already does this for `document.body`).
+
 ### Changed
 
 - **`@iyulab/router` range is now `^0.12.0`** (was `^0.11.0`, which a 0.x caret does not extend

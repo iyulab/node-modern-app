@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import '@iyulab/components/styles/tokens.css';
 import '../../src/layouts/SidebarLayout.js';
 import '../../src/components/MasterDetailLayout.js';
@@ -109,5 +109,32 @@ describe('modern-app 셸 — 높이는 부모가 정한다', () => {
     // 사이드바와 달리 이쪽은 overflow:hidden 이 아니라, 제약이 없으면 내용이 그대로 보인다.
     const el = await mountMasterDetail();
     expect(h(el), '내용(600px)을 담을 만큼 커진다').toBeGreaterThanOrEqual(600);
+  });
+
+  /**
+   * HD-61 ⒝ — «크롬 높이로 앉은 셸» 을 개발 모드에서 한 번 알린다. 위 계약은 그대로다.
+   */
+  it('🔴부모에 높이가 없으면 개발 모드 경고를 정확히 한 번 낸다', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      await mountSidebar();
+      await settle();
+      const ours = warn.mock.calls.filter((c) => String(c[0]).startsWith('[@iyulab/modern-app] u-sidebar-layout'));
+      expect(ours).toHaveLength(1);
+      expect(String(ours[0][0])).toContain('height: 100vh');
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it('NEGATIVE: 부모가 높이를 주면 침묵한다', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    try {
+      await mountSidebar(`${PARENT}px`);
+      await settle();
+      expect(warn.mock.calls.filter((c) => String(c[0]).startsWith('[@iyulab/modern-app] u-sidebar-layout'))).toHaveLength(0);
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

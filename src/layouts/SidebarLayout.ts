@@ -104,6 +104,31 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     }
   }
 
+  protected firstUpdated(changedProperties: PropertyValues): void {
+    super.firstUpdated(changedProperties);
+    this.warnIfUnsized();
+  }
+
+  /**
+   * 개발 모드 사용 안내(HD-61 ⒝): 이 셸은 `:host { height: 100% }` 로 부모를 채우는데, 부모(커스텀
+   * root)에 높이가 없으면 걸릴 곳이 없어 자기 크롬 높이(실측 약 133px)로 앉는다 — 오류도 경고도 없이
+   * 라우트 콘텐츠 영역이 몇 줄짜리 띠가 된다. 첫 배치 뒤 한 번 재서 알린다.
+   * 임계값은 규칙이라 손으로 쓴다 — 앱 셸이 200px 보다 낮은 것이 의도인 경우는 없다.
+   */
+  private warnIfUnsized(): void {
+    if (!import.meta.env?.DEV) return;
+    requestAnimationFrame(() => {
+      if (!this.isConnected) return;
+      const height = this.getBoundingClientRect().height;
+      if (height >= 200) return;
+      console.warn(
+        `[@iyulab/modern-app] u-sidebar-layout is only ${Math.round(height)}px tall — its height: 100% found no sized ancestor, ` +
+        'so the shell sits at its own chrome height and the route area has almost no room. Give the root element a height ' +
+        '(e.g. #app { height: 100vh } — app.load() does this for document.body).',
+      );
+    });
+  }
+
   render() {
     if (!this.config) return nothing;
 
