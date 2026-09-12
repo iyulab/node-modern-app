@@ -35,6 +35,22 @@ each pane. CSS container-query conditions cannot read a runtime custom property,
 configurable breakpoint means measuring the host's own width in JavaScript and reflecting an
 `overlay` attribute — same self-width philosophy, different mechanism, for a fixed reason.
 
+## Sizing
+
+This is a shell, not a sized box: `:host` is `height: 100%`, so **the parent decides its height**.
+Inside a page shell that is already constrained (an `app.load()` layout, a grid or flex row with a
+height) there is nothing to do.
+
+Put it in a container with no height of its own and `height: 100%` has nothing to resolve against,
+so the panes fall back to their content's height rather than the available space. That renders
+fine — it simply is not the full-height split pane you asked for, and the independent per-pane
+scrolling (`overflow: auto` on `master` and `detail`) only means something once the height is
+constrained.
+
+```css
+.page { height: 100%; }   /* or any constrained height on the parent */
+```
+
 ## Slots
 
 | Name | Description |

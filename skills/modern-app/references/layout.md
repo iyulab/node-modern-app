@@ -261,6 +261,21 @@ Parts available for `styles` overrides on the root layout:
 
 ---
 
+## Sizing
+
+`<u-sidebar-layout>` is a shell: `:host` is `height: 100%` with `overflow: hidden`, so **its
+height comes from the parent** — it never sizes itself. `app.load()` covers the default case: when
+`root` is `document.body` it sets `margin: 0; width: 100vw; height: 100vh` on the body for you.
+
+⚠ **A custom `root` receives no styling.** Hand it a container with no height of its own and
+`height: 100%` has nothing to resolve against: the shell renders at whatever its own chrome
+resolves to (measured: about 133px) instead of filling the screen — with no error and nothing in
+the console. Give that container a height:
+
+```css
+#app { height: 100vh; }   /* or 100%, inside an already-constrained ancestor */
+```
+
 ## Responsive behaviour
 
 | Screen width | Sidebar state |
