@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.19.1] - 2026-09-13
+
+### Changed
+
+- **`@iyulab/router` range is now `^0.12.0`** (was `^0.11.0`, which a 0.x caret does not extend
+  to 0.12). Router 0.12.0 adds `RouteConfig.key`, so a route rendered through `app.load()` can now
+  keep its content across query-string-only navigations by declaring `key: ctx => ctx.pathname`.
+  Nothing in this package's own behaviour changes.
+
 ## [0.19.0] - 2026-09-10
 
 ### Changed
