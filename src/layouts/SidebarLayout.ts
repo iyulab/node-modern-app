@@ -125,7 +125,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   private readonly unsizedWarnKey = `unsized:${++instanceSeq}`;
 
   private warnIfUnsized(): void {
-    if (!import.meta.env?.DEV) return;
+    if (process.env.NODE_ENV === 'production') return;
     requestAnimationFrame(() => {
       if (!this.isConnected) return;
       const height = this.getBoundingClientRect().height;

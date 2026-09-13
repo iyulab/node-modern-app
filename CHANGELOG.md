@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.19.3] - 2026-09-13
+
+### Fixed
+
+- **The "shell has no sized ancestor" dev-mode warning was a complete no-op** — its own guard used
+  `import.meta.env.DEV`, which Vite resolves statically at this package's own build time, so the
+  published dist always shipped with the check baked to `false` and the warning removed entirely
+  by dead-code elimination. Replaced with `process.env.NODE_ENV !== 'production'`. The
+  `@iyulab/components` peer floor moves to `>=1.40.3`, which fixes the identical defect in the
+  shared `createDevWarner` helper this warning calls into — installing 0.19.3 without that
+  components fix would still produce no warning.
+
 ## [0.19.2] - 2026-09-13
 
 ### Changed
