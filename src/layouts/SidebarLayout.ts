@@ -10,6 +10,7 @@ import '../components/SidebarLink';
 import '../components/SidebarButton';
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import '@iyulab/components/dist/components/button/UButton.js';
+import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js';
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
 import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
@@ -19,6 +20,11 @@ import { StyledElement } from '../internals/StyledElement.js';
 import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
 import { filterSidebarItems } from './filterSidebarItems.js';
 import { styles } from './SidebarLayout.styles.js';
+
+/** 개발 모드 1회성 경고 — components 의 공유 규약. */
+const devWarn = createDevWarner('@iyulab/modern-app');
+/** 셸 인스턴스마다 한 번 경고하기 위한 키 — 같은 문서에 셸이 둘이면 둘 다 알아야 한다. */
+let instanceSeq = 0;
 
 /**
  * 반응형 사이드바 레이아웃 컴포넌트
@@ -110,19 +116,23 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   /**
-   * 개발 모드 사용 안내(HD-61 ⒝): 이 셸은 `:host { height: 100% }` 로 부모를 채우는데, 부모(커스텀
+   * 개발 모드 사용 안내: 이 셸은 `:host { height: 100% }` 로 부모를 채우는데, 부모(커스텀
    * root)에 높이가 없으면 걸릴 곳이 없어 자기 크롬 높이(실측 약 133px)로 앉는다 — 오류도 경고도 없이
    * 라우트 콘텐츠 영역이 몇 줄짜리 띠가 된다. 첫 배치 뒤 한 번 재서 알린다.
    * 임계값은 규칙이라 손으로 쓴다 — 앱 셸이 200px 보다 낮은 것이 의도인 경우는 없다.
+   * 경고 자체는 components 의 공유 규약(네임스페이스 · DEV 한정 · 키당 한 번)을 쓴다.
    */
+  private readonly unsizedWarnKey = `unsized:${++instanceSeq}`;
+
   private warnIfUnsized(): void {
     if (!import.meta.env?.DEV) return;
     requestAnimationFrame(() => {
       if (!this.isConnected) return;
       const height = this.getBoundingClientRect().height;
       if (height >= 200) return;
-      console.warn(
-        `[@iyulab/modern-app] u-sidebar-layout is only ${Math.round(height)}px tall — its height: 100% found no sized ancestor, ` +
+      devWarn(
+        this.unsizedWarnKey,
+        `u-sidebar-layout is only ${Math.round(height)}px tall — its height: 100% found no sized ancestor, ` +
         'so the shell sits at its own chrome height and the route area has almost no room. Give the root element a height ' +
         '(e.g. #app { height: 100vh } — app.load() does this for document.body).',
       );
@@ -251,7 +261,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       // `.collapsed=` 는 프로퍼티 바인딩이어야 한다 — `SidebarGroup.collapsed` 의 클래스
       // 기본값은 true 이고, `?collapsed=${false}` 같은 불리언 속성 지시자는 값이 false 일 때
       // 속성을 아예 안 붙이므로 attributeChangedCallback 이 불리지 않아 기본값 true 가 그대로
-      // 남는다(docket #145 — 따옴표 제거만으로는 해소되지 않는 자리였다). 미지정(`undefined`)
+      // 남는다(따옴표 제거만으로는 해소되지 않는 자리다). 미지정(`undefined`)
       // 시 폴백은 `SidebarGroupConfig.collapsed` 문서("기본 접힘 상태")와 일치하도록 true —
       // 이 값을 false 로 바꾸면 지금까지 늘 접힌 채로 렌더되던(quote 결함이 우연히 만들어 온)
       // 기존 소비자 화면이 전부 펼쳐진 채로 바뀌는 하위호환 파괴가 된다.

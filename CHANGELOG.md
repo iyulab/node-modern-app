@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.19.2] - 2026-09-13
+
+### Changed
+
+- **The development-mode "shell has no sized ancestor" warning now goes through
+  `@iyulab/components`' shared `createDevWarner`** instead of an inline copy — same message, same
+  `[@iyulab/modern-app]` prefix, once per layout, compiled out of production builds. The
+  `@iyulab/components` peer floor moves to `>=1.40.2`, the version that exports the helper.
+- **Docs: `RouteConfig` snippets now show `key` instead of the removed `force`** (`docs/routing.md`,
+  `docs/configuration.md`, the skill's `api.md`) — they were still describing the option
+  `@iyulab/router` deprecated in 0.12.0 and removed in 0.13.0, and did not yet mention its
+  replacement.
+
 ## [0.19.1] - 2026-09-13
 
 ### Added

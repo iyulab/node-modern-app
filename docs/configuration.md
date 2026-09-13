@@ -181,7 +181,7 @@ interface RouteConfig {
   index?: boolean;
   path?: string | URLPattern;
   title?: string;
-  force?: boolean;
+  key?: (context: RouteContext) => string;
 
   /** Case-insensitive path matching. Default: false */
   ignoreCase?: boolean;

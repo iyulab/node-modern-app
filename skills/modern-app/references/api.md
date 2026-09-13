@@ -105,8 +105,8 @@ interface RouteConfig {
   /** Sets `document.title` when the route activates. */
   title?: string;
 
-  /** Force a re-render even if the path did not change. */
-  force?: boolean;
+  /** When to remount — content is kept while `key(ctx)` is unchanged. Default `ctx => ctx.href` (leaf) / constant (has `children`). */
+  key?: (ctx: RouteContext) => string;
 
   /** Case-insensitive path matching. Defaults to `false`. */
   ignoreCase?: boolean;

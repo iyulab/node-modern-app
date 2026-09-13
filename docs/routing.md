@@ -26,8 +26,12 @@ interface RouteConfig {
   /** Set `document.title` when the route activates. */
   title?: string;
 
-  /** Force a re-render even when the path has not changed. */
-  force?: boolean;
+  /**
+   * When to remount: content is kept and re-rendered in place while `key(ctx)` is unchanged.
+   * Default `ctx => ctx.href` for leaf routes, a constant for routes with `children`.
+   * `key: ctx => ctx.pathname` keeps a page across query-string changes.
+   */
+  key?: (ctx: RouteContext) => string;
 
   /**
    * Metadata attached to this route. Merged parent → child and exposed
