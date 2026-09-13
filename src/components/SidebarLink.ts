@@ -76,8 +76,8 @@ export class SidebarLink extends StyledElement<ElementParts> {
     //   받지 않아 **메뉴 최상위로 밀려난다.**
     // ⚠**콤팩트 상태에서 라벨이 숨는 것과 접근 가능한 이름이 사라지는 것은 다르다** —
     //   `label`이 순수 문자열일 때 `aria-label`로 승격한다(`u-link`가 이미 호스트의
-    //   `aria-label`을 내부 `<a>`로 forwarding한다, docket #45/#75 실측 — SidebarButton/
-    //   SidebarGroup과 같은 수정, docket #109).
+    //   `aria-label`을 내부 `<a>`로 forwarding한다 — SidebarButton/
+    //   SidebarGroup과 같은 수정).
     const compactLabel = this.compact && typeof this.label === 'string' ? this.label : nothing;
     return html`
       <u-link

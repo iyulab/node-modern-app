@@ -46,7 +46,7 @@ export class SidebarGroup extends StyledElement<ElementParts> {
   render() {
     // ⚠**콤팩트 상태에서 라벨이 숨는 것과 접근 가능한 이름이 사라지는 것은 다르다.**
     //   `?hidden`이 `part="label"`을 접근성 트리에서도 제거하므로, `label`이 순수
-    //   문자열일 때는 `aria-label`로 승격한다(SidebarButton과 같은 수정, docket #109).
+    //   문자열일 때는 `aria-label`로 승격한다(SidebarButton과 같은 수정).
     const compactLabel = this.compact && typeof this.label === 'string' ? this.label : nothing;
     return html`
       <button part="header"
