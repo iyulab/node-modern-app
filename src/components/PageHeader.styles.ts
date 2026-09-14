@@ -47,6 +47,11 @@ export const styles = css`
     font-weight: var(--u-text-label-weight, 600);
     color: var(--u-link-txt-color, #1565C0);
     text-decoration: none;
+    /* 타깃 크기(WCAG 2.2 SC 2.5.8) — 글자 줄 상자만으로는 높이가 17px 남짓이라 패딩으로 누를 면을 24px 넘게
+       키우고, 같은 크기의 음수 여백으로 그 공간을 돌려준다 — 배치는 움직이지 않는다(접미 아이콘과 같은 기법). */
+    display: inline-block;
+    padding-block: var(--u-space-2xs, 4px);
+    margin-block: calc(-1 * var(--u-space-2xs, 4px));
   }
   .back::before {
     content: '←';

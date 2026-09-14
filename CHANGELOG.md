@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.19.4] - 2026-09-15
+
+### Fixed
+
+- **`u-page-header`'s back link was a 41×17 pointer target**, under the 24×24 CSS px minimum of
+  WCAG 2.2 SC 2.5.8. It now carries block padding with an equal negative margin, so the target is
+  ~25px tall while the header's layout does not move (host, title and following content keep their
+  exact positions). A new browser gate measures every pointer target this package renders — nav
+  items expanded and compact, group headers, the sidebar logo and toggle, wizard steps, and the back
+  link — and fails when one is undersized or not actually hit at its own position.
+
 ## [0.19.3] - 2026-09-13
 
 ### Fixed
