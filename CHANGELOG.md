@@ -10,6 +10,10 @@
   exact positions). A new browser gate measures every pointer target this package renders — nav
   items expanded and compact, group headers, the sidebar logo and toggle, wizard steps, and the back
   link — and fails when one is undersized or not actually hit at its own position.
+- **A sidebar `logo` given as an icon name vanished when the name did not resolve** (a 404 or a
+  typo) — the icon drew nothing and the home target collapsed to 0×0, which in the slim sidebar left
+  only the toggle. It now falls back to the same default icon the navigation items use. Omitting
+  `logo` still draws no logo.
 
 ## [0.19.3] - 2026-09-13
 

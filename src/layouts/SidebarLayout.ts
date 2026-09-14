@@ -16,6 +16,7 @@ import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } fro
 import { app } from '../App.js';
 import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
 import { getLocaleStrings } from '../internals/locale.js';
+import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
 import { filterSidebarItems } from './filterSidebarItems.js';
@@ -305,9 +306,13 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     const logo = this.config?.logo;
 
     if (!logo || typeof logo === 'string') {
+      // ⚠이름을 줬는데 해석에 실패하면(404 · 없는 이름) 로고가 0×0 으로 사라져 **홈으로 가는 수단**이 조용히
+      //   없어진다 — 접힌(slim) 사이드바에서는 로고와 토글만 남는다. 내비 항목과 같은 폴백을 건다.
+      //   로고를 아예 주지 않은 경우는 종전대로 아무것도 그리지 않는다(없던 아이콘이 나타나면 안 된다).
       return html`
         <u-icon class="logo"
           .name="${logo}"
+          .fallback=${logo ? DEFAULT_NAV_ICON : undefined}
           @click=${this.handleBrandLogoClick()}
         ></u-icon>
       `;

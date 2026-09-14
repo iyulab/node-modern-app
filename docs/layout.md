@@ -56,7 +56,9 @@ interface SidebarLayoutConfig {
 
 ### `logo` variants
 
-Clicking the logo navigates to `/` by default (override with `href` on the image variant).
+Clicking the logo navigates to `/` by default (override with `href` on the image variant). An icon
+name that fails to resolve (a 404 or an unknown name) draws the default navigation icon instead, so the
+home target never collapses to nothing; leaving `logo` out draws no logo at all.
 
 ```typescript
 logo: 'rocket',                                          // icon name (u-icon)

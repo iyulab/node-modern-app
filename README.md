@@ -205,6 +205,19 @@ export function App() {
 }
 ```
 
+## Accessibility
+
+The baseline is **WCAG 2.2**. The table lists what this package **measures in tests** — it is not a
+conformance claim for the success criteria it does not list.
+
+| Success criterion | Guarantee | Measured by |
+|---|---|---|
+| SC 2.5.8 Target Size (Minimum) | Every pointer target this package renders itself — sidebar links, buttons and group headers (expanded and compact), the sidebar logo and toggle, wizard steps, the page header's back link — is at least 24×24 CSS px or meets the spacing exception (24px between centers), and is actually hit at that position | `tests/browser/target-size.browser.test.ts` (real Chromium) |
+
+Buttons placed through slots or rendered as `u-button` without size overrides (wizard back/next, the
+master-detail close button) follow `@iyulab/components`, which measures them in its own gate. Color
+contrast likewise comes from that package's tokens.
+
 ## Documentation
 
 | Guide | Description |
