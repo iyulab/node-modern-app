@@ -12,6 +12,10 @@
   `main` stops scrolling and drops its screen padding (page margins come from `@page`), so content
   flows across pages. A part can be brought back on paper with
   `@media print { u-sidebar-layout::part(sidebar) { display: flex; } }`.
+- **A narrow `u-master-detail-layout` printed its overlay detail cut off at the master's height**,
+  with the close button on the page. In overlay mode the detail is an absolutely positioned box
+  over the master; on print it now returns to the flow and prints in full, instead of the covered
+  master and without the close button. An empty detail still prints the master.
 - **`document.body` sizing from `app.load()` could only be overridden with `!important`.** It is now
   a document stylesheet instead of inline styles — `margin: 0` always, `width: 100vw; height: 100vh`
   on screen only — at zero specificity, so any `body { … }` rule of your own takes precedence. The

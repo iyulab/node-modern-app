@@ -124,7 +124,7 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
 
   render() {
     return html`
-      <div class="master" part="master"><slot></slot></div>
+      <div class="master ${this.hasDetail ? 'covered' : ''}" part="master"><slot></slot></div>
       <div class="divider ${this.hasDetail ? '' : 'empty'}" part="divider"></div>
       <div class="detail ${this.hasDetail ? '' : 'empty'}" part="detail">
         <u-button class="detail-close" part="detail-close" variant="ghost"

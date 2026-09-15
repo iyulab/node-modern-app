@@ -67,4 +67,23 @@ export const styles = css`
   :host([overlay]) .detail-close {
     display: inline-flex;
   }
+
+  /*
+   * 인쇄 — 오버레이 모드의 detail 은 host 전체를 덮는 절대배치 상자라, 높이가 master 내용에
+   * 묶이고(그 밖은 잘린다) 닫기 버튼까지 종이에 찍힌다. 화면에 보이는 것(detail)을 흐름에
+   * 되돌려 전부 인쇄한다 — 덮여 있던 master 는 찍지 않는다. detail 이 비어 있으면 master 가
+   * 화면 그대로 인쇄된다(covered 는 detail 이 채워졌을 때만 붙는다).
+   * 나란히 배치 모드는 바꾸지 않는다 — 두 판이 부모 높이를 따라 풀린다.
+   */
+  @media print {
+    .detail-close,
+    :host([overlay]) .detail-close,
+    :host([overlay]) .master.covered {
+      display: none;
+    }
+    :host([overlay]) .detail {
+      position: static;
+      box-shadow: none;
+    }
+  }
 `;

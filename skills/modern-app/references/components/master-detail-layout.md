@@ -51,6 +51,14 @@ constrained.
 .page { height: 100%; }   /* or any constrained height on the parent */
 ```
 
+## Printing
+
+On print media the panes follow what was on screen. Side by side, both panes print and grow
+with their content once the page shell releases its height (`u-sidebar-layout` does on print).
+In overlay mode, a filled detail prints in full, in flow, instead of the covered master, and the
+close button is not printed; with the detail empty, the master prints. The overlay state is the
+one measured on screen when printing starts.
+
 ## Slots
 
 | Name | Description |
