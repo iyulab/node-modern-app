@@ -213,6 +213,7 @@ conformance claim for the success criteria it does not list.
 | Success criterion | Guarantee | Measured by |
 |---|---|---|
 | SC 2.5.8 Target Size (Minimum) | Every pointer target this package renders itself — sidebar links, buttons and group headers (expanded and compact), the sidebar logo and toggle, wizard steps, the page header's back link — is at least 24×24 CSS px or meets the spacing exception (24px between centers), and is actually hit at that position | `tests/browser/target-size.browser.test.ts` (real Chromium) |
+| SC 2.1.1 Keyboard (pointer-cursor check) | Nothing this package renders shows a pointer cursor without being an interactive element — except the sidebar logo image, listed in the gate as not yet fixed | `tests/browser/target-size.browser.test.ts` |
 
 Buttons placed through slots or rendered as `u-button` without size overrides (wizard back/next, the
 master-detail close button) follow `@iyulab/components`, which measures them in its own gate. Color
