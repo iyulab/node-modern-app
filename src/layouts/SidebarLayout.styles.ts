@@ -221,4 +221,30 @@ export const styles = css`
     bottom: 0;
     background: var(--u-overlay-bg-color, rgba(0, 0, 0, 0.5));
   }
+
+  /*
+   * 인쇄 — 화면의 «뷰포트를 채우는 고정 상자 + 스크롤하는 본문» 모델을 풀어 준다.
+   * 그대로 두면 사이드바가 종이에 찍히고, 본문이 스크롤 컨테이너라 첫 쪽 높이 밖이 잘린다.
+   * ★!important 를 쓰지 않는다 — 섀도 안의 important 선언은 바깥 ::part 의 important 보다 이겨
+   *   소비자가 인쇄물에 크롬을 되살릴 길(::part(sidebar) 재정의)을 막는다. 대가로 config.styles 의
+   *   인라인 스타일은 이 규칙보다 앞선다(그 자리에 높이·overflow 를 적는 소비자는 드물다).
+   * ⚠본문 패딩도 푼다 — 종이의 여백은 @page 가 준다. 화면 여백이 그 위에 겹치면 폭을 잃는다.
+   */
+  @media print {
+    :host {
+      display: block;
+      height: auto;
+      overflow: visible;
+    }
+    .sidebar,
+    .mobile-header,
+    .backdrop,
+    .main u-progress-bar {
+      display: none;
+    }
+    .main {
+      padding: 0;
+      overflow: visible;
+    }
+  }
 `;

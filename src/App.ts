@@ -10,6 +10,39 @@ import type { AppConfig, LayoutConfig } from './types/AppConfigs';
 import type { NotificationOptions } from './types/AppOptions';
 
 /**
+ * `document.body` 를 셸의 뿌리로 쓸 때의 기본 크기 규칙.
+ *
+ * ★인라인 스타일이 아니라 문서 시트로 둔다 — 인라인은 매체를 가를 수 없어 인쇄에서도 body 를
+ *   뷰포트 높이에 묶었고(본문이 첫 쪽에서 잘렸다), 소비자 CSS 는 `!important` 로만 이길 수 있었다.
+ * ★`:where(body)` 로 특이도를 0 으로 둔다 — 소비자의 `body { … }` 규칙이 시트 순서와 무관하게 이긴다.
+ * ⚠constructable 시트(`adoptedStyleSheets`)를 쓴다 — `<style>` 요소와 달리 CSP 의 인라인 스타일
+ *   제한에 걸리지 않는다. 지원하지 않는 환경(일부 DOM 에뮬레이터)에서는 `<style>` 로 대신한다.
+ */
+const BODY_SHELL_CSS = `
+:where(body) { margin: 0; }
+@media screen {
+  :where(body) { width: 100vw; height: 100vh; }
+}
+`;
+let bodyShellSheet: CSSStyleSheet | HTMLStyleElement | undefined;
+
+function adoptBodyShellStyles(): void {
+  if (bodyShellSheet) return;
+  if ('adoptedStyleSheets' in document && typeof CSSStyleSheet !== 'undefined'
+    && typeof CSSStyleSheet.prototype.replaceSync === 'function') {
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(BODY_SHELL_CSS);
+    document.adoptedStyleSheets = [...document.adoptedStyleSheets, sheet];
+    bodyShellSheet = sheet;
+  } else {
+    const style = document.createElement('style');
+    style.textContent = BODY_SHELL_CSS;
+    document.head.prepend(style);
+    bodyShellSheet = style;
+  }
+}
+
+/**
  * 애플리케이션 전역 상태 및 설정 관리 클래스
  */
 class App {
@@ -191,9 +224,7 @@ class App {
   private async createLayout(root: Element, config: LayoutConfig): Promise<HTMLElement> {
     // 최상위 루트인 경우 기본 스타일 적용
     if (root === document.body) {
-      document.body.style.margin = '0';
-      document.body.style.width = '100vw';
-      document.body.style.height = '100vh';
+      adoptBodyShellStyles();
     }
 
     let layout: HTMLElement;

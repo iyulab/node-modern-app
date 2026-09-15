@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.19.6] - 2026-09-15
+
+### Fixed
+
+- **Printing an `app.load()` screen printed the sidebar and cut the page off after one sheet.** The
+  shell is a viewport-height box whose `main` area scrolls, and `app.load()` pinned `document.body`
+  to `100vh` with inline styles — on paper the sidebar took a third of the width and anything below
+  the first page's height was lost. `u-sidebar-layout` now has print rules: the sidebar, mobile
+  header, modal backdrop and progress bar are hidden, the host is no longer a fixed-height box, and
+  `main` stops scrolling and drops its screen padding (page margins come from `@page`), so content
+  flows across pages. A part can be brought back on paper with
+  `@media print { u-sidebar-layout::part(sidebar) { display: flex; } }`.
+- **`document.body` sizing from `app.load()` could only be overridden with `!important`.** It is now
+  a document stylesheet instead of inline styles — `margin: 0` always, `width: 100vw; height: 100vh`
+  on screen only — at zero specificity, so any `body { … }` rule of your own takes precedence. The
+  sheet is adopted (`document.adoptedStyleSheets`), so it is not blocked by a CSP that disallows
+  inline styles.
+
 ## [0.19.5] - 2026-09-15
 
 ### Fixed

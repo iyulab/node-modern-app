@@ -265,16 +265,38 @@ Parts available for `styles` overrides on the root layout:
 
 `<u-sidebar-layout>` is a shell: `:host` is `height: 100%` with `overflow: hidden`, so **its
 height comes from the parent** — it never sizes itself. `app.load()` covers the default case: when
-`root` is `document.body` it sets `margin: 0; width: 100vw; height: 100vh` on the body for you.
+`root` is `document.body` it gives the body `margin: 0`, and on screen `width: 100vw; height: 100vh`.
+These come from a document stylesheet at zero specificity, not inline styles — any `body { … }`
+rule of your own wins.
 
 ⚠ **A custom `root` receives no styling.** Hand it a container with no height of its own and
 `height: 100%` has nothing to resolve against: the shell renders at whatever its own chrome
 resolves to (measured: about 133px) instead of filling the screen — with no error and nothing in
-the console. Give that container a height:
+the console. Give that container a height — for screen only, so printing is not cut at one page:
 
 ```css
-#app { height: 100vh; }   /* or 100%, inside an already-constrained ancestor */
+@media screen {
+  #app { height: 100vh; }   /* or 100%, inside an already-constrained ancestor */
+}
 ```
+
+## Printing
+
+On print media the shell drops its app chrome and lets the content flow across pages: the
+`sidebar`, `mobile-header`, modal backdrop and `progress` bar are hidden, the host is no longer a
+fixed-height box, and `main` stops being a scroll container and loses its screen padding (page
+margins come from `@page`). Nothing to configure.
+
+To keep a piece of chrome on paper, restore it through its part:
+
+```css
+@media print {
+  u-sidebar-layout::part(sidebar) { display: flex; }
+}
+```
+
+⚠ Heights or `overflow` set through `layout.styles` are inline styles and still apply when
+printing — scope such values to the screen in your own CSS instead.
 
 ## Responsive behaviour
 
