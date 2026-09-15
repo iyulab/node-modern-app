@@ -47,11 +47,14 @@ export const styles = css`
     font-weight: var(--u-text-label-weight, 600);
     color: var(--u-link-txt-color, #1565C0);
     text-decoration: none;
-    /* 타깃 크기(WCAG 2.2 SC 2.5.8) — 글자 줄 상자만으로는 높이가 17px 남짓이라 패딩으로 누를 면을 24px 넘게
-       키우고, 같은 크기의 음수 여백으로 그 공간을 돌려준다 — 배치는 움직이지 않는다(접미 아이콘과 같은 기법). */
+    /* 타깃 크기(WCAG 2.2 SC 2.5.8) — 줄 상자(1lh)에서 모자란 만큼만 패딩으로 채워 누를 면을 24px 로 만들고,
+       같은 크기의 음수 여백으로 그 공간을 돌려준다 — 배치는 움직이지 않는다.
+       ⚠고정 패딩(4px)이면 안 된다: line-height: normal 의 높이는 글꼴 메트릭이 정해서 글꼴에 따라 17px(→25)도
+       15px(→23)도 된다. 줄 상자가 이미 24px 이상이면 패딩은 0 이다. */
     display: inline-block;
-    padding-block: var(--u-space-2xs, 4px);
-    margin-block: calc(-1 * var(--u-space-2xs, 4px));
+    --_back-pad: max(0px, calc((24px - 1lh) / 2));
+    padding-block: var(--_back-pad);
+    margin-block: calc(-1 * var(--_back-pad));
   }
   .back::before {
     content: '←';

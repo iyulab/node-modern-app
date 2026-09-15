@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.19.5] - 2026-09-15
+
+### Fixed
+
+- **`u-page-header`'s back link could still be under 24px tall, depending on the font.** 0.19.4 added
+  a fixed 4px of block padding on top of the text line, but with `line-height: normal` the line height
+  comes from the font's metrics — 17px with some fonts (a 25px target) and 15px with others (23px,
+  still under WCAG 2.2 SC 2.5.8). The padding is now whatever the line box lacks to reach 24px
+  (`max(0px, (24px - 1lh) / 2)`), with the same negative margin, so the target is at least 24px tall
+  with any font or line height and the header's layout still does not move. The target-size gate now
+  also measures the back link with a short line box.
+
 ## [0.19.4] - 2026-09-15
 
 ### Fixed
