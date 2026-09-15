@@ -297,40 +297,48 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   /** 브랜드 로고 클릭 핸들러: `href` 지정 시 해당 경로로, 아니면 홈으로 이동 */
-  private handleBrandLogoClick = (href?: string) => () => {
-    app.navigate(href ?? '');
-  }
-
-  /** 로고 렌더링: 아이콘명(문자열, 기존 동작) | 이미지({src,alt,href}) | 커스텀 렌더 함수 */
+  /**
+   * 로고 렌더링: 아이콘명(문자열, 기존 동작) | 이미지({src,alt,href}) | 커스텀 렌더 함수.
+   *
+   * 🔴로고는 홈(또는 `href`)으로 가는 **링크**다 — 종전엔 클릭만 받는 `img`·`span`·`u-icon` 이라 키보드로 닿지 않았고
+   *   보조기술에 링크로 드러나지 않았다. `u-link` 는 `href` 가 없으면 basepath 로 SPA 이동하므로 종전 `app.navigate('')` 와 같다.
+   */
   private renderLogo() {
     const logo = this.config?.logo;
+    // 아이콘·커스텀 로고는 이름이 없으므로 앱 제목을 링크 이름으로 준다(이미지형은 `alt` 가 이름이다).
+    const name = this.config?.title ?? 'Home';
 
     if (!logo || typeof logo === 'string') {
       // ⚠이름을 줬는데 해석에 실패하면(404 · 없는 이름) 로고가 0×0 으로 사라져 **홈으로 가는 수단**이 조용히
       //   없어진다 — 접힌(slim) 사이드바에서는 로고와 토글만 남는다. 내비 항목과 같은 폴백을 건다.
       //   로고를 아예 주지 않은 경우는 종전대로 아무것도 그리지 않는다(없던 아이콘이 나타나면 안 된다).
+      if (!logo) return html`<u-icon class="logo"></u-icon>`;
       return html`
-        <u-icon class="logo"
-          .name="${logo}"
-          .fallback=${logo ? DEFAULT_NAV_ICON : undefined}
-          @click=${this.handleBrandLogoClick()}
-        ></u-icon>
+        <u-link class="logo-link" aria-label=${name}>
+          <u-icon class="logo"
+            .name="${logo}"
+            .fallback=${DEFAULT_NAV_ICON}
+          ></u-icon>
+        </u-link>
       `;
     }
     if (typeof logo === 'function') {
       const content = logo(this.state);
       return html`
-        <span class="logo" @click=${this.handleBrandLogoClick()}>
-          ${typeof content === 'string' ? unsafeHTML(content) : content}
-        </span>
+        <u-link class="logo-link" aria-label=${name}>
+          <span class="logo">
+            ${typeof content === 'string' ? unsafeHTML(content) : content}
+          </span>
+        </u-link>
       `;
     }
     return html`
-      <img class="logo"
-        src="${logo.src}"
-        alt="${logo.alt ?? ''}"
-        @click=${this.handleBrandLogoClick(logo.href)}
-      />
+      <u-link class="logo-link" .href=${logo.href} aria-label=${logo.alt ? nothing : name}>
+        <img class="logo"
+          src="${logo.src}"
+          alt="${logo.alt ?? ''}"
+        />
+      </u-link>
     `;
   }
 

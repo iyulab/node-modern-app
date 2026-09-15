@@ -14,6 +14,10 @@
   typo) — the icon drew nothing and the home target collapsed to 0×0, which in the slim sidebar left
   only the toggle. It now falls back to the same default icon the navigation items use. Omitting
   `logo` still draws no logo.
+- **The sidebar logo could not be reached from the keyboard.** Every logo form (icon name, image,
+  render function) was a click-only element — no focus, not announced as a link. The logo is now a
+  `u-link` to `href` (or the base path, as before). An image logo is named by its `alt`; icon and
+  custom logos are named by the app `title`.
 
 ## [0.19.3] - 2026-09-13
 

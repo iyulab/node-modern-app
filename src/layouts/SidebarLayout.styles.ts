@@ -28,6 +28,11 @@ export const styles = css`
     width: auto;
     object-fit: contain;
   }
+  /* 로고를 감싼 링크 — 인라인 기준선 여백이 생기지 않게 로고 상자에 딱 맞춘다. */
+  .logo-link {
+    display: inline-flex;
+    align-items: center;
+  }
 
   /*
    * ★단 배정은 «관측값 근사»가 아니라 «용도»로 한다 — 이 자리는 앱의 제목이다.

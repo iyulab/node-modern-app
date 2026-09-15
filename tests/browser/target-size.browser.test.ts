@@ -270,7 +270,7 @@ const INLINE_PROSE = new Set<string>([]);
  * 고치면 빼는 것이 완료 신호다. 새로 넣을 때는 왜 지금 고치지 않는지를 함께 적는다.
  */
 const POINTER_ORPHAN_PINS = new Set<string>([
-  'img.logo', // 사이드바 로고 — 클릭으로 홈 이동이 걸린 `img`(링크가 아니다) · 검사 도입 사이클에 발견 · 다음 사이클
+  // ✅비어 있다 — 도입 시점의 사이드바 로고(`img.logo` — 클릭만 받는 이미지)는 `u-link` 로 감싸 해소했다.
 ]);
 
 interface Fixture {
