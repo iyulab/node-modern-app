@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.19.7] - 2026-09-16
+
+### Changed
+
+- **Follow `@iyulab/router` 0.14.0, which declares the outlet's own box model.** Until now the
+  route outlet the shell inserts had no `display` declaration, so it fell back to the default
+  `inline` — a box that stays in layout but does not pass a height down. The shell gives its
+  content area the full height, and that chain stopped at the outlet: a route screen asking for
+  `height: 100%` resolved against the shell instead, or not at all. Router 0.14.0 declares
+  `:where(u-outlet) { display: block; height: 100%; }`, and this release widens the dependency
+  range so the fix actually reaches apps that install the shell rather than the router directly
+  (a `^0.13.0` range does not admit 0.14.0 — semver treats a 0.x minor as a major).
+  Override either declaration from your own stylesheet without `!important`; the rule carries
+  zero specificity.
+
 ## [0.19.6] - 2026-09-15
 
 ### Fixed
