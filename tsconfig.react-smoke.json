@@ -1,0 +1,22 @@
+{
+  // React strict 소비 타입 스모크 전용 프로젝트 — `@iyulab/components` 의 같은 이름 파일과
+  // 같은 역할이다(그쪽 주석이 분리 이유의 정본).
+  //
+  // 검증 대상이 빌드 산출물(`dist/react/*.d.ts`)이라 **dist 가 존재할 때만** 의미가 있다.
+  // 메인 프로젝트에 넣으면 fresh clone 의 `tsc --noEmit` 이 거짓 실패하고 doctor 타입
+  // 스윕까지 오염된다 ⇒ `build` 파이프라인 끝에서만 돈다.
+  //
+  // ⚠`types` 를 명시하는 이유: 이 스모크는 워크스페이스 링크를 타고 `@iyulab/components`
+  // **소스**까지 typecheck 범위에 들이는데, 그 소스가 `process.env.NODE_ENV` 와
+  // `import.meta.glob` 을 쓴다(둘 다 의도된 것이다 — 전자는 소비자 번들러가 치환하는
+  // 생태계 관례, 후자는 Vite 기능). 노드·Vite 타입을 주지 않으면 그 정당한 코드가
+  // `TS2591`/`TS2339` 로 나와 **이 스모크가 자기 대상이 아닌 것에 발화한다.**
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "types": ["react", "node", "vite/client"]
+  },
+  "include": ["tests/types/**/*"],
+  "exclude": ["node_modules"]
+}

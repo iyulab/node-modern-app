@@ -205,6 +205,34 @@ export function App() {
 }
 ```
 
+### The content primitives
+
+The barrel above carries the shell (`SidebarLayout`, `Wizard`) and the sidebar configuration types.
+The LOB content primitives are wrapped too, one subpath each:
+
+```tsx
+import { PageHeader } from '@iyulab/modern-app/react/PageHeader.js';
+import { InfoSection } from '@iyulab/modern-app/react/InfoSection.js';
+import { InfoField } from '@iyulab/modern-app/react/InfoField.js';
+
+export function OrderSummary({ order }: { order: Order }) {
+  return (
+    <>
+      <PageHeader title="Order" subtitle={order.no} />
+      <InfoSection min={200}>
+        <InfoField label="Total" format="currency" currency="KRW" value={order.total} />
+        <InfoField label="Ordered at" format="date" value={order.orderedAt} />
+      </InfoSection>
+    </>
+  );
+}
+```
+
+Available: `PageHeader`, `InfoSection`, `InfoField`, `GroupBox`, `EmptyState`, `ActionBar`,
+`MasterDetailLayout`, `SidebarButton`. They are generated from the elements themselves, so their
+props and events follow the element rather than a second hand-written description of it. `InfoField`
+keeps `value` as `unknown`, so `null`, numbers and strings all type-check.
+
 ## Accessibility
 
 The baseline is **WCAG 2.2**. The table lists what this package **measures in tests** — it is not a
