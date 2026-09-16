@@ -60,7 +60,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@iyulab/router": "^0.13.0",
+    "@iyulab/router": "^0.14.0",
     "i18next": "^26.3.6",
     "lit": "^3.3.3"
   },
