@@ -1,4 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { cdp } from 'vitest/browser';
+import { app } from '../../src/App.js';
 import '@iyulab/components/styles/tokens.css';
 import '../../src/layouts/SidebarLayout.js';
 import '../../src/components/MasterDetailLayout.js';
@@ -135,6 +137,77 @@ describe('modern-app 셸 — 높이는 부모가 정한다', () => {
       expect(warn.mock.calls.filter((c) => String(c[0]).startsWith('[@iyulab/modern-app] u-sidebar-layout'))).toHaveLength(0);
     } finally {
       warn.mockRestore();
+    }
+  });
+});
+
+
+/**
+ * **높이 사슬은 `<u-outlet>` 을 «지나야» 한다** (cycle-628, router `#302` 의 회귀).
+ *
+ * 실제 앱에서 라우트 화면은 셸의 본문에 직접 들어가지 않는다 — `App.load()` 가 그 사이에
+ * `<u-outlet>` 을 끼운다. 그래서 «화면을 채우는» 레이아웃(`u-master-detail-layout` 의
+ * `:host{height:100%}`)의 백분율은 **아웃렛이 무엇인가에 따라 다른 상자에 대해 풀린다**.
+ *
+ * 🔴이것이 실제 회귀를 냈다. router 가 아웃렛에 `display: block` 만 선언하자(그 자체는 옳은
+ * 수정이다 — 커스텀 엘리먼트의 UA 기본값 `inline` 은 컨테이너에 대한 의도가 아니다) 백분율의
+ * 기준이 «셸 본문» 에서 «아웃렛 자신» 으로 옮겨갔고, 아웃렛의 높이가 `auto` 라 백분율이
+ * 무효가 되면서 **화면이 내용 높이로 무너졌다**(실측 747px → 60px). `height: 100%` 를 함께
+ * 선언해 사슬을 이었다.
+ *
+ * ⚠**이 파일의 다른 스위트는 이것을 볼 수 없다** — 셸에 내용을 직접 붙이기 때문이다.
+ *   그것이 이 스위트가 따로 있는 이유다.
+ */
+describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
+  let outlet: HTMLElement;
+
+  beforeEach(async () => {
+    await app.load({
+      layout: { type: 'sidebar', title: 'App', main: [{ type: 'link', label: 'H', href: '/' }] },
+      routes: [{ path: '/__never__', render: () => document.createElement('div') }],
+    } as any);
+    await settle();
+    outlet = document.querySelector('u-outlet') as HTMLElement;
+  });
+
+  afterEach(() => {
+    document.body.replaceChildren();
+  });
+
+  const mainArea = () =>
+    (document.querySelector('u-sidebar-layout') as SidebarLayout)
+      .shadowRoot!.querySelector('[part="main"]') as HTMLElement;
+
+  it('🔴`height:100%` 화면이 셸 본문을 채운다 — 내용 높이로 무너지지 않는다', async () => {
+    const md = document.createElement('u-master-detail-layout') as MasterDetailLayout;
+    md.innerHTML = '<div style="height:60px">master</div><div slot="detail">detail</div>';
+    outlet.replaceChildren(md);
+    await settle();
+
+    const main = mainArea();
+    // 본문의 «내용 상자» 높이 — padding 을 뺀 값이 아웃렛이 채울 수 있는 전부다.
+    const available = main.clientHeight - (parseFloat(getComputedStyle(main).paddingTop) + parseFloat(getComputedStyle(main).paddingBottom));
+    expect(available).toBeGreaterThan(200); // 픽스처 전제: 채울 공간이 실제로 있다
+    // 내용은 60px 뿐이다 — 사슬이 끊기면 여기서 60 이 나온다.
+    expect(h(md)).toBeGreaterThan(200);
+    expect(Math.abs(h(md) - Math.round(available))).toBeLessThanOrEqual(2);
+  });
+
+  it('부모가 높이를 놓으면(인쇄 매체) 아웃렛도 놓는다 — 내용이 흐른다', async () => {
+    const tall = document.createElement('div');
+    tall.style.height = '2000px';
+    outlet.replaceChildren(tall);
+    await settle();
+
+    await cdp().send('Emulation.setEmulatedMedia', { media: 'print' });
+    await settle();
+    try {
+      // `height: 100%` 는 부모 높이가 auto 면 auto 로 풀린다 — 인쇄에서 셸이 높이를 놓으므로
+      // 아웃렛이 2000px 를 가둬서는 안 된다.
+      expect(outlet.scrollHeight).toBeLessThanOrEqual(outlet.clientHeight + 1);
+      expect(h(outlet)).toBeGreaterThanOrEqual(2000);
+    } finally {
+      await cdp().send('Emulation.setEmulatedMedia', { media: '' });
     }
   });
 });

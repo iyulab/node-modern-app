@@ -211,3 +211,60 @@ describe('app.load() — document.body sizing', () => {
     }
   });
 });
+
+/**
+ * **픽스처가 실제 트리를 담아야 한다 — 셸과 화면 «사이»에 `<u-outlet>` 이 있다.**
+ *
+ * 위 스위트들은 내용을 셸에 **직접** 붙인다(`el.appendChild(content)`). 실제 앱은 그렇지 않다 —
+ * `App.load()` 가 셸 안에 `<u-outlet>` 을 만들어 라이트 DOM 에 붙이고 라우트 화면은 그 **안**에
+ * 들어간다(`App.ts`). 즉 위 스위트가 전부 초록인 동안에도 «셸 → 아웃렛 → 화면» 배치는 인쇄
+ * 매체에서 **한 번도 측정된 적이 없었다**.
+ *
+ * 그 공백은 추상적인 것이 아니었다: 아웃렛은 스타일 없는 `HTMLElement` 라 UA 기본 `display:inline`
+ * 을 그대로 갖고 있었고(router `#302`), 그 사실을 이 패키지의 인쇄 스위트는 볼 수 없었다.
+ * 여기서는 라우팅을 태우지 않는다 — 재는 것은 라우트 매칭이 아니라 **상자 모델**이다.
+ */
+describe('u-sidebar-layout — 실제 트리(셸 → u-outlet → 화면)', () => {
+  let outlet: HTMLElement;
+
+  beforeEach(async () => {
+    await app.load({
+      layout: { type: 'sidebar', title: 'App', main: [{ type: 'link', label: 'Home', href: '/' }] },
+      routes: [{ path: '/__never__', render: () => document.createElement('div') }],
+    } as any);
+    await settle();
+    outlet = document.querySelector('u-outlet') as HTMLElement;
+    const content = document.createElement('div');
+    content.style.height = `${CONTENT}px`;
+    content.textContent = 'invoice';
+    outlet.replaceChildren(content);
+    await settle();
+  });
+
+  afterEach(async () => {
+    await setMedia('');
+    document.body.replaceChildren();
+  });
+
+  it('아웃렛이 실제로 셸과 화면 사이에 있다 (픽스처 전제)', () => {
+    expect(outlet).toBeTruthy();
+    expect(outlet.closest('u-sidebar-layout')).not.toBeNull();
+  });
+
+  it('print: 아웃렛은 인라인 상자가 아니다 — 라우트 화면이 블록 흐름에 있다', async () => {
+    await setMedia('print');
+    // 커스텀 엘리먼트의 UA 기본값은 inline 이다. 라우터가 자기 컨테이너의 표시 방식을 선언하지
+    // 않으면 라우트 화면(블록)이 인라인 상자에 담긴다 — router #302.
+    expect(getComputedStyle(outlet).display).toBe('block');
+  });
+
+  it('print: 내용이 아웃렛에서 잘리지 않고 아웃렛이 내용만큼 자란다', async () => {
+    await setMedia('print');
+    expect(outlet.scrollHeight).toBeLessThanOrEqual(outlet.clientHeight + 1);
+    expect(outlet.getBoundingClientRect().height).toBeGreaterThanOrEqual(CONTENT);
+  });
+
+  it('screen: 화면에서도 같은 상자 모델이다 — 매체에 따라 갈리지 않는다', () => {
+    expect(getComputedStyle(outlet).display).toBe('block');
+  });
+});
