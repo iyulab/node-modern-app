@@ -46,8 +46,14 @@
     "vite-env.d.ts",
     "vite.config.ts",
   ],
+  // ⚠`tests/types` 는 **제외한다** — 그 스모크는 빌드 산출물(`dist/react/*.d.ts`)을 검증
+  //   대상으로 삼으므로 `dist` 가 있을 때만 의미가 있고, 전용 프로젝트
+  //   `tsconfig.react-smoke.json` 이 `build` 파이프라인 끝에서 돈다(`test:react-types`).
+  //   여기 남겨 두면 fresh clone 의 `tsc --noEmit` 이 **거짓 실패**한다 — 그 설명은 그
+  //   파일 주석에 이미 있었는데 이 `exclude` 가 그것을 지키지 않고 있었다(cycle-654).
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "tests/types"
   ]
 }

@@ -207,8 +207,15 @@ export function App() {
 
 ### The content primitives
 
-The barrel above carries the shell (`SidebarLayout`, `Wizard`) and the sidebar configuration types.
-The LOB content primitives are wrapped too, one subpath each:
+The LOB content primitives are wrapped too. Everything React lives in the one barrel above —
+the shell, the sidebar configuration types and every content primitive — so a single specifier is
+enough:
+
+```tsx
+import { PageHeader, InfoSection, InfoField } from '@iyulab/modern-app/react';
+```
+
+Each wrapper is also published on its own subpath, for importing one at a time:
 
 ```tsx
 import { PageHeader } from '@iyulab/modern-app/react/PageHeader.js';

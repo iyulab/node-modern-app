@@ -51,6 +51,12 @@ export default defineConfig({
       // `INTERNAL_CHROME_TAGS` 이고, 같은 목록이 `u-sidebar-button` 은 **일부러 남긴다** —
       // `type:'html'` 레시피에서 소비자가 직접 쓰는 실사례가 있다).
       // 래퍼를 내면 그것이 곧 공개 React 표면이 되므로, 여기서도 같은 셋만 뺀다.
+      // 생성 배럴이 손 래퍼(`dist/react.js` = `src/react.ts` 의 빌드 산출물)를 함께
+      // 재수출한다 — 그래야 `@iyulab/modern-app/react` 가 딥 경로(`./react/*`)의
+      // **상위집합**이 된다(형제 정본 `@iyulab/components` 와 같은 형태).
+      // ⚠상대 경로가 아니라 **패키지 지정자**다: 상대 경로는 `exports` 맵을 거치지 않아
+      //   워크스페이스에서 배럴만 `dist` 트리를 싣고 같은 태그가 두 번 등록된다.
+      reexport: ['@iyulab/modern-app/dist/react.js'],
       exclude: [
         'src/components/Wizard.ts',
         'src/components/SidebarGroup.ts',

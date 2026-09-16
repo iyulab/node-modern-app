@@ -15,12 +15,17 @@
 - `u-info-field`'s `value` stays `unknown` through the wrapper, so `null`, numbers and strings are
   all accepted, matching the element and its documentation.
 
-### Note
+### Changed
 
-- The `@iyulab/modern-app/react` barrel is unchanged and still exports `SidebarLayout`, `Wizard`,
-  `ScreenObserver` and the sidebar configuration types. The generated wrappers are reached through
-  the per-component subpath above; folding them into the barrel would require the barrel to stop
-  being hand-curated, which is a separate decision.
+- **`@iyulab/modern-app/react` is now a superset of the per-component subpaths.** The barrel used to
+  be hand-curated and carried only `SidebarLayout`, `Wizard`, `ScreenObserver` and the sidebar
+  configuration types, so what a consumer got depended on which specifier they reached for: the
+  generated wrappers existed only under `@iyulab/modern-app/react/<Name>.js` and could not be
+  imported from the barrel at all. The barrel is now generated and re-exports the hand-written
+  wrappers alongside the generated ones, so every React export is reachable from one specifier.
+  Nothing was removed and no name changed: existing barrel imports keep working, and the
+  per-component subpaths are still published for importing one wrapper at a time. This matches how
+  `@iyulab/components` has always exposed its own React surface.
 
 ## [0.19.7] - 2026-09-16
 
