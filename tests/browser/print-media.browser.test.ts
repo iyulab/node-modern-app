@@ -255,7 +255,10 @@ describe('u-sidebar-layout — 실제 트리(셸 → u-outlet → 화면)', () =
     await setMedia('print');
     // 커스텀 엘리먼트의 UA 기본값은 inline 이다. 라우터가 자기 컨테이너의 표시 방식을 선언하지
     // 않으면 라우트 화면(블록)이 인라인 상자에 담긴다 — router #302.
-    expect(getComputedStyle(outlet).display).toBe('block');
+    // ⚠**여기가 재는 것은 「inline 이 아니다」뿐이다.** 어떤 블록 레벨 값인지는 `@iyulab/router`
+    //   의 계약이고 그 패키지의 회귀가 고정한다 — 사본으로 값을 박으면 상류가 정당하게 바꿀 때
+    //   소비자 스위트가 «결함처럼» 깨진다(실제로 cycle-645 의 `block` → `grid` 에서 깨졌다).
+    expect(getComputedStyle(outlet).display).not.toBe('inline');
   });
 
   it('print: 내용이 아웃렛에서 잘리지 않고 아웃렛이 내용만큼 자란다', async () => {
@@ -264,7 +267,11 @@ describe('u-sidebar-layout — 실제 트리(셸 → u-outlet → 화면)', () =
     expect(outlet.getBoundingClientRect().height).toBeGreaterThanOrEqual(CONTENT);
   });
 
-  it('screen: 화면에서도 같은 상자 모델이다 — 매체에 따라 갈리지 않는다', () => {
-    expect(getComputedStyle(outlet).display).toBe('block');
+  it('screen: 화면에서도 같은 상자 모델이다 — 매체에 따라 갈리지 않는다', async () => {
+    // 재는 것은 «두 매체가 같은가» 다 — 값 자체가 아니다(바로 위 주석과 같은 이유).
+    const onScreen = getComputedStyle(outlet).display;
+    expect(onScreen).not.toBe('inline');
+    await setMedia('print');
+    expect(getComputedStyle(outlet).display).toBe(onScreen);
   });
 });
