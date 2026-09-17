@@ -223,6 +223,13 @@ export const styles = css`
     display: none;
   }
 
+  .overlay-close {
+    position: absolute;
+    top: var(--u-space-sm, 8px);
+    right: var(--u-space-sm, 8px);
+    z-index: 2;
+  }
+
   /* Backdrop for modal mode */
   .backdrop {
     position: absolute;

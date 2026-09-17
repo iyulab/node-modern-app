@@ -91,3 +91,34 @@ describe('SidebarLayout — overlay slot', () => {
     expect(main.scrollTop).toBe(0);
   });
 });
+
+describe('SidebarLayout — overlay close button', () => {
+  it('renders a close button with the shared "Close" label while the overlay is open', async () => {
+    const el = await mount({ type: 'sidebar' });
+    const panel = document.createElement('div');
+    panel.slot = 'overlay';
+    el.appendChild(panel);
+    await settle();
+
+    const closeBtn = el.shadowRoot!.querySelector('.overlay-close') as HTMLElement;
+    expect(closeBtn).not.toBeNull();
+    expect(closeBtn.getAttribute('aria-label')).toBe('Close');
+  });
+
+  it('clicking the close button fires a non-cancelable overlay-close event', async () => {
+    const el = await mount({ type: 'sidebar' });
+    const panel = document.createElement('div');
+    panel.slot = 'overlay';
+    el.appendChild(panel);
+    await settle();
+
+    const events: Event[] = [];
+    el.addEventListener('overlay-close', (e) => events.push(e));
+    const closeBtn = el.shadowRoot!.querySelector<HTMLElement>('.overlay-close')!;
+    closeBtn.click();
+
+    expect(events).toHaveLength(1);
+    expect(events[0].cancelable).toBe(false);
+    expect(events[0].bubbles).toBe(true);
+  });
+});

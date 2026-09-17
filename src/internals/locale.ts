@@ -30,7 +30,7 @@ export interface ModernAppLocaleStrings {
   noResultsTitle: string;
   noResultsDescription: string;
 
-  /** Master-detail layout — accessible label for the overlay-mode close button. */
+  /** Accessible label for an overlay-mode close button (master-detail layout, sidebar layout overlay). */
   detailClose: string;
 
   /** Sidebar layout — accessible label for the mobile-header menu toggle button. */

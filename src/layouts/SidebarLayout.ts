@@ -243,6 +243,11 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         </div>
 
         <div class="overlay ${this.hasOverlay ? '' : 'empty'}" part="overlay">
+          <u-button class="overlay-close" part="overlay-close" variant="ghost"
+            aria-label=${getLocaleStrings(this.locale || undefined).detailClose}
+            @click=${this.handleOverlayClose}>
+            <u-icon lib="internal" name="x"></u-icon>
+          </u-button>
           <slot name="overlay" @slotchange=${this.handleOverlaySlotChange}></slot>
         </div>
       </div>
@@ -456,6 +461,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   private handleOverlaySlotChange = (e: Event) => {
     this.hasOverlay = slotHasContent(e.target as HTMLSlotElement);
+  };
+
+  private handleOverlayClose = () => {
+    this.fire('overlay-close', { cancelable: false });
   };
 
   /** .main 키보드 스크롤 핸들러 (WCAG 2.1 SC 2.1.1) */
