@@ -186,6 +186,11 @@ export const styles = css`
   .main-region {
     position: relative;
     flex: 1;
+    /* :host([state="mobile"]) 은 flex-direction: column 이라 이 축(높이)이 주축이 된다 —
+       min-height: 0 없이는 flex item 의 자동 최소 크기가 콘텐츠 기준(.main 의 min-content
+       높이)으로 잡혀, flex-shrink 가 있어도 뷰포트보다 작게 줄지 못한다. 그 결과 .main 의
+       overflow: auto 가 한 번도 발동하지 않고 셸 전체가 콘텐츠 높이만큼 부풀어 오른다. */
+    min-height: 0;
   }
 
   .main {
