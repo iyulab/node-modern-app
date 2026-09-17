@@ -17,6 +17,11 @@
 - `u-master-detail-layout` exposes a `:state(detail)` custom state while its `detail` slot has
   content.
 
+### Changed
+
+- Requires `@iyulab/router` `^0.15.1`, which prints the route outlet as a block box. The shell's
+  guarantee that a screen's trailing margin collapses out of the page in print depends on it.
+
 ## [0.20.0] - 2026-09-16
 
 ### Added
