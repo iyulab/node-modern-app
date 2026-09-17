@@ -211,6 +211,23 @@ export const styles = css`
     transform: translateY(0);
   }
 
+  .main-content {
+    flex: 1;
+    overflow: auto;
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: var(--u-space-3xl, 32px);
+    overflow: auto;
+    background: var(--u-panel-bg-color, #FFFFFF);
+  }
+  .overlay.empty {
+    display: none;
+  }
+
   /* Backdrop for modal mode */
   .backdrop {
     position: absolute;

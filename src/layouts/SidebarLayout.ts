@@ -18,6 +18,7 @@ import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement } from '../internals/StyledElement.js';
+import { slotHasContent } from '../internals/slotted.js';
 import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
 import { filterSidebarItems } from './filterSidebarItems.js';
 import { styles } from './SidebarLayout.styles.js';
@@ -92,6 +93,17 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   @query('u-progress-bar') progressBarEl!: UProgressBar;
 
+  /** overlay 슬롯 배정 상태 — CSS `:has()`로는 알 수 없다(`internals/slotted.ts` 참조). */
+  @state() private hasOverlay = false;
+
+  /**
+   * `:state(overlay)`를 싣는 자리. `MasterDetailLayout`과 동일 패턴.
+   * ⚠생성자에서 한 번만 붙인다 — `attachInternals()`는 같은 인스턴스에 두 번 부르면
+   *   `NotSupportedError`이고, `connectedCallback`은 재연결마다 다시 돈다.
+   */
+  private readonly internals: ElementInternals | undefined =
+    typeof this.attachInternals === 'function' ? this.attachInternals() : undefined;
+
   /** 현재 라우터 컨텍스트 */
   @state() context: RouteContext | null = null;
 
@@ -129,6 +141,13 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
     if (changedProperties.has('config')) {
       this.styles = this.config?.styles;
+    }
+  }
+
+  protected updated(changed: PropertyValues): void {
+    super.updated(changed);
+    if (changed.has('hasOverlay')) {
+      this.internals?.states?.[this.hasOverlay ? 'add' : 'delete']('overlay');
     }
   }
 
@@ -219,7 +238,13 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       <div class="main" part="main" scrollable tabindex="-1" @keydown=${this._handleMainKeydown}>
         <u-progress-bar part="progress"></u-progress-bar>
 
-        <slot></slot>
+        <div class="main-content" ?inert=${this.hasOverlay}>
+          <slot></slot>
+        </div>
+
+        <div class="overlay ${this.hasOverlay ? '' : 'empty'}" part="overlay">
+          <slot name="overlay" @slotchange=${this.handleOverlaySlotChange}></slot>
+        </div>
       </div>
 
       <!-- Backdrop for modal state -->
@@ -428,6 +453,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       this.progressBarEl.status = 'default';
     }, 300);
   }
+
+  private handleOverlaySlotChange = (e: Event) => {
+    this.hasOverlay = slotHasContent(e.target as HTMLSlotElement);
+  };
 
   /** .main 키보드 스크롤 핸들러 (WCAG 2.1 SC 2.1.1) */
   private _handleMainKeydown = (e: KeyboardEvent) => {

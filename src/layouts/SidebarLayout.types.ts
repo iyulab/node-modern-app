@@ -14,7 +14,7 @@ export type { SidebarGroupConfig } from "../components/SidebarGroup";
 export type { SidebarButtonConfig } from "../components/SidebarButton";
 
 /** 사이드바 레이아웃 컴포넌트의 요소(part) 타입 */
-export type SidebarParts = 'host' | 'mobile-header' | 'sidebar' | 'sidebar-header' | 'sidebar-main' | 'sidebar-footer' | 'main' | 'progress';
+export type SidebarParts = 'host' | 'mobile-header' | 'sidebar' | 'sidebar-header' | 'sidebar-main' | 'sidebar-footer' | 'main' | 'progress' | 'overlay' | 'overlay-close';
 
 /** 사이드바 상태 타입 */
 export type SidebarState = 'default' | 'slim' | 'modal' | 'mobile' | 'mobile-open';
