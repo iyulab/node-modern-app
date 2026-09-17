@@ -210,4 +210,40 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
       await cdp().send('Emulation.setEmulatedMedia', { media: '' });
     }
   });
+
+  /**
+   * 🔴**인쇄에서 화면 마지막 블록의 아래 여백은 셸 «밖» 으로 접혀야 한다** (cycle-660 · router `#302` 3차).
+   *
+   * 그 여백이 어느 상자 안에 갇히면 그 상자의 높이가 여백만큼 늘고, 내용 끝이 쪽 경계에서 그 여백 이내에
+   * 있으면 **여백만 담긴 빈 꼬리 쪽**이 찍힌다(CSS Fragmentation §5.2 — 쪽 경계에 닿은 여백은 잘리지만
+   * 상자 높이는 잘리지 않는다). router 0.15.0 의 아웃렛(grid)이 정확히 그렇게 가뒀고 0.15.1 이 인쇄에서
+   * `block` 으로 풀었다. ⚠**그러나 가둘 수 있는 상자는 아웃렛만이 아니다** — 셸 본문·셸 호스트도
+   * 인쇄에서 독립 서식 문맥(`overflow` ≠ visible · flex/grid · `flow-root`)이 되거나 아래 `padding` 을
+   * 가지면 같은 증상이 **셸에서** 난다. 이 단언은 사슬 전체를 한 번에 잰다.
+   *
+   * ⚠우리 인쇄 픽스처들은 여섯 번 이 증상을 재현하지 못했다 — **끝 블록에 여백이 없었기 때문이다.**
+   */
+  it('🔴인쇄 매체에서 화면 마지막 블록의 아래 여백이 아웃렛·셸 본문·셸을 뚫고 접힌다', async () => {
+    const CONTENT = 300;
+    const route = document.createElement('div');
+    const last = document.createElement('div');
+    last.style.cssText = `height: ${CONTENT}px; margin-bottom: 24px;`;
+    route.appendChild(last);
+    outlet.replaceChildren(route);
+    await settle();
+
+    await cdp().send('Emulation.setEmulatedMedia', { media: 'print' });
+    await settle();
+    try {
+      const shell = document.querySelector('u-sidebar-layout') as HTMLElement;
+      // 여백이 갇히면 그 상자부터 위로 전부 324 가 된다 — 어느 상자가 가뒀는지가 곧 실패 메시지다.
+      expect({
+        outlet: h(outlet),
+        main: h(mainArea()),
+        shell: h(shell),
+      }).toEqual({ outlet: CONTENT, main: CONTENT, shell: CONTENT });
+    } finally {
+      await cdp().send('Emulation.setEmulatedMedia', { media: '' });
+    }
+  });
 });
