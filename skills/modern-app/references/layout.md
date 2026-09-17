@@ -258,6 +258,8 @@ Parts available for `styles` overrides on the root layout:
 | `sidebar-footer` | Pinned footer area |
 | `main` | Main content area |
 | `progress` | Top progress bar |
+| `overlay` | Route-independent overlay panel above `main` |
+| `overlay-close` | Overlay's close button |
 
 ---
 
@@ -297,6 +299,35 @@ To keep a piece of chrome on paper, restore it through its part:
 
 ⚠ Heights or `overflow` set through `layout.styles` are inline styles and still apply when
 printing — scope such values to the screen in your own CSS instead.
+
+## Overlay content
+
+`<u-sidebar-layout>` has a second slot, `slot="overlay"`, that floats above `main` — independent
+of routing. Fill it to show a panel (e.g. a record's detail) over whatever screen is currently
+active, without wrapping every route or losing that screen's scroll position; empty it to remove
+the panel. The route content underneath becomes `inert` while the overlay has content, and a
+built-in close button fires `overlay-close` (not cancelable) when clicked:
+
+```html
+<u-sidebar-layout id="shell">
+  <!-- route content goes in the default slot, e.g. via app.load()'s <u-outlet> -->
+  <div id="order-detail" slot="overlay" hidden>...</div>
+</u-sidebar-layout>
+
+<script>
+  shell.addEventListener('overlay-close', () => {
+    document.getElementById('order-detail').hidden = true;
+  });
+</script>
+```
+
+To keep the underlying route mounted while a URL parameter drives the overlay open/closed (so a
+query-string change doesn't remount the whole screen), give the route a `key` that excludes that
+parameter — see [`docs/routing.md`](../../../docs/routing.md) `RouteConfig.key`.
+
+No `overlayBreakpoint`/responsive toggle exists here — unlike `u-master-detail-layout`, this
+overlay is always an overlay, never a side-by-side pane. Use `u-master-detail-layout` instead
+when you want the panel to sit *beside* content on wide screens.
 
 ## Responsive behaviour
 
