@@ -211,11 +211,6 @@ export const styles = css`
     transform: translateY(0);
   }
 
-  .main-content {
-    flex: 1;
-    overflow: auto;
-  }
-
   .overlay {
     position: absolute;
     inset: 0;
