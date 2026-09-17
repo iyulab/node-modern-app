@@ -58,6 +58,27 @@ function isEditableElement(el: HTMLElement): boolean {
   return false;
 }
 
+function isScrollableY(el: Element): boolean {
+  const style = getComputedStyle(el);
+  return (style.overflowY === 'auto' || style.overflowY === 'scroll')
+    && el.scrollHeight > el.clientHeight;
+}
+
+/**
+ * `origin`에서 `main`까지의 조합 경로(섀도 경계를 넘는다)를 훑어, 먼저 만나는 스크롤
+ * 가능한 상자가 `main` 자신인지 판정한다. 본문 안에 다른 스크롤 상자(상세 패널·분할창
+ * 등)가 origin 과 main 사이에 있으면 그 상자가 이미 이 키를 쓰고 있다는 뜻이므로,
+ * `main`이 가로채면 안 된다 — 브라우저 기본 스크롤에 맡긴다.
+ */
+function isMainTheScrollTarget(path: readonly EventTarget[], main: HTMLElement): boolean {
+  for (const node of path) {
+    if (!(node instanceof HTMLElement)) continue;
+    if (isScrollableY(node)) return node === main;
+    if (node === main) break;
+  }
+  return true;
+}
+
 @customElement('u-sidebar-layout')
 export class SidebarLayout extends StyledElement<SidebarParts> {
   static styles = [ super.styles, styles ];
@@ -420,6 +441,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
     const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
     if (!main) return;
+    if (!isMainTheScrollTarget(e.composedPath(), main)) return;
     const page = main.clientHeight;
     const step = 80;
     switch (e.key) {
