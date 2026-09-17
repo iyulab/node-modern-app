@@ -1,5 +1,32 @@
 # Changelog
 
+## [0.22.0] - 2026-09-18
+
+### Added
+
+- **`SidebarLayout` gained a `slot="overlay"`** — a route-independent panel shown above the main
+  content (e.g. a record detail), independent of the current route, without wrapping every route in
+  a shared layout or losing that route's scroll position. Fill the slot to show it; remove or
+  reassign the slotted node to dismiss it (`hidden` does not close it). Mirrors
+  `u-master-detail-layout`'s existing `slot="detail"` idiom rather than a new one. Adds a
+  `:state(overlay)` custom state, `inert` on the route content while the overlay has content, and a
+  built-in close button that fires a non-cancelable `overlay-close` event; the React wrapper maps
+  this to `onOverlayClose`. Documented in the layout skill reference under "Overlay content".
+
+### Fixed
+
+- **The shell's keyboard scroll handling no longer intercepts a scrollable container nested inside
+  route content.** Space, Page Up/Down, Home, End and the arrow keys inside a nested scroll box
+  (a detail pane, a split view) were previously captured and cancelled by the shell instead of
+  scrolling that box.
+- **The mobile layout (`state="mobile"`/`"mobile-open"`) no longer loses internal scrolling.** The
+  shell's scroll region lacked an explicit minimum-size override, so it could grow to the full
+  content height and stop scrolling within the viewport instead.
+- **An open overlay prints in normal document flow instead of being clipped** to the main content's
+  box, and no longer renders off-screen if opened while the content underneath was scrolled.
+- The documented "Overlay content" example now actually closes the overlay (it previously toggled
+  `hidden`, which does not empty the slot).
+
 ## [0.21.0] - 2026-09-17
 
 ### Added
