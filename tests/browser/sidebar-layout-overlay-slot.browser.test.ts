@@ -3,6 +3,7 @@ import '@iyulab/components/styles/tokens.css';
 import '../../src/layouts/SidebarLayout.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import type { SidebarLayoutConfig } from '../../src/layouts/SidebarLayout.types';
+import { RouteDoneEvent, type RouteContext } from '@iyulab/router';
 
 /**
  * `slot="overlay"` — a route-independent panel above `.main`'s route content. Filling it
@@ -28,6 +29,20 @@ async function mount(config: SidebarLayoutConfig): Promise<SidebarLayout> {
 }
 
 const settle = () => new Promise((r) => setTimeout(r, 0));
+
+function fakeRouteContext(pathname = '/detail'): RouteContext {
+  return {
+    href: `https://example.com${pathname}`,
+    origin: 'https://example.com',
+    basepath: '/',
+    path: pathname,
+    pathname,
+    params: {},
+    query: new URLSearchParams(),
+    progress: () => {},
+    metadata: {},
+  };
+}
 
 const mainContent = (el: SidebarLayout) =>
   el.shadowRoot!.querySelector<HTMLElement>('.main-content')!;
@@ -120,5 +135,22 @@ describe('SidebarLayout — overlay close button', () => {
     expect(events).toHaveLength(1);
     expect(events[0].cancelable).toBe(false);
     expect(events[0].bubbles).toBe(true);
+  });
+});
+
+describe('SidebarLayout — overlay across a route transition', () => {
+  it('a route-done event while the overlay is open leaves the overlay open and route content inert', async () => {
+    const el = await mount({ type: 'sidebar' });
+    const panel = document.createElement('div');
+    panel.slot = 'overlay';
+    el.appendChild(panel);
+    await settle();
+    expect(el.matches(':state(overlay)')).toBe(true);
+
+    window.dispatchEvent(new RouteDoneEvent(fakeRouteContext()));
+    await settle();
+
+    expect(el.matches(':state(overlay)')).toBe(true);
+    expect(mainContent(el).hasAttribute('inert')).toBe(true);
   });
 });

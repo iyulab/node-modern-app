@@ -311,15 +311,24 @@ built-in close button fires `overlay-close` (not cancelable) when clicked:
 ```html
 <u-sidebar-layout id="shell">
   <!-- route content goes in the default slot, e.g. via app.load()'s <u-outlet> -->
-  <div id="order-detail" slot="overlay" hidden>...</div>
 </u-sidebar-layout>
 
 <script>
+  function openOrderDetail(order) {
+    const panel = document.createElement('div');
+    panel.slot = 'overlay';
+    panel.textContent = `Order #${order.id}`;
+    shell.appendChild(panel);
+  }
+
   shell.addEventListener('overlay-close', () => {
-    document.getElementById('order-detail').hidden = true;
+    shell.querySelector('[slot="overlay"]')?.remove();
   });
 </script>
 ```
+
+⚠ `hidden`/`display: none` on the slotted panel does not close the overlay — the slot must
+actually be emptied (removed or reassigned) for `slotHasContent` to see it as closed.
 
 To keep the underlying route mounted while a URL parameter drives the overlay open/closed (so a
 query-string change doesn't remount the whole screen), give the route a `key` that excludes that

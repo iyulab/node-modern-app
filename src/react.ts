@@ -20,7 +20,9 @@ export const SidebarLayout = createComponent({
   react: React,
   tagName: 'u-sidebar-layout',
   elementClass: SidebarLayoutElement,
-  events: {},
+  events: {
+    onOverlayClose: 'overlay-close' as EventName<CustomEvent>,
+  },
 });
 
 export type SidebarLayoutProps = React.ComponentProps<typeof SidebarLayout>;

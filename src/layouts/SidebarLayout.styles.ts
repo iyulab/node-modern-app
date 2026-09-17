@@ -183,13 +183,22 @@ export const styles = css`
    *   (CSS 2.1 §10.6.4: 절대배치 자손의 containing block 은 가장 가까운 positioned
    *   조상의 «패딩 박스»이고, 그 경계는 조상 자신의 padding 값에 밀리지 않는다).
    *   풀블리드를 원하는 소비자는 layout.styles.main = { padding: '0' } 로 되돌린다. */
-  .main {
+  .main-region {
     position: relative;
     flex: 1;
+  }
+
+  .main {
+    position: relative;
+    height: 100%;
     padding: var(--u-space-3xl, 32px);
     background: var(--u-bg-color, #FFFFFF);
     overflow: auto;
     outline: none;
+  }
+
+  .main-content {
+    height: 100%;
   }
 
   .main u-progress-bar {
@@ -261,9 +270,16 @@ export const styles = css`
     .main u-progress-bar {
       display: none;
     }
+    .main-region {
+      height: auto;
+    }
     .main {
+      height: auto;
       padding: 0;
       overflow: visible;
+    }
+    .main-content {
+      height: auto;
     }
     :host(:state(overlay)) .main-content {
       display: none;
