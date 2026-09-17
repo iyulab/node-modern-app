@@ -74,8 +74,33 @@ export const styles = css`
    * 되돌려 전부 인쇄한다 — 덮여 있던 master 는 찍지 않는다. detail 이 비어 있으면 master 가
    * 화면 그대로 인쇄된다(covered 는 detail 이 채워졌을 때만 붙는다).
    * 나란히 배치 모드는 바꾸지 않는다 — 두 판이 부모 높이를 따라 풀린다.
+   *
+   * 🔴**한 판만 보일 때는 flex 뼈대를 걷는다**(오버레이 모드 · detail 없음). flex 호스트와
+   *   overflow: auto 판은 둘 다 독립 서식 문맥이라, 화면 마지막 블록의 아래 여백이 레이아웃
+   *   «안» 에 갇혀 그만큼 높이가 는다 — 내용 끝이 쪽 경계에서 그 여백 이내에 있으면 여백만 담긴
+   *   빈 꼬리 쪽이 찍힌다(router 아웃렛의 인쇄 수정과 같은 기전). 한 판뿐이면 flex 가 인쇄에서
+   *   할 일이 없으므로 블록 흐름으로 돌려 여백이 문서 끝까지 접히게 한다(쪽 경계에서 잘린다).
+   * ⚠**나란히 배치(detail 있음 · 오버레이 아님)는 원리적으로 가둔다** — 두 열은 flex 항목이고
+   *   flex 항목은 항상 독립 서식 문맥이다. 화면에 보인 두 열을 그대로 찍는 것이 계약이다.
+   * ⚠:state() 를 모르는 엔진에서는 그 선택자만 무효가 되도록 **규칙을 나눴다** — 선택자 목록에
+   *   섞으면 목록 전체가 버려져 오버레이 규칙까지 사라진다.
    */
   @media print {
+    :host([overlay]) {
+      display: block;
+      height: auto;
+    }
+    :host(:not(:state(detail))) {
+      display: block;
+      height: auto;
+    }
+    :host([overlay]) .master,
+    :host([overlay]) .detail {
+      overflow: visible;
+    }
+    :host(:not(:state(detail))) .master {
+      overflow: visible;
+    }
     .detail-close,
     :host([overlay]) .detail-close,
     :host([overlay]) .master.covered {

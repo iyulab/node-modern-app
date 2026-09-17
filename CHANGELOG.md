@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.20.1] - 2026-09-17
+
+### Fixed
+
+- **`u-master-detail-layout` no longer adds a trailing blank page when a single pane is printed.**
+  The layout is a flex row with scrolling panes, and both keep the bottom margin of a pane's last
+  block inside the layout, so the layout grew by that margin; content ending just short of a page
+  boundary then spilled onto a page holding only the margin. When a single pane is showing
+  (overlay mode, or no detail) the layout now prints as block flow, which lets the margin collapse
+  past it and be truncated at the page break. Side-by-side printing is unchanged: two columns are
+  flex items and each keeps its own margin.
+
+### Added
+
+- `u-master-detail-layout` exposes a `:state(detail)` custom state while its `detail` slot has
+  content.
+
 ## [0.20.0] - 2026-09-16
 
 ### Added

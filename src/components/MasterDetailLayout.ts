@@ -41,6 +41,9 @@ type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
  *   `PageHeader`/`GroupBox`/`ActionBar` 의 고정 중단점 관행을 벗어나려는 것이 아니다.
  *
  * 오버라이드: `part`(host·master·divider·detail·detail-close) + slot 치환.
+ *
+ * detail 슬롯이 채워져 있는 동안 `:state(detail)` 커스텀 상태를 노출한다
+ * (`ElementInternals.states`) — 속성으로 반사하지 않는다(`u-select:state(open)` 과 같은 관례).
  */
 @customElement('u-master-detail-layout')
 export class MasterDetailLayout extends StyledElement<ElementParts> {
@@ -64,6 +67,15 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
 
   /** detail 슬롯 배정 상태 — CSS `:has()` 로는 알 수 없다(`internals/slotted.ts` 참조). */
   @state() private hasDetail = false;
+
+  /**
+   * `:state(detail)` 을 싣는 자리. 인쇄 규칙이 «한 판만 보이는가» 를 호스트에서 갈라야 해서
+   * 생겼다(styles 의 인쇄 절 참조).
+   * ⚠생성자에서 한 번만 붙인다 — `attachInternals()` 는 같은 인스턴스에 두 번 부르면
+   *   `NotSupportedError` 이고, `connectedCallback` 은 재연결마다 다시 돈다.
+   */
+  private readonly internals: ElementInternals | undefined =
+    typeof this.attachInternals === 'function' ? this.attachInternals() : undefined;
 
   private resizeObserver?: ResizeObserver;
 
@@ -102,6 +114,9 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
     super.updated(changed);
     if (changed.has('masterSize')) {
       this.style.setProperty('--_master-size', this.masterSize);
+    }
+    if (changed.has('hasDetail')) {
+      this.internals?.states?.[this.hasDetail ? 'add' : 'delete']('detail');
     }
     // 폭이 그대로여도 기준이 바뀌면 판정이 바뀐다 — 리사이즈를 기다리지 않는다.
     if (changed.has('overlayBreakpoint')) {

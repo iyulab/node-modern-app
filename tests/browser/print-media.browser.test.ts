@@ -267,11 +267,97 @@ describe('u-sidebar-layout — 실제 트리(셸 → u-outlet → 화면)', () =
     expect(outlet.getBoundingClientRect().height).toBeGreaterThanOrEqual(CONTENT);
   });
 
-  it('screen: 화면에서도 같은 상자 모델이다 — 매체에 따라 갈리지 않는다', async () => {
-    // 재는 것은 «두 매체가 같은가» 다 — 값 자체가 아니다(바로 위 주석과 같은 이유).
-    const onScreen = getComputedStyle(outlet).display;
-    expect(onScreen).not.toBe('inline');
+  it('screen: 화면에서도 아웃렛은 인라인 상자가 아니다', async () => {
+    // 🔴종전 판은 여기서 «두 매체의 값이 같은가» 를 쟀다 — 그것도 상류 계약의 사본이었고, router
+    //   0.15.1 이 인쇄에서만 `block` 으로 바꾸자(끝 블록 여백이 grid 에 갇혀 빈 꼬리 쪽이 생겼다 —
+    //   router #302 3차) **정당한 변경에 «결함처럼» 깨졌다**(cycle-661). 바로 위 주석이 경고한
+    //   실패를 한 번 더 밟은 자리다. ⇒ 소비자가 기대는 것은 «inline 이 아니다» 뿐이고, 매체별 값은
+    //   `@iyulab/router` 의 회귀가 고정한다.
+    expect(getComputedStyle(outlet).display).not.toBe('inline');
+  });
+});
+
+/**
+ * **인쇄에서 판 안 마지막 블록의 아래 여백이 레이아웃 «밖» 으로 접히는가** (cycle-661).
+ *
+ * 여백이 어느 상자 안에 갇히면 그 상자가 여백만큼 자라고, 내용 끝이 쪽 경계에서 그 여백 이내에 있으면
+ * **여백만 담긴 빈 꼬리 쪽**이 찍힌다(router `#302` 와 같은 기전). 이 레이아웃은 화면에서 flex 호스트 +
+ * `overflow: auto` 판이라 두 겹 모두 여백을 가둔다 — 수정 전 실측: 세 모드 전부 300 → **324**.
+ *
+ * ★**한 판만 보이는 모드(오버레이 · detail 없음)** 에서는 flex 뼈대가 인쇄에서 할 일이 없다 — 그때만
+ *   블록 흐름으로 돌린다. **나란히 배치** 는 두 열이 flex 항목이라 원리적으로 가둔다(flex 항목은 항상
+ *   독립 서식 문맥이다) — 화면에 보인 두 열을 그대로 찍는 것이 이 레이아웃의 인쇄 계약이므로 고정한다.
+ */
+describe('u-master-detail-layout — print: trailing margin of the last block', () => {
+  const CONTENT = 300;
+  let wrapper: HTMLDivElement;
+  let md: HTMLElement;
+
+  const block = () => {
+    const outer = document.createElement('div');
+    outer.innerHTML = `<div style="height:${CONTENT}px;margin-bottom:24px">x</div>`;
+    return outer;
+  };
+
+  async function mount(width: number, withDetail: boolean) {
+    wrapper = document.createElement('div');
+    wrapper.style.width = `${width}px`;
+    md = document.createElement('u-master-detail-layout');
+    md.append(block());
+    if (withDetail) {
+      const d = block();
+      d.slot = 'detail';
+      md.append(d);
+    }
+    wrapper.appendChild(md);
+    document.body.appendChild(wrapper);
+    await settle();
+    await settle();
+  }
+
+  afterEach(() => {
+    document.body.replaceChildren();
+  });
+
+  const hh = (el: Element) => Math.round(el.getBoundingClientRect().height);
+
+  it('exposes :state(detail) while the detail slot has content', async () => {
+    await mount(1000, false);
+    expect(md.matches(':state(detail)')).toBe(false);
+    const d = block();
+    d.slot = 'detail';
+    md.append(d);
+    await settle();
+    expect(md.matches(':state(detail)')).toBe(true);
+    d.remove();
+    await settle();
+    expect(md.matches(':state(detail)')).toBe(false);
+  });
+
+  for (const [name, width, withDetail] of [
+    ['wide, master only', 1000, false],
+    ['narrow overlay, detail open', 500, true],
+    ['narrow overlay, master only', 500, false],
+  ] as const) {
+    it(`🔴print (${name}): the margin collapses out — neither the layout nor the pane grows by it`, async () => {
+      await mount(width, withDetail);
+      await setMedia('print');
+      const pane = md.shadowRoot!.querySelector(withDetail ? '.detail' : '.master')!;
+      expect({ pane: hh(pane), layout: hh(md), wrapper: hh(wrapper) })
+        .toEqual({ pane: CONTENT, layout: CONTENT, wrapper: CONTENT });
+    });
+  }
+
+  it('print (wide, side by side): the columns stay side by side and each keeps its margin — a flex item always contains it', async () => {
+    await mount(1000, true);
     await setMedia('print');
-    expect(getComputedStyle(outlet).display).toBe(onScreen);
+    expect(getComputedStyle(md).display).toBe('flex');
+    expect(hh(md)).toBe(CONTENT + 24);
+  });
+
+  it('screen is unchanged: the layout stays a flex shell with scrolling panes', async () => {
+    await mount(500, true);
+    expect(getComputedStyle(md).display).toBe('flex');
+    expect(getComputedStyle(md.shadowRoot!.querySelector('.detail')!).overflow).toBe('auto');
   });
 });

@@ -59,6 +59,14 @@ In overlay mode, a filled detail prints in full, in flow, instead of the covered
 close button is not printed; with the detail empty, the master prints. The overlay state is the
 one measured on screen when printing starts.
 
+When a single pane is showing (overlay mode, or no detail), the layout prints as ordinary block
+flow rather than a flex row with scrolling panes. Both of those create an independent formatting
+context, which would keep the bottom margin of the pane's last block inside the layout and make
+the layout that much taller — enough, when content ends just short of a page boundary, to print
+a trailing page holding nothing but the margin. In block flow the margin collapses past the layout
+and is truncated at the page break. Side by side, the two panes are flex items and each keeps its
+own margin; that is inherent to printing two columns.
+
 ## Slots
 
 | Name | Description |
@@ -79,6 +87,16 @@ one measured on screen when printing starts.
 | Event | Detail | Cancelable | Description |
 |-------|--------|------------|--------------|
 | `detail-close` | — | No | Overlay-mode close button clicked. Clear the `detail` slot's content in response — the component does not do this for you |
+
+## Custom States
+
+| State | Description |
+|-------|-------------|
+| `:state(detail)` | Present while the `detail` slot has content |
+
+```css
+u-master-detail-layout:state(detail)::part(master) { border-inline-end: 0; }
+```
 
 ## CSS Parts
 
