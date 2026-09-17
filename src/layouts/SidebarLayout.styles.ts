@@ -265,5 +265,16 @@ export const styles = css`
       padding: 0;
       overflow: visible;
     }
+    :host(:state(overlay)) .main-content {
+      display: none;
+    }
+    :host(:state(overlay)) .overlay {
+      position: static;
+      padding: 0;
+      overflow: visible;
+    }
+    .overlay-close {
+      display: none;
+    }
   }
 `;

@@ -168,6 +168,34 @@ describe('u-sidebar-layout — print media', () => {
       style.remove();
     }
   });
+
+  it('print: an open overlay prints in full flow, the route content underneath is hidden', async () => {
+    el.replaceChildren();
+    const routeContent = document.createElement('div');
+    routeContent.style.height = `${CONTENT}px`;
+    el.appendChild(routeContent);
+    const panel = document.createElement('div');
+    panel.slot = 'overlay';
+    panel.style.height = `${CONTENT}px`;
+    panel.textContent = 'Order #123';
+    el.appendChild(panel);
+    await settle();
+    expect(el.matches(':state(overlay)')).toBe(true);
+
+    await setMedia('print');
+    const overlay = el.shadowRoot!.querySelector('.overlay') as HTMLElement;
+    const mainContentEl = el.shadowRoot!.querySelector('.main-content') as HTMLElement;
+    expect(getComputedStyle(mainContentEl).display).toBe('none');
+    expect(getComputedStyle(overlay).position).toBe('static');
+    expect(overlay.scrollHeight).toBeLessThanOrEqual(overlay.clientHeight + 1);
+    expect(getComputedStyle(el.shadowRoot!.querySelector('.overlay-close')!).display).toBe('none');
+  });
+
+  it('print: no overlay — route content prints as before (baseline unchanged)', async () => {
+    await setMedia('print');
+    const mainContentEl = el.shadowRoot!.querySelector('.main-content') as HTMLElement;
+    expect(getComputedStyle(mainContentEl).display).not.toBe('none');
+  });
 });
 
 describe('app.load() — document.body sizing', () => {
