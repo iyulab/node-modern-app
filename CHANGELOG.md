@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.21.0] - 2026-09-17
+
+### Added
+
+- **`translate()` — a reactive translation directive**, exported from `@iyulab/modern-app`. It is
+  bound to the i18next instance `app.load({ i18n })` initializes and re-renders its part when the
+  language changes, when resources arrive later, and once i18next finishes initializing (until then
+  it renders an empty string rather than the key). A disconnected template stops listening and
+  catches up when reconnected. Sidebar item labels already accept a directive result, so
+  `label: translate('nav::home')` now works without a third-party package; the documentation
+  previously pointed to `lit-i18n` for this. Migrating is an import swap plus dropping
+  `initLitI18n` from `i18n.plugins`.
+
+### Fixed
+
+- **A collapsed sidebar no longer leaves translated items without an accessible name.** In the
+  collapsed state the item label was removed with `hidden`, which also removes it from the
+  accessibility tree; an `aria-label` was substituted only when the label was a plain string, so an
+  item labelled with a directive was announced with no name. The label is now hidden visually and
+  stays in the accessibility tree, so it names the link, button or group whatever its type. Items
+  no longer carry an `aria-label` in the collapsed state.
+
 ## [0.20.1] - 2026-09-17
 
 ### Fixed

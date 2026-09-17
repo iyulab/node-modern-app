@@ -55,4 +55,20 @@ export const styles = css`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  /*
+   * 접힌 상태의 라벨 - 시각적으로만 숨긴다. 접근성 트리에는 남아 항목의 이름이 된다
+   * (hidden 은 트리에서도 빼서 이름 없는 항목을 만들었다). 절대배치라 flex 배치와 gap 에 끼지 않는다.
+   */
+  [part~='label'][compact] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
 `;

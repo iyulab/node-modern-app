@@ -1,4 +1,4 @@
-﻿import { html, nothing } from 'lit';
+﻿import { html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
@@ -44,15 +44,13 @@ export class SidebarGroup extends StyledElement<ElementParts> {
   @property({ type: String }) label?: string | DirectiveResult;
   
   render() {
-    // ⚠**콤팩트 상태에서 라벨이 숨는 것과 접근 가능한 이름이 사라지는 것은 다르다.**
-    //   `?hidden`이 `part="label"`을 접근성 트리에서도 제거하므로, `label`이 순수
-    //   문자열일 때는 `aria-label`로 승격한다(SidebarButton과 같은 수정).
-    const compactLabel = this.compact && typeof this.label === 'string' ? this.label : nothing;
+    // ⚠콤팩트 상태의 라벨은 `compact` 속성으로 **시각적으로만** 숨긴다(스타일의 visually-hidden) —
+    //   내용이 곧 헤더 버튼의 이름이라 라벨 타입(문자열·번역 디렉티브)을 가리지 않는다. `hidden` 은
+    //   접근성 트리에서도 빼서 이름 없는 버튼을 만들었다(SidebarButton·SidebarLink 와 같은 수정).
     return html`
       <button part="header"
         ?compact=${this.compact}
         ?selected=${this.selected}
-        aria-label=${compactLabel}
         @click=${this.handleButtonClick}>
         <!--
           ⚠ ?hidden 을 걸지 않는다. 접힌 상태에서는 라벨과 캐럿이 모두 숨으므로,
@@ -65,7 +63,7 @@ export class SidebarGroup extends StyledElement<ElementParts> {
           .name=${this.icon}
           .fallback=${DEFAULT_NAV_ICON}
         ></u-icon>
-        <span class="label" part="label" ?hidden=${this.compact}>
+        <span class="label" part="label" ?compact=${this.compact}>
           ${this.label}
         </span>
         <u-icon class="caret" part="caret" ?hidden=${this.compact}

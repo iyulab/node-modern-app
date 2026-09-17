@@ -22,6 +22,9 @@ export { MasterDetailLayout } from './components/MasterDetailLayout.js';
 export { Wizard } from './components/Wizard.js';
 export type { WizardStep, WizardStepState, WizardStepChangeDetail } from './components/Wizard.js';
 
+// 반응형 번역 디렉티브 — `app.load({ i18n })` 가 초기화한 i18next 에 붙는다.
+export { translate } from './translate.js';
+
 // 로케일 레지스트리 — 이 패키지는 범용 층이라 기본값이 **영어**다.
 // 한국어 등은 소비자가 등록한다: registerLocale('ko', { back: '뒤로', … }).
 export {

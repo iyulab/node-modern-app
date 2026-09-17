@@ -131,11 +131,14 @@ await app.load({
 app.i18n.t('namespace::key');
 ```
 
-Use in Lit templates with `lit-i18n`:
+Use in Lit templates — and as a sidebar item `label` — with the `translate()` directive. It
+re-renders when the language changes or resources arrive, and renders an empty string until i18next
+is initialized:
 
 ```typescript
-import { translate } from 'lit-i18n';
+import { translate } from '@iyulab/modern-app';
 html`<p>${translate('namespace::greeting')}</p>`;
+// layout: { main: [{ type: 'link', label: translate('nav::home'), href: '/' }] }
 ```
 
 ---

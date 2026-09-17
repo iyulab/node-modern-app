@@ -75,17 +75,15 @@ export class SidebarLink extends StyledElement<ElementParts> {
     //   스크린리더의 «링크» 역할·`pattern` 기반 선택 표시를 전부 잃고, 섹션·그룹이 `button` 을
     //   받지 않아 **메뉴 최상위로 밀려난다.**
     // ⚠**콤팩트 상태에서 라벨이 숨는 것과 접근 가능한 이름이 사라지는 것은 다르다** —
-    //   `label`이 순수 문자열일 때 `aria-label`로 승격한다(`u-link`가 이미 호스트의
-    //   `aria-label`을 내부 `<a>`로 forwarding한다 — SidebarButton/
-    //   SidebarGroup과 같은 수정).
-    const compactLabel = this.compact && typeof this.label === 'string' ? this.label : nothing;
+    //   라벨은 `compact` 속성으로 **시각적으로만** 숨긴다(스타일의 visually-hidden). `hidden` 은
+    //   접근성 트리에서도 빼므로 이름 없는 링크가 됐고, 종전 대책(문자열일 때만 `aria-label`
+    //   승격)은 번역 디렉티브 라벨을 구하지 못했다 — 내용이 곧 이름이면 라벨 타입을 가리지 않는다.
     return html`
       <u-link
         .href=${this.href || '#'}
         .navigate=${this.navigate}
         .target=${this.target}
         aria-current=${this.selected ? 'page' : nothing}
-        aria-label=${compactLabel}
       >
         <div class="container" part="base" ?compact=${this.compact}>
           <u-icon part="icon"
@@ -93,7 +91,7 @@ export class SidebarLink extends StyledElement<ElementParts> {
             .name=${this.icon}
             .fallback=${DEFAULT_NAV_ICON}
           ></u-icon>
-          <span part="label" ?hidden=${this.compact}>
+          <span part="label" ?compact=${this.compact}>
             ${this.label}
           </span>
         </div>

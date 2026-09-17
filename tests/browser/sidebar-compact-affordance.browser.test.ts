@@ -1,5 +1,10 @@
+/// <reference types="@vitest/browser-playwright" />
 import { describe, it, expect, beforeAll, afterEach } from 'vitest';
+import { page } from 'vitest/browser';
+import i18next from 'i18next';
+import { translate } from '../../src/translate.js';
 import '@iyulab/components/styles/tokens.css';
+import '@iyulab/router'; // u-link — 실제 앱에서는 셸(App.js)이 등록한다
 import '../../src/components/SidebarLink.js';
 import '../../src/components/SidebarButton.js';
 import '../../src/components/SidebarGroup.js';
@@ -82,10 +87,21 @@ describe('접힌 사이드바 — 누를 것이 있다', () => {
   const accessibleNameHost = (tag: string, el: HTMLElement): HTMLElement =>
     (tag === 'u-sidebar-link' ? el.shadowRoot!.querySelector('u-link') : pressable(el)) as HTMLElement;
 
+  // ⚠cycle-663 부터 이름은 `aria-label` 이 아니라 **시각적으로만 숨긴 라벨 내용**에서 온다 —
+  //   속성 대신 계산된 이름을 잰다(역할 로케이터가 섀도 루트를 뚫고 계산한다).
+  const roleOf = (tag: string) => (tag === 'u-sidebar-link' ? 'link' : 'button');
+
   for (const tag of NAV_ITEMS) {
-    it(`★${tag} — 접힌 상태에서도 aria-label로 접근 가능한 이름이 남는다`, async () => {
+    it(`★${tag} — 접힌 상태에서도 접근 가능한 이름이 남는다`, async () => {
+      await mount(tag, { label: '항목', compact: '' });
+      await expect.element(page.getByRole(roleOf(tag), { name: '항목' })).toBeInTheDocument();
+    });
+
+    it(`${tag} — 접힌 상태의 라벨은 보이지 않는다(시각 전용 숨김)`, async () => {
       const el = await mount(tag, { label: '항목', compact: '' });
-      expect(accessibleNameHost(tag, el).getAttribute('aria-label')).toBe('항목');
+      const label = el.shadowRoot!.querySelector('[part="label"]') as HTMLElement;
+      const box = label.getBoundingClientRect();
+      expect(box.width * box.height).toBeLessThanOrEqual(1);
     });
   }
 
@@ -96,4 +112,26 @@ describe('접힌 사이드바 — 누를 것이 있다', () => {
       el.remove();
     }
   });
+
+  /**
+   * 🔴**번역 라벨(디렉티브)도 접힌 상태에서 이름을 잃지 않는다** (cycle-663).
+   *
+   * 위 수정은 `label` 이 **문자열일 때만** `aria-label` 로 승격한다 — 디렉티브 결과는 평문화할 수 없어서다.
+   * 그런데 라벨 자리는 번역 디렉티브를 받도록 설계됐고(`string | DirectiveResult`), 라벨 자체는
+   * `?hidden` 으로 접근성 트리에서 빠졌다. ⇒ 번역한 사이드바를 접으면 **이름 없는 버튼**이었다.
+   * 속성이 아니라 **계산된 접근성 이름**으로 잰다(역할 로케이터는 섀도 루트를 뚫고 이름을 계산한다).
+   */
+  for (const tag of NAV_ITEMS) {
+    it(`🔴${tag} — 접힌 상태에서 번역 디렉티브 라벨도 접근 가능한 이름이 된다`, async () => {
+      if (!i18next.isInitialized) {
+        await i18next.init({ lng: 'en', resources: { en: { nav: { home: 'Dashboard' } } }, nsSeparator: '::' });
+      }
+      const el = document.createElement(tag) as HTMLElement & { label: unknown; compact: boolean; updateComplete: Promise<unknown> };
+      el.label = translate('nav::home');
+      el.compact = true;
+      document.body.appendChild(el);
+      await el.updateComplete;
+      await expect.element(page.getByRole(roleOf(tag), { name: 'Dashboard' })).toBeInTheDocument();
+    });
+  }
 });

@@ -113,8 +113,8 @@ await app.load({
 app.i18n.t('common::greeting');
 app.i18n.changeLanguage('ko');
 
-// Reactive translations in Lit templates
-import { translate } from 'lit-i18n';
+// Reactive translations in Lit templates — and in shell labels
+import { translate } from '@iyulab/modern-app';
 html`<p>${translate('common::greeting')}</p>`;
 ```
 
@@ -263,7 +263,7 @@ contrast likewise comes from that package's tokens.
 | [layout.md](./docs/layout.md) | Sidebar layout, all menu item types, responsive behaviour |
 | [theme.md](./docs/theme.md) | Theme init, runtime switching, token layers, shell surface tokens |
 | [notifications.md](./docs/notifications.md) | Toast methods and options |
-| [i18n.md](./docs/i18n.md) | i18next setup, plugins, lit-i18n usage |
+| [i18n.md](./docs/i18n.md) | i18next setup, plugins, the `translate()` directive |
 | [configuration.md](./docs/configuration.md) | Full TypeScript interface reference |
 
 ## License
