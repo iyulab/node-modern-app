@@ -186,11 +186,16 @@ export const styles = css`
   .main-region {
     position: relative;
     flex: 1;
-    /* :host([state="mobile"]) 은 flex-direction: column 이라 이 축(높이)이 주축이 된다 —
-       min-height: 0 없이는 flex item 의 자동 최소 크기가 콘텐츠 기준(.main 의 min-content
-       높이)으로 잡혀, flex-shrink 가 있어도 뷰포트보다 작게 줄지 못한다. 그 결과 .main 의
-       overflow: auto 가 한 번도 발동하지 않고 셸 전체가 콘텐츠 높이만큼 부풀어 오른다. */
+    /* flex item 의 자동 최소 크기는 콘텐츠 기준(.main 의 min-content)이다 — 이 래퍼는
+       overflow 가 visible 이라 그 하한이 그대로 살아, flex-shrink 가 있어도 셸 밖으로
+       커진다. 그러면 .main 의 overflow: auto 가 한 번도 발동하지 않는다. 주축이 어느 쪽이든
+       같은 원인이라 두 축을 함께 푼다:
+         · 높이 — :host([state="mobile"]) 은 flex-direction: column 이라 min-height 가 필요하다.
+           없으면 셸 전체가 콘텐츠 높이만큼 부풀어 오른다.
+         · 너비 — 데스크톱(row)에서는 min-width 가 필요하다. 없으면 넓은 표 하나가 셸을
+           뷰포트 밖으로 밀어 오른쪽 열이 잘리고 가로 스크롤도 생기지 않는다. */
     min-height: 0;
+    min-width: 0;
   }
 
   .main {
