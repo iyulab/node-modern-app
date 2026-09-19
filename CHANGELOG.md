@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.22.1] - 2026-09-19
+
+### Fixed
+
+- **A wide route content no longer pushes the desktop shell past the viewport.** In 0.22.0 the
+  scroll region's wrapper lacked a horizontal minimum-size override, so a body wider than the
+  available width (a data grid whose columns sum past the viewport) grew the wrapper beyond the
+  viewport: the right-hand columns were clipped and neither the content area nor the page scrolled
+  horizontally. The wide content now scrolls inside the content area again, as it did before 0.22.0.
+  This is the horizontal counterpart of the mobile height fix shipped in 0.22.0.
+
 ## [0.22.0] - 2026-09-18
 
 ### Added
