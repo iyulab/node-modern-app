@@ -1,5 +1,36 @@
 # Changelog
 
+## [0.23.0] - 2026-09-21
+
+### Fixed
+
+- **Route content no longer paints through an open overlay.** The overlay frame sits at
+  `z-index: 1`, while route content routinely holds positioned descendants with a higher one —
+  a data grid's sticky header row and pinned columns sit at 2–4. Neither the content area nor
+  its wrapper established a stacking context, so those competed with the overlay frame in the
+  same context and won: the list showed through the panel meant to cover it. While the overlay
+  is open, the wrapper holding route content is now its own stacking context, so no `z-index`
+  in route content can outrank the panel. Raising the frame's own `z-index` was rejected as a
+  fix — it only moves the finish line, and a larger value in route content would win again.
+  The boundary applies only while the overlay is open, so nothing else about how route content
+  paints changes.
+
+### Added
+
+- **`part="main-content"`** on the wrapper holding route content, so the `inert` the shell
+  applies while the overlay is open is visible from outside. It is applied to this wrapper and
+  not to `part="main"` — that one is the scroll container and stays interactive — which made it
+  easy to read `inert` off `part="main"`, see `false`, and conclude the shell was not applying
+  it at all.
+
+### Documentation
+
+- **The overlay's ownership contract is now written down** — what the shell provides (placement,
+  paint order, `inert`, the close affordance, keeping the route mounted) and what stays with the
+  consumer (moving and restoring focus, Escape-to-close, any scrim, the panel's accessible
+  name). `docs/layout.md` had never documented the overlay slot at all, and its parts table was
+  missing `overlay` and `overlay-close`; both now match the skill pack's reference.
+
 ## [0.22.1] - 2026-09-19
 
 ### Fixed

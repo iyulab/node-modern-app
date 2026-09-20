@@ -239,7 +239,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         <div class="main" part="main" scrollable tabindex="-1" @keydown=${this._handleMainKeydown}>
           <u-progress-bar part="progress"></u-progress-bar>
 
-          <div class="main-content" ?inert=${this.hasOverlay}>
+          <div class="main-content" part="main-content" ?inert=${this.hasOverlay}>
             <slot></slot>
           </div>
         </div>

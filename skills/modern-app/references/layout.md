@@ -256,7 +256,8 @@ Parts available for `styles` overrides on the root layout:
 | `sidebar-header` | Logo + title area |
 | `sidebar-main` | Scrollable main nav area |
 | `sidebar-footer` | Pinned footer area |
-| `main` | Main content area |
+| `main` | Main content area (the scroll container) |
+| `main-content` | Wrapper holding route content inside `main` — the shell puts `inert` here while the overlay is open |
 | `progress` | Top progress bar |
 | `overlay` | Route-independent overlay panel above `main` |
 | `overlay-close` | Overlay's close button |
@@ -333,6 +334,35 @@ actually be emptied (removed or reassigned) for `slotHasContent` to see it as cl
 To keep the underlying route mounted while a URL parameter drives the overlay open/closed (so a
 query-string change doesn't remount the whole screen), give the route a `key` that excludes that
 parameter — see [`docs/routing.md`](../../../docs/routing.md) `RouteConfig.key`.
+
+### What the shell owns, and what it does not
+
+The overlay is a **layer**, not a modal dialog. Splitting that precisely is what keeps a consumer
+from either re-implementing what the shell already does, or dropping what it does not.
+
+| Concern | Owner | How |
+|---|---|---|
+| Placement, size and scrolling of the panel | shell | `part="overlay"` covers the main region and scrolls on its own |
+| Painting above route content | shell | while the overlay is open, `part="main-content"` becomes its own stacking context, so a `z-index` in route content cannot paint through the panel |
+| Making route content non-interactive | shell | `inert` on `part="main-content"`, which propagates through the slot into your route content |
+| A close affordance | shell | `part="overlay-close"`, firing the non-cancelable `overlay-close` event |
+| Keeping the route mounted underneath | shell | the overlay is independent of routing |
+| **Moving focus into the panel when it opens** | **consumer** | focus the panel or its first control yourself |
+| **Restoring focus when it closes** | **consumer** | remember the trigger and re-focus it |
+| **Escape to close** | **consumer** | the shell binds no key; listen for it and empty the slot |
+| **A backdrop / dimmed scrim** | **consumer** | the panel is opaque and full-bleed by design; add a scrim inside your panel if you want one |
+| **Announcing the panel to assistive tech** | **consumer** | put `role`/`aria-label` (or `aria-modal`, if you have made it modal) on *your* panel — the shell does not know what it holds |
+
+⚠ **`inert` is applied to `part="main-content"`, not to `part="main"`.** `part="main"` is the scroll
+container and stays interactive so it can keep scrolling; the wrapper inside it is what goes inert.
+Reading `inert` off `part="main"` reports `false` and says nothing about whether the shell applied it.
+There is also no reliable way to check it by enumeration — `querySelectorAll` still returns focusable
+elements inside an inert subtree. Inertness shows up when something tries to *take* focus, not when
+you count what is there.
+
+⚠ **Page-level scroll is not locked**, deliberately. In the shell model `part="main"` is the scroller
+and the overlay covers it, so there is nothing behind it to scroll. If your app instead lets the
+document itself scroll, locking that is yours.
 
 No `overlayBreakpoint`/responsive toggle exists here — unlike `u-master-detail-layout`, this
 overlay is always an overlay, never a side-by-side pane. Use `u-master-detail-layout` instead
