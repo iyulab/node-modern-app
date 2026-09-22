@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.24.0] - 2026-09-22
+
+### Fixed
+
+- **The shell draws its own chrome without reaching the network.** The mobile and sidebar
+  toggles were hard-coded to `lib="bootstrap"`, which `@iyulab/components` resolves over a CDN.
+  An app that registers its own bundled icons still could not reach those two, because the shell
+  never routed through that registration — so on a network-isolated deployment the toggles
+  stayed blank and a failing request repeated on every render. Working around it from outside
+  meant intercepting a globally registered library name, with an unclear blast radius. Both
+  toggles now resolve from the bundled internal set, as the overlay close button already did.
+- That asymmetry was a small defect of its own: one shell drew two different close glyphs, a
+  CDN-backed one in the mobile header and a bundled one on the overlay. **The visible change is
+  a slightly different stroke on three controls.**
+
+### Added
+
+- **`icons` config.** Overrides both the source and the individual names, per key. It takes
+  names as well as the library because the defaults are bundled-set names and another set is not
+  guaranteed to carry them — pointing the shell at your own icons needs both halves. See
+  `docs/configuration.md`.
+
+### Changed
+
+- 🔴 **The `@iyulab/components` peer range is now `>=1.43.0`** (was `>=1.42.0`). The shell's
+  chrome depends on `menu-2` and `layout-sidebar` existing in that package's built-in set, and
+  those names arrive in **1.43.0**. The old range admitted 1.42.x, which would have let
+  `components@1.42.4` install alongside this version with no warning at all — and then the shell
+  icons would be blank whether or not the deployment had network access, which is a wider
+  failure than the one this release fixes. Publishing in the right order does not prevent that:
+  ordering is a property of how we release, while the range is what a consumer is allowed to
+  install.
+
+### Notes
+
+- The regression test resolves each default name **against the bundle** rather than only
+  asserting which name the shell asks for. Asserting the name alone would let a typo blank the
+  icon with every assertion still passing.
+
 ## [0.23.0] - 2026-09-21
 
 ### Fixed
