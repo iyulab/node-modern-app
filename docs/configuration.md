@@ -144,6 +144,13 @@ interface SidebarLayoutConfig {
    */
   scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
 
+  /**
+   * Shell chrome icon source and names — only the keys you set replace the defaults.
+   * Defaults resolve from the bundled `internal` set, so the shell draws itself without
+   * reaching the network. See `docs/layout.md` § `icons`.
+   */
+  icons?: SidebarIconsConfig;
+
   styles?: StyleMap<SidebarParts>;
 }
 ```

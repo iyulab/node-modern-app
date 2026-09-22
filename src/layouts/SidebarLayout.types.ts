@@ -13,6 +13,35 @@ export type { SidebarSectionConfig } from "../components/SidebarSection";
 export type { SidebarGroupConfig } from "../components/SidebarGroup";
 export type { SidebarButtonConfig } from "../components/SidebarButton";
 
+/**
+ * 셸이 **자기 chrome 으로** 그리는 아이콘의 출처와 이름. 지정한 키만 기본값을 대체한다.
+ *
+ * 🔴**기본값은 네트워크를 타지 않는다.** `internal` 은 `@iyulab/components` 가 빌드 시점에
+ * 굽는 번들이라, 폐쇄망·오프라인 배포에서도 셸 아이콘이 비지 않는다. 0.24.0 이전에는 셸의
+ * 토글러 둘이 `bootstrap`(= jsdelivr CDN 조회)을 썼고, 소비자가 자기 아이콘을 전부 번들로
+ * 구워 등록해도 **셸이 쓰는 것만은 그 등록을 타지 않았다.**
+ *
+ * ⚠**`lib` 만 바꿀 때는 이름도 함께 봐야 한다** — 기본 이름들은 `internal` 번들의 이름이고,
+ * 다른 lib 이 같은 이름을 갖는다는 보장이 없다. 자기 아이콘 세트로 갈아끼울 때는 보통
+ * `lib` 과 이름을 함께 준다:
+ *
+ * ```ts
+ * icons: { lib: 'app', menu: 'list', close: 'x-lg', sidebarToggle: 'layout-sidebar' }
+ * ```
+ */
+export interface SidebarIconsConfig {
+  /** 아래 이름들을 해석할 아이콘 lib. 기본 `'internal'`(번들 — 네트워크 없음). */
+  lib?: string;
+  /** 모바일 헤더의 메뉴 «열기». 기본 `'menu-2'`. */
+  menu?: string;
+  /** 모바일 헤더의 메뉴 «닫기». 기본 `'x'`. */
+  close?: string;
+  /** 사이드바 접기/펼치기 토글. 기본 `'layout-sidebar'`. */
+  sidebarToggle?: string;
+  /** 오버레이 닫기 버튼. 기본 `'x'`. */
+  overlayClose?: string;
+}
+
 /** 사이드바 레이아웃 컴포넌트의 요소(part) 타입 */
 export type SidebarParts = 'host' | 'mobile-header' | 'sidebar' | 'sidebar-header' | 'sidebar-main' | 'sidebar-footer' | 'main' | 'main-content' | 'progress' | 'overlay' | 'overlay-close';
 
@@ -83,6 +112,12 @@ export interface SidebarLayoutConfig {
    * "아무것도 안 함" — Vue Router의 `scrollBehavior` 미지정 기본값과 동일하다(breaking 아님).
    */
   scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
+
+  /**
+   * 셸 chrome 아이콘의 출처·이름 오버라이드. 지정한 키만 기본값을 대체한다.
+   * 기본값은 전부 `internal` 번들이라 **네트워크를 타지 않는다** — `SidebarIconsConfig` 참조.
+   */
+  icons?: SidebarIconsConfig;
 
   /** 사이드바 스타일 맵 */
   styles?: StyleMap<SidebarParts>;

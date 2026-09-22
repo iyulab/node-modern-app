@@ -194,8 +194,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           aria-label=${getLocaleStrings(this.locale || undefined).toggleMobileMenu}
           @click=${this.handleToggleButtonClick}>
           <u-icon
-            lib="bootstrap"
-            name=${this.state === 'mobile-open' ? 'x-lg' : 'list'}
+            lib=${this.icon('lib')}
+            name=${this.state === 'mobile-open' ? this.icon('close') : this.icon('menu')}
           ></u-icon>
         </u-button>
       </div>
@@ -212,8 +212,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
             aria-label=${getLocaleStrings(this.locale || undefined).toggleSidebar}
             @click=${this.handleToggleButtonClick}>
             <u-icon
-              lib="bootstrap"
-              name="layout-sidebar"
+              lib=${this.icon('lib')}
+              name=${this.icon('sidebarToggle')}
             ></u-icon>
           </u-button>
         </div>
@@ -248,7 +248,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           <u-button class="overlay-close" part="overlay-close" variant="ghost"
             aria-label=${getLocaleStrings(this.locale || undefined).detailClose}
             @click=${this.handleOverlayClose}>
-            <u-icon lib="internal" name="x"></u-icon>
+            <u-icon lib=${this.icon('lib')} name=${this.icon('overlayClose')}></u-icon>
           </u-button>
           <slot name="overlay" @slotchange=${this.handleOverlaySlotChange}></slot>
         </div>
@@ -356,6 +356,28 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
    * 🔴로고는 홈(또는 `href`)으로 가는 **링크**다 — 종전엔 클릭만 받는 `img`·`span`·`u-icon` 이라 키보드로 닿지 않았고
    *   보조기술에 링크로 드러나지 않았다. `u-link` 는 `href` 가 없으면 basepath 로 SPA 이동하므로 종전 `app.navigate('')` 와 같다.
    */
+  /**
+   * 셸이 **자기 chrome 으로** 그리는 아이콘의 기본값 — 전부 `internal` 번들이라 네트워크를 타지 않는다.
+   *
+   * 🔴**0.24.0 이전에는 토글러 둘이 `bootstrap`(= jsdelivr CDN 조회)이었다.** 소비앱이 자기
+   * 아이콘을 빌드 시점에 전부 구워 등록해도 **셸이 쓰는 것만은 그 등록을 타지 않아**, 폐쇄망
+   * 배포에서 사이드바 토글이 빈 채로 남고 매번 실패하는 요청이 쌓였다. ⚠그리고 셸이 스스로
+   * 갈려 있었다 — 오버레이 닫기는 `internal`, 모바일 닫기는 `bootstrap` 이라 **한 셸이 서로
+   * 다른 X 를 둘 그렸다.**
+   */
+  private static readonly DEFAULT_ICONS = {
+    lib: 'internal',
+    menu: 'menu-2',
+    close: 'x',
+    sidebarToggle: 'layout-sidebar',
+    overlayClose: 'x',
+  } as const;
+
+  /** 설정이 준 값이 있으면 그것을, 없으면 기본값을 돌려준다(키 단위 부분 오버라이드). */
+  private icon(slot: keyof typeof SidebarLayout.DEFAULT_ICONS): string {
+    return this.config?.icons?.[slot] ?? SidebarLayout.DEFAULT_ICONS[slot];
+  }
+
   private renderLogo() {
     const logo = this.config?.logo;
     // 아이콘·커스텀 로고는 이름이 없으므로 앱 제목을 링크 이름으로 준다(이미지형은 `alt` 가 이름이다).

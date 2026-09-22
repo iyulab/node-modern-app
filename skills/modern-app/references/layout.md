@@ -27,6 +27,9 @@ interface SidebarLayoutConfig {
   /** Called on `route-done` (before focus moves to the container) with the new route's `RouteContext` and the scroll container itself — implement reset/save/restore here. Unset does nothing (same default as Vue Router's unset `scrollBehavior`). Also reachable outside the hook via the element's `.mainElement` accessor. */
   scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
 
+  /** Shell chrome icon source and names — `{ lib?, menu?, close?, sidebarToggle?, overlayClose? }`, only the keys you set replace the defaults. Defaults come from the bundled `internal` set, so the shell needs no network to draw its own toggles; give `lib` **and** the names to point it at your own set. */
+  icons?: SidebarIconsConfig;
+
   /** Per-part style overrides (CSS custom properties / inline styles). */
   styles?: StyleMap<SidebarParts>;
 }

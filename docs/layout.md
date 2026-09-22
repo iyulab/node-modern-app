@@ -49,10 +49,49 @@ interface SidebarLayoutConfig {
    */
   scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
 
+  /** Shell chrome icon source and names. Only the keys you set replace the defaults. */
+  icons?: SidebarIconsConfig;
+
   /** Per-part CSS style overrides. */
   styles?: StyleMap<SidebarParts>;
 }
 ```
+
+### `icons` — where the shell's own chrome icons come from
+
+The shell draws three chrome icons of its own: the mobile menu toggle, the sidebar collapse toggle,
+and the overlay close button. They resolve from the `internal` bundle, which `@iyulab/components`
+bakes in at build time, so **the shell never reaches the network to draw itself** — an app deployed
+without internet access still gets its toggles.
+
+```typescript
+export interface SidebarIconsConfig {
+  /** Library the names below resolve from. Default `'internal'` (bundled, no network). */
+  lib?: string;
+  /** Mobile header, menu open. Default `'menu-2'`. */
+  menu?: string;
+  /** Mobile header, menu close. Default `'x'`. */
+  close?: string;
+  /** Sidebar collapse/expand toggle. Default `'layout-sidebar'`. */
+  sidebarToggle?: string;
+  /** Overlay close button. Default `'x'`. */
+  overlayClose?: string;
+}
+```
+
+Point the shell at your own icon set by giving the library **and** the names — the defaults are
+`internal` bundle names, and another library is not guaranteed to have them:
+
+```typescript
+icons: { lib: 'app', menu: 'list', close: 'x-lg', sidebarToggle: 'layout-sidebar' }
+```
+
+> Before 0.24.0 the two toggles were hard-coded to `lib="bootstrap"`, which `@iyulab/components`
+> resolves over a CDN. An app that baked its own icons into the bundle still could not reach those
+> two — the shell did not route through its registration — so on a network-isolated deployment the
+> toggles stayed blank and a failing request repeated on every render. The default moved to the
+> bundled set, which also settles a smaller inconsistency: the shell used to draw two different
+> close glyphs, a CDN one in the mobile header and a bundled one on the overlay.
 
 ### `logo` variants
 
