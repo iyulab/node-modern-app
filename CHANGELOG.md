@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.27.0] - 2026-09-24
+
+### Added
+
+- **`u-group-box[meta]` — secondary text beside the title.** List-like sections of a detail screen
+  almost always carry a count (`3 items`, `2/5 done`), and with `title` being a plain string the
+  count was drawn at the title's size, weight and color, so the section name and its current
+  state read as one heading. `meta` draws that text one step below the title — body size and
+  weight, weak color, tabular figures — on the same baseline. It sits inside the heading, so the
+  heading's accessible name includes it. It is not drawn without a `title`. New `meta` part.
+
 ## [0.26.0] - 2026-09-23
 
 ### Changed
