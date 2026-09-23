@@ -73,6 +73,10 @@ stay level:
   blank="No downtime recorded for the failures"></u-info-field>
 ```
 
+`tone` colors a blank value too, so a reason that needs attention takes `tone="negative"`. Set it
+conditionally (`tone=${mttr == null ? 'negative' : undefined}`) — otherwise the value is toned
+as well once it exists.
+
 ## CSS Parts
 
 | Part | Description |
