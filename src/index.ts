@@ -27,15 +27,17 @@ export type { WizardStep, WizardStepState, WizardStepChangeDetail } from './comp
 // 반응형 번역 디렉티브 — `app.load({ i18n })` 가 초기화한 i18next 에 붙는다.
 export { translate } from './translate.js';
 
-// 로케일 레지스트리 — 이 패키지는 범용 층이라 기본값이 **영어**다.
-// 한국어 등은 소비자가 등록한다: registerLocale('ko', { back: '뒤로', … }).
+// 크롬 문구 — `@iyulab/components` 의 `Locale.namespace('modern-app')`. 범용 층이라 기본값이 **영어**다.
+// 번역은 소비자가 등록하고(`modernAppLocale.register('ko', { back: '뒤로', … })`) 언어는 `Locale.set()` 하나로 고른다.
+// `registerLocale`/`setDefaultLocale` 은 호환용으로 남는다(deprecated).
 export {
+  modernAppLocale,
   registerLocale,
   setDefaultLocale,
   getLocaleStrings,
   getDefaultLocale,
 } from './internals/locale.js';
-export type { ModernAppLocaleStrings } from './internals/locale.js';
+export type { ModernAppLocaleStrings, ModernAppMessageKey } from './internals/locale.js';
 
 // `SidebarLayout`의 반응형 상태 전환(large→slim, medium→modal, small→mobile)은
 // 이 클래스가 쏘는 `screen-resize` 이벤트에 전적으로 의존한다. `app.load()`가 내부적으로

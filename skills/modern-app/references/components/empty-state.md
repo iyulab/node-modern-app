@@ -54,5 +54,6 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 | `--u-space-lg` | Actions row top spacing |
 | `--u-space-sm` | Gap between actions |
 
-⚠ Default wording is **English** — register others with `registerLocale('ko', …)`, or pass
-`title`/`description` per screen.
+⚠ Default wording is **English** — register others with `modernAppLocale.register('ko', …)` and
+choose the language with `Locale.set()` of `@iyulab/components`, or pass `title`/`description` per
+screen.

@@ -88,7 +88,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   @property({ type: String, reflect: true }) state: SidebarState = 'default';
   /** 사이드바 레이아웃 설정 */
   @property({ type: Object }) config?: SidebarLayoutConfig;
-  /** 크롬 문자열(토글 버튼 접근성 라벨 등) 로케일 — `registerLocale`로 등록한 언어 태그 */
+  /** 크롬 문자열(토글 버튼 접근성 라벨 등) 로케일 — 이 요소만 다른 언어로 쓸 때. 비우면 `Locale` 의 활성 로케일 */
   @property({ type: String }) locale = '';
 
   @query('u-progress-bar') progressBarEl!: UProgressBar;

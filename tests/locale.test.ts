@@ -6,7 +6,9 @@ import {
   setDefaultLocale,
   getLocaleStrings,
   getDefaultLocale,
+  modernAppLocale,
 } from '../src/internals/locale.js';
+import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 const root = resolve(__dirname, '..');
 
@@ -20,7 +22,10 @@ const root = resolve(__dirname, '..');
  * 읽을 수 없는 기본값은 쓸 수 없다.
  */
 describe('로케일 레지스트리', () => {
-  beforeEach(() => setDefaultLocale(undefined));
+  beforeEach(() => {
+    setDefaultLocale(undefined);
+    Locale.set('en');
+  });
 
   it('기본값은 영어다', () => {
     const t = getLocaleStrings();
@@ -59,6 +64,72 @@ describe('로케일 레지스트리', () => {
     const a = getDefaultLocale();
     a.back = 'MUTATED';
     expect(getDefaultLocale().back).toBe('Back');
+  });
+});
+
+/**
+ * 🔴**언어는 한 곳에서 정한다 — `components` 의 `Locale`.** 종전에는 이 패키지만 자기 상태를
+ * 따로 두어, `Locale.set('ko')` 만 한 앱의 셸 버튼 이름이 한국어 화면 한가운데서 영어로 섰다
+ * (docket #416 — 에러·경고 없이). 형제 `flex-table` 은 이미 `Locale.namespace` 를 따른다.
+ */
+describe('Locale.namespace 이관 (#416)', () => {
+  beforeEach(() => {
+    setDefaultLocale(undefined);
+    Locale.set('en');
+  });
+
+  it('🔴`setDefaultLocale` 을 부르지 않으면 `Locale.get()` 을 따른다', () => {
+    modernAppLocale.register('ko', { toggleSidebar: '사이드바 접기/펼치기' });
+    Locale.set('ko');
+    expect(getLocaleStrings().toggleSidebar).toBe('사이드바 접기/펼치기');
+  });
+
+  it('`registerLocale` 로 등록한 표도 `Locale.set()` 하나로 선다 — 기존 소비자 호환', () => {
+    registerLocale('ja', { back: '戻る' });
+    Locale.set('ja-JP');
+    expect(getLocaleStrings().back).toBe('戻る');
+  });
+
+  it('요소의 `locale` 이 활성 로케일을 이긴다', () => {
+    modernAppLocale.register('ko', { back: '뒤로' });
+    Locale.set('en');
+    expect(getLocaleStrings('ko').back).toBe('뒤로');
+  });
+
+  it('`setDefaultLocale` 을 부르면 여전히 이긴다 — `undefined` 로 `Locale` 에 되돌린다', () => {
+    modernAppLocale.register('ko', { back: '뒤로' });
+    modernAppLocale.register('fr', { back: 'Retour' });
+    Locale.set('fr');
+    setDefaultLocale('ko');
+    expect(getLocaleStrings().back).toBe('뒤로');
+    setDefaultLocale(undefined);
+    expect(getLocaleStrings().back).toBe('Retour');
+  });
+
+  it('`components` 사슬을 그대로 탄다 — 지역 없는 태그가 지역형 표로', () => {
+    modernAppLocale.register('zh-CN', { back: '返回' });
+    Locale.set('zh');
+    expect(getLocaleStrings().back).toBe('返回');
+  });
+
+  it('마법사 알림은 네임스페이스에서 {index}/{total}/{label} 템플릿이다', () => {
+    modernAppLocale.register('ko', { wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}' });
+    Locale.set('ko');
+    expect(getLocaleStrings().wizardStepAnnouncement(2, 3, '확인')).toBe('3단계 중 2단계: 확인');
+  });
+
+  it('`registerLocale` 의 함수형 알림도 계속 동작한다 — 사슬을 거쳐서', () => {
+    registerLocale('de', { wizardStepAnnouncement: (i, n, l) => `Schritt ${i}/${n}: ${l}` });
+    Locale.set('de-AT');
+    expect(getLocaleStrings().wizardStepAnnouncement(1, 4, 'Start')).toBe('Schritt 1/4: Start');
+  });
+
+  it('영어 알림은 종전과 같다', () => {
+    expect(getLocaleStrings().wizardStepAnnouncement(1, 2, 'Info')).toBe('Step 1 of 2: Info');
+  });
+
+  it('빈 기본 설명은 빈 채로 — 키 이름이 새어 나오지 않는다', () => {
+    expect(getLocaleStrings().noDataDescription).toBe('');
   });
 });
 

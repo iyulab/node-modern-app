@@ -60,7 +60,7 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
   @property({ type: Number, attribute: 'overlay-breakpoint' }) overlayBreakpoint = 760;
 
   /**
-   * 언어 태그. 비우면 `setDefaultLocale()` 값, 그것도 없으면 영어.
+   * 언어 태그 — 이 요소만 문서와 다른 언어로 쓸 때. 비우면 `Locale` 의 활성 로케일.
    * 닫기 버튼의 접근성 라벨에만 쓰인다.
    */
   @property({ type: String }) locale = '';

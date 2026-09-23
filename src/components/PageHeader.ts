@@ -43,10 +43,10 @@ export class PageHeader extends StyledElement<ElementParts> {
   /**
    * 뒤로가기 링크 문구. 비우면 locale 레지스트리 값, 그것도 없으면 **영어**(`Back`).
    * ⚠이 패키지는 범용 층이라 특정 언어를 기본값으로 가질 수 없다 —
-   * 한국어는 `registerLocale('ko', { back: '뒤로' })` 로 소비자가 등록한다.
+   * 한국어는 `modernAppLocale.register('ko', { back: '뒤로' })` 로 소비자가 등록한다.
    */
   @property({ type: String, attribute: 'back-label' }) backLabel = '';
-  /** 언어 태그. 비우면 `setDefaultLocale()` 값, 그것도 없으면 영어. */
+  /** 언어 태그 — 이 요소만 문서와 다른 언어로 쓸 때. 비우면 `Locale` 의 활성 로케일. */
   @property({ type: String }) locale = '';
 
   /**

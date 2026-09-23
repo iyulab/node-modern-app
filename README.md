@@ -118,6 +118,30 @@ import { translate } from '@iyulab/modern-app';
 html`<p>${translate('common::greeting')}</p>`;
 ```
 
+### Built-in strings
+
+The package's own strings — the page header's back link, empty-state copy, the shell's toggle and
+close labels, the wizard's buttons and step announcement — are English by default and live in the
+`modern-app` namespace of `@iyulab/components`' `Locale`. Register translations there and pick the
+language once, with `Locale.set()`; the primitives and `@iyulab/flex-table` follow the same call:
+
+```typescript
+import { Locale } from '@iyulab/components';
+import { modernAppLocale } from '@iyulab/modern-app';
+
+modernAppLocale.register('ko', {
+  back: '뒤로',
+  toggleSidebar: '사이드바 접기/펼치기',
+  wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}',
+});
+Locale.set('ko');
+```
+
+A partial table is enough — untranslated keys fall back to English. An element's own `locale`
+attribute overrides the active language for that element. `registerLocale`/`setDefaultLocale` still
+work but are deprecated: a `setDefaultLocale()` call takes precedence over `Locale` until it is
+called with `undefined`.
+
 ### 부팅 인증 게이트 (`auth`)
 
 셸을 만들기 전에 세션을 판정한다. 소비앱이 `app.load()` 앞단에 손으로 짜던 "me 조회 → 미인증이면 로그인, 인증이면 앱 로드" 게이트를 표준화한다. 세션 조회/로그인 HTTP 는 `@iyulab/enterprise` 의 `createAuthClient` 가, 세션-중 401 은 `createODataService` 의 `onUnauthorized` 가 담당한다(프레임워크는 오케스트레이션만 소유).
