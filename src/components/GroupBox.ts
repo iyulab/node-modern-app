@@ -1,4 +1,5 @@
 import { html } from 'lit';
+import { html as staticHtml, literal, type StaticValue } from 'lit/static-html.js';
 import { property, state, customElement } from 'lit/decorators.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
@@ -7,6 +8,13 @@ import { styles } from './GroupBox.styles.js';
 import type React from 'react';
 
 type ElementParts = 'host' | 'header' | 'title' | 'actions' | 'body';
+
+/** 제목 단계 — 페이지 제목(h1)은 `u-page-header` 몫이라 2 부터다. */
+export type GroupBoxLevel = 2 | 3 | 4 | 5 | 6;
+
+const HEADINGS: Record<GroupBoxLevel, StaticValue> = {
+  2: literal`h2`, 3: literal`h3`, 4: literal`h4`, 5: literal`h5`, 6: literal`h6`,
+};
 
 /**
  * 그룹 박스 — 제목이 붙은 카드. LOB 상세 화면의 기본 단위다.
@@ -36,6 +44,15 @@ export class GroupBox extends StyledElement<ElementParts> {
   @property({ type: Boolean }) divider = false;
   /** 본문 여백을 없앤다 — 표를 카드 가장자리까지 붙일 때. */
   @property({ type: Boolean }) flush = false;
+  /**
+   * Heading level of the title in the document outline (`2`–`6`, default `3`).
+   *
+   * The box cannot know how deep it sits in the page, so whoever composes the page says so — a
+   * box placed directly under `u-page-header` (the page's `h1`) is usually `2`, and leaving it at
+   * `3` skips a level and puts it deeper than its sibling sections. This changes semantics only:
+   * the title keeps its visual size at every level. Out-of-range values fall back to `3`.
+   */
+  @property({ type: Number, reflect: true }) level: GroupBoxLevel = 3;
 
   /**
    * 액션 슬롯 배정 상태.
@@ -49,7 +66,7 @@ export class GroupBox extends StyledElement<ElementParts> {
     const hasHeader = !!this.title || this.hasActions;
     return html`
       <div class="header ${this.divider ? 'divider' : ''} ${hasHeader ? '' : 'empty'}" part="header">
-        <h3 class="title" part="title">${this.title}</h3>
+        ${staticHtml`<${HEADINGS[this.level] ?? HEADINGS[3]} class="title" part="title">${this.title}</${HEADINGS[this.level] ?? HEADINGS[3]}>`}
         <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
           <slot name="actions"
             @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
@@ -78,6 +95,7 @@ declare module 'react' {
         title?: string;
         divider?: boolean;
         flush?: boolean;
+        level?: GroupBoxLevel;
       };
     }
   }

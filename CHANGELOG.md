@@ -2,6 +2,15 @@
 
 ## [0.25.0] - 2026-09-23
 
+### Added
+
+- **`u-group-box` takes a `level` (`2`–`6`, default `3`) for its title's place in the document
+  outline.** The title was always an `h3`. A box placed directly under `u-page-header` (the
+  page's `h1`) — the usual spot on a detail screen — skipped a level and sat deeper than its sibling
+  sections, which screen-reader heading navigation exposes. The box cannot know its own depth, so
+  the page that composes it says so: `<u-group-box level="2">`. The level changes semantics only;
+  the title looks the same at every level. The default is unchanged.
+
 ### Fixed
 
 - 🔴 **`SidebarLayout`'s toggle follows the screen size it was told about, with or without

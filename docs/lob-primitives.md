@@ -91,7 +91,7 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
   <u-button slot="actions">수정</u-button>
 </u-page-header>
 
-<u-group-box title="기본 정보">
+<u-group-box title="기본 정보" level="2">
   <a slot="actions" href="/orders/1/edit">수정</a>
   <u-info-section min="180">
     <u-info-field label="파트" value="일반"></u-info-field>

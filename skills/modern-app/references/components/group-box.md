@@ -32,6 +32,7 @@ a left edge without any consumer CSS.
 | `title` | `string` | `''` | | Header title |
 | `divider` | `boolean` | `false` | | Rule between header and body. Off by default — many rules make a screen noisy |
 | `flush` | `boolean` | `false` | | Remove body padding, for tables and lists that draw their own edges |
+| `level` | `2|3|4|5|6` | `3` | ✓ | Heading level of the title in the document outline. Set `2` for a box directly under `u-page-header` (the page's `h1`), so the outline does not skip a level. Semantics only — the title looks the same at every level |
 
 ## CSS Parts
 

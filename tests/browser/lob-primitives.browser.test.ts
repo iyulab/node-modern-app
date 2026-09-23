@@ -121,6 +121,37 @@ describe('u-info-field — 빈 값과 0 이 화면에서 갈린다', () => {
   });
 });
 
+describe('u-group-box — 제목 단계는 개요를 아는 쪽이 정한다', () => {
+  /*
+   * 결함(docket `#412`): 제목이 `<h3>` 고정이라 `u-page-header`(h1) 바로 아래에 두면 h2 를
+   * 건너뛰고, 형제 섹션(h2)보다 깊은 제목이 앞에 왔다. 박스는 자기 깊이를 알 수 없으므로
+   * 조립하는 쪽이 `level` 로 준다. 시각 크기는 단계와 무관하다.
+   */
+  const heading = (el: Element) => el.shadowRoot!.querySelector('[part="title"]')!;
+
+  it('기본은 h3 다(종전과 같다)', async () => {
+    host.innerHTML = `<u-group-box title="상태 전이"></u-group-box>`;
+    await settle();
+    expect(heading(host.firstElementChild!).tagName).toBe('H3');
+  });
+
+  it('🔴level="2" 는 h2 로 렌더하고 시각 크기는 그대로다', async () => {
+    host.innerHTML = `<u-group-box title="A"></u-group-box><u-group-box title="B" level="2"></u-group-box>`;
+    await settle();
+    const [a, b] = [...host.children].map(heading);
+    expect(b.tagName).toBe('H2');
+    expect(b.textContent!.trim()).toBe('B');
+    expect(getComputedStyle(b).fontSize).toBe(getComputedStyle(a).fontSize);
+    expect(getComputedStyle(b).marginTop).toBe('0px');
+  });
+
+  it('NEGATIVE: 범위 밖 값은 h3 로 돌아간다', async () => {
+    host.innerHTML = `<u-group-box title="X" level="9"></u-group-box>`;
+    await settle();
+    expect(heading(host.firstElementChild!).tagName).toBe('H3');
+  });
+});
+
 describe('u-group-box — 헤더 분기', () => {
   it('제목만 있어도 헤더가 나온다', async () => {
     host.innerHTML = `<u-group-box title="수금"></u-group-box>`;
