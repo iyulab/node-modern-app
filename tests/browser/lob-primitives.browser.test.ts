@@ -77,14 +77,47 @@ describe('u-info-field — 빈 값과 0 이 화면에서 갈린다', () => {
     expect(el.textContent!.trim()).toBe('동서인쇄');
   });
 
-  it('`numeric` 이 우정렬 + 고정폭 숫자를 실제로 낸다', async () => {
-    host.innerHTML = `<u-info-field label="금액" numeric></u-info-field>`;
+  /*
+   * 🔴`numeric` 은 **고정폭 숫자만** 켠다 — 정렬은 바꾸지 않는다.
+   * 종전에는 우정렬을 함께 켰고 이 시험이 그것을 계약으로 고정하고 있었다. 그런데 이 컴포넌트는
+   * 표가 아니라 라벨-값 한 쌍이고 `u-info-section` 그리드의 한 칸을 혼자 차지한다 — 세로로 맞출
+   * 이웃 숫자가 없으므로 우정렬은 값을 라벨에서 칸 반대편으로 밀어낼 뿐이었다(KPI 타일에서
+   * 라벨은 좌상, 값은 우하). `format="currency"` 가 그 정렬을 함의해 한 타일 줄 안에서 정렬이
+   * 갈리기까지 했다. 고정폭은 값이 바뀔 때 자릿수가 흔들리지 않게 하므로 그대로 둔다.
+   */
+  it.each([
+    ['numeric', `<u-info-field label="금액" numeric></u-info-field>`],
+    ['format="currency"', `<u-info-field label="금액" format="currency" currency="KRW"></u-info-field>`],
+    ['format="number"', `<u-info-field label="금액" format="number"></u-info-field>`],
+  ])('%s 는 고정폭 숫자를 내고 정렬은 라벨과 같은 시작 쪽이다', async (_name, markup) => {
+    host.innerHTML = markup;
     const el = host.firstElementChild as HTMLElement & { value?: unknown };
     el.value = 1234567;
     await settle();
     const cs = getComputedStyle(partOf(el, 'value')!);
-    expect(cs.textAlign).toBe('right');
     expect(cs.fontVariantNumeric).toContain('tabular-nums');
+    expect(['start', 'left']).toContain(cs.textAlign);
+  });
+
+  it('KPI 타일(`size="lg"` + 숫자)에서 값은 라벨과 같은 왼쪽 선에서 시작한다', async () => {
+    host.innerHTML = `
+      <u-info-section min="160" style="width: 420px">
+        <u-info-field label="미종결 작업지시" size="lg" numeric></u-info-field>
+        <u-info-field label="매출" size="lg" format="currency" currency="KRW"></u-info-field>
+      </u-info-section>`;
+    const fields = Array.from(host.querySelectorAll('u-info-field')) as (HTMLElement & { value?: unknown })[];
+    fields[0].value = 0;
+    fields[1].value = 12450000;
+    await settle();
+    for (const el of fields) {
+      const label = partOf(el, 'label')!.getBoundingClientRect();
+      const valueText = partOf(el, 'value')!;
+      const range = document.createRange();
+      range.selectNodeContents(valueText);
+      const text = range.getBoundingClientRect();
+      // 글자 상자의 왼쪽이 라벨의 왼쪽과 같은 선이다 — 칸 폭의 반대편으로 밀려나지 않는다.
+      expect(Math.abs(text.left - label.left)).toBeLessThan(2);
+    }
   });
 });
 

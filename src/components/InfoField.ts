@@ -58,9 +58,12 @@ export class InfoField extends StyledElement<ElementParts> {
   /** "아직 없음"을 나타낼 문구. */
   @property({ type: String }) blank = '—';
   /**
-   * 숫자 값 — 우정렬 + 고정폭 숫자(`tabular-nums`).
-   * ★자릿수가 세로로 맞아야 크기 비교가 눈으로 된다. LOB 화면은 금액·수량이 절반이다.
-   * `format` 이 `'number'`/`'currency'` 면 이 정렬이 자동으로 함의된다 — 따로 켤 필요 없다.
+   * Numeric value — renders with tabular figures (`tabular-nums`) so digits keep their width
+   * when the value changes. Implied by `format="number"`/`"currency"`.
+   *
+   * It does **not** change alignment: this is a label/value pair, not a table cell, so there are
+   * no neighbouring figures to line up and right-aligning only pushes the value away from its
+   * label. Where a layout does need right-aligned figures, style `::part(value)`.
    */
   @property({ type: Boolean }) numeric = false;
   /**

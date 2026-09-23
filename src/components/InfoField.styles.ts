@@ -23,8 +23,10 @@ export const styles = css`
     overflow-wrap: anywhere;
   }
 
+  /* 고정폭 숫자만 — 정렬은 건드리지 않는다. 이 요소는 표의 칸이 아니라 라벨-값 한 쌍이라
+     세로로 맞출 이웃 숫자가 없다. 우정렬하면 값이 라벨에서 칸 반대편으로 밀려날 뿐이다.
+     표처럼 열을 맞춰야 하는 배치라면 소비자가 ::part(value) 로 정렬한다. */
   .value.numeric {
-    text-align: right;
     font-variant-numeric: tabular-nums;
   }
 

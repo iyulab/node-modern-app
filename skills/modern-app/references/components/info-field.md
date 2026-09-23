@@ -33,7 +33,7 @@ and those are different states of the business. So the component owns the rule.
 | `label` | `string` | `''` | | Field label |
 | `value` | `unknown` | — | | Value; property only (`attribute: false`) |
 | `blank` | `string` | `'—'` | | Placeholder for null/undefined/empty — **not** for `0` or `false` |
-| `numeric` | `boolean` | `false` | | Right-align with tabular figures so digits line up vertically |
+| `numeric` | `boolean` | `false` | | Tabular figures, so digits keep their width as the value changes; implied by `format="number"`/`"currency"`. Does **not** change alignment |
 | `format` | `'number'\|'currency'\|'date'` | — | | Renders `value` through `@iyulab/components`' `formatNumber`/`formatCurrency`/`formatDate`; unset falls back to plain `String(value)` |
 | `currency` | `string` | — | | Currency code for `format="currency"` (e.g. `'KRW'`); omitted degrades to plain number formatting, does not throw |
 | `size` | `'default'\|'lg'` | `'default'` | ✓ | `'lg'` renders the value at the `title` type-scale step — for dashboard KPI tiles composed inside `u-info-section` |
@@ -41,8 +41,11 @@ and those are different states of the business. So the component owns the rule.
 | `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility |
 | `tone` | `'positive'\|'negative'\|'neutral'` | — | | Explicit tone override; resolves from `trend` when unset (`up→positive`, `down→negative`, `flat`/unset→`neutral`) but always wins over inference. Colors the value text itself, independent of `trend` — a static figure (e.g. a balance due) can be toned `negative` with no trend arrow |
 
-⚠ `numeric` earns its keep in **tables**, where columns of figures are compared by eye. On a
-lone field it just pushes the value away from its label.
+⚠ `numeric` no longer right-aligns (it did before 0.25.0). A field is a label/value pair that owns
+one grid cell, with no neighbouring figures to line up, so right-aligning only pushed the value
+to the far side of the cell from its label — most visibly in `size="lg"` KPI tiles, and
+inconsistently, because `format="currency"` implied it while a plain count did not. If a layout
+genuinely needs right-aligned figures, style the part: `u-info-field::part(value) { text-align: end; }`.
 
 ```html
 <u-info-field label="Total" format="currency" currency="KRW" .value=${order.total}></u-info-field>
