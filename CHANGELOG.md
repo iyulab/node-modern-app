@@ -1,5 +1,35 @@
 # Changelog
 
+## [0.26.0] - 2026-09-23
+
+### Changed
+
+- 🔴 **Built-in strings follow `Locale` of `@iyulab/components` — the language is chosen once, with
+  `Locale.set()`.** This package kept a registry of its own (`registerLocale`/`setDefaultLocale`)
+  while the primitives and `@iyulab/flex-table` follow `Locale`, so an app that set the language
+  once got the shell's `Toggle sidebar`/`Toggle menu`/`Close` labels, the back link and empty-state
+  copy in English in the middle of a translated screen — silently. The strings now live in a
+  `Locale.namespace('modern-app')`, and resolve through the same chain as the primitives (so
+  `lang="zh"` reaches a `zh-CN` table). An element's own `locale` attribute still overrides the
+  active language for that element.
+
+### Added
+
+- **`modernAppLocale`** — the namespace handle, for translations:
+  `modernAppLocale.register('ko', { back: '뒤로' })`, the same shape as `flexTableLocale.register`.
+  `wizardStepAnnouncement` is a template there (`'{total}단계 중 {index}단계: {label}'`).
+  **`ModernAppMessageKey`** is its key type.
+
+### Deprecated
+
+- **`registerLocale` and `setDefaultLocale`.** Both keep working: `registerLocale` forwards to
+  the namespace (a function-valued `wizardStepAnnouncement` still works), and a `setDefaultLocale()`
+  call still takes precedence over `Locale` until it is called with `undefined` — an app that
+  calls both with the same language sees no change and can drop `setDefaultLocale` at its leisure.
+
+⚠ **Requires `@iyulab/components` 1.45.0** (for `LocaleNamespace.textIn`, which resolves an
+element's own `locale`).
+
 ## [0.25.0] - 2026-09-23
 
 ### Added
