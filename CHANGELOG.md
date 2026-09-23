@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.25.0] - 2026-09-23
+
+### Changed
+
+- 🔴 **`u-info-field`'s `numeric` no longer right-aligns the value — it only sets tabular
+  figures.** The same applies to `format="number"` and `format="currency"`, which imply it. A
+  field is a label/value pair that owns one `u-info-section` grid cell; there are no
+  neighbouring figures in that cell to line up, so right-aligning only pushed the value to the far
+  side of the cell from its label. It was most visible in `size="lg"` KPI tiles — label at the
+  top left, value at the bottom right — and it was inconsistent: in one tile strip a currency
+  figure sat on the right while a plain count sat on the left. Tabular figures stay, so digits
+  keep their width as a value changes.
+
+⚠ **Visible change:** numeric values in info fields now start under their label. If a layout of
+yours genuinely needs right-aligned figures, style the part:
+`u-info-field::part(value) { text-align: end; }`.
+
+### Documentation
+
+- The `u-info-field` reference describes `numeric` as tabular figures only, says why it no longer
+  aligns, and gives the `::part(value)` rule for layouts that need it.
+
 ## [0.24.0] - 2026-09-22
 
 ### Fixed
