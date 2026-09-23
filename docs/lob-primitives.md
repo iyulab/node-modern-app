@@ -51,7 +51,7 @@
 | 태그 | 무엇 | slot | part |
 |---|---|---|---|
 | `u-page-header` | 제목 + 상태 배지 + 우측 액션 + 뒤로가기 | `status` · `actions` | host · back · heading · title · subtitle · status · actions |
-| `u-group-box` | 제목이 붙은 카드 | (기본) · `actions` | host · header · title · actions · body |
+| `u-group-box` | 제목이 붙은 카드(`meta`로 제목 옆 건수·진척을 한 단 아래로) | (기본) · `actions` | host · header · title · meta · actions · body |
 | `u-info-section` | `u-info-field` 들의 반응형 그리드 | (기본) | host · grid |
 | `u-info-field` | 읽기 전용 라벨-값 한 쌍(`size="lg"`로 대시보드 통계 타일, `unit`으로 단위, `trend`로 추세 표시) | (기본, `value` 를 이긴다) | host · label · value · unit · trend |
 | `u-empty-state` | 빈 상태 (`no-data` / `no-results`) | `icon` · `actions` | host · icon · title · description · actions |
@@ -99,6 +99,9 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
     <u-info-field label="비고"></u-info-field>
   </u-info-section>
 </u-group-box>
+
+<!-- 목록형 절의 건수는 제목 문자열에 섞지 않고 meta 로 — 헤딩 이름에도 함께 읽힌다 -->
+<u-group-box title="이행 이력" meta="3건" level="2">…</u-group-box>
 ```
 
 ### 대시보드 통계 타일
