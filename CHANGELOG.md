@@ -2,6 +2,17 @@
 
 ## [0.25.0] - 2026-09-23
 
+### Fixed
+
+- 🔴 **`SidebarLayout`'s toggle follows the screen size it was told about, with or without
+  `app.load()`.** Size *changes* arrived as `screen-resize` events, but the toggle read the
+  `app.screen` singleton, which only exists when `app.load()` created the observer. Assembling the
+  shell yourself — as the `/react` entry point does, with `SidebarLayout` and `ScreenObserver` —
+  left it empty, so it fell back to `'large'`: on a phone-width screen, opening the menu switched to
+  the desktop sidebar squeezed beside the content instead of the mobile overlay, and the close glyph
+  never appeared. The layout now remembers the last size it received; `app.screen` remains a
+  fallback before the first event.
+
 ### Changed
 
 - 🔴 **`u-info-field`'s `numeric` no longer right-aligns the value — it only sets tabular

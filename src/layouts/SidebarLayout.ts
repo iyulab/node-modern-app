@@ -14,7 +14,7 @@ import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
 import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
-import type { ScreenResizeEvent } from '../internals/ScreenObserver.js';
+import type { ScreenResizeEvent, ScreenSize } from '../internals/ScreenObserver.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement } from '../internals/StyledElement.js';
@@ -417,9 +417,20 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     `;
   }
 
+  /**
+   * 이 레이아웃이 마지막으로 받은 화면 크기.
+   *
+   * 크기 «전환» 은 `screen-resize` 이벤트로 받으므로 토글도 같은 출처를 읽어야 한다.
+   * 종전에는 토글이 싱글턴 `app.screen` 을 읽었는데, 그것은 `app.load()` 가 옵저버를 만들
+   * 때만 존재한다 — `/react` 처럼 레이아웃과 `ScreenObserver` 를 직접 조립하면 항상 비어
+   * `'large'` 로 떨어졌고, 모바일 폭에서 메뉴를 열면 데스크톱 사이드바가 펼쳐졌다.
+   * `app.screen` 은 이벤트를 아직 못 받았을 때의 폴백으로만 남긴다.
+   */
+  private screenSize?: ScreenSize;
+
   /** 사이드바 토글 핸들러 */
   private handleToggleButtonClick = () => {
-    const size = app.screen ?? 'large';
+    const size = this.screenSize ?? app.screen ?? 'large';
     if (size === 'large') {
       this.state = this.state === 'default' ? 'slim' : 'default';
     } else if (size === 'medium') {
@@ -522,6 +533,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   /** 화면 크기 변경에 따른 사이드바 상태 업데이트 */
   private handleScreenResize = (event: ScreenResizeEvent) => {
     const size = event.detail.size;
+    this.screenSize = size;
     if (size === 'large') {
       this.state = 'default';
     } else if (size === 'medium') {
