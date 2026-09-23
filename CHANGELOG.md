@@ -4,6 +4,12 @@
 
 ### Added
 
+- **`u-info-field` takes a `unit` — `'건'`, `'%'`, `'h'` — drawn after the value one step below
+  it: label size, body weight, weak color.** A KPI figure almost always carries a unit, and
+  written into the value it was drawn at the `size="lg"` title step, as large and as bold as the
+  number; the only way back was restating size, weight and color by hand at every tile, and a tile
+  that missed one showed a unit as big as its figure. The unit is hidden while the value is blank
+  (`— 건` is not a reading) and follows slotted value content too. Exposed as `::part(unit)`.
 - **`u-group-box` takes a `level` (`2`–`6`, default `3`) for its title's place in the document
   outline.** The title was always an `h3`. A box placed directly under `u-page-header` (the
   page's `h1`) — the usual spot on a detail screen — skipped a level and sat deeper than its sibling
@@ -23,6 +29,10 @@
   fallback before the first event.
 
 ### Changed
+
+- **At `size="lg"`, a blank value is drawn at body size rather than the title step**, so `blank`
+  can carry a short reason when a figure cannot be computed. The value row keeps its height, so
+  tiles in one strip stay level.
 
 - 🔴 **`u-info-field`'s `numeric` no longer right-aligns the value — it only sets tabular
   figures.** The same applies to `format="number"` and `format="currency"`, which imply it. A

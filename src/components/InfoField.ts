@@ -6,7 +6,7 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoField.styles.js';
 import type React from 'react';
 
-type ElementParts = 'host' | 'label' | 'value' | 'trend';
+type ElementParts = 'host' | 'label' | 'value' | 'unit' | 'trend';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
 export type InfoFieldSize = 'default' | 'lg';
 export type InfoFieldTrend = 'up' | 'down' | 'flat';
@@ -38,6 +38,7 @@ export function isBlank(v: unknown): boolean {
  * <u-info-field label="부수" .value=${order.quantity} numeric></u-info-field>
  * <u-info-field label="거래처">동서인쇄</u-info-field>   <!-- 슬롯이 value 를 이긴다 -->
  * <u-info-field label="합계" format="currency" currency="KRW" .value=${order.total}></u-info-field>
+ * <u-info-field label="미결 작업지시" size="lg" .value=${12} unit="건"></u-info-field>
  * ```
  */
 @customElement('u-info-field')
@@ -76,6 +77,12 @@ export class InfoField extends StyledElement<ElementParts> {
    * omitted, degrades to plain number formatting without a currency symbol (does not throw).
    */
   @property({ type: String }) currency?: string;
+  /**
+   * Unit shown after the value — e.g. `'건'`, `'%'`, `'h'`. Drawn one step below the value (label
+   * size, body weight, weak color) so a KPI figure keeps its emphasis at `size="lg"`. Hidden while
+   * the value is blank: a placeholder has no unit. Follows slotted value content too.
+   */
+  @property({ type: String }) unit?: string;
   /**
    * Display size. `'lg'` renders the value at the `title` type-scale step
    * (`--u-text-title-size`/`--u-text-title-weight`) — intended for dashboard KPI tiles
@@ -132,11 +139,11 @@ export class InfoField extends StyledElement<ElementParts> {
     const showTrend = this.trend !== undefined || this.trendLabel !== undefined;
     const effectiveTone = this.tone ?? inferTone(this.trend);
     const glyph = this.trend === 'up' ? '▲' : this.trend === 'down' ? '▼' : '';
+    const unit = !blank && this.unit ? html`<span class="unit" part="unit">${this.unit}</span>` : '';
     return html`
       <div class="label" part="label">${this.label}</div>
-      <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} tone-${effectiveTone}" part="value">
-        ${this.hasSlotted ? html`<slot></slot>` : blank ? this.blank : this.formatValue()}
-      </div>
+      <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} tone-${effectiveTone}" part="value">${
+        this.hasSlotted ? html`<slot></slot>` : blank ? this.blank : this.formatValue()}${unit}</div>
       ${showTrend ? html`
         <div class="trend tone-${effectiveTone}" part="trend">
           ${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
@@ -168,6 +175,7 @@ declare module 'react' {
         numeric?: boolean;
         format?: InfoFieldFormat;
         currency?: string;
+        unit?: string;
         size?: InfoFieldSize;
         trend?: InfoFieldTrend;
         /** 프로퍼티는 `trendLabel`이지만 Lit 기본 속성명 규칙(소문자화, kebab

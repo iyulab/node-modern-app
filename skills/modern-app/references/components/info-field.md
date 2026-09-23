@@ -36,6 +36,7 @@ and those are different states of the business. So the component owns the rule.
 | `numeric` | `boolean` | `false` | | Tabular figures, so digits keep their width as the value changes; implied by `format="number"`/`"currency"`. Does **not** change alignment |
 | `format` | `'number'\|'currency'\|'date'` | — | | Renders `value` through `@iyulab/components`' `formatNumber`/`formatCurrency`/`formatDate`; unset falls back to plain `String(value)` |
 | `currency` | `string` | — | | Currency code for `format="currency"` (e.g. `'KRW'`); omitted degrades to plain number formatting, does not throw |
+| `unit` | `string` | — | | Unit after the value (e.g. `'건'`, `'%'`, `'h'`), drawn one step below it — label size, body weight, weak color. Hidden while the value is blank. Also follows slotted value content |
 | `size` | `'default'\|'lg'` | `'default'` | ✓ | `'lg'` renders the value at the `title` type-scale step — for dashboard KPI tiles composed inside `u-info-section` |
 | `trend` | `'up'\|'down'\|'flat'` | — | | Trend direction; renders a trend indicator when set, alongside `trendLabel`; pair with trendLabel for an accessible name — trend alone conveys direction by color only |
 | `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility |
@@ -51,11 +52,33 @@ genuinely needs right-aligned figures, style the part: `u-info-field::part(value
 <u-info-field label="Total" format="currency" currency="KRW" .value=${order.total}></u-info-field>
 ```
 
+### Units and KPI tiles
+
+A KPI figure almost always carries a unit. Put it in `unit` rather than in the value: the value
+is drawn at the `title` step in `size="lg"`, and a unit written into the value (or the slot) is
+drawn that large and that bold too — undoing it by hand means restating size, weight and color at
+every tile.
+
+```html
+<u-info-field label="Open work orders" size="lg" .value=${openCount} unit="건"></u-info-field>
+<u-info-field label="Availability" size="lg" format="number" .value=${98.2} unit="%"></u-info-field>
+```
+
+At `size="lg"` a blank value is drawn at body size, not the title step, so `blank` can carry a
+short reason when a figure cannot be computed — the row keeps its height, so tiles in one strip
+stay level:
+
+```html
+<u-info-field label="MTTR" size="lg" .value=${mttr} unit="h"
+  blank="No downtime recorded for the failures"></u-info-field>
+```
+
 ## CSS Parts
 
 | Part | Description |
 |------|-------------|
 | `label` · `value` · `trend` | The label, the value, and the (optional) trend indicator |
+| `unit` | The unit, inside `value` (only when `unit` is set and the value is not blank) |
 
 ## CSS Custom Properties
 
@@ -69,5 +92,6 @@ genuinely needs right-aligned figures, style the part: `u-info-field::part(value
 | `--u-text-body-weight` | Value font weight when `blank` |
 | `--u-txt-color` | Value color |
 | `--u-text-title-size` / `-weight` | Value typography when `size="lg"` |
+| `--u-text-label-size` | Unit size |
 | `--u-success-color-strong` | `tone="positive"` color (value and trend) |
 | `--u-danger-color-strong` | `tone="negative"` color (value and trend) |

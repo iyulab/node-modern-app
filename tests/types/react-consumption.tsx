@@ -35,7 +35,7 @@ export function Screen() {
       <GroupBox title="Summary">
         <InfoSection min={200}>
           <InfoField label="Total" format="currency" currency="KRW" value={550000} />
-          <InfoField label="Count" value={12} />
+          <InfoField label="Count" value={12} unit="건" />
           <InfoField label="Missing" value={null} />
           <InfoField label="Text" value="plain" />
         </InfoSection>

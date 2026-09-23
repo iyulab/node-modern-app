@@ -53,7 +53,7 @@
 | `u-page-header` | 제목 + 상태 배지 + 우측 액션 + 뒤로가기 | `status` · `actions` | host · back · heading · title · subtitle · status · actions |
 | `u-group-box` | 제목이 붙은 카드 | (기본) · `actions` | host · header · title · actions · body |
 | `u-info-section` | `u-info-field` 들의 반응형 그리드 | (기본) | host · grid |
-| `u-info-field` | 읽기 전용 라벨-값 한 쌍(`size="lg"`로 대시보드 통계 타일, `trend`로 추세 표시) | (기본, `value` 를 이긴다) | host · label · value · trend |
+| `u-info-field` | 읽기 전용 라벨-값 한 쌍(`size="lg"`로 대시보드 통계 타일, `unit`으로 단위, `trend`로 추세 표시) | (기본, `value` 를 이긴다) | host · label · value · unit · trend |
 | `u-empty-state` | 빈 상태 (`no-data` / `no-results`) | `icon` · `actions` | host · icon · title · description · actions |
 | `u-action-bar` | 푸터 액션 바 — 위험 액션과 주 액션을 **거리로** 가른다 | `danger` · (기본) | host · danger · main |
 | `u-master-detail-layout` | master›detail 반응형 split-pane 셸. `detail` 슬롯이 채워지면 나타나고 비우면 사라진다. 좁은 자기 폭에서 detail 이 전체 오버레이로 전환(`overlayBreakpoint`, 기본 760px) | (기본, master) · `detail` | host · master · divider · detail · detail-close |
@@ -107,7 +107,7 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
 <u-info-section min="180">
   <u-info-field label="이번 달 매출" size="lg" format="currency" currency="KRW" .value=${55000000}
     trend="up" trendLabel="+12% vs last month"></u-info-field>
-  <u-info-field label="미결 건수" size="lg" .value=${8} numeric
+  <u-info-field label="미결 건수" size="lg" .value=${8} numeric unit="건"
     trend="down" tone="positive" trendLabel="-3 vs last week"></u-info-field>
 </u-info-section>
 ```
