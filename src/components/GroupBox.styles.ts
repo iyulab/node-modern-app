@@ -42,6 +42,14 @@ export const styles = css`
     letter-spacing: var(--u-text-subtitle-tracking, 0);
     color: var(--u-txt-color, #212121);
   }
+  /* 제목 옆 보조 메타(건수·진척) — 제목보다 한 단 아래. 헤딩 안의 인라인이라 기준선을 공유하고,
+     접근성 이름에도 함께 읽힌다. 숫자가 바뀌어도 폭이 흔들리지 않게 고정폭 숫자. */
+  .meta {
+    font-size: var(--u-text-body-size, 14px);
+    font-weight: var(--u-text-body-weight, 400);
+    color: var(--u-txt-color-weak, #616161);
+    font-variant-numeric: tabular-nums;
+  }
 
   .actions {
     flex: 0 0 auto;

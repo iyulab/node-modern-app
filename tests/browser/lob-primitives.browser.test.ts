@@ -195,6 +195,44 @@ describe('u-group-box — 헤더 분기', () => {
   });
 });
 
+describe('u-group-box — 제목 옆 보조 메타는 한 단 아래다', () => {
+  /*
+   * 결함(docket `#426`): `title` 이 문자열뿐이라 `의무 주기 (3건)` 의 건수가 제목과 같은 크기·굵기·색으로
+   * 그려졌다. 제목(무엇의 절인가)과 메타(지금 몇 건인가)의 위계는 제목 행을 소유한 이 컴포넌트가 쥔다.
+   */
+  it('메타는 제목보다 작고 가늘고 옅으며, 같은 줄의 같은 기준선에 선다', async () => {
+    host.innerHTML = `<u-group-box title="의무 주기" meta="3건"></u-group-box>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    const title = partOf(el, 'title')!;
+    const meta = partOf(el, 'meta')!;
+    const [t, m] = [getComputedStyle(title), getComputedStyle(meta)];
+    expect(parseFloat(m.fontSize)).toBeLessThan(parseFloat(t.fontSize));
+    expect(Number(m.fontWeight)).toBeLessThan(Number(t.fontWeight));
+    expect(m.color).not.toBe(t.color);
+    // 인라인 자손이라 헤딩의 줄 상자 안에 있다 — 줄바꿈하지 않는다.
+    const [tr, mr] = [title.getBoundingClientRect(), meta.getBoundingClientRect()];
+    expect(mr.top).toBeGreaterThanOrEqual(tr.top);
+    expect(mr.bottom).toBeLessThanOrEqual(tr.bottom + 0.5);
+  });
+
+  it('메타는 헤딩 안에 있어 헤딩의 이름으로 함께 읽힌다', async () => {
+    host.innerHTML = `<u-group-box title="이행 이력" meta="1건" level="2"></u-group-box>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    const h = el.shadowRoot!.querySelector('h2')!;
+    expect(h.contains(partOf(el, 'meta'))).toBe(true);
+    expect(h.textContent!.replace(/\s+/g, ' ').trim()).toBe('이행 이력 1건');
+  });
+
+  it('제목이 없으면 메타를 그리지 않는다 — 메타는 제목을 설명한다', async () => {
+    host.innerHTML = `<u-group-box meta="3건"><a slot="actions" href="#">수정</a></u-group-box>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    expect(partOf(el, 'meta')).toBeNull();
+  });
+});
+
 describe('u-page-header — 빈 상태 슬롯이 자리를 차지하지 않는다', () => {
   it('🔴상태 배지가 없으면 그 래퍼가 접힌다 (`:has()` 가 실제로 동작하는가)', async () => {
     host.innerHTML = `<u-page-header title="주문"></u-page-header>`;
