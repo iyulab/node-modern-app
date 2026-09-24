@@ -264,6 +264,7 @@ Parts available for `styles` overrides on the root layout:
 | `progress` | Top progress bar |
 | `overlay` | Route-independent overlay panel above `main` |
 | `overlay-close` | Overlay's close button |
+| `notices` | Stack of app-level notices at the top of the route content (`slot="notice"`) |
 
 ---
 
@@ -350,9 +351,9 @@ from either re-implementing what the shell already does, or dropping what it doe
 | Making route content non-interactive | shell | `inert` on `part="main-content"`, which propagates through the slot into your route content |
 | A close affordance | shell | `part="overlay-close"`, firing the non-cancelable `overlay-close` event |
 | Keeping the route mounted underneath | shell | the overlay is independent of routing |
-| **Moving focus into the panel when it opens** | **consumer** | focus the panel or its first control yourself |
-| **Restoring focus when it closes** | **consumer** | remember the trigger and re-focus it |
-| **Escape to close** | **consumer** | the shell binds no key; listen for it and empty the slot |
+| Moving focus into the panel when it opens | shell | an `[autofocus]` element in your panel, else its first input control, else `part="overlay-close"`. If you already moved focus into the panel, the shell leaves it there |
+| Restoring focus when it closes | shell | back to the control that held focus when the panel opened — only if focus fell to `<body>`; if you moved it somewhere on purpose, that stands. With no such control (opened from code), focus goes to `part="main"` |
+| Escape to close | shell | Escape inside the panel fires the same `overlay-close` as the button — you still empty the slot. An Escape already consumed inside the panel (an open list or popover calling `preventDefault()`) closes only that layer |
 | **A backdrop / dimmed scrim** | **consumer** | the panel is opaque and full-bleed by design; add a scrim inside your panel if you want one |
 | **Announcing the panel to assistive tech** | **consumer** | put `role`/`aria-label` (or `aria-modal`, if you have made it modal) on *your* panel — the shell does not know what it holds |
 
@@ -370,6 +371,29 @@ document itself scroll, locking that is yours.
 No `overlayBreakpoint`/responsive toggle exists here — unlike `u-master-detail-layout`, this
 overlay is always an overlay, never a side-by-side pane. Use `u-master-detail-layout` instead
 when you want the panel to sit *beside* content on wide screens.
+
+
+## App-level notices
+
+App-level notices — the server is unreachable, a new version is ready — belong to the shell, not to
+one screen: a screen that places its own fixed banner collides with the next notice someone adds.
+Put them in `slot="notice"`; the shell stacks them at the top of the route content.
+
+```html
+<u-sidebar-layout>
+  <u-alert slot="notice" status="warning" open>Server unreachable — retrying.</u-alert>
+  <u-alert slot="notice" status="info" open closable>A new version is ready.</u-alert>
+</u-sidebar-layout>
+```
+
+- **In flow, above the route content.** Notices scroll away with the content rather than holding a
+  strip of a small screen, and they never cover it. A banner's value is that it does not block;
+  a permanently pinned stack would eat into that on a phone.
+- **Full width.** Each notice takes the width of the content box, whatever its text length.
+- **Empty takes no space** — the stack has no margin while nothing is slotted.
+- **Inert with the route content** while the overlay is open.
+- Which surface a notice is (toast, banner or modal) is decided by *who ends it* — a notice the time
+  ends is a toast (`app.success`), not a slotted banner.
 
 ## Responsive behaviour
 

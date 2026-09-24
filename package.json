@@ -64,7 +64,7 @@
     "lit": "^3.3.3"
   },
   "peerDependencies": {
-    "@iyulab/components": ">=1.45.0",
+    "@iyulab/components": ">=1.45.2",
     "@lit/react": ">=1.0.8",
     "react": ">=18.0.0"
   },
@@ -89,6 +89,6 @@
     "vite": "^8.1.4",
     "vite-plugin-dts": "^5.0.3",
     "vitest": "^5.0.0",
-    "@iyulab/components": ">=1.42.0"
+    "@iyulab/components": ">=1.45.2"
   }
 }

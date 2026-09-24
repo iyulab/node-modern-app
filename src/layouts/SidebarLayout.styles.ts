@@ -212,6 +212,31 @@ export const styles = css`
   }
 
   /*
+   * 앱 수준 공지 스택 — 한 화면이 아니라 셸에 속한다.
+   * 본문 맨 위 «흐름 안»에 둔다. 세 대안을 소비자가 먼저 실측해 기각했다:
+   *   · fixed → 본문을 덮는다.
+   *   · 셸 바깥 흐름 → 셸 높이에 더해져 이중 스크롤.
+   *   · .main 안 sticky → 좁은 화면에서 공지 둘이 상시 3할을 점유한다. 배너는
+   *     «막지 않는 것»이 값이라 상시 점유가 그 값을 깎는다.
+   * .main-content 안에 있으므로 오버레이가 열리면 본문과 함께 inert 가 된다.
+   * 폭은 스택이 정한다 — 공지(u-alert)는 자기 폭이 fit-content 라 문구 길이대로
+   * 들쭉날쭉해진다. 배치 컨테이너의 결정이다.
+   */
+  .notices {
+    display: flex;
+    flex-direction: column;
+    gap: var(--u-space-sm, 8px);
+    margin-bottom: var(--u-space-lg, 16px);
+  }
+  .notices.empty {
+    display: none;
+  }
+  slot[name="notice"]::slotted(*) {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /*
    * 오버레이가 열린 동안 «본문 영역»을 스태킹 컨텍스트로 만든다.
    *
    * 오버레이 틀은 z-index: 1 이고, 라우트 본문은 그보다 큰 z 를 일상적으로 쓴다 —

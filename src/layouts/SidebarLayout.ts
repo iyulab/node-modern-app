@@ -80,6 +80,23 @@ function isMainTheScrollTarget(path: readonly EventTarget[], main: HTMLElement):
   return true;
 }
 
+/** 실제로 포커스를 쥔 요소 — `document.activeElement` 는 섀도 호스트에서 멈춘다. */
+function deepActiveElement(): HTMLElement | null {
+  let active = document.activeElement as HTMLElement | null;
+  while (active?.shadowRoot?.activeElement) active = active.shadowRoot.activeElement as HTMLElement;
+  return active;
+}
+
+/** `container` 가 `node` 를 섀도 경계 너머로도 품는가 — `Node.contains` 는 경계에서 멈춘다. */
+function composedContains(container: Element, node: Node): boolean {
+  let current: Node | null = node;
+  while (current) {
+    if (current === container) return true;
+    current = current.parentNode ?? ((current as ShadowRoot).host ?? null);
+  }
+  return false;
+}
+
 @customElement('u-sidebar-layout')
 export class SidebarLayout extends StyledElement<SidebarParts> {
   static styles = [ super.styles, styles ];
@@ -95,6 +112,14 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** overlay 슬롯 배정 상태 — CSS `:has()`로는 알 수 없다(`internals/slotted.ts` 참조). */
   @state() private hasOverlay = false;
+  /** notice 슬롯 배정 상태 — 비었으면 스택 자체가 자리를 차지하지 않는다. */
+  @state() private hasNotice = false;
+  /**
+   * 오버레이를 연 컨트롤 — 닫힐 때 포커스를 되돌릴 곳.
+   * ★슬롯 배정 «시점» 에 잡는다. 렌더가 본문에 `inert` 를 걸면 그 컨트롤이 쥐던 포커스는
+   *   `<body>` 로 떨어지므로, `updated()` 에서 읽으면 이미 늦다.
+   */
+  private overlayTrigger: HTMLElement | null = null;
 
   /**
    * `:state(overlay)`를 싣는 자리. `MasterDetailLayout`과 동일 패턴.
@@ -133,6 +158,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     window.removeEventListener('route-progress', this.handleRouteProgress);
     window.removeEventListener('route-error', this.handleRouteError);
     window.removeEventListener('screen-resize', this.handleScreenResize);
+    window.removeEventListener('keydown', this.handleOverlayEscape);
     super.disconnectedCallback();
   }
 
@@ -148,6 +174,13 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     super.updated(changed);
     if (changed.has('hasOverlay')) {
       this.internals?.states?.[this.hasOverlay ? 'add' : 'delete']('overlay');
+      if (this.hasOverlay) {
+        window.addEventListener('keydown', this.handleOverlayEscape);
+        this.focusOverlay();
+      } else if (changed.get('hasOverlay') === true) {
+        window.removeEventListener('keydown', this.handleOverlayEscape);
+        this.restoreOverlayFocus();
+      }
     }
   }
 
@@ -240,6 +273,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           <u-progress-bar part="progress"></u-progress-bar>
 
           <div class="main-content" part="main-content" ?inert=${this.hasOverlay}>
+            <div class="notices ${this.hasNotice ? '' : 'empty'}" part="notices">
+              <slot name="notice" @slotchange=${this.handleNoticeSlotChange}></slot>
+            </div>
             <slot></slot>
           </div>
         </div>
@@ -476,8 +512,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
     if (main) {
       this.config?.scrollBehavior?.(event.context, main);
-      // Move focus to .main so keyboard scrolling works without a mouse click
-      main.focus({ preventScroll: true });
+      // Move focus to .main so keyboard scrolling works without a mouse click —
+      // unless the overlay is open: the route underneath is inert, and the focus
+      // the user is working with is in the panel.
+      if (!this.hasOverlay) main.focus({ preventScroll: true });
     }
   }
 
@@ -495,7 +533,75 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   private handleOverlaySlotChange = (e: Event) => {
-    this.hasOverlay = slotHasContent(e.target as HTMLSlotElement);
+    const open = slotHasContent(e.target as HTMLSlotElement);
+    if (open && !this.hasOverlay) {
+      const active = deepActiveElement();
+      this.overlayTrigger = active && active !== document.body ? active : null;
+    }
+    this.hasOverlay = open;
+  };
+
+  private handleNoticeSlotChange = (e: Event) => {
+    this.hasNotice = slotHasContent(e.target as HTMLSlotElement);
+  };
+
+  /** 오버레이 패널에 배정된 요소들 */
+  private overlayPanels(): Element[] {
+    const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="overlay"]');
+    return slot?.assignedElements({ flatten: true }) ?? [];
+  }
+
+  /**
+   * 열린 패널로 포커스를 옮긴다 — 순서는 `UOverlayElement` 와 같다:
+   * `[autofocus]` → 첫 입력 컨트롤 → (없으면) 셸의 닫기 버튼.
+   * 닫기 버튼으로 떨어지는 것은 의도다 — 포커스가 `<body>` 에 남는 것보다 항상 낫고,
+   * 셸이 늘 가진 유일한 컨트롤이다. 소비자가 이미 패널 안으로 옮겨 두었으면 건드리지 않는다.
+   */
+  private focusOverlay(): void {
+    const panels = this.overlayPanels();
+    const active = deepActiveElement();
+    if (active && panels.some(p => composedContains(p, active))) return;
+
+    const pick = (selector: string) => {
+      for (const p of panels) {
+        if (p.matches(selector)) return p as HTMLElement;
+        const found = p.querySelector<HTMLElement>(selector);
+        if (found) return found;
+      }
+      return null;
+    };
+    const target = pick('[autofocus]')
+      ?? pick('input, select, textarea, u-input, u-textarea, u-select, u-checkbox, u-radio, u-switch, u-slider')
+      ?? this.shadowRoot?.querySelector<HTMLElement>('.overlay-close');
+    target?.focus();
+  }
+
+  /**
+   * 닫힌 뒤 포커스를 연 컨트롤로 되돌린다. 포커스가 `<body>` 로 떨어졌을 때만 —
+   * 소비자가 닫으며 다른 곳으로 옮겼다면 그것을 존중한다.
+   * 연 컨트롤이 없으면(프로그램이 연 경우) 메인 스크롤러로 — 라우트 완료 때와 같은 자리다.
+   */
+  private restoreOverlayFocus(): void {
+    const trigger = this.overlayTrigger;
+    this.overlayTrigger = null;
+    const active = deepActiveElement();
+    if (active && active !== document.body) return;
+    if (trigger?.isConnected) trigger.focus();
+    else this.mainElement?.focus({ preventScroll: true });
+  }
+
+  /**
+   * 패널 안의 Escape 는 닫기 버튼과 같은 `overlay-close` 를 낸다.
+   * window 버블 단계에서 받는다 — 패널 안의 목록·팝오버가 자기 층을 닫으며 먹은 키
+   * (`defaultPrevented`)는 그 층의 몫이다. 한 번의 Escape 는 한 층만 닫는다.
+   * 경로에 패널이 없으면(사이드바, 패널 위에 띄운 대화상자) 받지 않는다.
+   */
+  private handleOverlayEscape = (e: KeyboardEvent) => {
+    if (e.key !== 'Escape' || e.defaultPrevented || e.isComposing || !this.hasOverlay) return;
+    const overlay = this.shadowRoot?.querySelector('.overlay');
+    if (!overlay || !e.composedPath().includes(overlay)) return;
+    e.preventDefault();
+    this.handleOverlayClose();
   };
 
   private handleOverlayClose = () => {
