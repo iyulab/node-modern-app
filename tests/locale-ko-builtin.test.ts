@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { getLocaleStrings, setDefaultLocale, modernAppLocale } from '../src/internals/locale.js';
+import { getLocaleStrings, getDefaultLocale, setDefaultLocale, modernAppLocale } from '../src/internals/locale.js';
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 /**
@@ -20,10 +20,12 @@ describe('내장 ko 표', () => {
     Locale.set('en');
   });
 
-  const KEYS = [
-    'back', 'noDataTitle', 'noResultsTitle', 'noResultsDescription', 'detailClose',
-    'toggleMobileMenu', 'toggleSidebar', 'wizardBack', 'wizardNext',
-  ] as const;
+  // 대상은 영어 표에서 도출한다 — 손으로 쓴 목록이면 새 키가 `ko` 에서 빠져도 이 테스트가 보지 못한다.
+  // 함수(알림 — 아래에서 따로 잰다)와 영어에서도 빈 문구(`noDataDescription`)는 대상이 아니다.
+  const english = getDefaultLocale();
+  const KEYS = (Object.keys(english) as (keyof typeof english)[]).filter(
+    (k) => typeof english[k] === 'string' && english[k] !== '',
+  ) as Exclude<keyof typeof english, 'wizardStepAnnouncement'>[];
 
   it('Locale.set("ko") 만으로 비어 있지 않은 모든 문구가 영어와 다르다', () => {
     const en = getLocaleStrings();
