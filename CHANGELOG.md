@@ -1,5 +1,38 @@
 # Changelog
 
+## [0.28.0] - 2026-09-24
+
+### Added
+
+- **`slot="notice"` on `u-sidebar-layout` — a place for app-level notices.** A connection-lost
+  banner or a new-version notice belongs to the shell, not to one screen; a screen that places its
+  own fixed banner collides with the next notice someone adds. Slotted notices stack at the top of
+  the route content, in flow (they scroll away with the content instead of holding a strip of a
+  small screen, and never cover it), each at the full content width. The stack takes no space
+  while empty and goes inert with the route content while the overlay is open. New `notices` part.
+
+### Changed
+
+- **The shell now owns the overlay's keyboard contract.** It already made route content `inert`
+  while the overlay is open — and the control that opened the overlay lives in that content, so
+  its focus fell to `<body>` the moment the panel appeared. Every consumer re-implemented the same
+  three steps; the shell now does them:
+  - **focus moves into the panel** when it opens — an `[autofocus]` element, else the first input
+    control, else the close button. If you already moved focus into the panel, it stays there.
+  - **focus returns to the opening control** when it closes, if focus fell to `<body>`; if you
+    moved it elsewhere on purpose, that stands. With no opening control, it goes to `part="main"`.
+  - **Escape inside the panel fires `overlay-close`**, the same event as the close button — you
+    still empty the slot. An Escape already consumed inside the panel (an open list or popover)
+    closes only that layer.
+  Existing consumer code that does any of this itself keeps working: the shell steps aside when
+  focus is already where it would put it, and emptying the slot twice is harmless.
+- Requires `@iyulab/components` 1.45.2 or later (`u-button.focus()`).
+
+### Fixed
+
+- A route transition that completes while the overlay is open no longer pulls focus out of the
+  panel onto the (inert) route's scroll container.
+
 ## [0.27.0] - 2026-09-24
 
 ### Added
