@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.28.1] - 2026-09-24
+
+### Fixed
+
+- **No logo, no logo element.** With no `logo` configured, the shell rendered an empty `u-icon` as
+  a placeholder. Even at zero width it took one gap in the header, indenting the title; with
+  `@iyulab/components` 1.46.0, where icons reserve their box before loading, it became an
+  invisible 24px box. It is gone — update both together if you do not configure a logo.
+- `u-sidebar-link` now defines the `<u-link>` it renders instead of relying on the shell having
+  loaded the router first.
+
 ## [0.28.0] - 2026-09-24
 
 ### Added
