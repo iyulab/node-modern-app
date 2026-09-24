@@ -10,6 +10,12 @@
   state read as one heading. `meta` draws that text one step below the title — body size and
   weight, weak color, tabular figures — on the same baseline. It sits inside the heading, so the
   heading's accessible name includes it. It is not drawn without a `title`. New `meta` part.
+- **Korean built-in strings.** 0.26.0 moved the language choice to `Locale.set()`, but the namespace
+  held only an English table, so an app that already called `Locale.set('ko')` still got the
+  sidebar toggle's and overlay close button's accessible names, the back link, empty-state copy and
+  wizard labels in English. A Korean table now ships alongside English — the same scope as
+  `@iyulab/flex-table`. English stays the default; a Korean registration of your own overrides only
+  the keys it gives.
 
 ## [0.26.0] - 2026-09-23
 

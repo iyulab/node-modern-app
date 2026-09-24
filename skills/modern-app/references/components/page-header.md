@@ -58,6 +58,5 @@ screens nobody opens.
 | `--u-space-2xs` | Title-to-subtitle spacing |
 | `--u-space-3xs` | Back-arrow-to-label spacing |
 
-⚠ Built-in strings default to **English** — this package is a generic layer and cannot pick a
-language. Register others with `modernAppLocale.register('ko', { back: '뒤로' })` and choose the
-language with `Locale.set()` of `@iyulab/components`.
+⚠ Built-in strings default to **English**, with Korean built in — choose the language with
+`Locale.set()` of `@iyulab/components`. Register others with `modernAppLocale.register(lang, { back: … })`.

@@ -146,11 +146,16 @@ describe('Locale.namespace 이관 (#416)', () => {
 describe('범용 층에 한국어 기본값이 없다', () => {
   const HANGUL = /[가-힣]/;
 
-  /** 주석·JSDoc 제거 후 따옴표 문자열만 남긴다. */
+  /**
+   * 주석·JSDoc 과 **내장 `ko` 표**(`register('ko', { … })` 호출 범위)를 걷은 뒤 따옴표 문자열만 남긴다.
+   * ⚠면제는 `ko` 태그 한정이다 — `register('en', …)` 안의 한글은 여전히 위반이다(`i18n:scan` 과 같은 규칙).
+   */
   const stringLiterals = (src: string): string[] => {
     const noComments = src
       .replace(/\/\*[\s\S]*?\*\//g, '')
-      .replace(/^\s*\/\/.*$/gm, '');
+      .replace(/^\s*\/\/.*$/gm, '')
+      // 표 안 문자열에 `{total}` 같은 자리표시자 중괄호가 있어, 닫힘은 «줄 시작의 `})`» 로 잡는다.
+      .replace(/\.register\(\s*'ko'\s*,\s*\{[\s\S]*?\r?\n\}\s*\)/g, '');
     return [...noComments.matchAll(/(['"])((?:[^\\\n])*?)\1/g)].map(m => m[2]);
   };
 

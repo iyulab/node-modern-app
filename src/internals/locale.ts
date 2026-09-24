@@ -7,11 +7,11 @@
  * ★**The language is chosen in one place: `Locale.set()`** of `@iyulab/components`. The primitives
  * (`components`) and the table (`flex-table`) already follow it; this package kept a registry of its
  * own, so an app that set the language once got English shell labels in the middle of a translated
- * screen, silently. Translations are namespace registrations — the same shape as
- * `flexTableLocale.register`:
+ * screen, silently. English and Korean are built in; other languages (or different wording) are
+ * namespace registrations — the same shape as `flexTableLocale.register`:
  *
  *   import { modernAppLocale } from '@iyulab/modern-app';
- *   modernAppLocale.register('ko', { back: '뒤로', toggleSidebar: '사이드바 접기/펼치기' });
+ *   modernAppLocale.register('ja', { back: '戻る' });
  *
  * ★**English is the built-in default.** This package sits in the *generic* layer
  * (`components` = neutral primitives, `modern-app` = what a modern app usually provides,
@@ -75,6 +75,24 @@ const EN_TABLE: Record<ModernAppMessageKey, string> = {
 /** The `modern-app` chrome-string namespace. Register translations here; pick the language with `Locale.set()`. */
 export const modernAppLocale = Locale.namespace<ModernAppMessageKey>('modern-app');
 modernAppLocale.register('en', EN_TABLE);
+
+/* Built-in Korean — the same scope as the sibling `flex-table` (en + ko). English stays the default;
+   this table is used only when the resolved language is Korean. Most of these strings are accessible
+   names a sighted tester never sees, so a missing translation goes unnoticed. Other languages are
+   registered by the app with `modernAppLocale.register(lang, strings)`. */
+modernAppLocale.register('ko', {
+  back: '뒤로',
+  noDataTitle: '아직 항목이 없습니다',
+  noDataDescription: '',
+  noResultsTitle: '일치하는 결과가 없습니다',
+  noResultsDescription: '검색어나 필터를 바꿔 보세요.',
+  detailClose: '닫기',
+  toggleMobileMenu: '메뉴 열고 닫기',
+  toggleSidebar: '사이드바 열고 닫기',
+  wizardBack: '이전',
+  wizardNext: '다음',
+  wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}',
+});
 
 /* ── Deprecated registry surface — kept so existing apps keep working ─────────────────────────
    `registerLocale` accepted a function for `wizardStepAnnouncement`. A namespace stores strings,

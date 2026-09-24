@@ -121,23 +121,26 @@ html`<p>${translate('common::greeting')}</p>`;
 ### Built-in strings
 
 The package's own strings — the page header's back link, empty-state copy, the shell's toggle and
-close labels, the wizard's buttons and step announcement — are English by default and live in the
-`modern-app` namespace of `@iyulab/components`' `Locale`. Register translations there and pick the
-language once, with `Locale.set()`; the primitives and `@iyulab/flex-table` follow the same call:
+close labels, the wizard's buttons and step announcement — live in the `modern-app` namespace of
+`@iyulab/components`' `Locale`. English and Korean are built in, English being the default; pick the
+language once, with `Locale.set()` — the primitives and `@iyulab/flex-table` follow the same call.
+Register other languages, or your own wording, in the same namespace:
 
 ```typescript
 import { Locale } from '@iyulab/components';
 import { modernAppLocale } from '@iyulab/modern-app';
 
-modernAppLocale.register('ko', {
-  back: '뒤로',
-  toggleSidebar: '사이드바 접기/펼치기',
-  wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}',
+Locale.set('ko');                       // built-in Korean — nothing to register
+
+modernAppLocale.register('ja', {
+  back: '戻る',
+  toggleSidebar: 'サイドバーの切り替え',
+  wizardStepAnnouncement: 'ステップ {index}/{total}: {label}',
 });
-Locale.set('ko');
 ```
 
-A partial table is enough — untranslated keys fall back to English. An element's own `locale`
+A partial table is enough — untranslated keys fall back to English, and a registration for a
+built-in language overrides only the keys it gives. An element's own `locale`
 attribute overrides the active language for that element. `registerLocale`/`setDefaultLocale` still
 work but are deprecated: a `setDefaultLocale()` call takes precedence over `Locale` until it is
 called with `undefined`.

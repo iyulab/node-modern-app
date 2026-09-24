@@ -27,7 +27,7 @@ type ElementParts = 'host' | 'icon' | 'title' | 'description' | 'actions';
  * ```
  *
  * ⚠**기본 문구는 영어다** — 이 패키지는 범용 층이라 특정 언어를 기본값으로 가질 수 없다.
- * 한국어는 `modernAppLocale.register('ko', …)` 로 소비자가 등록하고(언어는 `Locale.set()`), 화면별로 덮으려면
+ * 한국어 표는 내장돼 있고(언어는 `Locale.set()`), 다른 언어는 `modernAppLocale.register(lang, …)` 로 소비자가 등록한다. 화면별로 덮으려면
  * `title`·`description` 을 준다.
  *
  * ★이 줄은 «한국어다»라고 적혀 있었고 **같은 파일의 `locale` 프로퍼티 주석이 «영어다»라고
@@ -47,7 +47,7 @@ export class EmptyState extends StyledElement<ElementParts> {
   /**
    * 언어 태그 — 이 요소만 문서와 다른 언어로 쓸 때. 비우면 `Locale` 의 활성 로케일.
    * ⚠기본 문구는 영어다 — 이 패키지는 범용 층이라 특정 언어를 기본값으로 가질 수 없다.
-   * 한국어는 `modernAppLocale.register('ko', …)` 로 소비자가 등록한다.
+   * 한국어 표는 내장돼 있다 — 다른 언어는 `modernAppLocale.register(lang, …)` 로 소비자가 등록한다.
    */
   @property({ type: String }) locale = '';
 
