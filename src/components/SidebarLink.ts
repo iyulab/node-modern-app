@@ -3,6 +3,8 @@ import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
 import '@iyulab/components/dist/components/icon/UIcon.js';
+// `<u-link>` 의 등록 — 셸이 먼저 라우터를 싣는 것에 기대지 않는다(이 요소만 쓰면 정의되지 않은 채 남았다).
+import '@iyulab/router';
 import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';

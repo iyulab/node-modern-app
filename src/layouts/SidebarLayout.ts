@@ -422,8 +422,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     if (!logo || typeof logo === 'string') {
       // ⚠이름을 줬는데 해석에 실패하면(404 · 없는 이름) 로고가 0×0 으로 사라져 **홈으로 가는 수단**이 조용히
       //   없어진다 — 접힌(slim) 사이드바에서는 로고와 토글만 남는다. 내비 항목과 같은 폴백을 건다.
-      //   로고를 아예 주지 않은 경우는 종전대로 아무것도 그리지 않는다(없던 아이콘이 나타나면 안 된다).
-      if (!logo) return html`<u-icon class="logo"></u-icon>`;
+      //   로고를 아예 주지 않은 경우는 아무것도 그리지 않는다 — 요소도 두지 않는다. 종전의 빈 `u-icon`
+      //   자리표시자는 0 폭이어도 flex `gap` 을 하나 먹어 제목 앞에 유령 간격을 만들었고, 아이콘이 로드
+      //   전부터 1em 상자를 예약하게 되자(components 1.46.0) 보이지 않는 24px 상자가 됐다.
+      if (!logo) return nothing;
       return html`
         <u-link class="logo-link" aria-label=${name}>
           <u-icon class="logo"

@@ -44,6 +44,7 @@ describe('SidebarLayout — 로고 폴백', () => {
   it('NEGATIVE — 로고를 주지 않으면 종전대로 아무것도 그리지 않는다 (없던 아이콘이 나타나지 않는다)', async () => {
     const logo = await mount({ type: 'sidebar', title: 'App' });
     await new Promise((r) => setTimeout(r, 500));
-    expect(area(logo)).toBe(0);
+    // 자리표시자도 없다 — 빈 요소는 보이지 않아도 헤더의 flex gap 을 먹는다.
+    expect(logo).toBeNull();
   });
 });
