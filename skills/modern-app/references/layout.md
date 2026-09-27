@@ -347,7 +347,9 @@ click — by the same rule as the overlay panel (see *What the shell owns, and w
    and it marks where the new screen starts.
 
 So a screen that must receive input on entry — a barcode scan field, a search box — only needs
-`autofocus` on that control. While the overlay is open the shell does none of this: the route
+`autofocus` on that control. The same holds for a React screen (`autoFocus` on a native input, or `autofocus`
+on a component such as `UInput`) — `@iyulab/router` 0.16.1 and later report `route-done` only after
+React has committed the screen. While the overlay is open the shell does none of this: the route
 underneath is inert and focus stays in the panel.
 
 ## Printing
