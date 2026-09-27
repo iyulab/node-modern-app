@@ -260,7 +260,7 @@ Parts available for `styles` overrides on the root layout:
 | `sidebar-main` | Scrollable main nav area |
 | `sidebar-footer` | Pinned footer area |
 | `main` | Main content area (the scroll container) |
-| `main-content` | Wrapper holding route content inside `main` — passes the height down and grows with long content (see [Route content area](#route-content-area)); the shell puts `inert` here while the overlay is open |
+| `main-content` | Wrapper holding route content inside `main` — creates no box, so route content sits directly in `main` (see [Route content area](#route-content-area)); the shell puts `inert` here while the overlay is open, and gives it a box then as the overlay's stacking boundary |
 | `progress` | Top progress bar |
 | `overlay` | Route-independent overlay panel above `main` |
 | `overlay-close` | Overlay's close button |
@@ -307,17 +307,28 @@ u-sidebar-layout::part(main) { padding: 24px; }
 ⚠ `layout.styles` values are inline styles, so they also apply on print media (see [Printing](#printing));
 use `::part(main)` inside `@media screen` if the change is for the screen only.
 
-Inside it, `part="main-content"` wraps the route content and does two things at once:
+Inside it, the route content sits **directly** in that scroll container: neither
+`part="main-content"` nor `<u-outlet>` creates a box (`display: contents`). That is what lets all
+three kinds of screen work:
 
-- **passes the height down** — a screen that fills the area (`height: 100%`, or a layout such as
-  `u-master-detail-layout`) resolves against the area minus its gutters;
-- **grows with long content** — a screen taller than the area scrolls inside `main` and keeps the
-  bottom gutter at the end of the scroll.
+| Screen | Behaviour |
+|---|---|
+| **Fills the area** — `height: 100%`, or a layout such as `u-master-detail-layout` | gets the area minus its gutters |
+| **Fills the area, more content than fits** — a toolbar plus a table with `flex: 1; min-height: 0` and more rows than the viewport | stays at the area's height; the table scrolls inside itself |
+| **Flows** — a form or document taller than the area | `main` scrolls, and the bottom gutter stays at the end of the scroll |
 
-App notices (`slot="notice"`) sit at the top of this wrapper at their own height; a filling screen
-gets the height that remains below them.
+Any box in between breaks one of them — a box pinned at `height: 100%` loses the bottom gutter on
+flowing screens, and a grid box with `min-height: 100%` grows a filling screen to every row of its
+table. So `::part(main-content)` accepts no box styling (`padding`, `background`, `border` do
+nothing); style `::part(main)` or the screen instead.
 
-⚠ Do not set `align-content` on `::part(main-content)` — the height hand-down relies on its default.
+⚠ **App notices push a filling screen down.** Notices (`slot="notice"`) sit at the top of the
+content at their own height, and a screen's `height: 100%` does not know about them, so while a
+notice shows, a filling screen overflows by the notice's height. The two kinds of screen cannot be
+told apart in CSS; notices are rare and short-lived.
+
+While the overlay is open, `part="main-content"` becomes a box at the area's height, because a
+stacking context needs one — route content is inert and under the overlay then.
 
 ## Printing
 

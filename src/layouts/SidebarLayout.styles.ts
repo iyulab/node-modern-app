@@ -208,29 +208,23 @@ export const styles = css`
   }
 
   /*
-   * 라우트 본문을 감싸는 래퍼. 동시에 두 가지여야 한다:
-   *   ⑴ 높이를 «물려준다» — 자손(아웃렛 → 화면)의 height: 100% 가 여기서 풀린다.
-   *   ⑵ 넘치는 화면과 «함께 자란다» — .main 은 스크롤 영역의 끝 padding 을 in-flow
-   *      자식(= 이 래퍼) 뒤에 붙이므로, 래퍼가 화면보다 작게 고정되면 화면이 래퍼 밖으로
-   *      넘치고 스크롤 끝의 아래 거터가 사라진다.
-   * height: 100% 는 ⑴만, min-height: 100% 단독은 ⑵만 준다(백분율 높이는 부모의 «height»
-   * 가 명시됐을 때만 풀린다 — 최솟값은 그 조건이 아니다). grid 만 둘을 함께 준다: 그리드
-   * 항목의 기본 stretch 는 백분율 해석이 아니라 «영역 채우기» 라 ⑴이 성립하고, 트랙 높이가
-   * auto 라 ⑵대로 자란다. 아웃렛(:where(u-outlet))이 같은 규칙을 쓴다.
-   * ⚠align-content 를 선언하지 말 것 — 규칙이 기본값 normal(= auto 트랙 늘리기)에 기댄다.
+   * 라우트 본문을 감싸는 래퍼 — 평소에는 «상자를 만들지 않는다»(display: contents).
+   *
+   * 높이가 정해진 스크롤 컨테이너(.main) 안에서 라우트 화면은 세 형태다: ⑴채움(height: 100%)
+   * ⑵채움-큼(채우되 안의 표가 뷰포트보다 많은 행을 자기 안에서 굴린다) ⑶흐름(길어지고 .main 이
+   * 스크롤한다). 사이에 상자가 있으면 셋 중 하나가 반드시 깨진다(실측):
+   *   · height: 100% → 상자가 못 박혀 ⑶의 화면이 밖으로 넘치고, .main 은 끝 padding 을 in-flow
+   *     자식(= 이 래퍼) 뒤에 붙이므로 스크롤 끝의 거터가 사라진다.
+   *   · grid + min-height: 100% → ⑶은 되지만 트랙이 항목의 내용 크기로 잡히고 그 계산 동안
+   *     height: 100% 는 auto 로 취급되어, ⑵의 표가 모든 행 높이로 자란다.
+   * 상자가 없으면 화면이 .main 을 직접 받는다. 아웃렛(u-outlet)도 같은 이유로 상자가 없다.
+   *
+   * ⚠공지(slot="notice")가 있으면 채우는 화면은 그 높이만큼 넘친다 — 공지는 본문 위 흐름 안에
+   *   있고, 채우는 화면의 height: 100% 는 공지를 모른다. 두 형태를 CSS 로 가를 수 없어 알려진
+   *   한계로 둔다(공지는 드물고 잠깐이다).
    */
   .main-content {
-    display: grid;
-    min-height: 100%;
-  }
-  /*
-   * 공지가 있으면 그 행은 내용 높이로 묶는다. 늘리기는 max 크기가 auto 인 트랙에만
-   * 적용되므로 max-content 행은 늘어나지 않고, 남는 높이는 뒤따르는 본문 행이 받는다.
-   * 공지가 없으면(.notices 가 display: none) 이 규칙도 없어야 한다 — 있으면 본문의 첫
-   * 자식이 이 행에 앉아 채우기를 잃는다.
-   */
-  .main-content.has-notice {
-    grid-template-rows: max-content;
+    display: contents;
   }
 
   /*
@@ -285,6 +279,11 @@ export const styles = css`
    *   경계에 걸리지 않고, 오버레이가 열린 채로 일어나는 라우트 전환을 계속 보고한다.
    */
   :host(:state(overlay)) .main-content {
+    /* 쌓임 맥락은 상자가 있어야 생긴다 — 오버레이가 열린 동안만 상자를 둔다(본문은 inert 이고
+       오버레이 아래에 있다). height: 100% 라 채우는 화면은 그대로이고, 흐름 화면의 끝 거터만 그동안
+       빠진다. */
+    display: block;
+    height: 100%;
     isolation: isolate;
   }
 
@@ -364,12 +363,6 @@ export const styles = css`
       height: auto;
       padding: 0;
       overflow: visible;
-    }
-    /* 인쇄는 쪽 나눔이 흐름을 따라야 하므로 grid 를 풀고 높이를 내용에 맡긴다
-       (아웃렛의 인쇄 규칙과 같은 이유 — grid 상자 안 끝 블록 여백이 쪽 경계를 넘는다). */
-    .main-content {
-      display: block;
-      min-height: 0;
     }
     :host(:state(overlay)) .main-content {
       display: none;

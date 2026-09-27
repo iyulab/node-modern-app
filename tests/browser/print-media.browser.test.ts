@@ -289,10 +289,12 @@ describe('u-sidebar-layout — 실제 트리(셸 → u-outlet → 화면)', () =
     expect(getComputedStyle(outlet).display).not.toBe('inline');
   });
 
-  it('print: 내용이 아웃렛에서 잘리지 않고 아웃렛이 내용만큼 자란다', async () => {
+  it('print: 내용이 셸 본문에서 잘리지 않고 본문이 내용만큼 자란다', async () => {
     await setMedia('print');
-    expect(outlet.scrollHeight).toBeLessThanOrEqual(outlet.clientHeight + 1);
-    expect(outlet.getBoundingClientRect().height).toBeGreaterThanOrEqual(CONTENT);
+    // 아웃렛은 상자가 없다(router 0.16) — 잘림은 셸 본문에서 잰다.
+    const main = (outlet.closest('u-sidebar-layout') as HTMLElement).shadowRoot!.querySelector('[part="main"]') as HTMLElement;
+    expect(main.scrollHeight).toBeLessThanOrEqual(main.clientHeight + 1);
+    expect(main.getBoundingClientRect().height).toBeGreaterThanOrEqual(CONTENT);
   });
 
   it('screen: 화면에서도 아웃렛은 인라인 상자가 아니다', async () => {

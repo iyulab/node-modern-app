@@ -52,6 +52,13 @@ function content(height = 1200): HTMLElement {
   return c;
 }
 
+/** 본문의 «내용 상자» 폭 — `main-content` 래퍼는 상자가 없으므로(0.29.0) 스크롤 컨테이너에서 잰다. */
+const contentBoxWidth = (el: Parameters<typeof part>[0]) => {
+  const main = part(el, 'main');
+  const cs = getComputedStyle(main);
+  return main.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+};
+
 describe('SidebarLayout — notice slot', () => {
   it('takes no space while empty', async () => {
     const el = await mount();
@@ -80,7 +87,7 @@ describe('SidebarLayout — notice slot', () => {
     const widths = [...el.querySelectorAll<HTMLElement>('[slot="notice"]')].map((n) => n.getBoundingClientRect().width);
     expect(widths[0]).toBeGreaterThan(0);
     expect(widths[0]).toBe(widths[1]);
-    expect(widths[0]).toBe(part(el, 'main-content').clientWidth);
+    expect(widths[0]).toBe(contentBoxWidth(el));
   });
 
   it('is in flow — it scrolls away with the content instead of holding a strip of the screen', async () => {
@@ -121,7 +128,7 @@ describe('SidebarLayout — notice slot', () => {
     await Promise.all(alerts.map((a) => a.updateComplete));
     await settle(el);
 
-    const contentWidth = part(el, 'main-content').clientWidth;
+    const contentWidth = contentBoxWidth(el);
     for (const a of alerts) {
       const r = a.getBoundingClientRect();
       expect(r.height).toBeGreaterThan(0);

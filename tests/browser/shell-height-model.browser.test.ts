@@ -202,10 +202,10 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
     await cdp().send('Emulation.setEmulatedMedia', { media: 'print' });
     await settle();
     try {
-      // `height: 100%` 는 부모 높이가 auto 면 auto 로 풀린다 — 인쇄에서 셸이 높이를 놓으므로
-      // 아웃렛이 2000px 를 가둬서는 안 된다.
-      expect(outlet.scrollHeight).toBeLessThanOrEqual(outlet.clientHeight + 1);
-      expect(h(outlet)).toBeGreaterThanOrEqual(2000);
+      // 인쇄에서 셸이 높이를 놓으므로 본문이 2000px 를 가둬서는 안 된다(아웃렛은 상자가 없다).
+      const main = mainArea();
+      expect(main.scrollHeight).toBeLessThanOrEqual(main.clientHeight + 1);
+      expect(h(main)).toBeGreaterThanOrEqual(2000);
     } finally {
       await cdp().send('Emulation.setEmulatedMedia', { media: '' });
     }
@@ -237,11 +237,11 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
     try {
       const shell = document.querySelector('u-sidebar-layout') as HTMLElement;
       // 여백이 갇히면 그 상자부터 위로 전부 324 가 된다 — 어느 상자가 가뒀는지가 곧 실패 메시지다.
+      // 아웃렛은 상자가 없으므로(router 0.16) 여백을 가둘 수 있는 것은 셸 본문과 셸뿐이다.
       expect({
-        outlet: h(outlet),
         main: h(mainArea()),
         shell: h(shell),
-      }).toEqual({ outlet: CONTENT, main: CONTENT, shell: CONTENT });
+      }).toEqual({ main: CONTENT, shell: CONTENT });
     } finally {
       await cdp().send('Emulation.setEmulatedMedia', { media: '' });
     }
@@ -289,9 +289,10 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
   });
 
   /**
-   * 공지 슬롯(0.28.0)과 함께: 공지 행은 **내용 높이** 로 앉고, 채우는 화면은 **남은 높이** 를 받는다.
-   * ⚠그리드의 auto 행은 남는 높이를 **나눠 갖는다** — 공지 행을 묶지 않으면 공지 아래에 빈 띠가
-   * 생기고 화면이 그만큼 짧아진다.
+   * 공지 슬롯(0.28.0)과 함께: 공지는 본문 맨 위 흐름 안에 **제 높이로** 앉는다.
+   * ⚠채우는 화면의 `height: 100%` 는 공지를 모르므로 **공지 높이만큼 넘친다** — 채움과 흐름을
+   *   CSS 로 가를 방법이 없어(0.28.2 의 grid 가 그것을 시도했다가 채움-큼을 깨뜨렸다) 알려진
+   *   한계로 고정한다. 공지가 사라지면 넘침도 사라진다.
    */
   function addNotice(height = 40): HTMLElement {
     const n = document.createElement('div');
@@ -301,7 +302,7 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
     return n;
   }
 
-  it('🔴공지 + 채우는 화면: 화면은 공지 바로 아래에서 시작해 바닥까지 채운다', async () => {
+  it('공지 + 채우는 화면: 공지는 제 높이로 위에 앉고, 화면은 콘텐츠 영역 높이 그대로다(공지만큼 넘친다)', async () => {
     const md = document.createElement('u-master-detail-layout') as MasterDetailLayout;
     md.innerHTML = '<div style="height:60px">master</div><div slot="detail">detail</div>';
     outlet.replaceChildren(md);
@@ -310,17 +311,17 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
 
     const main = mainArea();
     const { top, bottom } = pad(main);
-    const mainBox = main.getBoundingClientRect();
     const noticesBox = (main.querySelector('[part="notices"]') as HTMLElement).getBoundingClientRect();
-    const mdBox = md.getBoundingClientRect();
     const noticeGap = parseFloat(getComputedStyle(main.querySelector('[part="notices"]')!).marginBottom);
+    const mdBox = md.getBoundingClientRect();
 
-    expect(Math.round(noticesBox.height), '공지 행이 늘어나지 않는다').toBe(40);
+    expect(Math.round(noticesBox.height), '공지가 늘어나지 않는다').toBe(40);
     expect(Math.round(mdBox.top - noticesBox.bottom)).toBe(Math.round(noticeGap));
-    expect(Math.abs(Math.round(mainBox.top + main.clientTop + main.clientHeight - bottom - mdBox.bottom)), '바닥까지 채운다').toBe(0);
-    expect(main.scrollHeight).toBeLessThanOrEqual(main.clientHeight);
-    expect(Math.round(mdBox.height)).toBe(Math.round(main.clientHeight - top - bottom - 40 - noticeGap));
+    expect(Math.round(mdBox.height)).toBe(Math.round(main.clientHeight - top - bottom));
+    expect(main.scrollHeight - main.clientHeight).toBe(Math.round(40 + noticeGap));
     notice.remove();
+    await settle();
+    expect(main.scrollHeight, '공지가 사라지면 넘침도 사라진다').toBeLessThanOrEqual(main.clientHeight);
   });
 
   it('🔴공지 + 넘치는 화면: 끝 거터가 남는다', async () => {
@@ -334,5 +335,32 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
     const noticeGap = parseFloat(getComputedStyle(main.querySelector('[part="notices"]')!).marginBottom);
     expect(main.scrollHeight).toBe(Math.round(top + 40 + noticeGap + 1500 + bottom));
     notice.remove();
+  });
+
+  /**
+   * 🔴**채움-큼** — LOB 조회 화면의 기본형: 툴바 + 남은 높이를 채우고 **안에서** 스크롤하는 표,
+   * 행은 뷰포트보다 많다. 0.28.2(`.main-content { display: grid; min-height: 100% }`)가 이것을
+   * 깨뜨렸다 — 그리드 트랙이 항목의 내용 크기로 잡히고 그 계산 동안 `height: 100%` 가 `auto` 로
+   * 취급되어, 표가 모든 행 높이로 자랐다. 위 스위트의 «채운다» 단언은 내용이 작은 화면만 재서
+   * 그것을 보지 못했다.
+   */
+  it('🔴채움-큼: 행이 많아도 화면은 콘텐츠 영역 높이이고 표가 자기 안에서 스크롤한다', async () => {
+    const screen = document.createElement('div');
+    screen.style.cssText = 'height: 100%; display: flex; flex-direction: column;';
+    const toolbar = document.createElement('div');
+    toolbar.style.height = '40px';
+    const table = document.createElement('div');
+    table.style.cssText = 'flex: 1; min-height: 0; overflow: auto;';
+    table.innerHTML = Array.from({ length: 50 }, (_, i) => `<div style="height:40px">row ${i}</div>`).join('');
+    screen.append(toolbar, table);
+    outlet.replaceChildren(screen);
+    await settle();
+
+    const main = mainArea();
+    const { top, bottom } = pad(main);
+    const avail = main.clientHeight - top - bottom;
+    expect(h(screen)).toBe(Math.round(avail));
+    expect(table.scrollHeight, '표 안에 굴릴 행이 있다').toBeGreaterThan(table.clientHeight);
+    expect(main.scrollHeight, '콘텐츠 영역은 스크롤하지 않는다').toBeLessThanOrEqual(main.clientHeight);
   });
 });
