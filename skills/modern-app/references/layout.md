@@ -27,7 +27,7 @@ interface SidebarLayoutConfig {
   /** Permission filter — hides items (and emptied section/groups) whose requirement fails. Unset shows everything. See "권한 기반 메뉴 필터" below. */
   hasPermission?: (code: string) => boolean;
 
-  /** Called on `route-done` (before focus moves to the container) with the new route's `RouteContext` and the scroll container itself — implement reset/save/restore here. Unset does nothing (same default as Vue Router's unset `scrollBehavior`). Also reachable outside the hook via the element's `.mainElement` accessor. */
+  /** Called on `route-done` (before the shell places focus — see *Focus when a route finishes*) with the new route's `RouteContext` and the scroll container itself — implement reset/save/restore here. Unset does nothing (same default as Vue Router's unset `scrollBehavior`). Also reachable outside the hook via the element's `.mainElement` accessor. */
   scrollBehavior?: (context: RouteContext, main: HTMLElement) => void;
 
   /** Shell chrome icon source and names — `{ lib?, menu?, close?, sidebarToggle?, overlayClose? }`, only the keys you set replace the defaults. Defaults come from the bundled `internal` set, so the shell needs no network to draw its own toggles; give `lib` **and** the names to point it at your own set. */
@@ -332,6 +332,23 @@ told apart in CSS; notices are rare and short-lived.
 
 While the overlay is open, `part="main-content"` becomes a box at the area's height, because a
 stacking context needs one — route content is inert and under the overlay then.
+
+### Focus when a route finishes
+
+On every `route-done` the shell places focus so the keyboard works on the new screen without a
+click — by the same rule as the overlay panel (see *What the shell owns, and what it does not*):
+
+1. **If your screen already moved focus into the route content** (a `focus()` in `firstUpdated`,
+   say), the shell leaves it there.
+2. **Else an `[autofocus]` element in the route content** — found through shadow roots, so an input
+   inside your page component's own template counts. The shell waits for the screen's first render
+   before looking.
+3. **Else `part="main"`**, the scroll container — arrow keys and Page Down scroll the new screen,
+   and it marks where the new screen starts.
+
+So a screen that must receive input on entry — a barcode scan field, a search box — only needs
+`autofocus` on that control. While the overlay is open the shell does none of this: the route
+underneath is inert and focus stays in the panel.
 
 ## Printing
 

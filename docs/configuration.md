@@ -140,7 +140,7 @@ interface SidebarLayoutConfig {
   hasPermission?: (code: string) => boolean;
 
   /**
-   * Called on `route-done`, just before focus moves to the main scroll container.
+   * Called on `route-done`, just before the shell places focus on the new screen.
    * Receives the new route's `RouteContext` and the container itself (same element as
    * `SidebarLayout.mainElement`) — implement scroll reset/save/restore here. Unset
    * (default) does nothing, matching Vue Router's unset `scrollBehavior`.

@@ -97,6 +97,32 @@ function composedContains(container: Element, node: Node): boolean {
   return false;
 }
 
+/**
+ * `roots` 안(열린 섀도 루트까지)에서 `selector` 에 맞는 첫 요소 — 문서 순서, 섀도 안은 호스트 자리에서.
+ * `querySelector` 는 섀도 경계에서 멈춘다.
+ */
+function deepQuery(roots: Element[], selector: string): HTMLElement | null {
+  const visit = (node: Element | ShadowRoot): HTMLElement | null => {
+    const children = node instanceof Element ? [node] : Array.from(node.children);
+    for (const child of children) {
+      const walker = document.createTreeWalker(child, NodeFilter.SHOW_ELEMENT);
+      for (let el = walker.currentNode as Element | null; el; el = walker.nextNode() as Element | null) {
+        if (el.matches(selector)) return el as HTMLElement;
+        if (el.shadowRoot) {
+          const found = visit(el.shadowRoot);
+          if (found) return found;
+        }
+      }
+    }
+    return null;
+  };
+  for (const root of roots) {
+    const found = visit(root);
+    if (found) return found;
+  }
+  return null;
+}
+
 @customElement('u-sidebar-layout')
 export class SidebarLayout extends StyledElement<SidebarParts> {
   static styles = [ super.styles, styles ];
@@ -516,11 +542,39 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
     if (main) {
       this.config?.scrollBehavior?.(event.context, main);
-      // Move focus to .main so keyboard scrolling works without a mouse click —
-      // unless the overlay is open: the route underneath is inert, and the focus
-      // the user is working with is in the panel.
-      if (!this.hasOverlay) main.focus({ preventScroll: true });
+      void this.focusRoute(main);
     }
+  }
+
+  /** 라우트 본문(기본 슬롯)에 배정된 요소들 */
+  private routeContent(): Element[] {
+    const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('.main-content > slot:not([name])');
+    return slot?.assignedElements({ flatten: true }) ?? [];
+  }
+
+  /**
+   * 라우트 완료 후 포커스 — 오버레이 패널과 같은 규칙이다.
+   * ① 화면이 이미 본문 안으로 옮겨 두었으면 건드리지 않는다
+   * ② 본문 안의 `[autofocus]`(섀도 경계 안쪽까지)
+   * ③ 그 밖에는 `.main` — 마우스 없이 키보드로 스크롤할 수 있고, 새 화면의 시작이 된다.
+   * 오버레이가 열려 있으면 아무것도 하지 않는다 — 아래 라우트는 inert 이고 사용자의 포커스는 패널에 있다.
+   *
+   * 판정은 본문 요소들의 첫 렌더를 기다린 뒤에 한다 — `route-done` 은 화면이 자기 템플릿을
+   * 그리기 전에 올 수 있고, 그때 찾으면 `[autofocus]` 가 아직 없다.
+   */
+  private async focusRoute(main: HTMLElement): Promise<void> {
+    const content = this.routeContent();
+    await Promise.all(content.map(el => (el as { updateComplete?: Promise<unknown> }).updateComplete));
+    if (this.hasOverlay || !main.isConnected) return;
+
+    const active = deepActiveElement();
+    if (active && content.some(el => composedContains(el, active))) return;
+
+    const declared = deepQuery(content, '[autofocus]');
+    declared?.focus();
+    const now = deepActiveElement();
+    if (declared && now && composedContains(declared, now)) return;
+    main.focus({ preventScroll: true });
   }
 
   /** 라우트 에러 핸들러 */

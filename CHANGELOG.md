@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **A route screen can declare its first focus.** On every route change the shell moved focus to
+  the content area unconditionally, so a screen that focused its own input on entry — a scan field,
+  a search box — had that focus taken back, and `autofocus` in the screen did nothing. Route
+  changes now follow the overlay panel's rule: focus the screen already moved into the content
+  stays; else an `[autofocus]` element in the content (through shadow roots, after the screen's
+  first render) receives it; else the content area, as before.
+
 ## [0.30.0] - 2026-09-27
 
 ### Added

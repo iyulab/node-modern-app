@@ -49,7 +49,7 @@ interface SidebarLayoutConfig {
   hasPermission?: (code: string) => boolean;
 
   /**
-   * Called on `route-done`, just before focus moves to the main scroll container.
+   * Called on `route-done`, just before the shell places focus on the new screen.
    * Receives the new route's `RouteContext` and the container itself (same element
    * `mainElement` returns) — implement scroll reset/save/restore in here. Unset
    * (default) does nothing to the scroll position, matching Vue Router's unset
@@ -131,8 +131,8 @@ layout: {
 `SidebarLayout` doesn't reset or restore scroll on route change by default — the same
 default as Vue Router's unset `scrollBehavior`. Two pieces give you full control:
 
-- **`layout.scrollBehavior(context, main)`** — called on every `route-done`, before focus
-  moves to the container. Reset to top, or restore a saved position:
+- **`layout.scrollBehavior(context, main)`** — called on every `route-done`, before the shell
+  places focus (see *Focus when a route finishes*). Reset to top, or restore a saved position:
 
   ```typescript
   const savedPositions = new Map<string, number>();
@@ -358,6 +358,23 @@ told apart in CSS; notices are rare and short-lived.
 
 While the overlay is open, `part="main-content"` becomes a box at the area's height, because a
 stacking context needs one — route content is inert and under the overlay then.
+
+### Focus when a route finishes
+
+On every `route-done` the shell places focus so the keyboard works on the new screen without a
+click — by the same rule as the overlay panel (see *What the shell owns, and what it does not*):
+
+1. **If your screen already moved focus into the route content** (a `focus()` in `firstUpdated`,
+   say), the shell leaves it there.
+2. **Else an `[autofocus]` element in the route content** — found through shadow roots, so an input
+   inside your page component's own template counts. The shell waits for the screen's first render
+   before looking.
+3. **Else `part="main"`**, the scroll container — arrow keys and Page Down scroll the new screen,
+   and it marks where the new screen starts.
+
+So a screen that must receive input on entry — a barcode scan field, a search box — only needs
+`autofocus` on that control. While the overlay is open the shell does none of this: the route
+underneath is inert and focus stays in the panel.
 
 ## Route-independent overlay
 
