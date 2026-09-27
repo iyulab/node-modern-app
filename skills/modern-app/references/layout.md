@@ -21,6 +21,9 @@ interface SidebarLayoutConfig {
   /** Accessible name for the main nav landmark (`<nav class="sidebar-main">`), reflected as `aria-label`. Unset by default. */
   mainAriaLabel?: string;
 
+  /** Accessible name for the app-level notice stack (`slot="notice"`). When set, the stack is a `role="region"` landmark with this `aria-label`. Unset by default. */
+  noticesAriaLabel?: string;
+
   /** Permission filter — hides items (and emptied section/groups) whose requirement fails. Unset shows everything. See "권한 기반 메뉴 필터" below. */
   hasPermission?: (code: string) => boolean;
 
@@ -435,6 +438,10 @@ Put them in `slot="notice"`; the shell stacks them at the top of the route conte
 - **Full width.** Each notice takes the width of the content box, whatever its text length.
 - **Empty takes no space** — the stack has no margin while nothing is slotted.
 - **Inert with the route content** while the overlay is open.
+- **A named landmark on request.** Set `noticesAriaLabel` in the layout config and the stack
+  becomes a `role="region"` with that name, so screen-reader users can jump back to the notices
+  currently shown. Put the notices in the slot directly — wrapping them in your own named section
+  puts the stack's spacing and width on the wrapper instead of on each notice.
 - Which surface a notice is (toast, banner or modal) is decided by *who ends it* — a notice the time
   ends is a toast (`app.success`), not a slotted banner.
 

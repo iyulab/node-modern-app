@@ -273,7 +273,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           <u-progress-bar part="progress"></u-progress-bar>
 
           <div class="main-content" part="main-content" ?inert=${this.hasOverlay}>
-            <div class="notices ${this.hasNotice ? '' : 'empty'}" part="notices">
+            <div class="notices ${this.hasNotice ? '' : 'empty'}" part="notices"
+              role=${this.config.noticesAriaLabel ? 'region' : nothing}
+              aria-label=${this.config.noticesAriaLabel ?? nothing}>
               <slot name="notice" @slotchange=${this.handleNoticeSlotChange}></slot>
             </div>
             <slot></slot>

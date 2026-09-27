@@ -98,6 +98,14 @@ export interface SidebarLayoutConfig {
   mainAriaLabel?: string;
 
   /**
+   * 앱 수준 공지 스택(`slot="notice"`)의 접근 가능한 이름. 지정하면 스택이 `role="region"` +
+   * `aria-label` 인 랜드마크가 되어, 스크린리더 사용자가 «지금 떠 있는 공지들» 로 건너뛰어
+   * 다시 읽을 수 있다(`region` 은 이름이 있을 때만 랜드마크다). 공지가 없으면 스택 자체가 없으므로
+   * 빈 랜드마크는 생기지 않는다. 미지정 시 종전과 같이 이름 없는 컨테이너다.
+   */
+  noticesAriaLabel?: string;
+
+  /**
    * 메뉴 항목 권한 필터 판정. 지정하면 `requirePermission`/`requireAnyPermission` 를 만족하지
    * 않는 항목을 숨기고, 항목이 모두 걸러진 section/group 은 통째로 숨긴다.
    * 미지정 시 필터링하지 않는다(모든 항목 표시). 보통 `@iyulab/enterprise` 의 `hasPermission` 을 넘긴다.

@@ -135,4 +135,38 @@ describe('SidebarLayout — notice slot', () => {
       expect(r.width).toBe(contentWidth);
     }
   });
+
+  it('noticesAriaLabel makes the stack a named region landmark', async () => {
+    const el = document.createElement('u-sidebar-layout') as SidebarLayout;
+    el.config = { type: 'sidebar', noticesAriaLabel: 'App notices' };
+    host.appendChild(el);
+    await el.updateComplete;
+    el.append(notice('Server unreachable'));
+    await settle(el);
+
+    const stack = part(el, 'notices');
+    expect(stack.getAttribute('role')).toBe('region');
+    expect(stack.getAttribute('aria-label')).toBe('App notices');
+  });
+
+  it('NEGATIVE without noticesAriaLabel the stack is an unnamed container — no nameless region', async () => {
+    const el = await mount();
+    el.append(notice('Server unreachable'));
+    await settle(el);
+
+    const stack = part(el, 'notices');
+    expect(stack.hasAttribute('role')).toBe(false);
+    expect(stack.hasAttribute('aria-label')).toBe(false);
+  });
+
+  it('an empty named stack is not exposed as a landmark', async () => {
+    const el = document.createElement('u-sidebar-layout') as SidebarLayout;
+    el.config = { type: 'sidebar', noticesAriaLabel: 'App notices' };
+    host.appendChild(el);
+    await el.updateComplete;
+    await settle(el);
+
+    // 빈 스택은 display: none — 접근성 트리에서 빠진다.
+    expect(getComputedStyle(part(el, 'notices')).display).toBe('none');
+  });
 });
