@@ -260,7 +260,7 @@ Parts available for `styles` overrides on the root layout:
 | `sidebar-main` | Scrollable main nav area |
 | `sidebar-footer` | Pinned footer area |
 | `main` | Main content area (the scroll container) |
-| `main-content` | Wrapper holding route content inside `main` — the shell puts `inert` here while the overlay is open |
+| `main-content` | Wrapper holding route content inside `main` — passes the height down and grows with long content (see [Route content area](#route-content-area)); the shell puts `inert` here while the overlay is open |
 | `progress` | Top progress bar |
 | `overlay` | Route-independent overlay panel above `main` |
 | `overlay-close` | Overlay's close button |
@@ -286,6 +286,38 @@ the console. Give that container a height — for screen only, so printing is no
   #app { height: 100vh; }   /* or 100%, inside an already-constrained ancestor */
 }
 ```
+
+## Route content area
+
+`part="main"` is the **scroll container** for route content, and it already has a **32px gutter**
+(`padding: var(--u-space-3xl, 32px)`) on every side. **Route screens should not add their own outer
+padding** to `:host` — the gutters add up (32 + 16 = 48px), and they start to differ from screen
+to screen.
+
+To change or remove the gutter, override `main` — either through `layout.styles` or the part:
+
+```ts
+layout: { type: 'sidebar', styles: { main: { padding: '0' } } }   // full-bleed
+```
+
+```css
+u-sidebar-layout::part(main) { padding: 24px; }
+```
+
+⚠ `layout.styles` values are inline styles, so they also apply on print media (see [Printing](#printing));
+use `::part(main)` inside `@media screen` if the change is for the screen only.
+
+Inside it, `part="main-content"` wraps the route content and does two things at once:
+
+- **passes the height down** — a screen that fills the area (`height: 100%`, or a layout such as
+  `u-master-detail-layout`) resolves against the area minus its gutters;
+- **grows with long content** — a screen taller than the area scrolls inside `main` and keeps the
+  bottom gutter at the end of the scroll.
+
+App notices (`slot="notice"`) sit at the top of this wrapper at their own height; a filling screen
+gets the height that remains below them.
+
+⚠ Do not set `align-content` on `::part(main-content)` — the height hand-down relies on its default.
 
 ## Printing
 

@@ -246,4 +246,93 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
       await cdp().send('Emulation.setEmulatedMedia', { media: '' });
     }
   });
+  /**
+   * 🔴**넘치는 화면은 셸 본문의 «끝 거터» 를 잃지 않는다**.
+   *
+   * 0.23.0 이 라우트 본문을 `part="main-content"` 래퍼로 감싸며 `height: 100%` 를 줬다. 화면이
+   * 콘텐츠 영역보다 길면 그 래퍼 밖으로 넘치고, 스크롤 컨테이너(`.main`)는 끝 padding 을 in-flow
+   * 자식(= 고정된 래퍼) 뒤에 붙이므로 **스크롤 끝의 아래 거터가 스크롤 영역에서 빠진다** —
+   * 긴 화면을 끝까지 내리면 내용이 바닥에 붙는다. 아웃렛(`u-outlet`)이 자기 층에서 고친 것과 같은
+   * 구조가 바로 위 층에 다시 생긴 것이다.
+   *
+   * ⚠위 스위트의 «채운다» 단언은 이것을 볼 수 없다 — 넘치지 않는 화면만 재기 때문이다.
+   */
+  const pad = (el: HTMLElement) => {
+    const cs = getComputedStyle(el);
+    return { top: parseFloat(cs.paddingTop), bottom: parseFloat(cs.paddingBottom) };
+  };
+
+  it('🔴넘치는 화면: 스크롤 영역 = 위 거터 + 화면 + 아래 거터', async () => {
+    const tall = document.createElement('div');
+    tall.style.height = '1500px';
+    outlet.replaceChildren(tall);
+    await settle();
+
+    const main = mainArea();
+    const { top, bottom } = pad(main);
+    expect(bottom).toBeGreaterThan(0); // 픽스처 전제: 끝 거터가 있다
+    expect(main.scrollHeight).toBe(Math.round(top + 1500 + bottom));
+    // 사용자에게 보이는 형태로도 — 끝까지 내리면 화면 바닥과 본문 바닥 사이에 거터가 남는다.
+    main.scrollTop = main.scrollHeight;
+    await settle();
+    const gap = main.getBoundingClientRect().bottom - tall.getBoundingClientRect().bottom;
+    expect(Math.round(gap)).toBe(Math.round(bottom));
+  });
+
+  it('넘치지 않는 화면은 종전과 같다 — 스크롤이 생기지 않는다', async () => {
+    const short = document.createElement('div');
+    short.style.height = '100px';
+    outlet.replaceChildren(short);
+    await settle();
+    const main = mainArea();
+    expect(main.scrollHeight).toBeLessThanOrEqual(main.clientHeight);
+  });
+
+  /**
+   * 공지 슬롯(0.28.0)과 함께: 공지 행은 **내용 높이** 로 앉고, 채우는 화면은 **남은 높이** 를 받는다.
+   * ⚠그리드의 auto 행은 남는 높이를 **나눠 갖는다** — 공지 행을 묶지 않으면 공지 아래에 빈 띠가
+   * 생기고 화면이 그만큼 짧아진다.
+   */
+  function addNotice(height = 40): HTMLElement {
+    const n = document.createElement('div');
+    n.slot = 'notice';
+    n.style.height = `${height}px`;
+    document.querySelector('u-sidebar-layout')!.appendChild(n);
+    return n;
+  }
+
+  it('🔴공지 + 채우는 화면: 화면은 공지 바로 아래에서 시작해 바닥까지 채운다', async () => {
+    const md = document.createElement('u-master-detail-layout') as MasterDetailLayout;
+    md.innerHTML = '<div style="height:60px">master</div><div slot="detail">detail</div>';
+    outlet.replaceChildren(md);
+    const notice = addNotice();
+    await settle();
+
+    const main = mainArea();
+    const { top, bottom } = pad(main);
+    const mainBox = main.getBoundingClientRect();
+    const noticesBox = (main.querySelector('[part="notices"]') as HTMLElement).getBoundingClientRect();
+    const mdBox = md.getBoundingClientRect();
+    const noticeGap = parseFloat(getComputedStyle(main.querySelector('[part="notices"]')!).marginBottom);
+
+    expect(Math.round(noticesBox.height), '공지 행이 늘어나지 않는다').toBe(40);
+    expect(Math.round(mdBox.top - noticesBox.bottom)).toBe(Math.round(noticeGap));
+    expect(Math.abs(Math.round(mainBox.top + main.clientTop + main.clientHeight - bottom - mdBox.bottom)), '바닥까지 채운다').toBe(0);
+    expect(main.scrollHeight).toBeLessThanOrEqual(main.clientHeight);
+    expect(Math.round(mdBox.height)).toBe(Math.round(main.clientHeight - top - bottom - 40 - noticeGap));
+    notice.remove();
+  });
+
+  it('🔴공지 + 넘치는 화면: 끝 거터가 남는다', async () => {
+    const tall = document.createElement('div');
+    tall.style.height = '1500px';
+    outlet.replaceChildren(tall);
+    const notice = addNotice();
+    await settle();
+    const main = mainArea();
+    const { top, bottom } = pad(main);
+    const noticeGap = parseFloat(getComputedStyle(main.querySelector('[part="notices"]')!).marginBottom);
+    expect(main.scrollHeight).toBe(Math.round(top + 40 + noticeGap + 1500 + bottom));
+    notice.remove();
+  });
 });
