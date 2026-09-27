@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.29.0] - 2026-09-27
+
+### Fixed
+
+- 🔴 **A filling screen with a long table works again — do not use 0.28.2.** 0.28.2 made the
+  `main-content` wrapper a grid box with `min-height: 100%` to keep the bottom gutter on long
+  screens. A grid track is sized from its item's content, and during that sizing a screen's
+  `height: 100%` counts as `auto` — so a screen that fills the area with a table holding more rows
+  than fit (a toolbar plus `flex: 1; min-height: 0`) grew to every row, and the table never
+  scrolled. The wrapper now creates no box at all (`display: contents`), and neither does the
+  outlet (`@iyulab/router` 0.16.0, now required): route content sits directly in the scroll
+  container, which is the only arrangement where filling screens, filling screens with long tables
+  and long flowing screens all behave — including the bottom gutter 0.28.2 set out to restore.
+
+### Changed
+
+- `::part(main-content)` no longer takes box styling (`padding`, `background`, `border`) outside
+  the overlay; style `::part(main)` or the screen instead. While the overlay is open it becomes a
+  box at the area's height — the overlay's stacking boundary — as before.
+- With an app notice showing, a screen that fills the area overflows by the notice's height (as in
+  0.28.1). 0.28.2 avoided that only by breaking long tables; the two kinds of screen cannot be told
+  apart in CSS.
+- Requires `@iyulab/router` `^0.16.0`, where `<u-outlet>` also has no box.
+
 ## [0.28.2] - 2026-09-27
 
 ### Fixed
