@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.28.2] - 2026-09-27
+
+### Fixed
+
+- **Long route screens keep the bottom gutter again.** Since 0.23.0 the `main-content` wrapper was
+  fixed to the height of the content area, so a screen taller than that overflowed the wrapper and
+  the scroll container dropped its bottom padding: scrolled to the end, the content sat flush on the
+  bottom edge. The wrapper now passes the height down *and* grows with the content
+  (`display: grid; min-height: 100%` — the same rule as `u-outlet`). Screens that fill the area
+  (`height: 100%`) are unchanged; with app notices shown, a filling screen gets the height below
+  them. If you worked around this with `u-sidebar-layout::part(main-content) { … }`, you can remove it.
+  ⚠ Do not set `align-content` on `::part(main-content)` — the height hand-down relies on its default.
+
+### Documentation
+
+- The layout reference now says that `part="main"` already has a 32px gutter and is the scroll
+  container — route screens should not add their own outer padding — and how to change it.
+
 ## [0.28.1] - 2026-09-24
 
 ### Fixed
