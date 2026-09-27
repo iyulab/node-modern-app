@@ -4,6 +4,7 @@ import '@iyulab/components/styles/tokens.css';
 import '../../src/layouts/SidebarLayout.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import { RouteDoneEvent, type RouteContext } from '@iyulab/router';
+import '@iyulab/components/dist/components/input/UInput.js';
 
 /**
  * Where focus lands when a route finishes (docket iyulab/node-modern-app#517).
@@ -89,6 +90,19 @@ describe('SidebarLayout route-done focus', () => {
     el.appendChild(wrap);
     await routeDone(el);
     expect(deepActive()).toBe(wrap.querySelector('#b'));
+  });
+
+  it('honours [autofocus] on a u-input — its focus() forwards to the inner field', async () => {
+    const el = await mount();
+    const wrap = document.createElement('div');
+    wrap.innerHTML = '<u-input id="scan" autofocus></u-input>';
+    el.appendChild(wrap);
+    const input = wrap.querySelector('u-input') as HTMLElement & { updateComplete: Promise<unknown> };
+    await input.updateComplete;
+    await routeDone(el);
+    const active = deepActive();
+    expect(active?.tagName).toBe('INPUT');
+    expect(input.shadowRoot!.contains(active)).toBe(true);
   });
 
   it('waits for a route screen that has not rendered yet', async () => {
