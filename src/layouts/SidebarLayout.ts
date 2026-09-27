@@ -202,7 +202,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       this.internals?.states?.[this.hasOverlay ? 'add' : 'delete']('overlay');
       if (this.hasOverlay) {
         window.addEventListener('keydown', this.handleOverlayEscape);
-        this.focusOverlay();
+        void this.focusOverlay();
       } else if (changed.get('hasOverlay') === true) {
         window.removeEventListener('keydown', this.handleOverlayEscape);
         this.restoreOverlayFocus();
@@ -614,22 +614,18 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
    * `[autofocus]` → 첫 입력 컨트롤 → (없으면) 셸의 닫기 버튼.
    * 닫기 버튼으로 떨어지는 것은 의도다 — 포커스가 `<body>` 에 남는 것보다 항상 낫고,
    * 셸이 늘 가진 유일한 컨트롤이다. 소비자가 이미 패널 안으로 옮겨 두었으면 건드리지 않는다.
+   * 탐색은 섀도 경계 안쪽까지 한다 — 패널이 컴포넌트면 컨트롤은 그 섀도 루트에 있다.
    */
-  private focusOverlay(): void {
+  private async focusOverlay(): Promise<void> {
     const panels = this.overlayPanels();
+    // 패널이 컴포넌트면 그 템플릿이 그려진 뒤에 찾는다 — 슬롯 배정은 첫 렌더보다 먼저 온다.
+    await Promise.all(panels.map(p => (p as { updateComplete?: Promise<unknown> }).updateComplete));
+    if (!this.hasOverlay) return;
     const active = deepActiveElement();
     if (active && panels.some(p => composedContains(p, active))) return;
 
-    const pick = (selector: string) => {
-      for (const p of panels) {
-        if (p.matches(selector)) return p as HTMLElement;
-        const found = p.querySelector<HTMLElement>(selector);
-        if (found) return found;
-      }
-      return null;
-    };
-    const target = pick('[autofocus]')
-      ?? pick('input, select, textarea, u-input, u-textarea, u-select, u-checkbox, u-radio, u-switch, u-slider')
+    const target = deepQuery(panels, '[autofocus]')
+      ?? deepQuery(panels, 'input, select, textarea, u-input, u-textarea, u-select, u-checkbox, u-radio, u-switch, u-slider')
       ?? this.shadowRoot?.querySelector<HTMLElement>('.overlay-close');
     target?.focus();
   }

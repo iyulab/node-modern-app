@@ -5,6 +5,19 @@ import '../../src/layouts/SidebarLayout.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import { RouteDoneEvent, type RouteContext } from '@iyulab/router';
 import '@iyulab/components/dist/components/drawer/UDrawer.js';
+import { LitElement, html } from 'lit';
+
+/** A panel that is a component — its controls live in its own shadow root. */
+class DetailPanel extends LitElement {
+  static properties = { auto: { type: Boolean } };
+  auto = false;
+  render() {
+    return this.auto
+      ? html`<input id="first"><input id="auto" autofocus>`
+      : html`<button id="b">Action</button><input id="name">`;
+  }
+}
+customElements.define('test-detail-panel', DetailPanel);
 
 /**
  * The overlay's keyboard contract — the shell owns it (docket iyulab/node-packages#390).
@@ -97,6 +110,29 @@ describe('SidebarLayout overlay — focus moves into the panel when it opens', (
     // u-button delegates to the native <button> in its own shadow root.
     const active = deepActive();
     expect(active === closeButton(el) || closeButton(el).shadowRoot!.contains(active)).toBe(true);
+  });
+
+  it("finds [autofocus] inside a panel component's shadow root, after its first render", async () => {
+    const el = await mount();
+    await withFocusedTrigger(el);
+    const panel = document.createElement('test-detail-panel') as DetailPanel;
+    panel.auto = true;
+    panel.slot = 'overlay';
+    el.appendChild(panel);
+    await panel.updateComplete;
+    await settle(el);
+    expect(deepActive()).toBe(panel.shadowRoot!.querySelector('#auto'));
+  });
+
+  it("finds the first input control inside a panel component's shadow root", async () => {
+    const el = await mount();
+    await withFocusedTrigger(el);
+    const panel = document.createElement('test-detail-panel') as DetailPanel;
+    panel.slot = 'overlay';
+    el.appendChild(panel);
+    await panel.updateComplete;
+    await settle(el);
+    expect(deepActive()).toBe(panel.shadowRoot!.querySelector('#name'));
   });
 
   it('leaves focus alone when the consumer already put it inside the panel', async () => {

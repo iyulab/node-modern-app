@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **An overlay panel that is a component now gets focus inside it.** The shell looked for the
+  panel's `[autofocus]` element and first input control with `querySelector`, which stops at shadow
+  roots — so when the panel was a custom element rendering its controls in its own template, the
+  shell found neither and fell back to the close button. The search now goes through shadow roots
+  and waits for the panel's first render, as route focus does since 0.30.1.
+
 ## [0.30.1] - 2026-09-28
 
 ### Fixed

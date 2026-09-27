@@ -414,7 +414,7 @@ from either re-implementing what the shell already does, or dropping what it doe
 | Making route content non-interactive | shell | `inert` on `part="main-content"`, which propagates through the slot into your route content |
 | A close affordance | shell | `part="overlay-close"`, firing the non-cancelable `overlay-close` event |
 | Keeping the route mounted underneath | shell | the overlay is independent of routing |
-| Moving focus into the panel when it opens | shell | an `[autofocus]` element in your panel, else its first input control, else `part="overlay-close"`. If you already moved focus into the panel, the shell leaves it there |
+| Moving focus into the panel when it opens | shell | an `[autofocus]` element in your panel, else its first input control, else `part="overlay-close"` — searched through shadow roots, after the panel's first render, so a panel that is itself a component works the same. If you already moved focus into the panel, the shell leaves it there |
 | Restoring focus when it closes | shell | back to the control that held focus when the panel opened — only if focus fell to `<body>`; if you moved it somewhere on purpose, that stands. With no such control (opened from code), focus goes to `part="main"` |
 | Escape to close | shell | Escape inside the panel fires the same `overlay-close` as the button — you still empty the slot. The shell decides **after** every layer inside the panel has: an Escape consumed there (`preventDefault()` — an open list, popover, drawer or dialog, whenever it was opened) closes only that layer. The shell does not mark the Escape consumed itself |
 | **A backdrop / dimmed scrim** | **consumer** | the panel is opaque and full-bleed by design; add a scrim inside your panel if you want one |
