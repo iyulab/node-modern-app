@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.30.0] - 2026-09-27
+
+### Added
+
+- **`noticesAriaLabel`** in the sidebar layout config. When set, the app-level notice stack
+  (`slot="notice"`) is a `role="region"` landmark with that name, so screen-reader users can jump
+  back to the notices currently shown. Without it, the only way to name the stack was to wrap the
+  notices in your own labelled section — which moved the stack's spacing and full width from each
+  notice onto the wrapper. The same shape as `mainAriaLabel`; unset keeps today's unnamed container,
+  and an empty stack is not rendered, so no empty landmark appears.
+
+### Fixed
+
+- **Escape inside the overlay now closes a drawer or dialog opened in the panel before the
+  overlay.** 0.28.0 promised that an Escape consumed inside the panel closes only that layer, but
+  that held only for layers listening before the shell: the shell listens on `window` from the
+  moment the overlay opens, so a `u-drawer` or `u-dialog` opened afterwards listened later. The
+  shell judged first, closed the overlay and marked the key consumed — and the drawer, seeing it
+  consumed, stayed open: the outer layer closed and the inner one remained. The shell now decides
+  after every layer has, and no longer marks the Escape consumed.
+
 ## [0.29.0] - 2026-09-27
 
 ### Fixed

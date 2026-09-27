@@ -133,6 +133,9 @@ interface SidebarLayoutConfig {
   /** Accessible name for the main nav landmark, reflected as `aria-label`. Unset by default. */
   mainAriaLabel?: string;
 
+  /** Accessible name for the app-level notice stack (`slot="notice"`) — makes it a `role="region"` landmark. Unset by default. */
+  noticesAriaLabel?: string;
+
   /** Permission filter — hides items whose requirement fails. Unset shows everything. */
   hasPermission?: (code: string) => boolean;
 
