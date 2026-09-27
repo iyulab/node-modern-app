@@ -593,17 +593,27 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   /**
-   * 패널 안의 Escape 는 닫기 버튼과 같은 `overlay-close` 를 낸다.
-   * window 버블 단계에서 받는다 — 패널 안의 목록·팝오버가 자기 층을 닫으며 먹은 키
-   * (`defaultPrevented`)는 그 층의 몫이다. 한 번의 Escape 는 한 층만 닫는다.
+   * 패널 안의 Escape 는 닫기 버튼과 같은 `overlay-close` 를 낸다 — 단, **안쪽 층이 모두 판정한 뒤에**.
+   *
+   * 셸의 오버레이는 가장 바깥 층이다. 그런데 window 의 같은 단계 리스너는 «등록 순서» 로 돌고,
+   * 셸은 오버레이가 열릴 때 등록하므로 패널 안에서 «나중에» 연 층(`u-drawer`·`u-dialog` — 역시
+   * window 에서 받는다)보다 먼저 돈다. 거기서 판정하면 바깥이 닫히고 안쪽이 남는다(거꾸로다).
+   * ⇒ 리스너에서는 판정하지 않고 **디스패치가 끝난 뒤**(다음 태스크) `defaultPrevented` 를 본다 —
+   *   그때는 어느 순서로 등록된 층이든 이미 자기 몫을 가져갔다. 한 번의 Escape 는 한 층만 닫는다.
+   * ⚠마이크로태스크로는 부족하다 — 네이티브 이벤트에서는 리스너 사이마다 마이크로태스크가 비워져,
+   *   뒤에 등록된 층보다 먼저 돈다.
+   * ⚠셸은 `preventDefault` 하지 않는다 — 가장 바깥 층이 키를 «먹었다» 고 표시하면 안쪽 층의 가드
+   *   (`defaultPrevented` 면 닫지 않는다)를 오염시킨다.
    * 경로에 패널이 없으면(사이드바, 패널 위에 띄운 대화상자) 받지 않는다.
    */
   private handleOverlayEscape = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape' || e.defaultPrevented || e.isComposing || !this.hasOverlay) return;
+    if (e.key !== 'Escape' || e.isComposing || !this.hasOverlay) return;
     const overlay = this.shadowRoot?.querySelector('.overlay');
     if (!overlay || !e.composedPath().includes(overlay)) return;
-    e.preventDefault();
-    this.handleOverlayClose();
+    setTimeout(() => {
+      if (e.defaultPrevented || !this.hasOverlay) return;
+      this.handleOverlayClose();
+    }, 0);
   };
 
   private handleOverlayClose = () => {

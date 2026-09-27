@@ -396,7 +396,7 @@ from either re-implementing what the shell already does, or dropping what it doe
 | Keeping the route mounted underneath | shell | the overlay is independent of routing |
 | Moving focus into the panel when it opens | shell | an `[autofocus]` element in your panel, else its first input control, else `part="overlay-close"`. If you already moved focus into the panel, the shell leaves it there |
 | Restoring focus when it closes | shell | back to the control that held focus when the panel opened — only if focus fell to `<body>`; if you moved it somewhere on purpose, that stands. With no such control (opened from code), focus goes to `part="main"` |
-| Escape to close | shell | Escape inside the panel fires the same `overlay-close` as the button — you still empty the slot. An Escape already consumed inside the panel (an open list or popover calling `preventDefault()`) closes only that layer |
+| Escape to close | shell | Escape inside the panel fires the same `overlay-close` as the button — you still empty the slot. The shell decides **after** every layer inside the panel has: an Escape consumed there (`preventDefault()` — an open list, popover, drawer or dialog, whenever it was opened) closes only that layer. The shell does not mark the Escape consumed itself |
 | **A backdrop / dimmed scrim** | **consumer** | the panel is opaque and full-bleed by design; add a scrim inside your panel if you want one |
 | **Announcing the panel to assistive tech** | **consumer** | put `role`/`aria-label` (or `aria-modal`, if you have made it modal) on *your* panel — the shell does not know what it holds |
 

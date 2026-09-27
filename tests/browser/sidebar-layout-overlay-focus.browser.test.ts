@@ -4,6 +4,7 @@ import '@iyulab/components/styles/tokens.css';
 import '../../src/layouts/SidebarLayout.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import { RouteDoneEvent, type RouteContext } from '@iyulab/router';
+import '@iyulab/components/dist/components/drawer/UDrawer.js';
 
 /**
  * The overlay's keyboard contract — the shell owns it (docket iyulab/node-packages#390).
@@ -160,6 +161,7 @@ describe('SidebarLayout overlay — Escape closes it', () => {
     let fired = 0;
     el.addEventListener('overlay-close', () => fired++);
     await userEvent.keyboard('{Escape}');
+    await settle(el); // 셸은 디스패치가 끝난 뒤 판정한다
     expect(fired).toBe(1);
   });
 
@@ -189,7 +191,50 @@ describe('SidebarLayout overlay — Escape closes it', () => {
     let fired = 0;
     el.addEventListener('overlay-close', () => fired++);
     await userEvent.keyboard('{Escape}');
+    await settle(el);
     expect(fired).toBe(0);
+  });
+
+  it('🔴a layer opened inside the panel after the overlay (u-drawer) closes first — the shell waits for it', async () => {
+    const el = await mount();
+    await withFocusedTrigger(el);
+    const panel = await openPanel(el, '<input id="field"><u-drawer><input id="inDrawer"></u-drawer>');
+    const drawer = panel.querySelector('u-drawer') as HTMLElement & { open: boolean; updateComplete: Promise<unknown> };
+    // 드로어는 오버레이가 열린 «뒤» 에 열린다 — 그 Escape 리스너가 셸보다 나중에 등록된다.
+    drawer.open = true;
+    await drawer.updateComplete;
+    await settle(el);
+    (panel.querySelector('#inDrawer') as HTMLInputElement).focus();
+    let fired = 0;
+    el.addEventListener('overlay-close', () => fired++);
+
+    await userEvent.keyboard('{Escape}');
+    await settle(el);
+    await drawer.updateComplete;
+    expect(drawer.open, 'the inner layer closes').toBe(false);
+    expect(fired, 'the overlay stays').toBe(0);
+
+    (panel.querySelector('#field') as HTMLInputElement).focus();
+    await userEvent.keyboard('{Escape}');
+    await settle(el);
+    expect(fired, 'the next Escape closes the overlay').toBe(1);
+  });
+
+  it('the shell does not mark the Escape as consumed — it is the outermost layer', async () => {
+    const el = await mount();
+    await withFocusedTrigger(el);
+    await openPanel(el, '<input>');
+    let prevented: boolean | null = null;
+    const late = (e: KeyboardEvent) => { if (e.key === 'Escape') setTimeout(() => { prevented = e.defaultPrevented; }, 0); };
+    window.addEventListener('keydown', late);
+    try {
+      await userEvent.keyboard('{Escape}');
+      await settle(el);
+      await settle(el);
+      expect(prevented).toBe(false);
+    } finally {
+      window.removeEventListener('keydown', late);
+    }
   });
 
   it('no listener is left behind once the overlay is closed', async () => {

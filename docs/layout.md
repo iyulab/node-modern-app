@@ -300,13 +300,56 @@ Available parts:
 | `sidebar-main` | Scrollable main navigation area |
 | `sidebar-footer` | Pinned footer area |
 | `main` | Main content area (the scroll container) |
-| `main-content` | Wrapper holding route content inside `main` — the shell puts `inert` here while the overlay is open |
+| `main-content` | Wrapper holding route content inside `main` — creates no box, so route content sits directly in `main` (see [Route content area](#route-content-area)); the shell puts `inert` here while the overlay is open, and gives it a box then as the overlay's stacking boundary |
 | `progress` | Top linear progress bar |
 | `overlay` | Route-independent overlay panel above `main` |
 | `overlay-close` | The overlay's close button |
 | `notices` | Stack of app-level notices at the top of the route content (`slot="notice"`) |
 
 ---
+
+## Route content area
+
+`part="main"` is the **scroll container** for route content, and it already has a **32px gutter**
+(`padding: var(--u-space-3xl, 32px)`) on every side. **Route screens should not add their own outer
+padding** to `:host` — the gutters add up (32 + 16 = 48px), and they start to differ from screen
+to screen.
+
+To change or remove the gutter, override `main` — either through `layout.styles` or the part:
+
+```ts
+layout: { type: 'sidebar', styles: { main: { padding: '0' } } }   // full-bleed
+```
+
+```css
+u-sidebar-layout::part(main) { padding: 24px; }
+```
+
+⚠ `layout.styles` values are inline styles, so they also apply on print media;
+use `::part(main)` inside `@media screen` if the change is for the screen only.
+
+Inside it, the route content sits **directly** in that scroll container: neither
+`part="main-content"` nor `<u-outlet>` creates a box (`display: contents`). That is what lets all
+three kinds of screen work:
+
+| Screen | Behaviour |
+|---|---|
+| **Fills the area** — `height: 100%`, or a layout such as `u-master-detail-layout` | gets the area minus its gutters |
+| **Fills the area, more content than fits** — a toolbar plus a table with `flex: 1; min-height: 0` and more rows than the viewport | stays at the area's height; the table scrolls inside itself |
+| **Flows** — a form or document taller than the area | `main` scrolls, and the bottom gutter stays at the end of the scroll |
+
+Any box in between breaks one of them — a box pinned at `height: 100%` loses the bottom gutter on
+flowing screens, and a grid box with `min-height: 100%` grows a filling screen to every row of its
+table. So `::part(main-content)` accepts no box styling (`padding`, `background`, `border` do
+nothing); style `::part(main)` or the screen instead.
+
+⚠ **App notices push a filling screen down.** Notices (`slot="notice"`) sit at the top of the
+content at their own height, and a screen's `height: 100%` does not know about them, so while a
+notice shows, a filling screen overflows by the notice's height. The two kinds of screen cannot be
+told apart in CSS; notices are rare and short-lived.
+
+While the overlay is open, `part="main-content"` becomes a box at the area's height, because a
+stacking context needs one — route content is inert and under the overlay then.
 
 ## Route-independent overlay
 
@@ -346,7 +389,7 @@ from either re-implementing what the shell already does, or dropping what it doe
 | Keeping the route mounted underneath | shell | the overlay is independent of routing |
 | Moving focus into the panel when it opens | shell | an `[autofocus]` element in your panel, else its first input control, else `part="overlay-close"`. If you already moved focus into the panel, the shell leaves it there |
 | Restoring focus when it closes | shell | back to the control that held focus when the panel opened — only if focus fell to `<body>`; if you moved it somewhere on purpose, that stands. With no such control (opened from code), focus goes to `part="main"` |
-| Escape to close | shell | Escape inside the panel fires the same `overlay-close` as the button — you still empty the slot. An Escape already consumed inside the panel (an open list or popover calling `preventDefault()`) closes only that layer |
+| Escape to close | shell | Escape inside the panel fires the same `overlay-close` as the button — you still empty the slot. The shell decides **after** every layer inside the panel has: an Escape consumed there (`preventDefault()` — an open list, popover, drawer or dialog, whenever it was opened) closes only that layer. The shell does not mark the Escape consumed itself |
 | **A backdrop / dimmed scrim** | **consumer** | the panel is opaque and full-bleed by design; add a scrim inside your panel if you want one |
 | **Announcing the panel to assistive tech** | **consumer** | put `role`/`aria-label` (or `aria-modal`, if you have made it modal) on *your* panel — the shell does not know what it holds |
 
