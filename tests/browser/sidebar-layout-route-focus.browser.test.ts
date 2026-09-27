@@ -5,6 +5,7 @@ import '../../src/layouts/SidebarLayout.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import { RouteDoneEvent, type RouteContext } from '@iyulab/router';
 import '@iyulab/components/dist/components/input/UInput.js';
+import '@iyulab/components/dist/components/select/USelect.js';
 
 /**
  * Where focus lands when a route finishes (docket iyulab/node-modern-app#517).
@@ -147,5 +148,15 @@ describe('SidebarLayout route-done focus', () => {
     toggler?.focus();
     await routeDone(el);
     expect(deepActive()).toBe(el.mainElement);
+  });
+
+  it('skips the closed popover a u-select keeps in its shadow root (it carries an autofocus attribute)', async () => {
+    const el = await mount();
+    const wrap = document.createElement('div');
+    wrap.innerHTML = '<u-select></u-select><input id="scan" autofocus>';
+    el.appendChild(wrap);
+    await (wrap.querySelector('u-select') as HTMLElement & { updateComplete: Promise<unknown> }).updateComplete;
+    await routeDone(el);
+    expect(deepActive()).toBe(wrap.querySelector('#scan'));
   });
 });

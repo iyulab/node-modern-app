@@ -9,6 +9,15 @@
   roots — so when the panel was a custom element rendering its controls in its own template, the
   shell found neither and fell back to the close button. The search now goes through shadow roots
   and waits for the panel's first render, as route focus does since 0.30.1.
+- **Route and overlay focus skip a `u-select`'s closed popover.** Searching through shadow roots
+  (0.30.1) also reached the popover every `u-select` keeps inside, which carries an `autofocus`
+  attribute of its own — a screen with a `u-select` before its `autofocus` field got the content
+  area instead. Only elements that can actually take focus are candidates now.
+
+### Changed
+
+- **Requires `@iyulab/components` 1.47.1 or later** (peer) — the shell now uses its
+  `querySelectorDeep` / `isFocusCandidate`, the same lookup `u-dialog` and `u-drawer` use.
 
 ## [0.30.1] - 2026-09-28
 

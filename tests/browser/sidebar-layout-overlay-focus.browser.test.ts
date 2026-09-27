@@ -6,6 +6,7 @@ import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import { RouteDoneEvent, type RouteContext } from '@iyulab/router';
 import '@iyulab/components/dist/components/drawer/UDrawer.js';
 import { LitElement, html } from 'lit';
+import '@iyulab/components/dist/components/select/USelect.js';
 
 /** A panel that is a component — its controls live in its own shadow root. */
 class DetailPanel extends LitElement {
@@ -133,6 +134,14 @@ describe('SidebarLayout overlay — focus moves into the panel when it opens', (
     await panel.updateComplete;
     await settle(el);
     expect(deepActive()).toBe(panel.shadowRoot!.querySelector('#name'));
+  });
+
+  it('skips the closed popover inside a u-select that comes first', async () => {
+    const el = await mount();
+    await withFocusedTrigger(el);
+    const panel = await openPanel(el, '<u-select></u-select><button id="b">Save</button><input id="auto" autofocus>');
+    await settle(el);
+    expect(deepActive()).toBe(panel.querySelector('#auto'));
   });
 
   it('leaves focus alone when the consumer already put it inside the panel', async () => {

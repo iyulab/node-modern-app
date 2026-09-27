@@ -11,6 +11,7 @@ import '../components/SidebarButton';
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import '@iyulab/components/dist/components/button/UButton.js';
 import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js';
+import { isFocusCandidate, querySelectorDeep } from '@iyulab/components/dist/utilities/elements.js';
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
 import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
@@ -95,32 +96,6 @@ function composedContains(container: Element, node: Node): boolean {
     current = current.parentNode ?? ((current as ShadowRoot).host ?? null);
   }
   return false;
-}
-
-/**
- * `roots` 안(열린 섀도 루트까지)에서 `selector` 에 맞는 첫 요소 — 문서 순서, 섀도 안은 호스트 자리에서.
- * `querySelector` 는 섀도 경계에서 멈춘다.
- */
-function deepQuery(roots: Element[], selector: string): HTMLElement | null {
-  const visit = (node: Element | ShadowRoot): HTMLElement | null => {
-    const children = node instanceof Element ? [node] : Array.from(node.children);
-    for (const child of children) {
-      const walker = document.createTreeWalker(child, NodeFilter.SHOW_ELEMENT);
-      for (let el = walker.currentNode as Element | null; el; el = walker.nextNode() as Element | null) {
-        if (el.matches(selector)) return el as HTMLElement;
-        if (el.shadowRoot) {
-          const found = visit(el.shadowRoot);
-          if (found) return found;
-        }
-      }
-    }
-    return null;
-  };
-  for (const root of roots) {
-    const found = visit(root);
-    if (found) return found;
-  }
-  return null;
 }
 
 @customElement('u-sidebar-layout')
@@ -570,7 +545,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     const active = deepActiveElement();
     if (active && content.some(el => composedContains(el, active))) return;
 
-    const declared = deepQuery(content, '[autofocus]');
+    const declared = querySelectorDeep(content, '[autofocus]', isFocusCandidate);
     declared?.focus();
     const now = deepActiveElement();
     if (declared && now && composedContains(declared, now)) return;
@@ -624,8 +599,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     const active = deepActiveElement();
     if (active && panels.some(p => composedContains(p, active))) return;
 
-    const target = deepQuery(panels, '[autofocus]')
-      ?? deepQuery(panels, 'input, select, textarea, u-input, u-textarea, u-select, u-checkbox, u-radio, u-switch, u-slider')
+    const target = querySelectorDeep(panels, '[autofocus]', isFocusCandidate)
+      ?? querySelectorDeep(panels, 'input, select, textarea, u-input, u-textarea, u-select, u-checkbox, u-radio, u-switch, u-slider', isFocusCandidate)
       ?? this.shadowRoot?.querySelector<HTMLElement>('.overlay-close');
     target?.focus();
   }
