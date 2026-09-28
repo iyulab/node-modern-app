@@ -9,7 +9,7 @@ import type { SidebarLayoutConfig } from '../../src/layouts/SidebarLayout.types'
  *
  * 로고는 누르면 홈으로 가는 타깃이고, 접힌(slim) 사이드바에서는 로고와 토글만 남는다. 문자열형 로고가
  * 404 · 없는 이름으로 해석에 실패하면 `u-icon` 이 아무것도 그리지 않아 **0×0** 이 됐다 — 타깃 크기 게이트
- * 이식 중 실측(cycle-601). 내비 항목 셋은 이미 같은 자리에 폴백을 갖고 있었고 로고만 빠져 있었다.
+ * 이식 중 실측. 내비 항목 셋은 이미 같은 자리에 폴백을 갖고 있었고 로고만 빠져 있었다.
  */
 
 let host: HTMLDivElement;

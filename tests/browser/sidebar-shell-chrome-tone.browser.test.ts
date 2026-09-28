@@ -8,7 +8,7 @@ import type { SidebarLayoutConfig } from '../../src/layouts/SidebarLayout.types'
  * 사이드바/모바일 헤더 배경의 기본 폴백 토큰. jsdom 은 커스텀 프로퍼티 캐스케이드를
  * 계산하지 않으므로(`shell-tokens.browser.test.ts` 머리말 참조) 실제 렌더로만 검증된다.
  *
- * 이 계약이 존재하는 이유(docket #63): `--u-panel-bg-color`(라이트 = 페이지와 같은
+ * 이 계약이 존재하는 이유: `--u-panel-bg-color`(라이트 = 페이지와 같은
  * neutral-0)로 폴백하면 상시 크롬인 사이드바가 페이지와 같은 흰색으로 앉아 페이지·
  * 사이드바·카드(`u-group-box`, 이미 `--u-bg-color-raised`로 수정됨) 삼중 무구분이
  * 재현됐다. `--u-bg-color-raised`(neutral-50)로 바꾸면 사이드바가 페이지와 구분되고,

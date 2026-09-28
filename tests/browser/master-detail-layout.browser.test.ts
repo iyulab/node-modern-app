@@ -8,7 +8,7 @@ import type { MasterDetailLayout } from '../../src/components/MasterDetailLayout
  * ⑴ the ResizeObserver-driven `overlay` attribute actually flips at the configured
  *   breakpoint (jsdom/happy-dom never compute layout, so this only exists here), and
  * ⑵ the detail slot's presence/absence actually toggles visibility via the `.empty`
- *   class — not the `hidden` attribute (see the Reflection note in cycle-268: bare
+ *   class — not the `hidden` attribute (bare
  *   `?hidden` next to an unconditional `display:` declaration for the same element
  *   loses the cascade, because author-origin rules always outrank the user-agent
  *   `[hidden]` rule regardless of specificity).
@@ -133,7 +133,7 @@ describe('u-master-detail-layout — detail-close', () => {
 describe('u-master-detail-layout — overlayBreakpoint is reactive on its own', () => {
   /**
    * The width never changes in these two — only the breakpoint does. That is the whole
-   * point: the overlay decision has two inputs, and until cycle-518 it was evaluated
+   * point: the overlay decision has two inputs, and previously it was evaluated
    * only inside the ResizeObserver callback, so changing the prop alone did nothing
    * until something happened to resize the element. Every pre-existing test in this
    * file moves the width, which is exactly why none of them caught it.

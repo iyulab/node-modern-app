@@ -5,8 +5,8 @@ import type { InfoField } from '../src/components/InfoField.js';
 
 /**
  * `value` 가 `attribute: false` 였을 때는 `<u-info-field value="…">`(속성형)가 조용히
- * 무시됐다 — 실사용 3/3 이 그 형태로 손이 갔다는 신호를 받아 `type: String` 으로 전환했다
- * (§D-18, `L2-11-3`). 이 파일은 그 전환이 ⑴ 속성형을 실제로 동작하게 하고 ⑵ 기존
+ * 무시됐다 — 실사용 3/3 이 그 형태로 손이 갔다는 신호를 받아 `type: String` 으로 전환했다.
+ * 이 파일은 그 전환이 ⑴ 속성형을 실제로 동작하게 하고 ⑵ 기존
  * 프로퍼티 바인딩(숫자 등 비-문자열)을 깨지 않는지를 함께 잰다.
  */
 

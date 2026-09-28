@@ -9,7 +9,7 @@ import type { SidebarLayoutConfig } from '../../src/layouts/SidebarLayout.types'
 import type { MasterDetailLayout } from '../../src/components/MasterDetailLayout.js';
 
 /**
- * **셸의 높이는 «부모» 가 정한다**(cycle-564).
+ * **셸의 높이는 «부모» 가 정한다**.
  *
  * 두 셸 모두 `:host { height: 100% }` 다 — 화면을 채우는 것이 역할이라 자기 높이를 갖지 않는다
  * (`MasterDetailLayout.styles.ts` 가 그 전제를 주석으로 적어 두고 있다).
@@ -114,7 +114,7 @@ describe('modern-app 셸 — 높이는 부모가 정한다', () => {
   });
 
   /**
-   * HD-61 ⒝ — «크롬 높이로 앉은 셸» 을 개발 모드에서 한 번 알린다. 위 계약은 그대로다.
+   * «크롬 높이로 앉은 셸» 을 개발 모드에서 한 번 알린다. 위 계약은 그대로다.
    */
   it('🔴부모에 높이가 없으면 개발 모드 경고를 정확히 한 번 낸다', async () => {
     const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -143,7 +143,7 @@ describe('modern-app 셸 — 높이는 부모가 정한다', () => {
 
 
 /**
- * **높이 사슬은 `<u-outlet>` 을 «지나야» 한다** (cycle-628, router `#302` 의 회귀).
+ * **높이 사슬은 `<u-outlet>` 을 «지나야» 한다**.
  *
  * 실제 앱에서 라우트 화면은 셸의 본문에 직접 들어가지 않는다 — `App.load()` 가 그 사이에
  * `<u-outlet>` 을 끼운다. 그래서 «화면을 채우는» 레이아웃(`u-master-detail-layout` 의
@@ -212,7 +212,7 @@ describe('modern-app 셸 — 높이 사슬이 아웃렛을 지난다', () => {
   });
 
   /**
-   * 🔴**인쇄에서 화면 마지막 블록의 아래 여백은 셸 «밖» 으로 접혀야 한다** (cycle-660 · router `#302` 3차).
+   * 🔴**인쇄에서 화면 마지막 블록의 아래 여백은 셸 «밖» 으로 접혀야 한다**.
    *
    * 그 여백이 어느 상자 안에 갇히면 그 상자의 높이가 여백만큼 늘고, 내용 끝이 쪽 경계에서 그 여백 이내에
    * 있으면 **여백만 담긴 빈 꼬리 쪽**이 찍힌다(CSS Fragmentation §5.2 — 쪽 경계에 닿은 여백은 잘리지만

@@ -7,8 +7,7 @@ import type { Wizard, WizardStepChangeDetail } from '../../src/components/Wizard
  * Real-render checks for the parts a source read cannot confirm: keyboard-only
  * completion, focus moving to the panel on step change, and the live-region
  * announcement actually updating. jsdom/happy-dom never move real focus, so all
- * three only exist here (cycle-268's Reflection note on the master-detail-layout
- * work applies here too).
+ * three only exist here (the same holds as for the master-detail-layout work).
  */
 
 let host: HTMLDivElement;

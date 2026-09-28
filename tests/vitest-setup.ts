@@ -17,7 +17,7 @@ import { IconRegistry } from '@iyulab/components';
  *
  * ## ⚠ 원인이 초안의 추정과 달랐다
  *
- * 초안(`ISSUE-modern-app-20260803-tests-depend-on-cdn.md`)은 *"메뉴 정의에서 아이콘을
+ * 초안은 *"메뉴 정의에서 아이콘을
  * 빼라"* 를 권했는데, **이 테스트의 픽스처에는 아이콘이 없다.** 호출을 만드는 것은
  * `SidebarLayout` 이 **자기 chrome 으로** 그리는 아이콘이다(토글러 등).
  * ⇒ 소비자가 아이콘을 안 써도 `layout: { type: 'sidebar' }` 만으로 네트워크를 탄다.

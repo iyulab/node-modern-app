@@ -6,7 +6,7 @@ import type { SidebarLayoutConfig } from '../src/layouts/SidebarLayout.types';
 import { IconRegistry } from '@iyulab/components';
 
 /**
- * 셸이 **자기 chrome 으로** 그리는 아이콘이 네트워크에 묶여 있었다(docket `#386`).
+ * 셸이 **자기 chrome 으로** 그리는 아이콘이 네트워크에 묶여 있었다.
  * 토글러 둘이 `lib="bootstrap"` 하드코딩이었고 그 lib 은 components 에서 jsdelivr CDN 조회다 —
  * 소비앱이 자기 아이콘을 빌드 시점에 전부 구워 등록해도 **셸이 쓰는 것만은 그 등록을 타지 않아**,
  * 폐쇄망 배포에서 사이드바 토글이 빈 채로 남았다.

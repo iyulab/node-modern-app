@@ -16,7 +16,7 @@ import '../../src/components/SidebarGroup.js';
  * 라벨(과 그룹의 캐럿)이 숨으므로, 아이콘까지 없으면 버튼이 **빈 상자**가 된다.
  *
  * 🔴 이 파일이 뒤늦게 생긴 이유가 이 파일의 존재 이유다 — 폴백은 `u-icon` 의 해석 실패
- * 지점에 올바르게 걸렸지만(`DL-218-3`), **호출부 셋 중 둘만 고쳤다.** `SidebarGroup` 은
+ * 지점에 올바르게 걸렸지만,**호출부 셋 중 둘만 고쳤다.** `SidebarGroup` 은
  * `?hidden=${!this.icon}` 으로 폴백을 무력화한 채 남아 있었고, 아무 테스트도 그것을 보지
  * 않았다. 세 종류를 **한 목록으로** 도는 것이 이 자의 설계다 — 항목 종류가 늘면 여기 더한다.
  */
@@ -78,8 +78,8 @@ describe('접힌 사이드바 — 누를 것이 있다', () => {
   });
 
   /**
-   * **접힘이 「누를 것」은 지키지만 「이름」은 지키지 못하고 있었다** (docket #109 실측 —
-   * `SidebarButton`. 같은 파일 안 조사로 `SidebarLink`·`SidebarGroup`도 같은 결함을 겪고
+   * **접힘이 「누를 것」은 지키지만 「이름」은 지키지 못하고 있었다**
+   * (`SidebarButton`. 같은 파일 안 조사로 `SidebarLink`·`SidebarGroup`도 같은 결함을 겪고
    * 있음을 확인해 세 종류 전부 함께 고쳤다). `part="label"`이 `?hidden`으로 접근성 트리에서도
    * 빠지므로, 대체 이름(`aria-label`)이 없으면 스크린리더에는 **이름 없는 버튼**으로 남는다.
    * 위 목록과 같은 이유로 세 종류를 한 목록으로 돈다.
@@ -87,7 +87,7 @@ describe('접힌 사이드바 — 누를 것이 있다', () => {
   const accessibleNameHost = (tag: string, el: HTMLElement): HTMLElement =>
     (tag === 'u-sidebar-link' ? el.shadowRoot!.querySelector('u-link') : pressable(el)) as HTMLElement;
 
-  // ⚠cycle-663 부터 이름은 `aria-label` 이 아니라 **시각적으로만 숨긴 라벨 내용**에서 온다 —
+  // ⚠이름은 `aria-label` 이 아니라 **시각적으로만 숨긴 라벨 내용**에서 온다 —
   //   속성 대신 계산된 이름을 잰다(역할 로케이터가 섀도 루트를 뚫고 계산한다).
   const roleOf = (tag: string) => (tag === 'u-sidebar-link' ? 'link' : 'button');
 
@@ -114,7 +114,7 @@ describe('접힌 사이드바 — 누를 것이 있다', () => {
   });
 
   /**
-   * 🔴**번역 라벨(디렉티브)도 접힌 상태에서 이름을 잃지 않는다** (cycle-663).
+   * 🔴**번역 라벨(디렉티브)도 접힌 상태에서 이름을 잃지 않는다**.
    *
    * 위 수정은 `label` 이 **문자열일 때만** `aria-label` 로 승격한다 — 디렉티브 결과는 평문화할 수 없어서다.
    * 그런데 라벨 자리는 번역 디렉티브를 받도록 설계됐고(`string | DirectiveResult`), 라벨 자체는

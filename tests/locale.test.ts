@@ -70,7 +70,7 @@ describe('로케일 레지스트리', () => {
 /**
  * 🔴**언어는 한 곳에서 정한다 — `components` 의 `Locale`.** 종전에는 이 패키지만 자기 상태를
  * 따로 두어, `Locale.set('ko')` 만 한 앱의 셸 버튼 이름이 한국어 화면 한가운데서 영어로 섰다
- * (docket #416 — 에러·경고 없이). 형제 `flex-table` 은 이미 `Locale.namespace` 를 따른다.
+ * (에러·경고 없이). 형제 `flex-table` 은 이미 `Locale.namespace` 를 따른다.
  */
 describe('Locale.namespace 이관 (#416)', () => {
   beforeEach(() => {

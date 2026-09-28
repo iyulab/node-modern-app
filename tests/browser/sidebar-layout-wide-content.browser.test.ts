@@ -10,7 +10,7 @@ import type { SidebarState } from '../../src/layouts/SidebarLayout.types';
  * `.main-region` 은 flex item 이고, flex item 의 자동 최소 크기는 콘텐츠의 min-content 다.
  * 주축이 가로인 데스크톱(`default`/`slim`)에서 `min-width: 0` 이 없으면 넓은 표 하나가
  * `.main-region` 을 가용 폭보다 크게 만들어 셸이 뷰포트 밖으로 밀리고, 오른쪽 열이 잘리며
- * 가로 스크롤도 생기지 않는다(docket #341 — 0.22.0 회귀).
+ * 가로 스크롤도 생기지 않는다(0.22.0 회귀).
  *
  * ## 왜 이 파일이 생겼는가
  *

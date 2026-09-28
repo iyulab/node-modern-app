@@ -5,7 +5,7 @@ import type { SidebarLayout } from '../src/layouts/SidebarLayout.js';
 import type { SidebarLayoutConfig } from '../src/layouts/SidebarLayout.types';
 
 /**
- * docket #145 — `SidebarLayout.renderItem`의 `group` 브랜치가
+ * `SidebarLayout.renderItem`의 `group` 브랜치가
  * `?collapsed="${e.collapsed ?? false}"`처럼 인터폴레이션을 따옴표로 감싸고 있었다.
  * 형제 바인딩(`?compact=`, `?selected=`)은 따옴표가 없는데 이 자리만 있었고, 그 결과
  * lit-html 이 불리언-속성 지시자로 인식하지 못해 `collapsed: false`를 줘도 항상

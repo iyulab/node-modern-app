@@ -7,7 +7,7 @@ import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 /**
  * 규약: **토글은 레이아웃이 받은 화면 크기를 따른다 — `app.load()` 를 거쳤든 아니든.**
  *
- * ★결함(docket `#409`): 크기 «전환» 은 `screen-resize` 이벤트로 받으면서 토글은 싱글턴
+ * ★결함: 크기 «전환» 은 `screen-resize` 이벤트로 받으면서 토글은 싱글턴
  * `app.screen` 을 읽었다. `app.screen` 은 `app.load()` 가 옵저버를 만들 때만 있으므로,
  * `/react` 진입점처럼 레이아웃과 `ScreenObserver` 를 직접 조립하면 언제나 `undefined` →
  * `'large'` 로 떨어졌다. 그래서 모바일 폭에서 메뉴를 열면 `mobile → mobile-open` 이 아니라

@@ -3,7 +3,7 @@ import { getLocaleStrings, getDefaultLocale, setDefaultLocale, modernAppLocale }
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 /**
- * 🔴**`Locale.set('ko')` 한 번이면 셸 문구가 한국어다 — 소비자가 표를 등록하지 않아도**(docket #430).
+ * 🔴**`Locale.set('ko')` 한 번이면 셸 문구가 한국어다 — 소비자가 표를 등록하지 않아도**.
  *
  * 0.26.0 이 언어 선택을 `Locale` 하나로 모았지만 표가 `en` 뿐이라, 이미 `Locale.set('ko')` 를 부르는
  * 앱에서도 사이드바 토글·오버레이 닫기의 **접근성 이름**이 영어로 남았다. 형제 `flex-table` 은
@@ -11,7 +11,7 @@ import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
  *
  * ⚠이 파일은 등록을 하지 않는다 — `locale.test.ts` 는 `ko` 를 부분 등록해 표를 덮으므로, 내장 표 자체를
  * 재려면 등록이 없는 격리된 파일이어야 한다.
- * ⚠값을 박지 않고 «영어와 다르고 키 이름이 아니다» 를 잰다(`DL-656-2` — 번역 문구 수정이 이 테스트를
+ * ⚠값을 박지 않고 «영어와 다르고 키 이름이 아니다» 를 잰다(번역 문구 수정이 이 테스트를
  * 깨지 않게). 알림 템플릿만 자리표시자 치환까지 본다.
  */
 describe('내장 ko 표', () => {

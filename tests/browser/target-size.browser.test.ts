@@ -4,8 +4,8 @@ import '@iyulab/components/styles/tokens.css';
 /**
  * **WCAG 2.2 SC 2.5.8 Target Size (Minimum) — 24×24 CSS px** 게이트.
  *
- * `@iyulab/components`(cycle-479~492) → `chat-components`(496) → `data-components`(497) →
- * `editor-components` 를 거쳐 이식했다(cycle-601). 판정 규칙·간격 예외·형제 태그 걸러내기·hit-test 축은
+ * `@iyulab/components` → `chat-components`(496) → `data-components`(497) →
+ * `editor-components` 를 거쳐 이식했다. 판정 규칙·간격 예외·형제 태그 걸러내기·hit-test 축은
  * **같은 형태**이고, 근거는 `components` 쪽 파일 머리말이 정본이다 — 여기에는 이 패키지에서만 참인 것만 적는다.
  *
  * ## ⚠ 이 패키지의 타깃은 «셸 크롬»이다
@@ -53,20 +53,20 @@ function inShadow(host: Element, sel: string): Element[] {
 }
 
 /**
- * 🔴**hit-test 축**(cycle-553 · 세 게이트 공통) — 타깃의 중심과 1px 안쪽 네 가장자리를 실제로 누르면 그 타깃이 받는가.
+ * 🔴**hit-test 축**(세 게이트 공통) — 타깃의 중심과 1px 안쪽 네 가장자리를 실제로 누르면 그 타깃이 받는가.
  *
  * `getBoundingClientRect` 는 조상의 `overflow` 가 자른 부분도, 닫혀서 보이지 않는 요소의 박스도 그대로 보고한다 — 크기만
  * 재면 ***보이지도 눌리지도 않는 타깃이 통과한다.*** 실제로 그랬다: components 게이트의 `u-input` 접미 아이콘(좁은 필드에서
  * 밖으로 밀려나 잘렸다)과, 닫힌 채 띄운 대화상자 픽스처(닫기 버튼 중심을 누르면 `body` 가 받았다).
  *
  * - **사용자가 스크롤로 닿을 수 있으면 닿는 것이다** — 점마다, 그 점이 보이도록 `overflow: auto|scroll` 조상과 창만 스크롤한
- *   뒤 잰다(cycle-554: 표·시트·블록이 러너의 좁은 뷰포트를 넘어 `elementFromPoint` 가 `null` 을 돌려줬고, 뷰포트보다 넓은
+ *   뒤 잰다(표·시트·블록이 러너의 좁은 뷰포트를 넘어 `elementFromPoint` 가 `null` 을 돌려줬고, 뷰포트보다 넓은
  *   타깃은 양 끝을 한 화면에 담을 수 없다). `overflow: hidden|clip` 조상은 사용자가 움직일 수 없으므로 **건드리지 않는다** —
  *   `scrollIntoView` 는 그것까지 스크롤해 잘린 타깃을 통과시킨다. 움직인 스크롤은 점마다 돌려놓는다.
  * - 판정은 타깃이 속한 트리(`getRootNode()`)에서 한다. 그 트리로 retarget 되어 **호스트**가 돌아오면, 그 점이 타깃 안
  *   `<slot>` 에 꽂힌 라이트 DOM 내용 위일 때 타깃이 받은 것으로 센다(링크 안에 꽂힌 글자 등).
  * - ⚠**이웃 타깃이 받은 것은 봐주지 않는다.** 붙어 있는 격자 셀의 경계선 때문에 가장자리를 이웃에 양보하는 면제를
- *   시험해 봤지만(cycle-554), 네거티브 컨트롤로 끄자 **어떤 픽스처도 빨개지지 않았다** — 셀 가장자리의 불일치는 경계선이
+ *   시험해 봤지만, 네거티브 컨트롤로 끄자 **어떤 픽스처도 빨개지지 않았다** — 셀 가장자리의 불일치는 경계선이
  *   아니라 뷰포트 밖이었다. 쓰이지 않는 면제는 조용한 미탐이라 걷어냈다. 필요해지면 그 픽스처가 빨강으로 알린다.
  *
  * ⚠이 헬퍼는 세 게이트(components · chat-components · data-components)에 **같은 코드로** 한 벌씩 있다 — 고치면 셋 다.
@@ -317,7 +317,7 @@ const FIXTURES: Record<string, Fixture | Fixture[]> = {
     // 머리의 로고(누르면 홈으로)와 접기 토글. 토글은 `u-button` 이지만 치수를 이 패키지 시트가 덮는다(위 NOT_A_TARGET 주석).
     // ⚠`config` 는 **프로퍼티**다 — 없으면 아무것도 렌더하지 않는다.
     // 🔴로고는 **이미지형**으로 준다 — 문자열형(`logo: 'house'`)은 `lib` 없이 기본 URL 을 요청하는데 테스트 설정은 그 요청을
-    //   스텁하지 않아(`vitest-setup.ts` 는 이름 있는 lib 만 덮는다) 해석에 실패하고 폴백이 없어 **0×0** 이 된다(cycle-601 실측).
+    //   스텁하지 않아(`vitest-setup.ts` 는 이름 있는 lib 만 덮는다) 해석에 실패하고 폴백이 없어 **0×0** 이 된다.
     //   그것을 재면 제품이 아니라 러너의 네트워크를 잰다. 이미지형은 시트가 높이 24px 을 직접 준다.
     html: '<div style="height:420px"><u-sidebar-layout></u-sidebar-layout></div>',
     prepare: async (host) => {

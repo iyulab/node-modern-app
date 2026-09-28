@@ -9,8 +9,7 @@ import type { SidebarLayoutConfig } from '../../src/layouts/SidebarLayout.types'
 
 /**
  * "u-popover 기반 사이드바 팝업 스타일 서브메뉴"가 두 가지 다른 이유로 동작하지 않는 것을
- * 실측으로 재현한다. 상세는
- * claudedocs/issues/ISSUE-modern-app-20260822-sidebar-popover-submenu-anchoring-broken.md.
+ * 실측으로 재현한다.
  *
  * ⚠**처음 세운 가설(모바일의 `.sidebar` `transform` + `.sidebar-main` `overflow-x:hidden`
  * 조합이 `strategy="fixed"`의 containing block 을 가둔다)은 실측으로 반증됐다.** 실제 414px
