@@ -107,7 +107,7 @@ export function resolveSheet(root) {
  * `#2A659D` dark). use-site 리터럴은 둘 중 하나만 구울 수 있다. light 를 고르는 이유는
  * **시트 부재 = 테마 미적용**이기 때문이다 — 폴백이 발동하는 상황에는 `color-scheme` 도
  * `prefers-color-scheme` 매핑도 없으므로, 기본 테마의 값이 유일하게 정합한 선택이다.
- * (이것은 도출이 아니라 결정이다 — `DL-123-1`.)
+ * (이것은 도출이 아니라 결정이다.)
  */
 export const CANONICAL_SHEET = 'light';
 
