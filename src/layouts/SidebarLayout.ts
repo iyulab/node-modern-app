@@ -12,6 +12,7 @@ import '@iyulab/components/dist/components/icon/UIcon.js';
 import '@iyulab/components/dist/components/button/UButton.js';
 import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js';
 import { isFocusCandidate, querySelectorDeep } from '@iyulab/components/dist/utilities/elements.js';
+import { OverlayManager } from '@iyulab/components/dist/utilities/OverlayManager.js';
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
 import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
@@ -159,7 +160,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     window.removeEventListener('route-progress', this.handleRouteProgress);
     window.removeEventListener('route-error', this.handleRouteError);
     window.removeEventListener('screen-resize', this.handleScreenResize);
-    window.removeEventListener('keydown', this.handleOverlayEscape);
+    OverlayManager.closeLayer(this);
     super.disconnectedCallback();
   }
 
@@ -176,10 +177,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     if (changed.has('hasOverlay')) {
       this.internals?.states?.[this.hasOverlay ? 'add' : 'delete']('overlay');
       if (this.hasOverlay) {
-        window.addEventListener('keydown', this.handleOverlayEscape);
+        OverlayManager.openLayer(this, this.handleOverlayEscape);
         void this.focusOverlay();
       } else if (changed.get('hasOverlay') === true) {
-        window.removeEventListener('keydown', this.handleOverlayEscape);
+        OverlayManager.closeLayer(this);
         this.restoreOverlayFocus();
       }
     }
@@ -620,27 +621,19 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   /**
-   * 패널 안의 Escape 는 닫기 버튼과 같은 `overlay-close` 를 낸다 — 단, **안쪽 층이 모두 판정한 뒤에**.
+   * 패널 안의 Escape 는 닫기 버튼과 같은 `overlay-close` 를 낸다.
    *
-   * 셸의 오버레이는 가장 바깥 층이다. 그런데 window 의 같은 단계 리스너는 «등록 순서» 로 돌고,
-   * 셸은 오버레이가 열릴 때 등록하므로 패널 안에서 «나중에» 연 층(`u-drawer`·`u-dialog` — 역시
-   * window 에서 받는다)보다 먼저 돈다. 거기서 판정하면 바깥이 닫히고 안쪽이 남는다(거꾸로다).
-   * ⇒ 리스너에서는 판정하지 않고 **디스패치가 끝난 뒤**(다음 태스크) `defaultPrevented` 를 본다 —
-   *   그때는 어느 순서로 등록된 층이든 이미 자기 몫을 가져갔다. 한 번의 Escape 는 한 층만 닫는다.
-   * ⚠마이크로태스크로는 부족하다 — 네이티브 이벤트에서는 리스너 사이마다 마이크로태스크가 비워져,
-   *   뒤에 등록된 층보다 먼저 돈다.
-   * ⚠셸은 `preventDefault` 하지 않는다 — 가장 바깥 층이 키를 «먹었다» 고 표시하면 안쪽 층의 가드
-   *   (`defaultPrevented` 면 닫지 않는다)를 오염시킨다.
-   * 경로에 패널이 없으면(사이드바, 패널 위에 띄운 대화상자) 받지 않는다.
+   * 패널은 components 의 층 스택(`OverlayManager.openLayer`)에 선 한 층이다 — 층은 여는 순서로 쌓이고
+   * Escape 한 번은 가장 위 층 하나만 닫으므로, 패널 «안» 에서 나중에 연 서랍·대화상자·팝오버가 먼저
+   * 닫힌다. 종전에는 셸이 window 에서 직접 받아 «등록 순서» 가 층 순서를 거슬렀고, 그것을 다음
+   * 태스크로 미룬 판정으로 메웠다 — 이제 순서는 한 곳이 정한다.
+   * 비모달 패널이라 **포커스가 패널 안일 때만** 닫는다(사이드바에서 누른 Escape 는 거절 — 소비하지 않는다).
    */
-  private handleOverlayEscape = (e: KeyboardEvent) => {
-    if (e.key !== 'Escape' || e.isComposing || !this.hasOverlay) return;
+  private handleOverlayEscape = (e: KeyboardEvent): boolean => {
     const overlay = this.shadowRoot?.querySelector('.overlay');
-    if (!overlay || !e.composedPath().includes(overlay)) return;
-    setTimeout(() => {
-      if (e.defaultPrevented || !this.hasOverlay) return;
-      this.handleOverlayClose();
-    }, 0);
+    if (!this.hasOverlay || !overlay || !e.composedPath().includes(overlay)) return false;
+    this.handleOverlayClose();
+    return true;
   };
 
   private handleOverlayClose = () => {

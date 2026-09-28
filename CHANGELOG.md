@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.32.0] - 2026-09-28
+
+### Changed
+
+- **The shell's overlay panel is a layer in `@iyulab/components`' layer stack.** Escape inside the
+  panel still fires `overlay-close`, and a drawer, dialog or popover opened inside the panel still
+  closes first — the order now comes from `OverlayManager` (layers stack in the order they opened)
+  instead of the shell waiting a task to see who else handled the key. The Escape that closes the
+  panel is now marked consumed (`defaultPrevented`), like every layer's; an Escape pressed outside
+  the panel is still left alone. Requires `@iyulab/components` 1.49.0 or later.
+
 ## [0.31.0] - 2026-09-28
 
 ### Changed

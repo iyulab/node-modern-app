@@ -265,20 +265,41 @@ describe('SidebarLayout overlay — Escape closes it', () => {
     expect(fired, 'the next Escape closes the overlay').toBe(1);
   });
 
-  it('the shell does not mark the Escape as consumed — it is the outermost layer', async () => {
+  // 패널은 층 스택의 한 층이다 — 한 번의 Escape 는 가장 위 층 하나만 닫으므로, 그것을 쓴 층이 소비를
+  // 표시해도 다른 층의 판단을 오염시키지 않는다. 모든 층이 같은 계약: 층을 닫은 Escape 는 소비됐다.
+  it('the Escape that closes the panel is marked consumed, like every layer', async () => {
     const el = await mount();
     await withFocusedTrigger(el);
     await openPanel(el, '<input>');
     let prevented: boolean | null = null;
-    const late = (e: KeyboardEvent) => { if (e.key === 'Escape') setTimeout(() => { prevented = e.defaultPrevented; }, 0); };
-    window.addEventListener('keydown', late);
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') prevented = e.defaultPrevented; };
+    window.addEventListener('keydown', onKey);
     try {
       await userEvent.keyboard('{Escape}');
       await settle(el);
+      expect(prevented).toBe(true);
+    } finally {
+      window.removeEventListener('keydown', onKey);
+    }
+  });
+
+  it('NEGATIVE — an Escape pressed outside the panel is declined and left unconsumed', async () => {
+    const el = await mount();
+    // 본문은 오버레이가 열리면 inert 라 거기에는 포커스를 둘 수 없다 — 셸 밖의 입력칸을 쓴다.
+    const outside = document.createElement('input');
+    document.body.appendChild(outside);
+    let prevented: boolean | null = null;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') prevented = e.defaultPrevented; };
+    window.addEventListener('keydown', onKey);
+    try {
+      await openPanel(el, '<input>');
+      outside.focus();
+      await userEvent.keyboard('{Escape}');
       await settle(el);
       expect(prevented).toBe(false);
     } finally {
-      window.removeEventListener('keydown', late);
+      window.removeEventListener('keydown', onKey);
+      outside.remove();
     }
   });
 
