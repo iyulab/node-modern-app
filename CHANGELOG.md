@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [0.31.0] - 2026-09-28
+
+### Changed
+
+- **Depends on `@iyulab/router` `^0.17.0`**, where `@lit/react` is an optional peer. Apps that import
+  `@iyulab/modern-app/react` already install `@lit/react` (an optional peer here too); nothing else
+  changes.
 
 ### Fixed
 
