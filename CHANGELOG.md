@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **`document.querySelector('u-sidebar-layout')` is typed as `SidebarLayout`.** The shell was the
+  one element without an `HTMLElementTagNameMap` entry, so reaching `mainElement` from a query
+  needed a cast.
+
 ## [0.30.2] - 2026-09-28
 
 ### Fixed

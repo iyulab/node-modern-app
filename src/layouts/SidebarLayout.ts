@@ -690,3 +690,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     }
   }
 }
+
+declare global {
+  interface HTMLElementTagNameMap {
+    'u-sidebar-layout': SidebarLayout;
+  }
+}
