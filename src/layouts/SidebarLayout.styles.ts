@@ -75,7 +75,7 @@ export const styles = css`
   /* Sidebar Container */
   .sidebar {
     position: relative;
-    z-index: 1000;
+    z-index: var(--u-layer-shell, 1000);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -126,7 +126,7 @@ export const styles = css`
   /* Mobile Header */
   .mobile-header {
     position: relative;
-    z-index: 1001;
+    z-index: calc(var(--u-layer-shell, 1000) + 1);
     display: flex;
     flex-direction: row;
     align-items: center;

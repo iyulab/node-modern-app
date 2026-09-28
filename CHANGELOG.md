@@ -10,6 +10,8 @@
   instead of the shell waiting a task to see who else handled the key. The Escape that closes the
   panel is now marked consumed (`defaultPrevented`), like every layer's; an Escape pressed outside
   the panel is still left alone. Requires `@iyulab/components` 1.49.0 or later.
+- The sidebar and the mobile header read `--u-layer-shell` (1000 and one above it, as before), the
+  shared stacking token from `@iyulab/components`.
 
 ## [0.31.0] - 2026-09-28
 
