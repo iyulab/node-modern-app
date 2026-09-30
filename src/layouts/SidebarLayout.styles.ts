@@ -72,6 +72,35 @@ export const styles = css`
     color: var(--u-txt-color-hover, #1565C0);
   }
 
+  /* 본문 바로가기 — 포커스될 때만 보인다(보이지 않을 때는 자리도 차지하지 않는다). */
+  .skip-link {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: calc(var(--u-layer-shell, 1000) + 2);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .skip-link:focus {
+    width: auto;
+    height: auto;
+    min-height: 24px;
+    overflow: visible;
+    clip-path: none;
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: var(--u-radius-md, 4px);
+    background: var(--u-bg-color, #FFFFFF);
+    color: var(--u-txt-color, #212121);
+    box-shadow: 0 0 0 2px var(--u-primary-color, #1976D2);
+    text-decoration: none;
+    outline: none;
+  }
+
   /* Sidebar Container */
   .sidebar {
     position: relative;

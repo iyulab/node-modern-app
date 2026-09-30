@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.33.0] - 2026-09-30
+
+### Added
+
+- **«Skip to main content» link in the sidebar layout** — the shell's first Tab stop, shown only while
+  it has focus (`part="skip-link"`). Activating it moves focus the way a finished route does: to the
+  screen's `[autofocus]` element, else to the route area. A keyboard user no longer tabs through the
+  whole menu on every screen (WCAG 2.4.1 Bypass Blocks). The text is the new `skipToContent` key of
+  `modernAppLocale` (English and Korean built in).
+
+### Changed
+
+- **The route area (`part="main"`) is a `<main>` element**, so screen readers list it as the main
+  landmark. It was a `<div>`. Styling through `::part(main)` and `layout.styles` is unchanged. If your
+  route screens render their own `<main>`, change it to a `<div>` or `<section>` — a page should have
+  one main landmark.
+
 ## [0.32.0] - 2026-09-28
 
 ### Changed

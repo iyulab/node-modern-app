@@ -257,6 +257,7 @@ Parts available for `styles` overrides on the root layout:
 | Part | Element |
 |------|---------|
 | `host` | Outer layout shell |
+| `skip-link` | «Skip to main content» link — the shell's first Tab stop, shown only while focused |
 | `mobile-header` | Top bar shown on mobile |
 | `sidebar` | Sidebar panel |
 | `sidebar-header` | Logo + title area |
@@ -332,6 +333,15 @@ told apart in CSS; notices are rare and short-lived.
 
 While the overlay is open, `part="main-content"` becomes a box at the area's height, because a
 stacking context needs one — route content is inert and under the overlay then.
+
+### Skip link and main landmark
+
+The route area is a `<main>` landmark (`part="main"`), so a screen reader can jump to it. The shell's
+first Tab stop is a **«Skip to main content»** link (`part="skip-link"`, localized — `skipToContent` in
+`modernAppLocale`), visible only while it has focus. Activating it moves focus by the same rule as a
+finished route (steps 2 and 3 below): your screen's `[autofocus]` element, else `main` itself — so a
+keyboard user does not tab through the whole menu on every screen (WCAG 2.4.1 Bypass Blocks). Do not put
+another `<main>` in your route screens; the shell already provides it.
 
 ### Focus when a route finishes
 

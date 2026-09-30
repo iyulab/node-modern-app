@@ -44,6 +44,8 @@ export interface ModernAppLocaleStrings {
   toggleMobileMenu: string;
   /** Sidebar layout — accessible label for the sidebar-header collapse/expand toggle button. */
   toggleSidebar: string;
+  /** Sidebar layout — the «skip to main content» link, the first Tab stop of the shell. */
+  skipToContent: string;
 
   /** Wizard — default Back/Next action labels ("Submit" wording is the consumer's call). */
   wizardBack: string;
@@ -67,6 +69,7 @@ const EN_TABLE: Record<ModernAppMessageKey, string> = {
   detailClose: 'Close',
   toggleMobileMenu: 'Toggle menu',
   toggleSidebar: 'Toggle sidebar',
+  skipToContent: 'Skip to main content',
   wizardBack: 'Back',
   wizardNext: 'Next',
   wizardStepAnnouncement: 'Step {index} of {total}: {label}',
@@ -89,6 +92,7 @@ modernAppLocale.register('ko', {
   detailClose: '닫기',
   toggleMobileMenu: '메뉴 열고 닫기',
   toggleSidebar: '사이드바 열고 닫기',
+  skipToContent: '본문으로 건너뛰기',
   wizardBack: '이전',
   wizardNext: '다음',
   wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}',
@@ -149,6 +153,7 @@ export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
     detailClose: t('detailClose'),
     toggleMobileMenu: t('toggleMobileMenu'),
     toggleSidebar: t('toggleSidebar'),
+    skipToContent: t('skipToContent'),
     wizardBack: t('wizardBack'),
     wizardNext: t('wizardNext'),
     wizardStepAnnouncement: (index, total, label) => {

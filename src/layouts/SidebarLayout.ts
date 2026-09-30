@@ -219,6 +219,11 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     if (!this.config) return nothing;
 
     return html`
+      <!-- 반복 영역 건너뛰기(WCAG 2.4.1) — 셸의 첫 Tab. 포커스될 때만 보인다. -->
+      <a class="skip-link" part="skip-link" href="#" @click=${this.handleSkipLinkClick}>
+        ${getLocaleStrings(this.locale || undefined).skipToContent}
+      </a>
+
       <!-- Mobile Header -->
       <div class="mobile-header" part="mobile-header" ?hidden="${!this.state.startsWith('mobile')}">
         ${this.renderLogo()}
@@ -271,7 +276,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
       <!-- Main Content -->
       <div class="main-region">
-        <div class="main" part="main" scrollable tabindex="-1" @keydown=${this._handleMainKeydown}>
+        <main class="main" part="main" scrollable tabindex="-1" @keydown=${this._handleMainKeydown}>
           <u-progress-bar part="progress"></u-progress-bar>
 
           <div class="main-content" part="main-content" ?inert=${this.hasOverlay}>
@@ -282,7 +287,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
             </div>
             <slot></slot>
           </div>
-        </div>
+        </main>
 
         <div class="overlay ${this.hasOverlay ? '' : 'empty'}" part="overlay">
           <u-button class="overlay-close" part="overlay-close" variant="ghost"
@@ -546,12 +551,24 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     const active = deepActiveElement();
     if (active && content.some(el => composedContains(el, active))) return;
 
+    this.focusContentStart(content, main);
+  }
+
+  /** 본문의 시작으로 포커스 — 화면이 선언한 `[autofocus]`, 없으면 본문(`main`) 자체. */
+  private focusContentStart(content: Element[], main: HTMLElement): void {
     const declared = querySelectorDeep(content, '[autofocus]', isFocusCandidate);
     declared?.focus();
     const now = deepActiveElement();
     if (declared && now && composedContains(declared, now)) return;
     main.focus({ preventScroll: true });
   }
+
+  /** «본문 바로가기» — 라우트 완료와 같은 규칙으로 본문의 시작에 포커스를 둔다(`#517`). */
+  private handleSkipLinkClick = (e: Event) => {
+    e.preventDefault();
+    const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
+    if (main) this.focusContentStart(this.hasOverlay ? [] : this.routeContent(), main);
+  };
 
   /** 라우트 에러 핸들러 */
   private handleRouteError = (_: RouteDoneEvent) => {
