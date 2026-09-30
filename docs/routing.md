@@ -219,18 +219,17 @@ Combine per-route `metadata` with `enter` to gate individual routes:
 
 A route guard only runs on navigation — it does not catch an API call
 returning `401` while the user is already on a page. Handle that at the
-HTTP layer instead, with [`@iyulab/http-client`](https://github.com/iyulab/http-client)'s
-`onResponse` interceptor:
+HTTP layer instead, with a response interceptor of
+[`@iyulab/http-client`](https://github.com/iyulab/node-http-client):
 
 ```typescript
 import { HttpClient } from '@iyulab/http-client';
 import { app } from '@iyulab/modern-app';
 
-const client = new HttpClient({
-  baseUrl: '/api',
-  onResponse: (res) => {
-    if (res.status === 401) app.navigate('/login');
-  },
+const client = new HttpClient({ baseUrl: '/api' });
+client.interceptors.response.use((res) => {
+  if (res.status === 401) app.navigate('/login');
+  return res;
 });
 ```
 
