@@ -6,6 +6,7 @@ import '@iyulab/components/dist/components/icon/UIcon.js';
 // `<u-link>` 의 등록 — 셸이 먼저 라우터를 싣는 것에 기대지 않는다(이 요소만 쓰면 정의되지 않은 채 남았다).
 import '@iyulab/router';
 import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
+import { getLocaleStrings } from '../internals/locale.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarLink.styles.js';
@@ -96,6 +97,9 @@ export class SidebarLink extends StyledElement<ElementParts> {
           <span part="label" ?compact=${this.compact}>
             ${this.label}
           </span>
+          ${this.target === '_blank'
+            ? html`<span class="new-tab-hint">${getLocaleStrings().opensInNewTab}</span>`
+            : nothing}
         </div>
       </u-link>
     `;

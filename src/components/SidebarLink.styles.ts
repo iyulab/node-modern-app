@@ -74,6 +74,8 @@ export const styles = css`
    * 접힌 상태의 라벨 - 시각적으로만 숨긴다. 접근성 트리에는 남아 항목의 이름이 된다
    * (hidden 은 트리에서도 빼서 이름 없는 항목을 만들었다). 절대배치라 flex 배치와 gap 에 끼지 않는다.
    */
+  /* 새 창 알림 — 화면에는 없고 링크의 접근성 이름에만 붙는다(KWCAG 7.2.1). */
+  .new-tab-hint,
   [part~='label'][compact] {
     position: absolute;
     width: 1px;

@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **Sidebar links with `target: '_blank'` now say so to screen readers** — their accessible name ends
+  with a visually hidden "(opens in a new tab)", in the collapsed sidebar too. The text is the new
+  `opensInNewTab` string of the `modern-app` locale namespace (English and Korean built in).
+
 ## [0.33.0] - 2026-09-30
 
 ### Added
