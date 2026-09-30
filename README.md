@@ -283,6 +283,8 @@ Buttons placed through slots or rendered as `u-button` without size overrides (w
 master-detail close button) follow `@iyulab/components`, which measures them in its own gate. Color
 contrast likewise comes from that package's tokens.
 
+For **KWCAG 2.2** (the Korean web accessibility standard), the `@iyulab/components` README has a table of all 33 check items — which are guaranteed by a test across the sibling packages, which are shared with the app, and which do not apply: [KWCAG 2.2 대응표](https://github.com/iyulab/node-components#kwcag-22-대응표).
+
 ## Documentation
 
 | Guide | Description |

@@ -8,6 +8,15 @@
   with a visually hidden "(opens in a new tab)", in the collapsed sidebar too. The text is the new
   `opensInNewTab` string of the `modern-app` locale namespace (English and Korean built in).
 
+### Changed
+
+- Optional React peers promise only the tested majors: `@lit/react ^1.0.8` and
+  `react ^18.0.0 || ^19.0.0` (were `>=` ranges with no upper bound).
+
+### Documentation
+
+- README: the Accessibility section links the KWCAG 2.2 table in `@iyulab/components`.
+
 ## [0.33.0] - 2026-09-30
 
 ### Added
