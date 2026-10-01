@@ -31,6 +31,7 @@ export const styles = css`
   }
   
   .container {
+    position: relative;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -52,7 +53,19 @@ export const styles = css`
   /* Selected always wins over any consumer-supplied --link-icon-color — a
    * high-contrast icon on the active background matters more than a brand tint. */
   :host([selected]) u-icon {
-    color: var(--app-sidebar-active-fg, var(--u-txt-color-inverse, #FFFFFF));
+    color: var(--app-sidebar-active-icon-color, var(--app-sidebar-active-fg, var(--u-txt-color-inverse, #FFFFFF)));
+  }
+
+  /* 활성 표시 막대 — 시작 변(좌→우 언어에서 왼쪽). 기본 색은 활성 면과 같아 보이지 않는다(기본 외형 불변).
+     밝은 활성 면처럼 면 색만으로 현재 위치를 말하지 않는 셸이 위치를 한 번 더 표시하는 자리다. */
+  :host([selected]) .container::before {
+    content: '';
+    position: absolute;
+    inset-block: 6px;
+    inset-inline-start: 0;
+    width: var(--app-sidebar-active-indicator-width, 3px);
+    border-radius: var(--u-radius-pill, 9999px);
+    background: var(--app-sidebar-active-indicator-color, var(--app-sidebar-active-bg, var(--u-primary-color, #1976D2)));
   }
 
   /*

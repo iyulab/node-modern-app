@@ -10,6 +10,11 @@
 - **`description` on `u-group-box`** — one line under the title saying what the box holds or what
   its numbers are based on, at caption size in the weak text color (`part="description"`). A
   description alone opens the header, like `title`.
+- **`--app-sidebar-active-icon-color` and `--app-sidebar-active-indicator-color`** (with
+  `--app-sidebar-active-indicator-width`, default `3px`) — a shell with a light active background
+  can color only the active icon and draw a bar on the start edge of the active menu, instead of
+  filling the whole item. Defaults keep today's look: the icon follows `--app-sidebar-active-fg` and
+  the bar matches the active background.
 
 ### Changed
 

@@ -129,3 +129,53 @@ describe('셸 색 계약 — 실제 렌더', () => {
     probe.remove();
   });
 });
+
+describe('active link — icon and indicator tokens', () => {
+  let styleEl: HTMLStyleElement | null = null;
+  const override = (css: string) => {
+    styleEl = document.createElement('style');
+    styleEl.textContent = css;
+    document.head.appendChild(styleEl);
+  };
+  const mount = async () => {
+    document.body.innerHTML = `<u-sidebar-link selected icon="house" label="Home"></u-sidebar-link>`;
+    await customElements.whenDefined('u-sidebar-link');
+    const el = document.body.firstElementChild as HTMLElement & { updateComplete: Promise<unknown> };
+    await el.updateComplete;
+    return el;
+  };
+  const icon = (el: Element) => el.shadowRoot!.querySelector('[part="icon"]')!;
+  const indicator = (el: Element) => getComputedStyle(el.shadowRoot!.querySelector('[part="base"]')!, '::before');
+
+  afterEach(() => {
+    styleEl?.remove();
+    styleEl = null;
+    document.body.innerHTML = '';
+  });
+
+  it('without the icon token the active icon follows the active foreground (unchanged default)', async () => {
+    override(':root { --app-sidebar-active-fg: #123456; }');
+    const el = await mount();
+    expect(getComputedStyle(icon(el)).color).toBe('rgb(18, 52, 86)');
+  });
+
+  it('`--app-sidebar-active-icon-color` colors only the icon of the active link', async () => {
+    override(':root { --app-sidebar-active-fg: #123456; --app-sidebar-active-icon-color: #E50112; }');
+    const el = await mount();
+    expect(getComputedStyle(icon(el)).color).toBe('rgb(229, 1, 18)');
+    expect(getComputedStyle(el).color).toBe('rgb(18, 52, 86)');
+  });
+
+  it('by default the indicator is the active background — nothing new is visible', async () => {
+    const el = await mount();
+    expect(indicator(el).backgroundColor).toBe(getComputedStyle(el).backgroundColor);
+  });
+
+  it('`--app-sidebar-active-indicator-color` draws a bar on the start edge', async () => {
+    override(':root { --app-sidebar-active-indicator-color: #E50112; }');
+    const el = await mount();
+    const ind = indicator(el);
+    expect(ind.backgroundColor).toBe('rgb(229, 1, 18)');
+    expect(parseFloat(ind.width)).toBeGreaterThan(0);
+  });
+});
