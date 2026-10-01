@@ -50,8 +50,8 @@
 
 | 태그 | 무엇 | slot | part |
 |---|---|---|---|
-| `u-page-header` | 제목 + 상태 배지 + 우측 액션 + 뒤로가기 | `status` · `actions` | host · back · heading · title · subtitle · status · actions |
-| `u-group-box` | 제목이 붙은 카드(`meta`로 제목 옆 건수·진척을 한 단 아래로) | (기본) · `actions` | host · header · title · meta · actions · body |
+| `u-page-header` | 위치(eyebrow) + 제목 + 설명 한 줄 + 상태 배지 + 우측 액션 + 뒤로가기 | `eyebrow` · `status` · `actions` | host · back · heading · eyebrow · title · subtitle · status · actions |
+| `u-group-box` | 제목이 붙은 카드(`meta`로 제목 옆 건수·진척을 한 단 아래로 · `description`으로 제목 아래 설명 한 줄) | (기본) · `actions` | host · header · title · meta · description · actions · body |
 | `u-info-section` | `u-info-field` 들의 반응형 그리드 | (기본) | host · grid |
 | `u-info-field` | 읽기 전용 라벨-값 한 쌍(`size="lg"`로 대시보드 통계 타일, `unit`으로 단위, `trend`로 추세 표시) | (기본, `value` 를 이긴다) | host · label · value · unit · trend |
 | `u-empty-state` | 빈 상태 (`no-data` / `no-results`) | `icon` · `actions` | host · icon · title · description · actions |

@@ -34,10 +34,26 @@ export const styles = css`
 
   .subtitle {
     margin: var(--u-space-2xs, 4px) 0 0;
-    font-size: var(--u-text-caption-size, 12px);
-    font-weight: var(--u-text-caption-weight, 400);
-    line-height: var(--u-text-caption-leading, 1.5);
+    font-size: var(--u-text-body-size, 14px);
+    font-weight: var(--u-text-body-weight, 400);
+    line-height: var(--u-text-body-leading, 1.6);
     color: var(--u-txt-color-weak, #616161);
+  }
+
+  /* 제목 위 위치 표시 — 제목보다 네 단 작고 옅다. 링크(브레드크럼)는 상속받은 색으로 선다. */
+  .eyebrow {
+    margin: 0 0 var(--u-space-2xs, 4px);
+    font-size: var(--u-text-overline-size, 11px);
+    font-weight: var(--u-text-overline-weight, 700);
+    line-height: var(--u-text-overline-leading, 1.45);
+    letter-spacing: var(--u-text-overline-tracking, 0.06em);
+    color: var(--u-txt-color-weak, #616161);
+  }
+  .eyebrow ::slotted(*) {
+    color: inherit;
+  }
+  .eyebrow.empty {
+    display: none;
   }
 
   .back {

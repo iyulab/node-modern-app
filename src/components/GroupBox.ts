@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html, nothing } from 'lit';
 import { html as staticHtml, literal, type StaticValue } from 'lit/static-html.js';
 import { property, state, customElement } from 'lit/decorators.js';
 
@@ -7,7 +7,7 @@ import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './GroupBox.styles.js';
 import type React from 'react';
 
-type ElementParts = 'host' | 'header' | 'title' | 'meta' | 'actions' | 'body';
+type ElementParts = 'host' | 'header' | 'title' | 'meta' | 'description' | 'actions' | 'body';
 
 /** 제목 단계 — 페이지 제목(h1)은 `u-page-header` 몫이라 2 부터다. */
 export type GroupBoxLevel = 2 | 3 | 4 | 5 | 6;
@@ -31,7 +31,7 @@ const HEADINGS: Record<GroupBoxLevel, StaticValue> = {
  * </u-group-box>
  * ```
  *
- * 오버라이드: `part`(host·header·title·meta·actions·body) + slot 치환.
+ * 오버라이드: `part`(host·header·title·meta·description·actions·body) + slot 치환.
  * `divider` 속성으로 제목과 본문 사이 구분선을 켠다(기본 꺼짐 — 선이 많으면 화면이 시끄럽다).
  */
 @customElement('u-group-box')
@@ -48,6 +48,13 @@ export class GroupBox extends StyledElement<ElementParts> {
    * without a `title`: it describes the title.
    */
   @property({ type: String }) meta?: string;
+
+  /**
+   * One line under the title saying what the box holds or what its numbers are based on
+   * (`Prices are per unit, VAT excluded`). Caption size, weak color — it explains the title
+   * without competing with it. Opens the header on its own, like `title`.
+   */
+  @property({ type: String }) description?: string;
   /** 제목과 본문 사이에 구분선을 넣는다. */
   @property({ type: Boolean }) divider = false;
   /** 본문 여백을 없앤다 — 표를 카드 가장자리까지 붙일 때. */
@@ -71,10 +78,13 @@ export class GroupBox extends StyledElement<ElementParts> {
   @state() private hasActions = false;
 
   render() {
-    const hasHeader = !!this.title || this.hasActions;
+    const hasHeader = !!this.title || !!this.description || this.hasActions;
     return html`
       <div class="header ${this.divider ? 'divider' : ''} ${hasHeader ? '' : 'empty'}" part="header">
-        ${staticHtml`<${HEADINGS[this.level] ?? HEADINGS[3]} class="title" part="title">${this.title}${this.title && this.meta ? html` <span class="meta" part="meta">${this.meta}</span>` : ''}</${HEADINGS[this.level] ?? HEADINGS[3]}>`}
+        <div class="titles">
+          ${staticHtml`<${HEADINGS[this.level] ?? HEADINGS[3]} class="title" part="title">${this.title}${this.title && this.meta ? html` <span class="meta" part="meta">${this.meta}</span>` : ''}</${HEADINGS[this.level] ?? HEADINGS[3]}>`}
+          ${this.description ? html`<p class="description" part="description">${this.description}</p>` : nothing}
+        </div>
         <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
           <slot name="actions"
             @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
@@ -105,6 +115,7 @@ declare module 'react' {
         flush?: boolean;
         level?: GroupBoxLevel;
         meta?: string;
+        description?: string;
       };
     }
   }

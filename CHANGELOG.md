@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`eyebrow` on `u-page-header`** — a small line above the title for the menu group or the parent
+  path, on the overline step. A `slot="eyebrow"` replaces the text when it needs links (a breadcrumb).
+  The row takes no space when neither is given (`part="eyebrow"`).
+- **`description` on `u-group-box`** — one line under the title saying what the box holds or what
+  its numbers are based on, at caption size in the weak text color (`part="description"`). A
+  description alone opens the header, like `title`.
+
+### Changed
+
+- **`u-page-header`'s `subtitle` reads at body size** (was caption). It is the screen's one-line
+  description; at caption size it read as a footnote under a 26px title. Color stays
+  `--u-txt-color-weak`.
+
 ## [0.33.1] - 2026-09-30
 
 ### Fixed

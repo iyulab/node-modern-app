@@ -267,6 +267,80 @@ describe('u-page-header — 빈 상태 슬롯이 자리를 차지하지 않는�
   });
 });
 
+describe('u-page-header — eyebrow and description layers', () => {
+  /*
+   * A screen title alone does not say where the screen sits or what it is for. The eyebrow
+   * (the menu group or a breadcrumb) goes above the title on the overline step; the subtitle is
+   * the one-line description of the screen and reads at body size, one step quieter in color.
+   */
+  it('`eyebrow` renders above the title on the overline step', async () => {
+    host.innerHTML = `<u-page-header title="Orders" eyebrow="Sales"></u-page-header>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    const eyebrow = partOf(el, 'eyebrow')!;
+    const title = partOf(el, 'title')!;
+    expect(eyebrow.textContent!.trim()).toBe('Sales');
+    expect(eyebrow.getBoundingClientRect().bottom).toBeLessThanOrEqual(title.getBoundingClientRect().top + 0.5);
+    const [e, t] = [getComputedStyle(eyebrow), getComputedStyle(title)];
+    expect(parseFloat(e.fontSize)).toBeLessThan(parseFloat(t.fontSize));
+    expect(e.color).not.toBe(t.color);
+  });
+
+  it('a slotted eyebrow (e.g. breadcrumb links) is shown', async () => {
+    host.innerHTML = `<u-page-header title="Order 42"><nav slot="eyebrow"><a href="#">Orders</a></nav></u-page-header>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    expect(getComputedStyle(partOf(el, 'eyebrow')!).display).not.toBe('none');
+  });
+
+  it('without an eyebrow the row takes no space', async () => {
+    host.innerHTML = `<u-page-header title="Orders"></u-page-header>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    expect(getComputedStyle(partOf(el, 'eyebrow')!).display).toBe('none');
+  });
+
+  it('the subtitle reads at body size, in a weaker color than the title', async () => {
+    host.innerHTML = `<u-page-header title="Orders" subtitle="Every order of the season"></u-page-header>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    const [s, t] = [getComputedStyle(partOf(el, 'subtitle')!), getComputedStyle(partOf(el, 'title')!)];
+    const body = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--u-text-body-size'));
+    expect(parseFloat(s.fontSize)).toBe(body);
+    expect(s.color).not.toBe(t.color);
+  });
+});
+
+describe('u-group-box — one-line description under the title', () => {
+  it('`description` renders under the title, smaller and in a weaker color', async () => {
+    host.innerHTML = `<u-group-box title="Items" description="Prices are per unit, VAT excluded"></u-group-box>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    const desc = partOf(el, 'description')!;
+    const title = partOf(el, 'title')!;
+    expect(desc.textContent!.trim()).toBe('Prices are per unit, VAT excluded');
+    expect(desc.getBoundingClientRect().top).toBeGreaterThanOrEqual(title.getBoundingClientRect().bottom - 0.5);
+    const [d, t] = [getComputedStyle(desc), getComputedStyle(title)];
+    expect(parseFloat(d.fontSize)).toBeLessThan(parseFloat(t.fontSize));
+    expect(d.color).not.toBe(t.color);
+  });
+
+  it('no description, no element', async () => {
+    host.innerHTML = `<u-group-box title="Items"></u-group-box>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    expect(partOf(el, 'description')).toBeNull();
+  });
+
+  it('a description alone still opens the header', async () => {
+    host.innerHTML = `<u-group-box description="Only a note"></u-group-box>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    expect(getComputedStyle(partOf(el, 'header')!).display).not.toBe('none');
+    expect(partOf(el, 'description')!.textContent!.trim()).toBe('Only a note');
+  });
+});
+
 describe('u-info-section — 컨테이너 폭이 열 수를 정한다', () => {
   it('좁은 컨테이너에서 열이 줄어든다 (미디어 쿼리가 아니라 컨테이너 기준)', async () => {
     host.style.width = '200px';

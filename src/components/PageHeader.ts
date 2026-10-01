@@ -7,7 +7,7 @@ import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './PageHeader.styles.js';
 import type React from 'react';
 
-type ElementParts = 'host' | 'back' | 'heading' | 'title' | 'subtitle' | 'status' | 'actions';
+type ElementParts = 'host' | 'back' | 'heading' | 'eyebrow' | 'title' | 'subtitle' | 'status' | 'actions';
 
 /**
  * 페이지 헤더 — 모든 LOB 화면 최상단의 같은 골격.
@@ -18,13 +18,13 @@ type ElementParts = 'host' | 'back' | 'heading' | 'title' | 'subtitle' | 'status
  *   하나로 만들어지지 않았다"* 로 읽힌다.
  *
  * ```html
- * <u-page-header title="주문 G-2026-I-0629" subtitle="2026-02-24 접수" back="/orders">
+ * <u-page-header eyebrow="주문 관리" title="주문 G-2026-I-0629" subtitle="2026-02-24 접수" back="/orders">
  *   <span slot="status"><!-- 배지 --></span>
  *   <span slot="actions"><!-- 버튼 --></span>
  * </u-page-header>
  * ```
  *
- * 오버라이드: `part`(host·back·heading·title·subtitle·status·actions) + slot 치환.
+ * 오버라이드: `part`(host·back·heading·eyebrow·title·subtitle·status·actions) + slot 치환.
  * 값은 전부 토큰을 경유한다 — 리터럴을 두면 소비자가 밀도를 바꿀 수 없다.
  */
 @customElement('u-page-header')
@@ -33,8 +33,17 @@ export class PageHeader extends StyledElement<ElementParts> {
 
   /** 페이지 제목. 타입 스케일의 `display` 단을 쓴다. */
   @property({ type: String }) title = '';
-  /** 제목 아래 보조 설명. 없으면 렌더하지 않는다. */
+  /**
+   * 제목 아래 한 줄 설명 — 이 화면이 무엇을 하는지, 숫자가 무엇을 기준으로 하는지. 없으면 렌더하지 않는다.
+   * 본문 단(`body`)을 한 단 옅은 색으로 쓴다 — 캡션 단이면 설명이 아니라 각주로 읽힌다.
+   */
   @property({ type: String }) subtitle?: string;
+
+  /**
+   * 제목 위 위치 표시 — 메뉴 그룹 이름이나 상위 경로. `overline` 단.
+   * 링크가 필요하면(브레드크럼) 같은 이름의 슬롯(`slot="eyebrow"`)을 쓴다 — 슬롯이 이 문자열을 대신한다.
+   */
+  @property({ type: String }) eyebrow?: string;
   /**
    * 뒤로가기 링크 주소. 주면 제목 왼쪽에 `← 목록` 형태로 나온다.
    * ⚠텍스트는 `backLabel` 또는 locale 레지스트리로 바꾼다.
@@ -53,6 +62,7 @@ export class PageHeader extends StyledElement<ElementParts> {
    * 슬롯 배정 상태. ★CSS 로는 알 수 없다 — `<slot>` 자신이 자식이라 `:has(*)` 가
    * 항상 참이다(실브라우저로 확인). 빈 배지 자리가 남으면 제목 위치가 화면마다 달라진다.
    */
+  @state() private hasEyebrow = false;
   @state() private hasStatus = false;
   @state() private hasActions = false;
 
@@ -62,6 +72,11 @@ export class PageHeader extends StyledElement<ElementParts> {
         ? html`<a class="back" part="back" href=${this.back}>${this.backLabel || getLocaleStrings(this.locale || undefined).back}</a>`
         : nothing}
       <div class="heading" part="heading">
+        <div class="eyebrow ${this.eyebrow || this.hasEyebrow ? '' : 'empty'}" part="eyebrow">
+          <slot name="eyebrow"
+            @slotchange=${(e: Event) => (this.hasEyebrow = slotHasContent(e.target as HTMLSlotElement))}
+          >${this.eyebrow ?? nothing}</slot>
+        </div>
         <div class="title-row">
           <h1 class="title" part="title">${this.title}</h1>
           <span class="status ${this.hasStatus ? '' : 'empty'}" part="status">
@@ -99,6 +114,7 @@ declare module 'react' {
       'u-page-header': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         title?: string;
         subtitle?: string;
+        eyebrow?: string;
         back?: string;
         'back-label'?: string;
         locale?: string;

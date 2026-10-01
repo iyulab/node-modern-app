@@ -32,9 +32,17 @@ export const styles = css`
     border-bottom: 1px solid var(--u-border-color-weak, #EEEEEE);
   }
 
+  /* 제목과 설명 한 줄을 세로로 묶는다 — 액션은 그 오른쪽에 선다. */
+  .titles {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--u-space-3xs, 2px);
+  }
+
   .title {
     margin: 0;
-    flex: 1 1 auto;
     min-width: 0;
     font-size: var(--u-text-subtitle-size, 16px);
     font-weight: var(--u-text-subtitle-weight, 600);
@@ -49,6 +57,19 @@ export const styles = css`
     font-weight: var(--u-text-body-weight, 400);
     color: var(--u-txt-color-weak, #616161);
     font-variant-numeric: tabular-nums;
+  }
+
+  .description {
+    margin: 0;
+    font-size: var(--u-text-caption-size, 12px);
+    font-weight: var(--u-text-caption-weight, 400);
+    line-height: var(--u-text-caption-leading, 1.5);
+    color: var(--u-txt-color-weak, #616161);
+  }
+
+  /* 제목 없이 설명만 있으면 빈 헤딩이 자리를 잡지 않는다. */
+  .title:empty {
+    display: none;
   }
 
   .actions {
