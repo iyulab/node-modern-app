@@ -10,9 +10,9 @@ import type { SidebarLayoutConfig } from '../../src/layouts/SidebarLayout.types'
  *
  * 이 계약이 존재하는 이유: `--u-panel-bg-color`(라이트 = 페이지와 같은
  * neutral-0)로 폴백하면 상시 크롬인 사이드바가 페이지와 같은 흰색으로 앉아 페이지·
- * 사이드바·카드(`u-group-box`, 이미 `--u-bg-color-raised`로 수정됨) 삼중 무구분이
- * 재현됐다. `--u-bg-color-raised`(neutral-50)로 바꾸면 사이드바가 페이지와 구분되고,
- * 카드와 같은 "크롬 톤"을 공유하게 된다.
+ * 사이드바·카드 삼중 무구분이 재현됐다. `--u-bg-color-raised`(neutral-50)로 바꾸면 사이드바가
+ * 페이지와 구분된다. 지금은 깊이가 세 단이다 — 페이지 `--u-canvas-bg-color`(neutral-100) <
+ * 사이드바 크롬 `--u-bg-color-raised`(neutral-50) < 카드 `--u-panel-bg-color`(neutral-0).
  */
 
 let host: HTMLDivElement;

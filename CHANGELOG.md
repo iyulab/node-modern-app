@@ -31,6 +31,9 @@
   application background), not on `--u-bg-color`, which is the surface components paint their own
   face with. With the built-in defaults the page is a near-white `#FAFAFA`; cards and tables on it
   keep their white surface.
+- **`u-group-box` is a card like `u-card`**: `--u-panel-bg-color` face, `--u-border-color` line,
+  `--u-radius-xl` corners (was the chrome tint `--u-bg-color-raised`, a weak line and `2xl`). The page
+  now sits on the canvas, so a card no longer needs a tint to stand apart from it.
 - **`u-page-header`'s `subtitle` reads at body size** (was caption). It is the screen's one-line
   description; at caption size it read as a footnote under a 26px title. Color stays
   `--u-txt-color-weak`.

@@ -233,7 +233,7 @@ export const styles = css`
     position: relative;
     height: 100%;
     padding: var(--app-main-padding, var(--u-space-3xl, 32px));
-    background: var(--u-canvas-bg-color, #FAFAFA);
+    background: var(--u-canvas-bg-color, #F5F5F5);
     overflow: auto;
     outline: none;
   }

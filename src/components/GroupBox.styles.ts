@@ -7,10 +7,12 @@ export const styles = css`
        사이드바가 열린 1280px 화면의 좁은 본문에서도, 넓은 본문을 가진 태블릿에서도
        같은 판단을 하려면 기준이 자기 폭이어야 한다. */
     container-type: inline-size;
-    background-color: var(--u-bg-color-raised, #FAFAFA);
-    border: 1px solid var(--u-border-color-weak, #EEEEEE);
-    /* 면(surface) 단 — 컨트롤과 같은 반경을 쓰면 큰 사각형이 각져 보인다. */
-    border-radius: var(--u-radius-2xl, 12px);
+    /* 카드 = 떠 있는 컨테이너(--u-panel-bg-color) — u-card 와 같은 면·반경·선이다.
+       페이지는 --u-canvas-bg-color 위에 있으므로 카드는 바탕보다 한 단 밝은 면으로 선다
+       (종전에는 페이지가 흰색이라 카드를 크롬 틴트 --u-bg-color-raised 로 칠해 구분했다). */
+    background-color: var(--u-panel-bg-color, #FFFFFF);
+    border: 1px solid var(--u-border-color, #E0E0E0);
+    border-radius: var(--u-radius-xl, 8px);
     box-shadow: var(--u-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04));
   }
 
