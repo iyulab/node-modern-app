@@ -83,17 +83,12 @@ describe('셸 표면 토큰 계약', () => {
     expect(contractRefs().some(r => /active-bg-hover/.test(r.name))).toBe(false);
   });
 
-  it('셸이 팔레트를 직접 읽지 않는다 (측정된 예외 외)', () => {
-    // 예외는 SidebarSection 의 보조 텍스트 2단이다. 역할 층의 보조 텍스트 단
-    // (`--u-txt-color-weak`)은 흰 배경에서 2.68:1 로 WCAG AA(4.5:1)에 미달하고,
-    // 현행 팔레트 값은 6.19:1 · 4.61:1 로 통과한다 — 옮기면 접근성이 후퇴한다.
-    // ⇒ 역할 층에 AA 를 넘는 보조 텍스트 단이 생기면 그때 옮긴다.
+  it('셸이 팔레트를 직접 읽지 않는다', () => {
+    // 마지막 예외였던 SidebarSection 보조 텍스트 2단은 components 2.0 의 «글자 3단»
+    // (`--u-txt-color-weaker`, 흰 바탕 4.6:1)이 생겨 역할 토큰으로 옮겼다 — 예외 목록은 비었다.
     const hits = sources().flatMap(([rel, src]) =>
       [...src.matchAll(/var\((--u-(?:blue|red|green|yellow|neutral)-\d+)/g)].map(m => `${rel}: ${m[1]}`),
     );
-    expect(hits.sort()).toEqual([
-      'src/components/SidebarSection.styles.ts: --u-neutral-600',
-      'src/components/SidebarSection.styles.ts: --u-neutral-700',
-    ]);
+    expect(hits).toEqual([]);
   });
 });

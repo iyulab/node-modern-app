@@ -34,6 +34,8 @@
 - **`u-group-box` is a card like `u-card`**: `--u-panel-bg-color` face, `--u-border-color` line,
   `--u-radius-xl` corners (was the chrome tint `--u-bg-color-raised`, a weak line and `2xl`). The page
   now sits on the canvas, so a card no longer needs a tint to stand apart from it.
+- **Sidebar section title and subtitle read role tokens** (`--u-txt-color-weak` · `--u-txt-color-weaker`)
+  instead of the neutral palette, so a theme reaches them. Same values with the built-in defaults.
 - **`u-page-header`'s `subtitle` reads at body size** (was caption). It is the screen's one-line
   description; at caption size it read as a footnote under a 26px title. Color stays
   `--u-txt-color-weak`.
