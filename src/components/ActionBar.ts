@@ -18,8 +18,8 @@ type ElementParts = 'host' | 'danger' | 'main';
  *
  * ```html
  * <u-action-bar sticky>
- *   <u-button slot="danger" color="danger" variant="ghost">삭제</u-button>
- *   <u-button variant="ghost">취소</u-button>
+ *   <u-button slot="danger" color="danger" appearance="plain">삭제</u-button>
+ *   <u-button appearance="plain">취소</u-button>
  *   <u-button color="primary">저장</u-button>
  * </u-action-bar>
  * ```

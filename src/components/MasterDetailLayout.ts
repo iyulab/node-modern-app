@@ -142,7 +142,7 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
       <div class="master ${this.hasDetail ? 'covered' : ''}" part="master"><slot></slot></div>
       <div class="divider ${this.hasDetail ? '' : 'empty'}" part="divider"></div>
       <div class="detail ${this.hasDetail ? '' : 'empty'}" part="detail">
-        <u-button class="detail-close" part="detail-close" variant="ghost"
+        <u-button class="detail-close" part="detail-close" appearance="plain"
           aria-label=${getLocaleStrings(this.locale || undefined).detailClose}
           @click=${this.handleDetailClose}
         >

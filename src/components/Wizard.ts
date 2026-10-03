@@ -206,7 +206,7 @@ export class Wizard extends StyledElement<ElementParts> {
         </div>
         <div class="actions" part="actions">
           <slot name="actions">
-            <u-button variant="ghost" ?disabled=${this.active === 0} @click=${() => this.back()}>
+            <u-button appearance="plain" ?disabled=${this.active === 0} @click=${() => this.back()}>
               ${t.wizardBack}
             </u-button>
             ${isLast ? nothing : html`

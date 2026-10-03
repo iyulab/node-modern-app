@@ -235,7 +235,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         <span class="title">
           ${this.config.title}
         </span>
-        <u-button class="toggler" variant="ghost"
+        <u-button class="toggler" appearance="plain"
           aria-label=${getLocaleStrings(this.locale || undefined).toggleMobileMenu}
           @click=${this.handleToggleButtonClick}>
           <u-icon
@@ -253,7 +253,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           <span class="title" ?hidden=${this.state === 'slim'}>
             ${this.config.title}
           </span>
-          <u-button class="toggler" variant="ghost"
+          <u-button class="toggler" appearance="plain"
             aria-label=${getLocaleStrings(this.locale || undefined).toggleSidebar}
             @click=${this.handleToggleButtonClick}>
             <u-icon
@@ -295,7 +295,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         </main>
 
         <div class="overlay ${this.hasOverlay ? '' : 'empty'}" part="overlay">
-          <u-button class="overlay-close" part="overlay-close" variant="ghost"
+          <u-button class="overlay-close" part="overlay-close" appearance="plain"
             aria-label=${getLocaleStrings(this.locale || undefined).detailClose}
             @click=${this.handleOverlayClose}>
             <u-icon lib=${this.icon('lib')} name=${this.icon('overlayClose')}></u-icon>

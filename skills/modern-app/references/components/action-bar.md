@@ -7,8 +7,8 @@ destructive ones separated on the trailing edge.
 
 ```html
 <u-action-bar sticky>
-  <u-button variant="solid">Save</u-button>
-  <u-button variant="outline">Cancel</u-button>
+  <u-button appearance="solid">Save</u-button>
+  <u-button appearance="outlined">Cancel</u-button>
   <u-button slot="danger" color="danger">Delete</u-button>
 </u-action-bar>
 ```
