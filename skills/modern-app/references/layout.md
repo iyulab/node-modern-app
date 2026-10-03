@@ -61,7 +61,9 @@ interface SidebarLinkConfig {
   navigate?: 'router' | 'document';
   /** Anchor target. Use for opening in a new tab. */
   target?: '_self' | '_blank';
-  styles?: StyleMap<'host' | 'base' | 'icon' | 'label'>;
+  /** Work waiting behind the item, shown at its end. Change it at runtime with app.setNavCount(href, n). */
+  count?: number | string;
+  styles?: StyleMap<'host' | 'base' | 'icon' | 'label' | 'count'>;
 }
 ```
 
@@ -86,6 +88,21 @@ a tab, the address is copyable, screen readers announce a link, `pattern`-based
 highlighting still works, and it can live inside a section or group. `target: '_blank'`
 is available too, but it is not a substitute — it forces a new tab, so same-tab
 navigation to another document needs `navigate`.
+
+#### Counts — work waiting behind an item
+
+A link can end with a count: items to review, unpaid invoices. Show numbers only where
+they ask for action, or the sidebar turns into a dashboard.
+
+```typescript
+{ type: 'link', icon: 'inbox', label: 'Reviews', href: '/reviews', count: 12 }
+
+// later, without rebuilding the layout — `undefined` clears it
+app.setNavCount('/reviews', 3);
+```
+
+The count is `part="count"`; in the compact sidebar it stays in the link's accessible
+name and is hidden visually.
 
 ---
 
