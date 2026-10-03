@@ -11,7 +11,7 @@ import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarLink.styles.js';
 
-type ElementParts = 'host' | 'base' | 'icon' | 'label';
+type ElementParts = 'host' | 'base' | 'icon' | 'label' | 'count';
 
 /** 링크 항목 디폴트 타입 */
 export interface SidebarLinkConfig extends SidebarPermissionGuard {
@@ -43,6 +43,15 @@ export interface SidebarLinkConfig extends SidebarPermissionGuard {
    * 다른 문서로」를 표현할 수 없다. 그것이 종전에 유일한 탈출구였고, 그래서 부족했다.
    */
   target?: '_self' | '_blank';
+
+  /**
+   * A count shown at the end of the item — work waiting behind it (items to review, unpaid
+   * invoices). Omit it, or pass `undefined`, for items with nothing waiting; show numbers only
+   * where they ask for action, or the sidebar turns into a dashboard.
+   *
+   * The value can also be set later without rebuilding the layout: `app.setNavCount(href, n)`.
+   */
+  count?: number | string;
 }
 
 /**
@@ -71,6 +80,8 @@ export class SidebarLink extends StyledElement<ElementParts> {
   @property({ type: String }) navigate?: 'router' | 'document';
   /** 앵커 target — 새 탭으로 열 때 */
   @property({ type: String }) target?: '_self' | '_blank';
+  /** 항목 끝의 건수 — 처리할 일이 있을 때만. `undefined`·빈 문자열이면 그리지 않는다. */
+  @property() count?: number | string;
 
   render() {
     // ⚠**앵커를 유지하는 것이 요점이다.** 이것이 표현되지 않으면 소비앱은 `type: 'button'` +
@@ -97,6 +108,9 @@ export class SidebarLink extends StyledElement<ElementParts> {
           <span part="label" ?compact=${this.compact}>
             ${this.label}
           </span>
+          ${this.count === undefined || this.count === null || this.count === ''
+            ? nothing
+            : html`<span class="count" part="count" ?compact=${this.compact}>${this.count}</span>`}
           ${this.target === '_blank'
             ? html`<span class="new-tab-hint">${getLocaleStrings().opensInNewTab}</span>`
             : nothing}

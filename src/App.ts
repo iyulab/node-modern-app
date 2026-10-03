@@ -195,6 +195,25 @@ class App {
     this._router?.go(path);
   }
 
+  /**
+   * Sets the count shown on a sidebar link — the work waiting behind it — without rebuilding the
+   * layout. `href` is the link's `href` as configured; `undefined` clears it (and falls back to the
+   * item's static `count`, if any).
+   *
+   * ```ts
+   * app.setNavCount('/reviews', 12);
+   * app.setNavCount('/reviews', undefined);
+   * ```
+   */
+  public setNavCount(href: string, value: number | string | undefined): void {
+    const layout = this._layout as (HTMLElement & { counts?: Record<string, number | string | undefined> }) | undefined;
+    if (!layout || !('counts' in layout)) return;
+    const next = { ...layout.counts };
+    if (value === undefined) delete next[href];
+    else next[href] = value;
+    layout.counts = next;
+  }
+
   /** 공지 메시지 */
   public async notice(message: string, options?: NotificationOptions): Promise<void> {
     await Toast.notice(message, { ...options });

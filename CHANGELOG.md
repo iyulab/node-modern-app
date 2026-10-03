@@ -15,9 +15,22 @@
   can color only the active icon and draw a bar on the start edge of the active menu, instead of
   filling the whole item. Defaults keep today's look: the icon follows `--app-sidebar-active-fg` and
   the bar matches the active background.
+- **`count` on sidebar links, and `app.setNavCount(href, value)`** — a link can show the work waiting
+  behind it at the end of the item (`part="count"`, tabular figures). Set it in the item config or
+  change it while the app runs; `undefined` clears it. In the compact sidebar it stays in the
+  accessible name and is hidden visually.
+- **Shell size tokens** — `--app-main-padding` (32px), `--app-sidebar-item-radius` (8px),
+  `--app-sidebar-item-gap` (12px), `--app-sidebar-item-padding` (8px 12px),
+  `--app-sidebar-icon-size` (20px), `--app-sidebar-active-shadow` and
+  `--app-sidebar-active-shadow-hover`. A theme can now set a denser navigation or a flat current item
+  without reaching into the shadow DOM. Defaults keep today's look.
 
 ### Changed
 
+- **The routed page sits on `--u-canvas-bg-color`** (new in `@iyulab/components` 2.0 — the
+  application background), not on `--u-bg-color`, which is the surface components paint their own
+  face with. With the built-in defaults the page is a near-white `#FAFAFA`; cards and tables on it
+  keep their white surface.
 - **`u-page-header`'s `subtitle` reads at body size** (was caption). It is the screen's one-line
   description; at caption size it read as a footnote under a 26px title. Color stays
   `--u-txt-color-weak`.

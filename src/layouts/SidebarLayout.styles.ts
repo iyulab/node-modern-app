@@ -227,11 +227,13 @@ export const styles = css`
     min-width: 0;
   }
 
+  /* The page sits on the canvas (the application background), not on a surface: cards and tables
+     placed on it keep \`--u-bg-color\` as their own face. */
   .main {
     position: relative;
     height: 100%;
-    padding: var(--u-space-3xl, 32px);
-    background: var(--u-bg-color, #FFFFFF);
+    padding: var(--app-main-padding, var(--u-space-3xl, 32px));
+    background: var(--u-canvas-bg-color, #FAFAFA);
     overflow: auto;
     outline: none;
   }

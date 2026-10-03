@@ -11,7 +11,7 @@ export const styles = css`
     display: block;
     color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
     background-color: transparent;
-    border-radius: 8px;
+    border-radius: var(--app-sidebar-item-radius, 8px);
     transition: all 0.2s ease;
     cursor: pointer;
   }
@@ -22,12 +22,12 @@ export const styles = css`
   :host([selected]) {
     color: var(--app-sidebar-active-fg, var(--u-txt-color-inverse, #FFFFFF));
     background-color: var(--link-active-bg);
-    box-shadow: 0 1px 3px var(--u-shadow-color-weak, rgba(0, 0, 0, 0.08));
+    box-shadow: var(--app-sidebar-active-shadow, 0 1px 3px var(--u-shadow-color-weak, rgba(0, 0, 0, 0.08)));
   }
   :host([selected]:hover) {
     color: var(--app-sidebar-active-fg, var(--u-txt-color-inverse, #FFFFFF));
     background-color: color-mix(in srgb, var(--link-active-bg) 85%, black);
-    box-shadow: 0 2px 6px var(--u-shadow-color-normal, rgba(0, 0, 0, 0.12));
+    box-shadow: var(--app-sidebar-active-shadow-hover, 0 2px 6px var(--u-shadow-color-normal, rgba(0, 0, 0, 0.12)));
   }
   
   .container {
@@ -36,8 +36,8 @@ export const styles = css`
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    gap: 12px;
-    padding: 8px 12px;
+    gap: var(--app-sidebar-item-gap, 12px);
+    padding: var(--app-sidebar-item-padding, 8px 12px);
   }
   .container[compact] {
     justify-content: center;
@@ -48,7 +48,7 @@ export const styles = css`
   u-icon {
     flex-shrink: 0;
     color: var(--link-icon-color, inherit);
-    font-size: 20px;
+    font-size: var(--app-sidebar-icon-size, 20px);
   }
   /* Selected always wins over any consumer-supplied --link-icon-color — a
    * high-contrast icon on the active background matters more than a brand tint. */
@@ -99,5 +99,25 @@ export const styles = css`
     clip-path: inset(50%);
     white-space: nowrap;
     border: 0;
+  }
+
+  /* 건수 — 라벨 끝, 숫자는 표 숫자처럼 자릿수가 흔들리지 않게. 접힌 사이드바에서는 라벨처럼
+     시각적으로만 숨긴다(접근 가능한 이름에는 남는다). */
+  .count {
+    flex: none;
+    margin-inline-start: auto;
+    font-size: var(--u-text-overline-size, 11px);
+    font-weight: var(--u-text-caption-weight, 400);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+  }
+  .count[compact] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 `;

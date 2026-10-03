@@ -60,9 +60,9 @@ describe('셸 표면 토큰 계약', () => {
 
   it('기본값은 역할 토큰에서 파생된다 — 팔레트를 경유하지 않는다', () => {
     // 기본값이 팔레트를 가리키면 `--u-primary-color` 만 정의한 소비자를 따라오지 않는다.
-    // 치수 토큰(width)은 색이 아니므로 리터럴이 정답이다.
+    // 치수 토큰(폭·반경·간격·여백·크기·그림자)은 색이 아니므로 리터럴이 정답이다.
     const offenders = contractRefs().filter(
-      r => !/width/.test(r.name) && !/var\(--u-(primary|txt|bg|panel|border|danger|success|warning|info)/.test(r.fallback),
+      r => !/width|radius|gap|padding|size|shadow/.test(r.name) && !/var\(--u-(primary|txt|bg|panel|border|danger|success|warning|info)/.test(r.fallback),
     );
     expect(offenders.map(r => `${r.rel}: var(${r.name}, ${r.fallback})`)).toEqual([]);
   });

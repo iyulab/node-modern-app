@@ -107,6 +107,11 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   @property({ type: String, reflect: true }) state: SidebarState = 'default';
   /** 사이드바 레이아웃 설정 */
   @property({ type: Object }) config?: SidebarLayoutConfig;
+  /**
+   * Live counts for link items, keyed by the item's `href` — overrides the static `count` of the
+   * item config. Set through `app.setNavCount(href, value)`; assigning a new object re-renders.
+   */
+  @property({ type: Object }) counts: Record<string, number | string | undefined> = {};
   /** 크롬 문자열(토글 버튼 접근성 라벨 등) 로케일 — 이 요소만 다른 언어로 쓸 때. 비우면 `Locale` 의 활성 로케일 */
   @property({ type: String }) locale = '';
 
@@ -340,6 +345,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .pattern="${item.pattern}"
           .navigate="${item.navigate}"
           .target="${item.target}"
+          .count=${item.href in this.counts ? this.counts[item.href] : item.count}
           .styles="${item.styles as any}"
         ></u-sidebar-link>
       `;
