@@ -27,6 +27,9 @@
 
 ### Changed
 
+- 🔴**Requires `@iyulab/components` 2.0.** Internal buttons (the shell's sidebar toggler and
+  overlay close, the master-detail close, the wizard's back button) use the 2.0 `appearance` vocabulary
+  (`appearance="plain"`, was `variant="ghost"`); with a 1.x components they render as solid buttons.
 - **The routed page sits on `--u-canvas-bg-color`** (new in `@iyulab/components` 2.0 — the
   application background), not on `--u-bg-color`, which is the surface components paint their own
   face with. With the built-in defaults the page is a near-white `#FAFAFA`; cards and tables on it
