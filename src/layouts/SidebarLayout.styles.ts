@@ -117,7 +117,7 @@ export const styles = css`
     background: var(--app-sidebar-bg, var(--u-bg-color-raised, #FAFAFA));
     color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
     border-right: 1px solid var(--u-border-color, #E0E0E0);
-    transition: all 0.3s ease;
+    transition: all var(--u-duration-slow, 320ms) ease;
   }
   /* Sidebar states */
   .sidebar[state="default"] {
@@ -327,7 +327,7 @@ export const styles = css`
     right: 0;
     opacity: 0;
     transform: translateY(-4px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity var(--u-duration-slow, 320ms) ease, transform var(--u-duration-slow, 320ms) ease;
     pointer-events: none;
   }
   .main u-progress-bar[visible] {

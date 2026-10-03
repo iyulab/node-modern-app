@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Sidebar transitions follow the motion tokens**, so the sidebar's open/close, group expand and
+  hover transitions stop for users who prefer reduced motion (`--u-duration-*` from
+  `@iyulab/components` drops to zero under `prefers-reduced-motion: reduce`). The slide-in moves from
+  300ms to the scale's `slow` step (320ms).
+
 ## [0.33.1] - 2026-09-30
 
 ### Fixed
