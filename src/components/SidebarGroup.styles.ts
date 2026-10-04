@@ -22,7 +22,7 @@ export const styles = css`
     background-color: transparent;
     border: none;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all var(--u-duration-normal, 220ms) ease;
     cursor: pointer;
   }
   button[compact] {
@@ -71,7 +71,7 @@ export const styles = css`
   .caret {
     color: inherit;
     font-size: 16px !important;
-    transition: transform 0.2s ease;
+    transition: transform var(--u-duration-normal, 220ms) ease;
   }
   .caret[collapsed] {
     transform: rotate(-90deg);
@@ -86,7 +86,7 @@ export const styles = css`
     border-left: 2px solid var(--u-border-color-weak, #EEEEEE);
     padding-left: 8px;
     overflow: hidden;
-    transition: all 0.3s ease;
+    transition: all var(--u-duration-slow, 320ms) ease;
   }
   .items[collapsed] {
     margin-top: 0;

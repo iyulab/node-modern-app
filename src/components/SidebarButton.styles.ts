@@ -8,7 +8,7 @@ export const styles = css`
     background-color: transparent;
     border: none;
     border-radius: 8px;
-    transition: all 0.2s ease;
+    transition: all var(--u-duration-normal, 220ms) ease;
     cursor: pointer;
   }
   :host(:hover) {
