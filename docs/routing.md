@@ -48,8 +48,13 @@ interface RouteConfig {
    */
   enter?: (context: RouteContext) => Promise<string | boolean> | string | boolean;
 
-  /** Render function. May be async. Must return a Lit `TemplateResult`. */
-  render: (context: RouteContext) => TemplateResult | Promise<TemplateResult>;
+  /**
+   * Render function. May be async. Returns a Lit `TemplateResult`, an `HTMLElement`, or a React
+   * element — return the React element itself and the outlet creates and unmounts its React
+   * root for you (wrapping your own root in a container skips that unmount and leaks).
+   * Optional on a route that only groups `children`.
+   */
+  render?: (context: RouteContext) => unknown | Promise<unknown>;
 }
 ```
 

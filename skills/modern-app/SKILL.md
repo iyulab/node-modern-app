@@ -4,7 +4,6 @@ description: Client-side SPA framework built on Lit Element. Bootstraps an appli
 license: MIT
 metadata:
   author: iyulab
-  version: "0.3.4"
 compatibility: Designed for Lit Element / TypeScript projects. Requires @iyulab/modern-app.
 ---
 
