@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.34.1] - 2026-10-05
+
+### Fixed
+
+- **The sidebar footer was cut off when the menu was longer than the screen** and the shell's parent
+  had no height of its own (a custom `root`, or `SidebarLayout` mounted from React). The shell is
+  capped at the viewport, but the sidebar took `height: 100%`, which cannot resolve against a cap, so
+  it grew to the menu's length and the shell clipped the footer out of reach. The sidebar now takes
+  the shell's height, the menu scrolls inside `part="sidebar-main"`, and the footer stays at the
+  bottom — in the default, slim, drawer and mobile states.
+
+### Documentation
+
+- The layout guide now says that a custom `root` also keeps the browser's default body margin, and
+  shows `:where(body) { margin: 0; }` next to the height rule.
+
 ## [0.34.0] - 2026-10-05
 
 ### Added
