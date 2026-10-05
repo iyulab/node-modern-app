@@ -283,6 +283,11 @@ interface Fixture {
   targets?: (tag: string) => Element[];
   /** 🔴**이 컴포넌트가 «타깃들 사이의 간격»을 스스로 소유하는가.** 기본값은 크기로만 판정. */
   spacingIsOurs?: true;
+  /**
+   * 판정하지 않지만 **간격 계산에는 넣는** 이웃 타깃. 간격 예외는 같은 상태의 타깃끼리만 재므로, 같은 픽스처에 함께 그려지는
+   * 다른 상태의 타깃(열린 목록 바로 위의 툴바 단추 등)이 보이지 않으면 미달 타깃이 «간격 예외» 로 통과한다.
+   */
+  spacingNeighbors?: (tag: string) => Element[];
   /** 렌더가 비동기인 것을 위한 추가 대기(ms). */
   settle?: number;
 }
@@ -345,6 +350,8 @@ const FIXTURES: Record<string, Fixture | Fixture[]> = {
     },
     targets: () => inShadow(document.querySelector('u-wizard')!, '[part="step"]'),
     spacingIsOurs: true,
+    // 이전·다음(형제 u-button)은 판정하지 않지만 같은 픽스처에 그려진다 — 간격에는 넣는다.
+    spacingNeighbors: () => inShadow(document.querySelector('u-wizard')!, '[part="actions"] u-button'),
   },
 };
 
@@ -578,8 +585,12 @@ describe('WCAG 2.2 SC 2.5.8 — 타깃 크기(최소) 게이트', () => {
           .filter(({ misses }) => misses.length > 0)
           .map(({ el, misses }) => `${describeEl(el)} — ${misses.map((m) => `${m.point}→${m.hit}`).join(' · ')}`);
         expect(unreachable, '누르면 다른 요소가 받는 타깃 — 잘렸거나 가려졌거나 닫혀 있다').toEqual([]);
+        const neighborEls = fixture.spacingNeighbors ? fixture.spacingNeighbors(tag) : [];
+        // 이웃 셀렉터가 아무것도 못 찾으면 선언이 조용히 무력해진다(간격 예외가 종전처럼 일한다) — 선언했으면 찾아야 한다.
+        if (fixture.spacingNeighbors) expect(neighborEls.length, '간격 이웃을 하나도 못 찾았다').toBeGreaterThan(0);
+        const neighbors = neighborEls.map(measure);
         const verdicts = targets.map((t, i) =>
-          fixture.spacingIsOurs ? judge(t, targets.filter((_, j) => j !== i)) : judge(t, [t]),
+          fixture.spacingIsOurs ? judge(t, [...targets.filter((_, j) => j !== i), ...neighbors]) : judge(t, [t]),
         );
         const detail = `실측 ${targets.map((t) => `${Math.round(t.w)}x${Math.round(t.h)}`).join(' ')} · 판정 ${verdicts.join(' ')}`;
 
