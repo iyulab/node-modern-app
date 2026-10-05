@@ -68,9 +68,11 @@ export const styles = css`
        ⚠고정 패딩(4px)이면 안 된다: line-height: normal 의 높이는 글꼴 메트릭이 정해서 글꼴에 따라 17px(→25)도
        15px(→23)도 된다. 줄 상자가 이미 24px 이상이면 패딩은 0 이다. */
     display: inline-block;
-    --_back-pad: max(0px, calc((24px - 1lh) / 2));
+    /* 호스트 하한(--u-target-size)이 있으면 24px 대신 그 값까지 — 폭도 그 값 이상. */
+    --_back-pad: max(0px, calc((max(24px, var(--u-target-size, 0px)) - 1lh) / 2));
     padding-block: var(--_back-pad);
     margin-block: calc(-1 * var(--_back-pad));
+    min-width: var(--u-target-size, 0px);
   }
   .back::before {
     content: '←';

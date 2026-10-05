@@ -38,6 +38,9 @@ export const styles = css`
     justify-content: flex-start;
     gap: var(--app-sidebar-item-gap, 12px);
     padding: var(--app-sidebar-item-padding, 8px 12px);
+    /* 호스트 하한(--u-target-size, 미설정 = 0). */
+    box-sizing: border-box;
+    min-height: var(--u-target-size, 0px);
   }
   .container[compact] {
     justify-content: center;

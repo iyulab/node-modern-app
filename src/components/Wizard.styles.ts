@@ -39,6 +39,8 @@ export const styles = css`
     background: none;
     border: none;
     padding: var(--u-space-2xs, 4px) 0;
+    /* 호스트 하한(--u-target-size, 미설정 = 0). */
+    min-height: var(--u-target-size, 0px);
     font: inherit;
     color: var(--u-txt-color-weak, #616161);
     cursor: pointer;

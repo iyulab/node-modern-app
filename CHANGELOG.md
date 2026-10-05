@@ -4,6 +4,9 @@
 
 ### Added
 
+- **Press targets follow `--u-target-size`** (`@iyulab/components` 2.0). When it is set, sidebar links,
+  buttons and group headers, the page header's back link, the shell logo and wizard steps are at least
+  that size (the logo image and the back link keep their visible size and layout). Unset, nothing changes.
 - **`routerMode` in `app.load()`** — `'hash'` puts the route after `#` (`/app/#/orders/7`), so refreshes and
   deep links work on a static host with no server fallback. Forwarded to `@iyulab/router`'s `mode`
   (router 0.18.0); the default stays `'history'`.

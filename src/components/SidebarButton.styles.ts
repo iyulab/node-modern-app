@@ -28,6 +28,8 @@ export const styles = css`
     justify-content: flex-start;
     gap: 12px;
     padding: 8px 12px;
+    /* 호스트 하한(--u-target-size, 미설정 = 0) — 상자는 border-box(기반 스타일)라 여백을 포함한다. */
+    min-height: var(--u-target-size, 0px);
   }
   button[compact] {
     justify-content: center;

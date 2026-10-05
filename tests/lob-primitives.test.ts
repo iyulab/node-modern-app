@@ -59,7 +59,9 @@ describe('LOB 프리미티브 — 토큰 계약', () => {
         // 예외 — 타깃 크기 하한(WCAG 2.2 SC 2.5.8 의 24px)을 «줄 상자에서 모자란 만큼» 으로 쓴 식. 규범이 정한
         // 바닥이지 밀도 축이 아니다 — 토큰으로 열면 소비자가 줄여 기준을 어기는 쪽만 열린다(헤어라인과 같은 이유).
         // ⚠식 모양(`24px - 1lh`)에만 건다 — 아무 `24px` 이나 면제하면 날것의 치수가 이 틈으로 샌다.
-        const scrubbed = v.replace(/\b24px - 1lh\b/g, '').replace(/\b0px\b/g, '');
+        //   같은 바닥을 호스트 하한(`--u-target-size`)과 견준 식(`max(24px, var(--u-target-size, …))` — var 를 걷으면
+        //   `max(24px, )`)도 같은 이유로 면제한다 — 이것도 식 모양에만 건다.
+        const scrubbed = v.replace(/\b24px - 1lh\b/g, '').replace(/max\(24px, \)/g, '').replace(/\b0px\b/g, '');
         if (!/#[0-9a-fA-F]{3,8}|\brgba?\(|\b\d+px/.test(scrubbed)) continue;
         offenders.push(`${name}: ${v}`);
       }

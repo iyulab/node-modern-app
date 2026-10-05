@@ -32,6 +32,12 @@ export const styles = css`
     height: 24px;
     width: auto;
     object-fit: contain;
+    /* 호스트 하한(--u-target-size) — 그림은 24px 그대로, 누르는 상자만 여백으로 넓히고 같은 만큼 되돌려 배치는 그대로.
+       미설정이면 여백 0(종전). */
+    --_logo-pad: max(0px, calc((var(--u-target-size, 0px) - 24px) / 2));
+    box-sizing: content-box;
+    padding: var(--_logo-pad);
+    margin: calc(-1 * var(--_logo-pad));
   }
   /* 로고를 감싼 링크 — 인라인 기준선 여백이 생기지 않게 로고 상자에 딱 맞춘다. */
   .logo-link {

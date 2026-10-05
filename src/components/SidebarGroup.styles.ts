@@ -19,6 +19,8 @@ export const styles = css`
     justify-content: space-between;
     gap: 12px;
     padding: 8px 12px;
+    /* 호스트 하한(--u-target-size, 미설정 = 0) — 상자는 border-box(기반 스타일)라 여백을 포함한다. */
+    min-height: var(--u-target-size, 0px);
     background-color: transparent;
     border: none;
     border-radius: 8px;
