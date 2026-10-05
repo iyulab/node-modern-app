@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.33.3] - 2026-10-05
+
+### Fixed
+
+- **The sidebar stays on screen while a long screen scrolls.** The shell is now capped at the
+  viewport height (`max-height: 100dvh`), so route content always scrolls inside `part="main"`.
+  Before, a shell whose parent gave it no height grew to the length of the route content; the
+  document scrolled instead of `part="main"`, and the navigation and the sidebar footer scrolled off
+  the top with the content (the mobile header too). A parent that gives the shell a height lower
+  than the viewport still sets it.
+
 ## [0.33.2] - 2026-10-03
 
 ### Changed

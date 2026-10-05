@@ -7,6 +7,11 @@ export const styles = css`
     flex-direction: row;
     width: 100%;
     height: 100%;
+    /* 셸은 뷰포트보다 커지지 않는다 — 부모에 높이가 없으면 height: 100% 가 걸릴 곳이 없어 셸이
+       본문 길이로 커지고, 그러면 .main 대신 문서가 스크롤해 사이드바가 본문과 함께 밀려 나간다.
+       상한을 두면 본문은 언제나 .main 안에서 스크롤하고 크롬은 제자리에 있다. 부모가 뷰포트보다
+       낮은 높이를 주면 그 높이가 그대로 이긴다. */
+    max-height: 100dvh;
     font-family: var(--u-font-base);
     overflow: hidden;
   }
@@ -225,11 +230,17 @@ export const styles = css`
            뷰포트 밖으로 밀어 오른쪽 열이 잘리고 가로 스크롤도 생기지 않는다. */
     min-height: 0;
     min-width: 0;
+    /* .main 의 높이를 백분율이 아니라 flex 로 준다 — 셸의 높이가 «부모의 확정 높이» 가 아니라
+       max-height 상한에서 나올 때 백분율은 풀리지 않는다(auto 로 떨어져 .main 이 본문 길이가 된다).
+       늘어난(stretch) 항목의 크기는 그 경우에도 이 래퍼에 정해진다. */
+    display: flex;
+    flex-direction: column;
   }
 
   .main {
     position: relative;
-    height: 100%;
+    flex: 1 1 auto;
+    min-height: 0;
     padding: var(--u-space-3xl, 32px);
     background: var(--u-bg-color, #FFFFFF);
     overflow: auto;
@@ -377,6 +388,7 @@ export const styles = css`
     :host {
       display: block;
       height: auto;
+      max-height: none;
       overflow: visible;
     }
     .sidebar,
@@ -385,7 +397,10 @@ export const styles = css`
     .main u-progress-bar {
       display: none;
     }
+    /* block 으로 되돌린다 — flex 컨테이너는 자식의 여백 접힘을 막아, 화면 마지막 블록의 아래
+       여백이 종이 위에서 셸을 뚫고 접히지 못한다. */
     .main-region {
+      display: block;
       height: auto;
     }
     .main {

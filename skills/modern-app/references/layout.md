@@ -275,7 +275,10 @@ Parts available for `styles` overrides on the root layout:
 ## Sizing
 
 `<u-sidebar-layout>` is a shell: `:host` is `height: 100%` with `overflow: hidden`, so **its
-height comes from the parent** — it never sizes itself. `app.load()` covers the default case: when
+height comes from the parent** — it never sizes itself. It is also capped at `max-height: 100dvh`:
+whatever the parent does, the shell is never taller than the viewport, so the route content always
+scrolls inside `part="main"` and the sidebar (navigation and footer) stays on screen. A parent
+shorter than the viewport still wins. `app.load()` covers the default case: when
 `root` is `document.body` it gives the body `margin: 0`, and on screen `width: 100vw; height: 100vh`.
 These come from a document stylesheet at zero specificity, not inline styles — any `body { … }`
 rule of your own wins.
@@ -283,7 +286,8 @@ rule of your own wins.
 ⚠ **A custom `root` receives no styling.** Hand it a container with no height of its own and
 `height: 100%` has nothing to resolve against: the shell renders at whatever its own chrome
 resolves to (measured: about 133px) instead of filling the screen — with no error and nothing in
-the console. Give that container a height — for screen only, so printing is not cut at one page:
+the console. (With a long screen the shell grows to the viewport cap instead, so the
+symptom only shows on short screens.) Give that container a height — for screen only, so printing is not cut at one page:
 
 ```css
 @media screen {
