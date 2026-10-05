@@ -120,7 +120,12 @@ export const styles = css`
     flex-direction: column;
     justify-content: space-between;
     gap: 8px;
-    height: 100%;
+    /* 높이는 백분율이 아니라 flex 의 stretch 로 받는다 — 셸의 높이가 «부모의 확정 높이» 가 아니라
+       max-height 상한에서 나오면 height: 100% 는 풀리지 않아(auto) 사이드바가 메뉴 길이로 커지고,
+       셸의 overflow: hidden 이 아래쪽 계정 영역을 잘라 닿을 수 없게 된다. 늘어난 항목의 높이는
+       그 경우에도 셸의 (상한으로 잘린) 높이다. .main-region 과 같은 해법이다. 떠 있는 상태
+       (modal · mobile*)는 절대배치라 top/bottom 으로 채운다. */
+    min-height: 0;
     /* --u-panel-bg-color 가 아니라 --u-bg-color-raised — 사이드바는 카드·메뉴류의
        "떠 있는 패널"이 아니라 상시 크롬이고, 그 구분이 정확히 두 토큰이 갈리는 지점이다
        (light.css 293~298행 참조). 미설정 시 페이지(--u-bg-color)와 같은 흰색으로 앉아
@@ -146,11 +151,13 @@ export const styles = css`
     width: var(--app-sidebar-width, 260px);
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
   }
   .sidebar[state="mobile"] {
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     transform: translateY(-100%);
@@ -158,6 +165,7 @@ export const styles = css`
   .sidebar[state="mobile-open"] {
     position: absolute;
     top: 0;
+    bottom: 0;
     left: 0;
     right: 0;
     transform: translateY(0);
@@ -194,6 +202,8 @@ export const styles = css`
   /* Sidebar Main Menu */
   .sidebar-main {
     flex: 1;
+    /* 열 방향 flex 항목의 자동 최소 높이는 내용 길이다 — 0 으로 풀어야 남는 높이 안에서 스크롤한다. */
+    min-height: 0;
     display: flex;
     flex-direction: column;
     gap: 4px;

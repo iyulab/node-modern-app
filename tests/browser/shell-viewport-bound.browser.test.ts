@@ -108,6 +108,40 @@ describe('modern-app 셸 — 뷰포트에 묶인다', () => {
     expect(inViewport(part(el, 'sidebar-footer').getBoundingClientRect())).toBe(true);
   });
 
+  /*
+   * 메뉴가 뷰포트보다 길 때 — 셸이 상한(max-height)으로 묶여도 사이드바가 `height: 100%` 면 그
+   * 백분율이 풀리지 않아 사이드바가 «메뉴 길이» 로 커지고, 셸의 overflow: hidden 이 아래쪽 계정
+   * 영역을 잘라 닿을 수 없게 된다. 메뉴는 사이드바 안(sidebar-main)에서 스크롤해야 한다.
+   */
+  const LONG_MENU = {
+    ...CONFIG,
+    main: Array.from({ length: 60 }, (_, i) => ({ type: 'link', label: `Item ${i}`, href: `/i${i}` })),
+  } as unknown as SidebarLayoutConfig;
+
+  async function mountLongMenu(state?: string): Promise<SidebarLayout> {
+    const el = document.createElement('u-sidebar-layout') as SidebarLayout;
+    el.config = LONG_MENU;
+    host.appendChild(el);
+    await el.updateComplete;
+    if (state) {
+      (el as unknown as { state: string }).state = state;
+      await el.updateComplete;
+    }
+    await settle();
+    return el;
+  }
+
+  for (const state of [undefined, 'slim', 'modal', 'mobile-open'] as const) {
+    it(`🔴높이 없는 부모 + 긴 메뉴(${state ?? 'default'}): 아래쪽 계정 영역이 화면 안에 있고 메뉴가 사이드바 안에서 스크롤한다`, async () => {
+      const el = await mountLongMenu(state);
+      const sidebar = part(el, 'sidebar').getBoundingClientRect();
+      expect(Math.round(sidebar.bottom), '사이드바가 메뉴 길이로 커지면 셸이 아래를 자른다').toBeLessThanOrEqual(window.innerHeight);
+      expect(inViewport(part(el, 'sidebar-footer').getBoundingClientRect()), '계정 영역').toBe(true);
+      const menu = part(el, 'sidebar-main');
+      expect(menu.scrollHeight, '메뉴는 sidebar-main 안에서 스크롤한다').toBeGreaterThan(menu.clientHeight);
+    });
+  }
+
   it('NEGATIVE 부모가 뷰포트보다 낮은 높이를 주면 그 높이를 그대로 채운다', async () => {
     host.style.height = '400px';
     const el = await mountUnsized(4000);
