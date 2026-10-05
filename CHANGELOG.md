@@ -43,6 +43,8 @@
   description; at caption size it read as a footnote under a 26px title. Color stays
   `--u-txt-color-weak`.
 
+## [0.33.3] - 2026-10-05
+
 ### Fixed
 
 - **The sidebar stays on screen while a long screen scrolls.** The shell is now capped at the
