@@ -302,9 +302,9 @@ rule of your own wins.
 
 ⚠ **A custom `root` receives no styling.** Hand it a container with no height of its own and
 `height: 100%` has nothing to resolve against: the shell renders at whatever its own chrome
-resolves to (measured: about 133px) instead of filling the screen — with no error and nothing in
-the console. (With a long screen the shell grows to the viewport cap instead, so the
-symptom only shows on short screens.) Give that container a height — for screen only, so printing is not cut at one page:
+resolves to (measured: about 133px) instead of filling the screen — no error, only a
+development-mode console warning when it is shorter than 200px. (With a long screen the shell grows
+to the viewport cap instead, so the symptom only shows on short screens.) Give that container a height — for screen only, so printing is not cut at one page:
 
 ```css
 @media screen {

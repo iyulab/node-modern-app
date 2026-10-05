@@ -317,6 +317,26 @@ Available parts:
 
 ---
 
+## Sizing
+
+The shell takes its height from its parent (`:host { height: 100% }`) and is capped at the viewport
+(`max-height: 100dvh`). Route content therefore always scrolls inside `part="main"`, and the
+sidebar — navigation and footer — stays on screen however long the screen is. A parent lower than
+the viewport sets the shell's height.
+
+`app.load()` gives `document.body` a screen height when it is the root. A custom `root` (or a shell
+mounted from React) needs a height of its own; without one the shell sits at its content's height
+on short screens, and in development a console warning says so when it is shorter than 200px:
+
+```css
+@media screen {
+  #app { height: 100vh; }   /* or 100%, inside an already-constrained ancestor */
+}
+```
+
+Keep the rule screen-only — in print the shell releases its height so the content flows across
+pages.
+
 ## Route content area
 
 `part="main"` is the **scroll container** for route content, and it already has a **32px gutter**
