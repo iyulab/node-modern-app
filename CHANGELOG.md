@@ -4,6 +4,9 @@
 
 ### Added
 
+- **`routerMode` in `app.load()`** — `'hash'` puts the route after `#` (`/app/#/orders/7`), so refreshes and
+  deep links work on a static host with no server fallback. Forwarded to `@iyulab/router`'s `mode`
+  (router 0.18.0); the default stays `'history'`.
 - **`eyebrow` on `u-page-header`** — a small line above the title for the menu group or the parent
   path, on the overline step. A `slot="eyebrow"` replaces the text when it needs links (a breadcrumb).
   The row takes no space when neither is given (`part="eyebrow"`).

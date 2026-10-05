@@ -149,6 +149,7 @@ class App {
     this._router = new Router({
       root: this._layout,
       basepath: config.basepath,
+      mode: config.routerMode,
       routes: config.routes,
       fallback: config.fallback,
       enter: config.enter,

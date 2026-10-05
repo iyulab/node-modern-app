@@ -21,6 +21,14 @@ interface AppConfig {
   basepath?: string;
 
   /**
+   * Where the route lives in the address — forwarded to @iyulab/router's `mode`.
+   * 'history': the path (needs a server fallback for refreshes and deep links).
+   * 'hash': after `#` (`/app/#/orders/7`) — works on a static host with no server configuration.
+   * @default 'history'
+   */
+  routerMode?: 'history' | 'hash';
+
+  /**
    * Base URL for icon assets, forwarded to @iyulab/components icon loader.
    * @default '/assets/icons/'
    */

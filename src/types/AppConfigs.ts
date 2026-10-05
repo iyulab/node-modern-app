@@ -37,8 +37,16 @@ export interface AppConfig {
    */
   basepath?: string;
 
-  /** 
-   * 현재 애플리케이션의 기본 아이콘 경로 설정 
+  /**
+   * 라우트를 주소의 어디에서 읽는가 — `@iyulab/router` 의 `mode` 로 그대로 전달된다.
+   * - `'history'`: 경로(`/app/orders/7`). 서버가 앱의 모든 경로에 같은 문서를 돌려줘야 새로고침·딥링크가 동작한다.
+   * - `'hash'`: `#` 뒤(`/app/#/orders/7`). 정적 호스팅에서 서버 설정 없이 딥링크가 동작한다.
+   * @default 'history'
+   */
+  routerMode?: 'history' | 'hash';
+
+  /**
+   * 현재 애플리케이션의 기본 아이콘 경로 설정
    * @default '/assets/icons/'
    */
   iconBasepath?: string;
