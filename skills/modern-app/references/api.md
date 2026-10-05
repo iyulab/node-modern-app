@@ -10,6 +10,9 @@ interface AppConfig {
   /** Base path for all routes. Default: '/' */
   basepath?: string;
 
+  /** Where the route lives: 'history' = the path, 'hash' = after `#` (static hosting, no server fallback). Default: 'history' */
+  routerMode?: 'history' | 'hash';
+
   /** Base URL for icon assets. Default: '/assets/icons/' */
   iconBasepath?: string;
 
