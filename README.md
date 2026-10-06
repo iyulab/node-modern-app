@@ -29,8 +29,8 @@ await app.load({
     logo: { src: '/assets/logo.svg', alt: 'My App' },
     title: 'My App',
     main: [
-      { type: 'link', icon: 'home',  label: 'Home',  href: '/' },
-      { type: 'link', icon: 'users', label: 'Users', href: '/users' },
+      { type: 'link', icon: 'home',  lib: 'tabler', label: 'Home',  href: '/' },
+      { type: 'link', icon: 'users', lib: 'tabler', label: 'Users', href: '/users' },
     ],
   },
   routes: [
@@ -44,6 +44,21 @@ await app.load({
   theme: { default: 'system' },
 });
 ```
+
+### Icons
+
+A menu item's `icon` is a name resolved by `<u-icon>` from `@iyulab/components`:
+
+- **with `lib`** — from that library. `tabler`, `heroicons`, `lucide` and `bootstrap` are pre-registered
+  and fetched from a CDN on first use (the example above uses `tabler`); register your own with
+  `IconRegistry.register()`.
+- **without `lib`** — from your own files at `/assets/icons/<name>.svg` (change the folder with
+  `setDefaultBaseUrl()`).
+
+A name that resolves to nothing is drawn as a neutral placeholder instead of an empty gap, so a
+missing icon set shows up as every item having the same icon. The shell's own controls (menu and
+sidebar toggles, close) use a bundled set and need no network. See the components
+[icon guide](https://github.com/iyulab/node-components/blob/main/docs/icons.md).
 
 ## Skills Usage
 
@@ -68,6 +83,16 @@ app.navigate('/users/42');     // push a route
 app.router?.go('/users/42');   // via router instance
 app.router?.context;           // current RouteContext
 ```
+
+Routes live in the path (`/users/42`) by default, which needs the server to answer every path with
+the app. On a static host that serves one document (GitHub Pages, object storage), put the route
+after `#` instead:
+
+```typescript
+await app.load({ routerMode: 'hash', /* … */ });   // https://example.com/#/users/42
+```
+
+Links and `app.navigate()` follow the mode, so the rest of the app is written the same way.
 
 ### Theme
 

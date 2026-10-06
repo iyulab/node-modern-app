@@ -37,8 +37,8 @@ await app.load({
     logo: { src: '/assets/logo.svg', alt: 'My App' },
     title: 'My App',
     main: [
-      { type: 'link', icon: 'home', label: 'Home',     href: '/' },
-      { type: 'link', icon: 'users', label: 'Users',   href: '/users' },
+      { type: 'link', icon: 'home',  lib: 'tabler', label: 'Home',  href: '/' },
+      { type: 'link', icon: 'users', lib: 'tabler', label: 'Users', href: '/users' },
     ],
   },
   routes: [
@@ -51,6 +51,10 @@ await app.load({
   },
 });
 ```
+
+Menu `icon` names resolve through `<u-icon>`: with `lib` from that library (`tabler`, `heroicons`, `lucide`,
+`bootstrap` are pre-registered, CDN-fetched), without `lib` from the app's own `/assets/icons/<name>.svg`.
+An unresolved name draws a neutral placeholder — every item showing the same icon means the set is missing.
 
 To tear down the app:
 
@@ -69,6 +73,9 @@ app.router?.basepath;            // base path string
 app.router?.context;             // current RouteContext
 app.router?.routes;              // registered routes
 ```
+
+On a static host that serves one document, `app.load({ routerMode: 'hash' })` keeps the route after `#`
+(`/#/users/42`); links and `app.navigate()` follow the mode.
 
 ---
 

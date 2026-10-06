@@ -12,6 +12,14 @@
   that imports anything from `@iyulab/modern-app/react` keeps the tag types as before; one that
   only writes the plain tags in JSX adds `import type {} from '@iyulab/modern-app/react'` once.
 
+### Documentation
+
+- **The Quick Start's menu icons render.** Its `icon: 'home'` / `'users'` had no `lib`, so they were
+  looked up in the app's own `/assets/icons/` and, in a fresh app, drawn as the placeholder. The
+  example now names `lib: 'tabler'`, and a new «Icons» section explains where names resolve from.
+- **`routerMode: 'hash'` is described** under Navigation, for static hosts that serve one document.
+- Requires `@iyulab/router` 0.19.1 for shell links to carry the `#` address on a first visit in hash mode.
+
 ## [0.34.2] - 2026-10-06
 
 ### Fixed
