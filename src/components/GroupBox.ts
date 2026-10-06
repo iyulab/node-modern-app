@@ -5,7 +5,6 @@ import { property, state, customElement } from 'lit/decorators.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './GroupBox.styles.js';
-import type React from 'react';
 
 type ElementParts = 'host' | 'header' | 'title' | 'meta' | 'description' | 'actions' | 'body';
 
@@ -99,24 +98,5 @@ export class GroupBox extends StyledElement<ElementParts> {
 declare global {
   interface HTMLElementTagNameMap {
     'u-group-box': GroupBox;
-  }
-}
-
-// React JSX.IntrinsicElements 증강 — 이 파일 안에 직접 둔다. 다른 파일에서 값으로
-// 아무것도 쓰지 않는 side-effect import로 배선하면, 선언 번들러가 그 import를
-// "미사용"으로 보고 제거해 deep-import 소비자에게 증강이 안 닿는다 — 같은 파일
-// 안의 선언은 그 문제가 없다.
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'u-group-box': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        title?: string;
-        divider?: boolean;
-        flush?: boolean;
-        level?: GroupBoxLevel;
-        meta?: string;
-        description?: string;
-      };
-    }
   }
 }

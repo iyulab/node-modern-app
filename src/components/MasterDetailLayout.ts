@@ -7,7 +7,6 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './MasterDetailLayout.styles.js';
-import type React from 'react';
 
 type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
 
@@ -157,21 +156,5 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
 declare global {
   interface HTMLElementTagNameMap {
     'u-master-detail-layout': MasterDetailLayout;
-  }
-}
-
-// React JSX.IntrinsicElements 증강 — 이 파일 안에 직접 둔다. 다른 파일에서 값으로
-// 아무것도 쓰지 않는 side-effect import로 배선하면, 선언 번들러가 그 import를
-// "미사용"으로 보고 제거해 deep-import 소비자에게 증강이 안 닿는다 — 같은 파일
-// 안의 선언은 그 문제가 없다.
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'u-master-detail-layout': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        'master-size'?: string;
-        'overlay-breakpoint'?: number | string;
-        locale?: string;
-      };
-    }
   }
 }

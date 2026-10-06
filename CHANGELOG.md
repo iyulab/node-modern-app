@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.35.0] - 2026-10-06
+
+### Changed
+
+- **Breaking — the JSX types for the plain content-primitive tags moved to `@iyulab/modern-app/react`.**
+  The main entry's type declarations imported `react`, so a TypeScript app without React (`react` is
+  an optional peer) failed to type-check with `skipLibCheck: false` — seven `TS2307: Cannot find
+  module 'react'` errors from `ActionBar`, `EmptyState`, `GroupBox`, `InfoField`, `InfoSection`,
+  `MasterDetailLayout` and `PageHeader`. The main entry no longer references React. A React app
+  that imports anything from `@iyulab/modern-app/react` keeps the tag types as before; one that
+  only writes the plain tags in JSX adds `import type {} from '@iyulab/modern-app/react'` once.
+
 ## [0.34.2] - 2026-10-06
 
 ### Fixed

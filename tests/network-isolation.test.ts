@@ -31,5 +31,7 @@ describe('테스트 네트워크 격리', () => {
     // 정리 대상이다. 전제가 조용히 바뀌지 않게 여기서 확인한다.
     const src = await import('../src/layouts/SidebarLayout.js').then(() => true).catch(() => false);
     expect(src, 'SidebarLayout 을 불러올 수 없다').toBe(true);
-  });
+    // 첫 import 는 셸 그래프 전체를 변환한다 — 스위트 병렬 부하에서 기본 5초를 넘긴 적이 있다
+    // (2026-10-06, 단독 실행은 통과). 이 시험은 «불러와지는가» 를 재지 속도를 재지 않는다.
+  }, 30_000);
 });

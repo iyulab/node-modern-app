@@ -214,6 +214,14 @@ properties that a raw element only handles correctly under React 19.
 npm install @iyulab/modern-app @lit/react react
 ```
 
+The JSX types for using the content primitives as plain tags (`<u-info-field>`, `<u-page-header>`, …)
+live in this subpath too, so a non-React app never needs React's types. Importing anything from
+`@iyulab/modern-app/react` brings them in; a React app that only uses the plain tags adds one line:
+
+```ts
+import type {} from '@iyulab/modern-app/react';
+```
+
 ```tsx
 import { SidebarLayout, Wizard, type SidebarItem, type WizardStep } from '@iyulab/modern-app/react';
 

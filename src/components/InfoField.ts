@@ -4,7 +4,6 @@ import { formatNumber, formatCurrency, formatDate } from '@iyulab/components/dis
 
 import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoField.styles.js';
-import type React from 'react';
 
 type ElementParts = 'host' | 'label' | 'value' | 'unit' | 'trend';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
@@ -156,33 +155,5 @@ export class InfoField extends StyledElement<ElementParts> {
 declare global {
   interface HTMLElementTagNameMap {
     'u-info-field': InfoField;
-  }
-}
-
-// React JSX.IntrinsicElements 증강 — 이 파일 안에 직접 둔다. 다른 파일에서 값으로
-// 아무것도 쓰지 않는 side-effect import로 배선하면, 선언 번들러가 그 import를
-// "미사용"으로 보고 제거해 deep-import 소비자에게 증강이 안 닿는다 — 같은 파일
-// 안의 선언은 그 문제가 없다.
-declare module 'react' {
-  namespace JSX {
-    interface IntrinsicElements {
-      'u-info-field': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        label?: string;
-        /** 클래스 필드와 동일하게 `unknown` — 렌더 로직이 `String(value)`/포맷터로 무엇이
-         *  오든 처리하므로 `null`·숫자를 그대로 넘길 수 있다(위 클래스 필드 JSDoc 참조). */
-        value?: unknown;
-        blank?: string;
-        numeric?: boolean;
-        format?: InfoFieldFormat;
-        currency?: string;
-        unit?: string;
-        size?: InfoFieldSize;
-        trend?: InfoFieldTrend;
-        /** 프로퍼티는 `trendLabel`이지만 Lit 기본 속성명 규칙(소문자화, kebab
-         *  아님)상 실제 HTML 속성명은 `trendlabel`이다. */
-        trendlabel?: string;
-        tone?: InfoFieldTone;
-      };
-    }
   }
 }
