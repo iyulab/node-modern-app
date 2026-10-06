@@ -4,6 +4,7 @@ import { Router } from '@iyulab/router';
 import { setDefaultBaseUrl } from '@iyulab/components/dist/utilities/icons.js';
 import { Theme } from '@iyulab/components/dist/utilities/Theme.js';
 import { Toast } from '@iyulab/components/dist/utilities/Toast.js';
+import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 import { ScreenObserver, type ScreenSize } from './internals/ScreenObserver';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs';
@@ -55,6 +56,8 @@ class App {
   private _screen?: ScreenObserver;
   private _user?: unknown;
   private _gateTeardown?: () => void;
+  /** i18next 언어 → components `Locale` 동기화 해제(`unload`). */
+  private _languageSync?: () => void;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {}
@@ -112,6 +115,7 @@ class App {
         i18next.use(plugin);
       }
       await i18next.init(config.i18n);
+      this.syncLanguage();
     }
 
     // 부팅 인증 게이트 — 셸(레이아웃·라우터)을 만들기 전에 세션을 판정한다.
@@ -167,7 +171,27 @@ class App {
   }
 
   /** 앱 언로드 */
+  /**
+   * i18next 를 설정한 앱에서는 **i18next 가 언어의 정본**이다 — 그 언어를 셸·컴포넌트 chrome(`@iyulab/components` 의
+   * `Locale`, 이 패키지의 `modernAppLocale` 이 그것을 따른다)과 문서 `<html lang>`(WCAG 3.1.1, 낭독기 발음)에 잇는다.
+   * 종전에는 둘이 따로였다: `i18next.changeLanguage('ko')` 가 앱 문장만 바꾸고 버튼 이름·빈 상태·검증 메시지는 옛 언어로,
+   * 첫 로드에서도 i18next `lng` 와 `<html lang>`/브라우저 언어가 다르면 한 화면에 두 언어가 섰다.
+   */
+  private syncLanguage(): void {
+    const apply = (lng: string | undefined) => {
+      if (!lng || lng === 'cimode') return; // i18next 의 키 표시 모드 — 언어가 아니다
+      Locale.set(lng);
+      if (typeof document !== 'undefined') document.documentElement.lang = lng;
+    };
+    apply(i18next.resolvedLanguage ?? i18next.language);
+    const onChange = (lng: string) => apply(i18next.resolvedLanguage ?? lng);
+    i18next.on('languageChanged', onChange);
+    this._languageSync = () => i18next.off('languageChanged', onChange);
+  }
+
   public unload(): void {
+    this._languageSync?.();
+    this._languageSync = undefined;
     // 로그인 UI 정리(미인증 상태에서 렌더된 경우)
     if (this._gateTeardown) {
       this._gateTeardown();

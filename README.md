@@ -148,7 +148,9 @@ html`<p>${translate('common::greeting')}</p>`;
 The package's own strings — the page header's back link, empty-state copy, the shell's toggle and
 close labels, the wizard's buttons and step announcement — live in the `modern-app` namespace of
 `@iyulab/components`' `Locale`. English and Korean are built in, English being the default; pick the
-language once, with `Locale.set()` — the primitives and `@iyulab/flex-table` follow the same call.
+language once, with `Locale.set()` — the primitives and `@iyulab/flex-table` follow the same call. With
+`i18n` configured you do not call it: i18next's language (at load and on every `changeLanguage()`) is
+handed to `Locale` and to `<html lang>`.
 Register other languages, or your own wording, in the same namespace:
 
 ```typescript

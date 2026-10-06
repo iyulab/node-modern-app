@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.40.0] - 2026-10-07
+
+### Changed
+
+- **With `i18n` configured, i18next's language drives the whole app** — at load and on every `changeLanguage()` it is
+  handed to `@iyulab/components`' `Locale` (shell, primitives and component chrome follow, re-rendering on screen) and
+  to `<html lang>` (WCAG 3.1.1). Before, `changeLanguage('ko')` changed the app's own text while button names, empty
+  states and validation messages stayed in the old language, and a first load could show two languages when i18next's
+  `lng` differed from `<html lang>` or the browser's. Without `i18n` nothing changes — `Locale.set()` chooses.
+- **Requires `@iyulab/components` 2.8.0** (peer `>=2.8.0`) — the version whose components re-render on a locale switch.
+
 ## [0.39.0] - 2026-10-06
 
 ### Fixed
