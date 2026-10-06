@@ -127,6 +127,28 @@ describe("type: 'menu' — 셸이 그리는 팝업 메뉴 항목(종전 `Sidebar
     expect(popover.open, '비활성 항목은 메뉴를 닫지도 않는다').toBe(true);
   });
 
+  it('화면 아래쪽 트리거(footer)에서도 메뉴는 사이드바 «옆» 에 머문다 — 위로 뒤집혀 사이드바를 덮지 않는다', async () => {
+    // flip 은 같은 변의 반대 정렬(`right-end`)을 먼저 본다 — 아래로 넘치면 옆에 둔 채 트리거 아래 끝에 맞춘다.
+    // ⚠house-style 실기에서 «위로 뒤집힘» 을 봤는데 그것은 트리거가 사이드바 스크롤 밖에 있던 측정이었다(앵커가 안
+    //   보이면 옆 두 정렬이 다 넘친다). 이 시험은 «보이는 트리거» 의 동작을 고정한다.
+    const layout = await mountLayout({
+      type: 'sidebar',
+      main: [{ type: 'link', label: 'Home', href: '/' }],
+      // 항목 여덟 — 트리거 «아래로» 는 자리가 없어야 이 시험이 그 경우를 잰다(아래 전제 단언).
+      footer: [{ type: 'menu', label: 'Account', items: Array.from({ length: 8 }, (_, i) => ({ label: `Entry ${i + 1}` })) }],
+    });
+    const { trigger, button, popover, items } = parts(layout);
+    button.click();
+    await settle(); await settle();
+    const t = trigger.getBoundingClientRect();
+    const first = items[0].getBoundingClientRect();
+    const last = items[7].getBoundingClientRect();
+    expect(t.top + 8 * first.height, '전제: 트리거 위치에서 아래로 펼치면 화면을 넘는다').toBeGreaterThan(window.innerHeight);
+    expect(first.left, '메뉴는 트리거 오른쪽에서 시작한다').toBeGreaterThanOrEqual(t.right - 1);
+    expect(last.bottom, '화면 아래로 넘치지 않는다').toBeLessThanOrEqual(window.innerHeight);
+    expect(popover.open).toBe(true);
+  });
+
   it('모바일 패널(mobile-open)에서는 아래로 열려 화면 안에 보인다', async () => {
     const layout = await mountLayout(menuConfig(() => {}, () => {}));
     layout.state = 'mobile-open';
