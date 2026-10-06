@@ -4,6 +4,7 @@ import { SidebarLayout as SidebarLayoutElement, type SidebarLayoutEventMap } fro
 import { Wizard as WizardElement } from './components/Wizard.js';
 import type { WizardEventMap } from './components/Wizard.js';
 import type { GroupBoxLevel } from './components/GroupBox.js';
+import type { TimelineItemColor } from './components/Timeline.js';
 import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone } from './components/InfoField.js';
 
 // `SidebarLayout`을 `app.load()` 없이 이 서브패스만으로 단독 마운트하는 소비자를 위한
@@ -107,6 +108,14 @@ declare module 'react' {
       };
       'u-info-section': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         min?: number | string;
+      };
+      'u-timeline': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+      'u-timeline-item': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        heading?: string;
+        datetime?: string;
+        color?: TimelineItemColor;
+        icon?: string;
+        lib?: string;
       };
       'u-master-detail-layout': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         'master-size'?: string;

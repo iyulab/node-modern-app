@@ -58,6 +58,7 @@
 | `u-action-bar` | 푸터 액션 바 — 위험 액션과 주 액션을 **거리로** 가른다 | `danger` · (기본) | host · danger · main |
 | `u-master-detail-layout` | master›detail 반응형 split-pane 셸. `detail` 슬롯이 채워지면 나타나고 비우면 사라진다. 좁은 자기 폭에서 detail 이 전체 오버레이로 전환(`overlayBreakpoint`, 기본 760px) | (기본, master) · `detail` | host · master · divider · detail · detail-close |
 | `u-wizard` | 다단계 흐름의 스텝 인디케이터 + 패널 + Back/Next. `steps`/`active`(controlled)/`linear`. 검증·저장재개는 컴포넌트 밖 — `step-change`(취소 가능)에서 소비자가 처리 | (기본, 스텝 패널들) · `actions` | host · indicator · step · panel · actions |
+| `u-timeline` · `u-timeline-item` | 상태·활동 이력 — «언제 무엇이». 항목마다 레일의 표지(`color` = 역할색 · `icon`) · `heading` · `datetime`(`<time datetime>`, 활성 로케일 서식) · 본문. 목록 의미 구조(항목 수가 읽힌다). ⚠색만으로 상태를 전하지 않는다 — `heading` 에 말로 | (기본, 본문) · `heading` · `time` | host · rail · marker · line · content · header · heading · time · body |
 
 ### 🔴 접힘은 «화면»이 아니라 «자기 폭»으로 판단한다 (0.10.0)
 
@@ -81,7 +82,7 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
 | **사이드 패널(편집 드로어)** | ✅**만들지 않기로 했다 — `u-drawer` 조합으로 이미 된다.** 실브라우저 실측에서 요구 4항목이 **4/4 통과**했다(본문만 스크롤 + 푸터 고정 · 포커스 트랩 · 열림 직후 팝업 0 · 첫 입력 포커스). 같은 계약의 두 번째 구현은 드리프트를 만든다 ⇒ 레시피는 `@iyulab/components` 의 `drawer.md` §Edit-panel pattern. 🔴**자동 포커스가 곧 팝업 펼침이 되는 결함**은 별건으로 재현 조건을 기다린다 |
 | **툴바(검색·필터 묶음)** | `u-group-box` 의 `actions` 슬롯이 그 자리를 맡고, **접힘 규칙은 라이브러리가 정한다**(컨테이너 480px 이하에서 제목 아래로). 독립 컴포넌트로 낼 만한 형태가 아직 하나로 수렴하지 않았다 |
 | **익스팬더** | ➡**`@iyulab/components` 의 `u-expander` 로 갔다** — 도메인이 없는 범용 디스클로저라 기반 층이 맞다 |
-| **타임라인 / 단계 레일** | 반복은 관측되나 형태가 아직 한 가지로 수렴하지 않았다 |
+| **단계 레일** | 위저드 인디케이터(`u-wizard`)가 «진행 중인 흐름» 을 맡는다. 이력(«이미 일어난 일»)은 `u-timeline` 으로 갔다(2026-10-06 — 업계 형태가 표지·제목·시각·본문으로 수렴해 있다) |
 
 ## 사용
 

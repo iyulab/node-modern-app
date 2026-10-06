@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.37.0] - 2026-10-06
+
+### Added
+
+- **`u-timeline` and `u-timeline-item` — a status or activity history** for detail screens ("what
+  happened, and when"). Each entry is a marker on a rail, a `heading`, a `datetime` rendered as
+  `<time datetime>` and formatted for the active locale (a date alone as that calendar day, a
+  date-time with its time; the `time` slot replaces the text), and an optional body. `color` takes the
+  role colours of `u-tag`/`u-badge` — the marker is drawn with the role's fill, the colour on it and its
+  strong step as an edge, so a warning marker still shows on the page — and `icon` draws inside it. The
+  list is announced as a list. Parts: `rail` · `marker` · `line` · `content` · `header` · `heading` ·
+  `time` · `body`; knobs `--app-timeline-rail-width` and `--app-timeline-marker-size`.
+
 ## [0.36.0] - 2026-10-06
 
 ### Added

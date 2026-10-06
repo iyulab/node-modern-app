@@ -236,6 +236,9 @@ const NOT_A_TARGET = new Set<string>([
   'u-group-box',
   'u-info-field',
   'u-info-section',
+  // 이력 표시물 — 표지·시각·제목은 활성화 영역이 아니다(본문의 링크 등은 소비자가 슬롯으로 넣는다).
+  'u-timeline',
+  'u-timeline-item',
   // 사이드바 섹션 — 제목 머리(`part="header"`)는 표시물이고 항목은 자식 링크·버튼이 각자 잰다.
   'u-sidebar-section',
   // 🔴타깃이 «형제 컴포넌트» 인 것 — `.detail-close` 는 `u-button` 이고 이 패키지의 시트는 **위치만** 준다
@@ -546,7 +549,7 @@ describe('WCAG 2.2 SC 2.5.8 — 타깃 크기(최소) 게이트', () => {
       expect(
         `판정 ${Object.keys(FIXTURES).length}(${states}상태) · 미판정 ${unjudged.length}(${unjudged.join(' ')})` +
         ` · 대상아님 ${NOT_A_TARGET.size} · 인라인예외 ${INLINE_PROSE.size}`,
-      ).toBe('판정 6(10상태) · 미판정 0() · 대상아님 7 · 인라인예외 0');
+      ).toBe('판정 6(10상태) · 미판정 0() · 대상아님 9 · 인라인예외 0');
     });
 
     it('규칙 표에 «등록되지 않은» 이름이 남아 있지 않다 (표가 낡지 않게)', () => {

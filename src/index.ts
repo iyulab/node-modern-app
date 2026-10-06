@@ -33,6 +33,8 @@ export { GroupBox } from './components/GroupBox.js';
 export { InfoSection } from './components/InfoSection.js';
 export { InfoField, isBlank } from './components/InfoField.js';
 export { EmptyState } from './components/EmptyState.js';
+export { Timeline, TimelineItem } from './components/Timeline.js';
+export type { TimelineItemColor } from './components/Timeline.js';
 export { ActionBar } from './components/ActionBar.js';
 export { MasterDetailLayout } from './components/MasterDetailLayout.js';
 export type { MasterDetailLayoutEventMap } from './components/MasterDetailLayout.js';
