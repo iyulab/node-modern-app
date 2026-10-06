@@ -144,6 +144,16 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
    */
   @state() private routeLoading = false;
   /**
+   * 본문이 탭 정지인가 — 넘쳐서 스크롤되는데 안에 탭으로 닿을 것이 하나도 없을 때만.
+   *
+   * 브라우저 규칙(«키보드 포커스 가능한 스크롤러», Chrome 130)을 셸이 재현한다: 그런 스크롤러는 브라우저가 스스로
+   * 탭 정지로 만들지만, `tabindex="-1"` 이 그 규칙의 명시적 opt-out 이다. 셸은 프로그램 포커스(skip link · 라우트
+   * 완료) 때문에 `-1` 을 달았고, 그래서 컨트롤 없는 긴 화면(문서 · 안내)을 Tab 으로 지나치면 스크롤할 길이 없었다
+   * (axe `scrollable-region-focusable`). 컨트롤이 있는 화면은 그 컨트롤에서 스크롤 키가 듣는다 — 정지를 더하지 않는다.
+   */
+  @state() private mainTabStop = false;
+  private mainSizeObserver?: ResizeObserver;
+  /**
    * 오버레이를 연 컨트롤 — 닫힐 때 포커스를 되돌릴 곳.
    * ★슬롯 배정 «시점» 에 잡는다. 렌더가 본문에 `inert` 를 걸면 그 컨트롤이 쥐던 포커스는
    *   `<body>` 로 떨어지므로, `updated()` 에서 읽으면 이미 늦다.
@@ -193,6 +203,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     window.removeEventListener('route-error', this.handleRouteError);
     window.removeEventListener('screen-resize', this.handleScreenResize);
     OverlayManager.closeLayer(this);
+    this.mainSizeObserver?.disconnect();
+    this.mainSizeObserver = undefined;
     super.disconnectedCallback();
   }
 
@@ -206,6 +218,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   protected updated(changed: PropertyValues): void {
     super.updated(changed);
+    this.observeMainSize();
     if (changed.has('hasOverlay')) {
       this.internals?.states?.[this.hasOverlay ? 'add' : 'delete']('overlay');
       if (this.hasOverlay) {
@@ -308,7 +321,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
       <!-- Main Content -->
       <div class="main-region">
-        <main class="main" part="main" scrollable tabindex="-1" @keydown=${this._handleMainKeydown}>
+        <main class="main" part="main" scrollable tabindex=${this.mainTabStop ? '0' : '-1'} @keydown=${this._handleMainKeydown}>
           <u-progress-bar part="progress" class=${this.routeLoading ? 'loading' : ''}
             aria-hidden=${this.routeLoading ? nothing : 'true'}
             aria-label=${getLocaleStrings(this.locale || undefined).pageLoading}></u-progress-bar>
@@ -319,7 +332,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
               aria-label=${this.config.noticesAriaLabel ?? nothing}>
               <slot name="notice" @slotchange=${this.handleNoticeSlotChange}></slot>
             </div>
-            <slot></slot>
+            <slot @slotchange=${this.handleMainSlotChange}></slot>
           </div>
         </main>
 
@@ -621,7 +634,54 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     if (main) {
       this.config?.scrollBehavior?.(event.context, main);
       void this.focusRoute(main);
+      requestAnimationFrame(this.syncMainTabStop);
     }
+  }
+
+  /**
+   * 본문과 그 내용의 크기가 바뀌면(넘침 · 내용이 그려짐) 탭 정지를 다시 판정한다. 본문이 처음 그려질 때 한 번 건다.
+   * ⚠`.main-content` 는 `display: contents` 라 상자가 없다 — 관찰 대상은 슬롯에 배정된 요소들이고, 배정이 바뀔 때마다 다시 건다.
+   */
+  private observeMainSize(): void {
+    if (this.mainSizeObserver || typeof ResizeObserver === 'undefined') return;
+    const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
+    if (!main) return;
+    this.mainSizeObserver = new ResizeObserver(() => this.syncMainTabStop());
+    this.mainSizeObserver.observe(main);
+    this.observeContentSize();
+  }
+
+  private observedContent: Element[] = [];
+
+  private observeContentSize(): void {
+    const observer = this.mainSizeObserver;
+    if (!observer) return;
+    for (const el of this.observedContent) observer.unobserve(el);
+    this.observedContent = [...this.noticeContent(), ...this.routeContent()];
+    for (const el of this.observedContent) observer.observe(el);
+  }
+
+  private handleMainSlotChange = (): void => {
+    this.observeContentSize();
+    this.syncMainTabStop();
+  };
+
+  private syncMainTabStop = (): void => {
+    const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
+    if (!main) return;
+    const overflows = main.scrollHeight > main.clientHeight + 1 || main.scrollWidth > main.clientWidth + 1;
+    const reachable = overflows && !!querySelectorDeep(
+      [...this.noticeContent(), ...this.routeContent()],
+      '*',
+      (el) => isFocusCandidate(el) && el.tabIndex >= 0,
+    );
+    this.mainTabStop = overflows && !reachable;
+  };
+
+  /** 공지 슬롯에 배정된 요소들 */
+  private noticeContent(): Element[] {
+    const slot = this.shadowRoot?.querySelector<HTMLSlotElement>('slot[name="notice"]');
+    return slot?.assignedElements({ flatten: true }) ?? [];
   }
 
   /** 라우트 본문(기본 슬롯)에 배정된 요소들 */
@@ -691,6 +751,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   private handleNoticeSlotChange = (e: Event) => {
     this.hasNotice = slotHasContent(e.target as HTMLSlotElement);
+    this.handleMainSlotChange();
   };
 
   /** 오버레이 패널에 배정된 요소들 */

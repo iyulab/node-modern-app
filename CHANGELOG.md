@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.42.1] - 2026-10-07
+
+### Fixed
+
+- **A long screen with no controls can be scrolled from the keyboard.** The sidebar layout's content region carries
+  `tabindex="-1"` for programmatic focus (skip link, route change) — and a negative tabindex is the explicit opt-out
+  from the browser's own rule that makes a scroller with nothing focusable inside a Tab stop (Chrome 130). So a
+  keyboard user who tabbed past a document or notice screen had no way to scroll it (axe
+  `scrollable-region-focusable`). The region is now a Tab stop exactly when it overflows and holds nothing reachable
+  by Tab (shadow roots included), and re-judges when the content's size or slotted elements change; screens with
+  controls keep `-1`.
+
 ## [0.42.0] - 2026-10-07
 
 ### Added
