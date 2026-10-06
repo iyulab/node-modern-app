@@ -139,6 +139,11 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   /** notice 슬롯 배정 상태 — 비었으면 스택 자체가 자리를 차지하지 않는다. */
   @state() private hasNotice = false;
   /**
+   * 라우트가 불러오는 중인가 — 본문 위 진행 막대를 보이고, 쉬는 동안은 보조기기에서도 뺀다. 종전에는 `opacity: 0` 으로만
+   * 숨어 이름 없는 진행 막대가 모든 화면의 접근성 트리에 떠 있었다(axe `aria-progressbar-name`).
+   */
+  @state() private routeLoading = false;
+  /**
    * 오버레이를 연 컨트롤 — 닫힐 때 포커스를 되돌릴 곳.
    * ★슬롯 배정 «시점» 에 잡는다. 렌더가 본문에 `inert` 를 걸면 그 컨트롤이 쥐던 포커스는
    *   `<body>` 로 떨어지므로, `updated()` 에서 읽으면 이미 늦다.
@@ -304,7 +309,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       <!-- Main Content -->
       <div class="main-region">
         <main class="main" part="main" scrollable tabindex="-1" @keydown=${this._handleMainKeydown}>
-          <u-progress-bar part="progress"></u-progress-bar>
+          <u-progress-bar part="progress" class=${this.routeLoading ? 'loading' : ''}
+            aria-hidden=${this.routeLoading ? nothing : 'true'}
+            aria-label=${getLocaleStrings(this.locale || undefined).pageLoading}></u-progress-bar>
 
           <div class="main-content" part="main-content" ?inert=${this.hasOverlay}>
             <div class="notices ${this.hasNotice ? '' : 'empty'}" part="notices"
@@ -588,7 +595,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** 라우트 변경 시작 핸들러 */
   private handleRouteBegin = (event: RouteBeginEvent) => {
-    this.progressBarEl.setAttribute('visible', '');
+    this.routeLoading = true;
     this.progressBarEl.value = 0;
     if (this.state === 'modal') {
       this.state = 'slim';
@@ -608,7 +615,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   private handleRouteDone = (event: RouteDoneEvent) => {
     this.progressBarEl.value = 100;
     setTimeout(() => {
-      this.progressBarEl.removeAttribute('visible');
+      this.routeLoading = false;
     }, 300);
     const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
     if (main) {
@@ -668,7 +675,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     this.progressBarEl.status = 'error';
     this.progressBarEl.value = 100;
     setTimeout(() => {
-      this.progressBarEl.removeAttribute('visible');
+      this.routeLoading = false;
       this.progressBarEl.status = 'default';
     }, 300);
   }

@@ -359,7 +359,7 @@ export const styles = css`
     transition: opacity var(--u-duration-slow, 320ms) ease, transform var(--u-duration-slow, 320ms) ease;
     pointer-events: none;
   }
-  .main u-progress-bar[visible] {
+  .main u-progress-bar.loading {
     opacity: 1;
     transform: translateY(0);
   }

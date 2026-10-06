@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.41.0] - 2026-10-07
+
+### Changed
+
+- **`u-group-box` derives its heading level when `level` is unset** — `h2` for a box in no other `u-group-box`
+  (the usual place, directly under `u-page-header`'s `h1`), one level deeper than the nearest enclosing box otherwise
+  (shadow roots included, capped at `h6`). The default was `h3`, so the most common composition skipped a heading
+  level on every screen (axe `heading-order`). An explicit `level` still wins; an out-of-range one now falls back to
+  the derived level instead of `3`. A box under a heading of your own should set `level`.
+
+### Fixed
+
+- **The sidebar layout's route-loading bar is out of the accessibility tree while idle, and named while it loads**
+  (new locale key `pageLoading` — en *Loading page*, ko *페이지 불러오는 중*). It was hidden with `opacity` only, so
+  every screen carried an unnamed progress bar for screen readers to meet (axe `aria-progressbar-name`).
+
 ## [0.40.0] - 2026-10-07
 
 ### Changed

@@ -34,7 +34,7 @@ a left edge without any consumer CSS.
 | `description` | `string` | — | | One line under the title — what the box holds or what its numbers are based on. Caption size, weak color. Opens the header on its own |
 | `divider` | `boolean` | `false` | | Rule between header and body. Off by default — many rules make a screen noisy |
 | `flush` | `boolean` | `false` | | Remove body padding, for tables and lists that draw their own edges |
-| `level` | `2|3|4|5|6` | `3` | ✓ | Heading level of the title in the document outline. Set `2` for a box directly under `u-page-header` (the page's `h1`), so the outline does not skip a level. Semantics only — the title looks the same at every level |
+| `level` | `2|3|4|5|6` | derived | ✓ | Heading level of the title in the document outline. Unset: `2` for a box in no other `u-group-box` (directly under `u-page-header`, the page's `h1`), one deeper than the nearest enclosing box otherwise. Set it when the box sits under a heading of your own. Semantics only — the title looks the same at every level |
 
 ## CSS Parts
 

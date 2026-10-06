@@ -92,7 +92,7 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
   <u-button slot="actions">수정</u-button>
 </u-page-header>
 
-<u-group-box title="기본 정보" level="2">
+<u-group-box title="기본 정보">
   <a slot="actions" href="/orders/1/edit">수정</a>
   <u-info-section min="180">
     <u-info-field label="파트" value="일반"></u-info-field>
@@ -102,7 +102,7 @@ inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자�
 </u-group-box>
 
 <!-- 목록형 절의 건수는 제목 문자열에 섞지 않고 meta 로 — 헤딩 이름에도 함께 읽힌다 -->
-<u-group-box title="이행 이력" meta="3건" level="2">…</u-group-box>
+<u-group-box title="이행 이력" meta="3건">…</u-group-box>
 ```
 
 ### 대시보드 통계 타일

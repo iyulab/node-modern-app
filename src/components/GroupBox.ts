@@ -59,14 +59,30 @@ export class GroupBox extends StyledElement<ElementParts> {
   /** 본문 여백을 없앤다 — 표를 카드 가장자리까지 붙일 때. */
   @property({ type: Boolean }) flush = false;
   /**
-   * Heading level of the title in the document outline (`2`–`6`, default `3`).
+   * Heading level of the title in the document outline (`2`–`6`).
    *
-   * The box cannot know how deep it sits in the page, so whoever composes the page says so — a
-   * box placed directly under `u-page-header` (the page's `h1`) is usually `2`, and leaving it at
-   * `3` skips a level and puts it deeper than its sibling sections. This changes semantics only:
-   * the title keeps its visual size at every level. Out-of-range values fall back to `3`.
+   * Unset, it follows the boxes around it: `2` for a box that sits in no other `u-group-box` — the
+   * usual place, directly under `u-page-header` (the page's `h1`) — and one deeper than the nearest
+   * enclosing box otherwise (shadow roots included), capped at `6`. Set it when the box sits under a
+   * heading of your own (a box under your `h2` section is `3`). This changes semantics only: the title
+   * keeps its visual size at every level. Out-of-range values fall back to the derived level.
    */
-  @property({ type: Number, reflect: true }) level: GroupBoxLevel = 3;
+  @property({ type: Number, reflect: true }) level?: GroupBoxLevel;
+
+  /** The level the title renders at — `level`, or the one derived from enclosing boxes. */
+  get headingLevel(): GroupBoxLevel {
+    if (this.level && HEADINGS[this.level]) return this.level;
+    for (let node: Node | null = this.parentNode; node; node = node instanceof ShadowRoot ? node.host : node.parentNode) {
+      if (node instanceof GroupBox) return Math.min(6, node.headingLevel + 1) as GroupBoxLevel;
+    }
+    return 2;
+  }
+
+  connectedCallback(): void {
+    super.connectedCallback();
+    // 옮겨 붙으면 감싸는 상자가 달라진다 — 도출된 단계를 다시 그린다.
+    this.requestUpdate();
+  }
 
   /**
    * 액션 슬롯 배정 상태.
@@ -81,7 +97,7 @@ export class GroupBox extends StyledElement<ElementParts> {
     return html`
       <div class="header ${this.divider ? 'divider' : ''} ${hasHeader ? '' : 'empty'}" part="header">
         <div class="titles">
-          ${staticHtml`<${HEADINGS[this.level] ?? HEADINGS[3]} class="title" part="title">${this.title}${this.title && this.meta ? html` <span class="meta" part="meta">${this.meta}</span>` : ''}</${HEADINGS[this.level] ?? HEADINGS[3]}>`}
+          ${staticHtml`<${HEADINGS[this.headingLevel]} class="title" part="title">${this.title}${this.title && this.meta ? html` <span class="meta" part="meta">${this.meta}</span>` : ''}</${HEADINGS[this.headingLevel]}>`}
           ${this.description ? html`<p class="description" part="description">${this.description}</p>` : nothing}
         </div>
         <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
