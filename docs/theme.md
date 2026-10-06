@@ -100,6 +100,7 @@ optional** — when unset it derives from a role token, so an app that only sets
 | `--app-sidebar-fg` | `--u-txt-color` | Sidebar text and icons |
 | `--app-sidebar-active-bg` | `--u-primary-color` | Active menu background |
 | `--app-sidebar-active-fg` | `--u-txt-color-inverse` | Active menu text |
+| `--app-sidebar-group-active-fg` | `color-mix(--app-sidebar-active-bg 85%, black)` | Text of a group header whose group holds the active menu. It sits on the panel, not on the active background — a theme with a light active background sets it to its ink color, or the default derives a near-invisible color |
 | `--app-sidebar-active-icon-color` | `--app-sidebar-active-fg` | Active menu icon — e.g. a brand color on a light active background |
 | `--app-sidebar-active-indicator-color` | `--app-sidebar-active-bg` | Bar on the start edge of the active menu; the default matches the background, so it is not visible until set |
 | `--app-sidebar-active-indicator-width` | `3px` | Width of that bar |
@@ -111,7 +112,7 @@ optional** — when unset it derives from a role token, so an app that only sets
 | `--app-sidebar-item-radius` | `8px` | Corner radius of a navigation item |
 | `--app-sidebar-item-gap` | `12px` | Gap between a navigation item's icon and label |
 | `--app-sidebar-item-padding` | `8px 12px` | Padding of a navigation item |
-| `--app-sidebar-icon-size` | `20px` | Navigation icon size |
+| `--app-sidebar-icon-size` | `20px` | Navigation icon size — links and group headers alike |
 | `--app-sidebar-active-shadow` | `0 1px 3px var(--u-shadow-color-weak)` | Shadow under the active item — `none` for a flat current item |
 | `--app-sidebar-active-shadow-hover` | `0 2px 6px var(--u-shadow-color-normal)` | Shadow under the active item on hover |
 | `--app-timeline-rail-width` | `24px` | `u-timeline-item` rail column width — also the marker size when it holds an icon |

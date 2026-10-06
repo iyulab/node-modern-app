@@ -34,8 +34,10 @@ export const styles = css`
   }
   button[selected] {
     /* 패널 위 텍스트라 강조색을 그대로 쓰면 대비가 부족하다(blue-600 = 3.68:1).
-       활성 배경과 같은 파생식으로 한 단 어둡게 해 AA 를 넘긴다(4.85:1). */
-    color: color-mix(in srgb, var(--group-accent) 85%, black);
+       기본은 활성 배경과 같은 파생식으로 한 단 어둡게 해 AA 를 넘긴다(4.85:1) — 활성 면이 «진한» 색이라는 전제다.
+       연한 활성 면(+ 진한 글자)을 쓰는 테마에서는 그 면을 15% 어둡게 한 색이 패널 위에서 1.6:1 로 묻혔다.
+       그런 테마는 --app-sidebar-group-active-fg 를 «패널 위 강조 글자» 로 정한다. */
+    color: var(--app-sidebar-group-active-fg, color-mix(in srgb, var(--app-sidebar-active-bg, var(--u-primary-color, #1976D2)) 85%, black));
   }
   button:hover {
     color: var(--u-txt-color-hover, #1565C0);
@@ -52,7 +54,8 @@ export const styles = css`
   .icon {
     flex-shrink: 0;
     color: inherit;
-    font-size: 20px;
+    /* 링크와 같은 토큰 — 한 레일의 아이콘은 한 크기다(위계는 들여쓰기·캐럿·레일이 진다). */
+    font-size: var(--app-sidebar-icon-size, 20px);
   }
 
   /*

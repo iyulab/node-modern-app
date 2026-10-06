@@ -1,5 +1,28 @@
 # Changelog
 
+## [0.39.0] - 2026-10-06
+
+### Fixed
+
+- **`u-sidebar-layout` marks the current menu on arrival.** It learned the current route only from `route-begin`, so
+  when the layout is rendered by a route (a React shell as a nested route's parent), the first navigation's event
+  had passed before the layout connected: after typing an address or reloading, no link was `selected` and none
+  had `aria-current`, until the user navigated once. It now starts from the current location (`currentRoutePath()`
+  from `@iyulab/router` 0.20).
+- **Sidebar group icons follow `--app-sidebar-icon-size`**, like links. They used a fixed 20px, so a theme setting
+  the token (16px in `@iyulab/house-style`) drew two icon sizes in one rail.
+
+### Added
+
+- **`--app-sidebar-group-active-fg`** — text of a group header whose group holds the active menu. It sits on the
+  panel, but its default is derived from the active *background* (85% + black), which works for a dark active
+  background and leaves a light one (`--hs-brand-soft`) with near-invisible text (about 1.6:1). A theme with a
+  light active background sets this to its ink color. Unset, nothing changes.
+
+### Changed
+
+- Requires `@iyulab/router` `^0.20.0`.
+
 ## [0.38.0] - 2026-10-06
 
 ### Added

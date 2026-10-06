@@ -16,7 +16,7 @@ import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js
 import { isFocusCandidate, querySelectorDeep } from '@iyulab/components/dist/utilities/elements.js';
 import { OverlayManager } from '@iyulab/components/dist/utilities/OverlayManager.js';
 import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
-import { RouteContext, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
+import { currentRoutePath, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
 import type { ScreenResizeEvent, ScreenSize } from '../internals/ScreenObserver.js';
 import { getLocaleStrings } from '../internals/locale.js';
@@ -153,8 +153,12 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   private readonly internals: ElementInternals | undefined =
     typeof this.attachInternals === 'function' ? this.attachInternals() : undefined;
 
-  /** 현재 라우터 컨텍스트 */
-  @state() context: RouteContext | null = null;
+  /**
+   * 현재 라우트 경로(`RouteContext.path` 형식) — 메뉴의 «현재 항목» 판정 원천.
+   * 붙을 때 지금 위치로 시작한다: 셸이 라우트 결과물로 그려지면(React 중첩 라우트의 부모) 첫 `route-begin` 은
+   * 셸이 붙기 **전에** 지나가, 주소창 진입·새로 고침 직후 현재 항목이 하나도 없었다.
+   */
+  @state() private currentPath: string | null = null;
 
   /**
    * 라우트 컨텐츠의 실제 스크롤 컨테이너(섀도 DOM `[part="main"]`). `scrollTop`을 읽어
@@ -168,6 +172,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   connectedCallback() {
     super.connectedCallback();
+    this.currentPath = currentRoutePath();
 
     window.addEventListener('route-begin', this.handleRouteBegin);
     window.addEventListener('route-done', this.handleRouteDone);
@@ -470,13 +475,13 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** 현재 경로와 패턴 매칭 여부 확인 */
   private isMatchedLink = (pattern: string | URLPattern) => {
-    if (!this.context) return false;
+    if (this.currentPath === null) return false;
     if (!pattern) return false;
 
     pattern = typeof pattern === 'string'
       ? new URLPattern(pattern, window.location.origin)
       : pattern;
-    return pattern.test(this.context.path, window.location.origin);
+    return pattern.test(this.currentPath, window.location.origin);
   }
 
   /** 브랜드 로고 클릭 핸들러: `href` 지정 시 해당 경로로, 아니면 홈으로 이동 */
@@ -591,7 +596,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     if (this.state === 'mobile-open') {
       this.state = 'mobile';
     }
-    this.context = event.context;
+    this.currentPath = event.context.path;
   }
 
   /** 라우트 변경 진행 핸들러 */
