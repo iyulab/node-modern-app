@@ -124,7 +124,11 @@ export interface AppConfig {
    * app.load({
    *   layout: { type: 'sidebar', ... },
    *   auth: {
-   *     me: () => authClient.fetchMe(),                 // null → 미인증
+   *     me: async () => {                               // @iyulab/enterprise createAuthClient
+   *       const s = await authClient.fetchMe();
+   *       if (s.status === 'unknown') throw s.error;    // 모름 — 로그인 화면이 아니라 load 실패
+   *       return s.status === 'authenticated' ? s.user : null; // null → 미인증
+   *     },
    *     renderLogin: ({ root, onSuccess }) => renderLoginPage(root, onSuccess),
    *     onAuthenticated: (user) => setPermissions((user as User).Permissions),
    *   },
