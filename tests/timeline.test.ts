@@ -2,7 +2,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 import '../src/components/Timeline.js';
-import type { TimelineItem } from '../src/components/Timeline.js';
+import type { TimelineItem } from '../src/components/TimelineItem.js';
 
 const mounted: HTMLElement[] = [];
 afterEach(() => {

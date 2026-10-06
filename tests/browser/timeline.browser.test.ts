@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import '@iyulab/components/styles/tokens.css';
 import '../../src/components/Timeline.js';
-import type { TimelineItem } from '../../src/components/Timeline.js';
+import type { TimelineItem } from '../../src/components/TimelineItem.js';
 
 /**
  * `u-timeline` layout — what happy-dom cannot answer: the marker sits on the heading's first line, the

@@ -4,7 +4,7 @@ import { SidebarLayout as SidebarLayoutElement, type SidebarLayoutEventMap } fro
 import { Wizard as WizardElement } from './components/Wizard.js';
 import type { WizardEventMap } from './components/Wizard.js';
 import type { GroupBoxLevel } from './components/GroupBox.js';
-import type { TimelineItemColor } from './components/Timeline.js';
+import type { TimelineItemColor } from './components/TimelineItem.js';
 import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone } from './components/InfoField.js';
 
 // `SidebarLayout`을 `app.load()` 없이 이 서브패스만으로 단독 마운트하는 소비자를 위한

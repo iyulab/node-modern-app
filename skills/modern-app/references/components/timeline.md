@@ -42,10 +42,11 @@ a list and each entry a list item, so assistive technology announces the count.
 
 ## CSS Parts
 
-| Element | Parts |
-|---------|-------|
-| `u-timeline` | `host` |
-| `u-timeline-item` | `host` · `rail` · `marker` · `line` · `content` · `header` · `heading` · `time` · `body` |
+| Part | Description |
+|------|-------------|
+| `list` | `u-timeline`: the column the entries stack in |
+| `rail` · `marker` · `line` | Entry: the rail column, its marker, and the line down to the next entry |
+| `content` · `header` · `heading` · `time` · `body` | Entry: the text column — header row (heading and time) and body |
 
 ## CSS Custom Properties
 

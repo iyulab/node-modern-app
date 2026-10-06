@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.37.2] - 2026-10-06
+
+### Fixed
+
+- **`TimelineItem` has a React wrapper** — `@iyulab/modern-app/react/TimelineItem.js` (and the barrel).
+  The entry lived in the same module as `u-timeline`, and the wrappers are generated one element per
+  module, so only `Timeline` was wrapped. `u-timeline-item` now has its own module; importing
+  `Timeline` still registers both.
+- `u-timeline` exposes a `list` part (the column the entries stack in), and the reference page's
+  parts table lists what the elements actually expose.
+
 ## [0.37.1] - 2026-10-06
 
 ### Fixed
