@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.42.2] - 2026-10-07
+
+### Fixed
+
+- The sidebar layout registers the `u-progress-bar` it renders with an explicit import. It imported `UProgressBar` for
+  a type only, and the published module kept the import by accident (decorator metadata).
+
 ## [0.42.1] - 2026-10-07
 
 ### Fixed

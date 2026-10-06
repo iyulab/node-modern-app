@@ -15,7 +15,9 @@ import '@iyulab/components/dist/components/menu-item/UMenuItem.js';
 import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js';
 import { isFocusCandidate, querySelectorDeep } from '@iyulab/components/dist/utilities/elements.js';
 import { OverlayManager } from '@iyulab/components/dist/utilities/OverlayManager.js';
-import { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
+// 부수효과 import — 이 모듈이 그리는 `<u-progress-bar>` 을 등록한다(타입으로만 가져오면 빌드가 import 를 지운다 — 데코레이터 메타데이터가 우연히 붙잡고 있었다).
+import '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
+import type { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
 import { currentRoutePath, RouteBeginEvent, RouteDoneEvent, RouteProgressEvent } from '@iyulab/router';
 import { app } from '../App.js';
 import type { ScreenResizeEvent, ScreenSize } from '../internals/ScreenObserver.js';
