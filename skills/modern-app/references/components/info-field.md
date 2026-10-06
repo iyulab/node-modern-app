@@ -24,7 +24,7 @@ and those are different states of the business. So the component owns the rule.
 
 | Name | Description |
 |------|-------------|
-| *(default)* | Value content; takes precedence over `value` |
+| *(default)* | Value content; takes precedence over `value`. An unnamed progress bar or meter here (`u-progress-bar`, `u-progress-ring`, `<progress>`, `<meter>`) is named by `label`; one that has its own `aria-label`/`aria-labelledby` keeps it |
 
 ## Properties
 

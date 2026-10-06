@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.42.0] - 2026-10-07
+
+### Added
+
+- **`u-info-field` names the widget it labels** — an unnamed progress bar or meter in its slot (`u-progress-bar`,
+  `u-progress-ring`, native `<progress>`/`<meter>`) takes `label` as its accessible name and follows it when it
+  changes. The label sat next to the widget on screen with nothing tying them together, so a "Completion" field
+  held an unnamed progressbar (axe `aria-progressbar-name`, WCAG 1.3.1). A widget with its own name — including the
+  spinner's default — keeps it; text values are unchanged (they are read right after the label).
+
 ## [0.41.1] - 2026-10-07
 
 ### Documentation

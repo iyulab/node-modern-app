@@ -1,4 +1,4 @@
-import { html } from 'lit';
+import { html, type PropertyValues } from 'lit';
 import { property, customElement } from 'lit/decorators.js';
 import { formatNumber, formatCurrency, formatDate } from '@iyulab/components/dist/utilities/format.js';
 
@@ -115,6 +115,45 @@ export class InfoField extends StyledElement<ElementParts> {
    */
   @property({ type: String }) tone?: InfoFieldTone;
 
+  /** 라벨을 이름으로 준 슬롯 위젯과 그때의 라벨 — 소비자가 바꾼 이름은 우리 것이 아니다. */
+  private readonly namedWidgets = new WeakMap<Element, string>();
+
+  /**
+   * 슬롯에 든 **이름 없는** 진행 막대·계량기(`progressbar`·`meter`, 네이티브 `<progress>`·`<meter>`)에 라벨을 이름으로 준다.
+   *
+   * 글자 값은 읽는 순서로 라벨 바로 뒤에 들리지만, 이 역할들은 자기 이름이 없으면 «이름 없는 위젯» 이다(axe
+   * `aria-progressbar-name` · WCAG 1.3.1 — 화면에서 짝지은 관계는 프로그램으로도 이어져야 한다). 이미 이름을 가진
+   * 위젯(`aria-label`·`aria-labelledby` — 스피너의 기본 이름 포함)은 건드리지 않는다.
+   */
+  private async nameSlottedWidgets(): Promise<void> {
+    const slot = this.shadowRoot?.querySelector('slot');
+    if (!slot) return;
+    for (const el of slot.assignedElements({ flatten: true })) {
+      // 컴포넌트는 첫 업데이트에서 자기 역할을 단다 — 슬롯 배정이 그보다 먼저 올 수 있다.
+      await (el as { updateComplete?: Promise<unknown> }).updateComplete;
+      const role = el.getAttribute('role') ?? (el.localName === 'progress' ? 'progressbar' : el.localName === 'meter' ? 'meter' : null);
+      if (role !== 'progressbar' && role !== 'meter') continue;
+      const ours = this.namedWidgets.get(el);
+      const current = el.getAttribute('aria-label');
+      if (el.hasAttribute('aria-labelledby') || (current !== null && current !== ours)) {
+        this.namedWidgets.delete(el);
+        continue;
+      }
+      if (this.label) {
+        el.setAttribute('aria-label', this.label);
+        this.namedWidgets.set(el, this.label);
+      } else if (ours !== undefined) {
+        el.removeAttribute('aria-label');
+        this.namedWidgets.delete(el);
+      }
+    }
+  }
+
+  protected updated(changed: PropertyValues): void {
+    super.updated(changed);
+    if (changed.has('label')) void this.nameSlottedWidgets();
+  }
+
   private get hasSlotted(): boolean {
     return this.childNodes.length > 0 &&
       [...this.childNodes].some(n => n.nodeType !== Node.TEXT_NODE || (n.textContent ?? '').trim() !== '');
@@ -145,7 +184,7 @@ export class InfoField extends StyledElement<ElementParts> {
     return html`
       <div class="label" part="label">${this.label}</div>
       <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} tone-${effectiveTone}" part="value">${
-        this.hasSlotted ? html`<slot></slot>` : blank ? this.blank : this.formatValue()}${unit}</div>
+        this.hasSlotted ? html`<slot @slotchange=${() => void this.nameSlottedWidgets()}></slot>` : blank ? this.blank : this.formatValue()}${unit}</div>
       ${showTrend ? html`
         <div class="trend tone-${effectiveTone}" part="trend">
           ${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
