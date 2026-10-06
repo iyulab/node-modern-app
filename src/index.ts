@@ -5,7 +5,20 @@ export type * from './types/AppOptions';
 export type * from './types/AuthConfig';
 export type { SidebarPermissionGuard } from './layouts/SidebarPermission';
 // 셸 chrome 아이콘 오버라이드 — 소비자가 타입으로 쓸 수 있도록 이름을 공개한다.
-export type { SidebarIconsConfig } from './layouts/SidebarLayout.types';
+export type {
+  SidebarIconsConfig,
+  SidebarLayoutConfig,
+  SidebarItem,
+  SidebarLogoConfig,
+  SidebarLinkConfig,
+  SidebarSectionConfig,
+  SidebarGroupConfig,
+  SidebarButtonConfig,
+  SidebarMenuConfig,
+  SidebarMenuItemConfig,
+  SidebarHtmlConfig,
+  SidebarState,
+} from './layouts/SidebarLayout.types';
 export type { SidebarLayoutEventMap } from './layouts/SidebarLayout.js';
 
 // 권한 기반 메뉴 필터 헬퍼(SidebarLayoutConfig.hasPermission 이 내부적으로 사용) — 재사용을 위해 노출

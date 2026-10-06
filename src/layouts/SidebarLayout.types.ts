@@ -1,4 +1,5 @@
 import type { TemplateResult } from "lit";
+import type { DirectiveResult } from "lit/directive.js";
 import type { RouteContext } from "@iyulab/router";
 import type { StyleMap } from "../internals/StyledElement";
 import type { SidebarLinkConfig } from "../components/SidebarLink";
@@ -67,12 +68,40 @@ export type SidebarLogoRenderer = (state: SidebarState) => TemplateResult<1> | H
 /** 최상단 앱 로고 설정: 아이콘명(문자열, 기존 동작) | 이미지 | 커스텀 렌더 함수 */
 export type SidebarLogoConfig = string | SidebarLogoImage | SidebarLogoRenderer;
 
-/** union: section | group | link | button */
+/** One entry of a `type: 'menu'` popup. */
+export interface SidebarMenuItemConfig extends SidebarPermissionGuard {
+  label: string | DirectiveResult;
+  icon?: string;
+  /** Icon library for `icon` (see `SidebarButtonConfig.lib`). */
+  lib?: string;
+  disabled?: boolean;
+  /** Runs when the entry is chosen (click, Enter or Space). The menu closes and focus returns to its trigger. */
+  onClick?: (event?: Event) => void;
+}
+
+/**
+ * A sidebar button that opens a popup menu — the flyout counterpart of `type: 'group'` (which expands in
+ * place). The shell draws the trigger and the menu together and owns what only it knows: the menu opens
+ * sideways beside the sidebar and downwards when the sidebar is the full-width mobile panel. It sets
+ * `aria-haspopup`/`aria-expanded` on the trigger, moves focus into the menu when it opens, and returns
+ * focus to the trigger on Escape or after an entry is chosen.
+ */
+export interface SidebarMenuConfig extends SidebarPermissionGuard {
+  type: 'menu';
+  /** The trigger's label — also its accessible name when the sidebar is slim. */
+  label: string | DirectiveResult;
+  icon?: string;
+  lib?: string;
+  items: SidebarMenuItemConfig[];
+}
+
+/** union: section | group | link | button | menu | html */
 export type SidebarItem = (
   SidebarLinkConfig | 
   SidebarSectionConfig |
   SidebarGroupConfig |
   SidebarButtonConfig |
+  SidebarMenuConfig |
   SidebarHtmlConfig
 );
 

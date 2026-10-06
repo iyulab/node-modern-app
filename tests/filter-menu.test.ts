@@ -82,4 +82,17 @@ describe('filterSidebarItems', () => {
     filterSidebarItems(items, has);
     expect((items[0] as { items: unknown[] }).items).toHaveLength(2); // 원본 보존
   });
+
+  it("filters a menu's entries and drops the trigger when none are left", () => {
+    const items: SidebarItem[] = [
+      { type: 'menu', label: 'More', items: [
+        { label: 'Export', requirePermission: 'reports.view' },
+        { label: 'Purge', requirePermission: 'admin.x' },
+      ] },
+      { type: 'menu', label: 'Admin', items: [{ label: 'Purge', requirePermission: 'admin.x' }] },
+    ];
+    const out = filterSidebarItems(items, has);
+    expect(out).toHaveLength(1);
+    expect((out[0] as { items: { label: string }[] }).items.map((e) => e.label)).toEqual(['Export']);
+  });
 });

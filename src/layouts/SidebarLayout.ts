@@ -2,7 +2,6 @@
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { unsafeHTML } from 'lit/directives/unsafe-html.js';
 import { repeat } from 'lit/directives/repeat.js';
-import { ifDefined } from 'lit/directives/if-defined.js';
 
 import '../components/SidebarSection';
 import '../components/SidebarGroup';
@@ -10,6 +9,9 @@ import '../components/SidebarLink';
 import '../components/SidebarButton';
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import '@iyulab/components/dist/components/button/UButton.js';
+import '@iyulab/components/dist/components/popover/UPopover.js';
+import '@iyulab/components/dist/components/menu/UMenu.js';
+import '@iyulab/components/dist/components/menu-item/UMenuItem.js';
 import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js';
 import { isFocusCandidate, querySelectorDeep } from '@iyulab/components/dist/utilities/elements.js';
 import { OverlayManager } from '@iyulab/components/dist/utilities/OverlayManager.js';
@@ -21,7 +23,8 @@ import { getLocaleStrings } from '../internals/locale.js';
 import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
-import type { SidebarItem, SidebarLayoutConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
+import type { SidebarItem, SidebarLayoutConfig, SidebarMenuConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
+import type { SidebarButton } from '../components/SidebarButton';
 import { filterSidebarItems } from './filterSidebarItems.js';
 import { styles } from './SidebarLayout.styles.js';
 
@@ -128,6 +131,11 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** overlay 슬롯 배정 상태 — CSS `:has()`로는 알 수 없다(`internals/slotted.ts` 참조). */
   @state() private hasOverlay = false;
+  /** 열린 `type: 'menu'` 팝업의 트리거 id — 트리거의 `aria-expanded` 가 읽는다. */
+  @state() private openMenu: string | null = null;
+  /** `type: 'menu'` 항목마다 고정된 트리거 id — 팝오버의 `for` 가 같은 섀도 루트 안에서 찾는다. */
+  private readonly menuIds = new WeakMap<SidebarMenuConfig, string>();
+  private static menuSeq = 0;
   /** notice 슬롯 배정 상태 — 비었으면 스택 자체가 자리를 차지하지 않는다. */
   @state() private hasNotice = false;
   /**
@@ -320,6 +328,67 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     `;
   }
 
+  /**
+   * `type: 'menu'` — 트리거와 팝업을 **같은 섀도 루트** 에 함께 그린다(팝오버의 `for` 는 섀도 경계를 넘지 못한다 —
+   * 종전 `SidebarButtonConfig.id` 가 약속하고 지키지 못한 자리). 배치는 셸 상태가 정한다: 모바일 패널은 화면 폭을
+   * 거의 다 차지해 옆에 자리가 없으므로 아래로, 그 밖에는 사이드바 옆으로.
+   */
+  private renderMenu(item: SidebarMenuConfig) {
+    let id = this.menuIds.get(item);
+    if (!id) {
+      id = `u-sidebar-menu-${++SidebarLayout.menuSeq}`;
+      this.menuIds.set(item, id);
+    }
+    const menuId = id;
+    const placement = this.state === 'mobile' || this.state === 'mobile-open' ? 'bottom-start' : 'right-start';
+    return html`
+      <u-sidebar-button
+        id=${menuId}
+        haspopup="menu"
+        .expanded=${this.openMenu === menuId}
+        ?compact=${this.state === 'slim'}
+        .icon="${item.icon}"
+        .lib="${item.lib}"
+        .label="${item.label}"
+      ></u-sidebar-button>
+      <u-popover for="#${menuId}" placement=${placement} autofocus
+        @show=${() => { this.openMenu = menuId; }}
+        @hide=${(e: Event) => this.handleMenuHide(e, menuId)}
+        @pick=${(e: CustomEvent<{ value: string }>) => this.handleMenuPick(e, item)}>
+        <u-menu>
+          ${repeat(item.items, (_, idx) => idx, (entry, idx) => html`
+            <u-menu-item value=${String(idx)} ?disabled=${entry.disabled === true}>
+              ${entry.icon ? html`<u-icon slot="prefix" .lib=${entry.lib} .name=${entry.icon}></u-icon>` : nothing}
+              ${entry.label}
+            </u-menu-item>
+          `)}
+        </u-menu>
+      </u-popover>
+    `;
+  }
+
+  /** 항목을 고르면 그 동작을 부르고 닫는다 — 포커스는 닫힘 처리(`handleMenuHide`)가 트리거로 되돌린다. */
+  private handleMenuPick(e: CustomEvent<{ value: string }>, item: SidebarMenuConfig) {
+    const entry = item.items[Number(e.detail.value)];
+    if (!entry || entry.disabled) return;
+    const popover = e.currentTarget as HTMLElement & { hide(): Promise<void> };
+    void popover.hide();
+    entry.onClick?.(e);
+  }
+
+  /**
+   * 닫힐 때 포커스가 팝업 안에 있었다면 트리거로 돌린다(APG 메뉴 버튼 — Escape · 항목 선택). 바깥을 눌러 닫힌
+   * 경우에는 포커스가 이미 그 바깥 자리로 갔으므로 건드리지 않는다.
+   */
+  private handleMenuHide(e: Event, menuId: string) {
+    if (this.openMenu === menuId) this.openMenu = null;
+    const popover = e.currentTarget as HTMLElement;
+    const active = deepActiveElement();
+    if (active && composedContains(popover, active)) {
+      this.shadowRoot?.querySelector<SidebarButton>(`#${menuId}`)?.focus();
+    }
+  }
+
   /** 사이드바 아이템 렌더링 */
   private renderItem(item: SidebarItem): any {
     if (!item) return nothing;
@@ -332,7 +401,6 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     } else if(item.type === 'button') {
       return html`
         <u-sidebar-button
-          id=${ifDefined(item.id)}
           ?compact=${this.state === 'slim'}
           .icon="${item.icon}"
           .lib="${item.lib}"
@@ -341,6 +409,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           @click="${item.onClick}"
         ></u-sidebar-button>
       `;
+    } else if(item.type === 'menu') {
+      return this.renderMenu(item);
     } else if(item.type === 'link') {
       const selected = this.isMatchedLink(item.pattern || item.href);
       return html`

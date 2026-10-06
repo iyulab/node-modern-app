@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { userEvent } from 'vitest/browser';
 import { html } from 'lit';
 import '@iyulab/components/styles/tokens.css';
 import '@iyulab/components/dist/components/popover/UPopover.js';
@@ -44,31 +45,100 @@ async function settle() {
   await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
 }
 
-describe('원인 A — 라이트 DOM의 외부 u-popover 는 섀도 루트 안의 id 앵커를 찾지 못한다', () => {
-  it('🔴 CHANGELOG 가 약속한 "공개 API 만으로 앵커링"이 성립하지 않는다', async () => {
-    const layout = await mountLayout({
+describe("type: 'menu' — 셸이 그리는 팝업 메뉴 항목(종전 `SidebarButtonConfig.id` 의 외부 앵커링을 대신한다)", () => {
+  function menuConfig(onA: () => void, onB: () => void): SidebarLayoutConfig {
+    return {
       type: 'sidebar',
-      main: [{ type: 'button', id: 'ext-trigger', label: 'Settings' }],
-    });
+      main: [{ type: 'menu', icon: 'three-dots', label: 'More', items: [
+        { label: 'Action A', onClick: onA },
+        { label: 'Disabled', disabled: true, onClick: () => { throw new Error('disabled entry ran'); } },
+        { label: 'Action B', onClick: onB },
+      ] }],
+    };
+  }
+  const parts = (layout: SidebarLayout) => {
+    const trigger = layout.shadowRoot!.querySelector('u-sidebar-button')!;
+    return {
+      trigger,
+      button: trigger.shadowRoot!.querySelector('button')!,
+      popover: layout.shadowRoot!.querySelector('u-popover') as UPopover,
+      items: [...layout.shadowRoot!.querySelectorAll('u-menu-item')] as HTMLElement[],
+    };
+  };
+  const focused = () => {
+    let a = document.activeElement as Element | null;
+    while (a?.shadowRoot?.activeElement) a = a.shadowRoot.activeElement;
+    return a;
+  };
 
-    // 문서화된 레시피 그대로: 앱의 라이트 DOM에 popover 를 형제로 둔다(섀도 루트 밖).
-    const popover = document.createElement('u-popover') as UPopover;
-    popover.setAttribute('for', '#ext-trigger');
-    host.appendChild(popover);
-    await popover.updateComplete;
-
-    // 버튼 자체는 정상 렌더된다 — 섀도 루트 안에서는 찾아진다.
-    expect(layout.shadowRoot!.getElementById('ext-trigger'), '버튼은 섀도 루트 안에 실재한다').not.toBeNull();
-    // document 스코프에서는 찾을 수 없다 — querySelector 계열은 섀도 경계를 관통하지 않는다.
-    expect(document.getElementById('ext-trigger'), 'document.getElementById 는 섀도 루트를 관통하지 않는다').toBeNull();
-    // popover 의 실제 앵커 탐색(querySelectorAllWithin)도 같은 이유로 빈 배열이다.
-    expect((popover as unknown as { anchors?: HTMLElement[] }).anchors ?? [], 'popover 가 실제로 바인딩한 앵커 수').toHaveLength(0);
-
-    // ⇒ 클릭해도 아무 일도 일어나지 않는다(리스너가 애초에 안 걸렸으므로).
-    const button = layout.shadowRoot!.getElementById('ext-trigger') as HTMLElement;
+  it('트리거는 aria-haspopup="menu" · aria-expanded 를 갖고, 클릭으로 열리면 포커스가 메뉴 안으로 간다', async () => {
+    const layout = await mountLayout(menuConfig(() => {}, () => {}));
+    const { button, popover, items } = parts(layout);
+    expect(button.getAttribute('aria-haspopup')).toBe('menu');
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+    expect(items).toHaveLength(3);
     button.click();
+    await settle(); await settle();
+    expect(popover.open).toBe(true);
+    await layout.updateComplete;
+    expect(button.getAttribute('aria-expanded')).toBe('true');
+    expect(items[0].contains(focused()) || focused() === items[0], '열리면 첫 항목에 포커스').toBe(true);
+  });
+
+  it('키보드: Enter 로 열고 항목에서 Enter → 그 동작을 부르고, 닫히며 포커스가 트리거로 돌아온다', async () => {
+    const ran: string[] = [];
+    const layout = await mountLayout(menuConfig(() => ran.push('A'), () => ran.push('B')));
+    const { trigger, button, popover } = parts(layout);
+    (trigger as unknown as { focus(): void }).focus();
+    expect(focused()).toBe(button);
+    await userEvent.keyboard('{Enter}');
+    await settle(); await settle();
+    expect(popover.open).toBe(true);
+    await userEvent.keyboard('{Enter}');
+    await settle(); await settle();
+    expect(ran).toEqual(['A']);
+    expect(popover.open).toBe(false);
+    expect(focused(), '닫힌 뒤 포커스는 트리거의 버튼').toBe(button);
+    await layout.updateComplete;
+    expect(button.getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('Escape 로 닫으면 포커스가 트리거로 돌아오고 아무 동작도 부르지 않는다', async () => {
+    const ran: string[] = [];
+    const layout = await mountLayout(menuConfig(() => ran.push('A'), () => ran.push('B')));
+    const { button, popover } = parts(layout);
+    button.click();
+    await settle(); await settle();
+    expect(popover.open).toBe(true);
+    await userEvent.keyboard('{Escape}');
+    await settle(); await settle();
+    expect(popover.open).toBe(false);
+    expect(focused()).toBe(button);
+    expect(ran).toEqual([]);
+  });
+
+  it('비활성 항목을 눌러도 동작하지 않는다', async () => {
+    const layout = await mountLayout(menuConfig(() => {}, () => {}));
+    const { button, popover, items } = parts(layout);
+    button.click();
+    await settle(); await settle();
+    items[1].click();
     await settle();
-    expect(popover.open, '앵커를 못 찾아 클릭 리스너가 안 걸려 있다 — popover 가 열리지 않는다').toBe(false);
+    expect(popover.open, '비활성 항목은 메뉴를 닫지도 않는다').toBe(true);
+  });
+
+  it('모바일 패널(mobile-open)에서는 아래로 열려 화면 안에 보인다', async () => {
+    const layout = await mountLayout(menuConfig(() => {}, () => {}));
+    layout.state = 'mobile-open';
+    await layout.updateComplete;
+    const { button, popover, items } = parts(layout);
+    expect(popover.getAttribute('placement')).toBe('bottom-start');
+    button.click();
+    await settle(); await settle();
+    const r = items[2].getBoundingClientRect();
+    expect(r.right).toBeLessThanOrEqual(window.innerWidth);
+    const hit = layout.shadowRoot!.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+    expect(hit?.closest('u-menu-item'), '그 자리를 누르면 그 항목이다').toBe(items[2]);
   });
 });
 

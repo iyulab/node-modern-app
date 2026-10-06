@@ -15,6 +15,7 @@ function passesGuard(guard: SidebarPermissionGuard, hasPermission: (code: string
  *
  * - 각 항목의 `requirePermission`/`requireAnyPermission` 를 `hasPermission` 으로 검사해 탈락 항목 제거.
  * - `section`/`group` 은 자식(`items`)을 재귀 필터하고, **자식이 모두 걸러지면 컨테이너째 제거**한다.
+ * - `menu` 는 팝업 항목(`items`)을 같은 가드로 거르고, 남는 항목이 없으면 트리거째 제거한다.
  * - `hasPermission` 이 없으면(undefined) 원본을 그대로 반환한다(필터링 없음).
  *
  * 원본 배열/항목을 변형하지 않고 새 배열/얕은 복제본을 반환한다(순수).
@@ -36,6 +37,10 @@ export function filterSidebarItems(
       // 자식이 모두 걸러진 컨테이너는 숨긴다.
       if (children.length === 0) continue;
       result.push({ ...item, items: children } as SidebarItem);
+    } else if (item.type === 'menu') {
+      const entries = item.items.filter((entry) => passesGuard(entry, check));
+      if (entries.length === 0) continue;
+      result.push({ ...item, items: entries });
     } else {
       result.push(item);
     }

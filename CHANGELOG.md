@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.36.0] - 2026-10-06
+
+### Added
+
+- **`type: 'menu'` sidebar items — a button that opens a popup menu.** `{ type: 'menu', label, icon,
+  items: [{ label, icon, onClick, disabled }] }`. The shell draws the trigger and the menu together and
+  owns what only it knows: the menu opens beside the sidebar and downwards on the full-width mobile
+  panel; the trigger carries `aria-haspopup="menu"` and `aria-expanded`; opening moves focus into the
+  menu, and Escape or choosing an entry closes it and returns focus to the trigger. Entries take
+  `requirePermission`/`requireAnyPermission`, and a menu left with no entries is dropped.
+- The sidebar config types (`SidebarItem`, `SidebarLinkConfig`, `SidebarMenuConfig`, …, `SidebarState`)
+  are exported from the main entry too — they were only on `/react`, so a TypeScript app without React
+  could not name them.
+
+### Removed (breaking)
+
+- **`SidebarButtonConfig.id`.** It was meant for anchoring a `u-popover` you place outside the layout,
+  but the button renders inside the layout's shadow root, where `for="#id"` never reaches — it never
+  worked. Use `type: 'menu'` for a menu, or `type: 'html'` with the trigger and the popover in one
+  template for any other flyout.
+
 ## [0.35.1] - 2026-10-06
 
 ### Fixed

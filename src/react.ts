@@ -56,6 +56,8 @@ export type {
   SidebarSectionConfig,
   SidebarGroupConfig,
   SidebarButtonConfig,
+  SidebarMenuConfig,
+  SidebarMenuItemConfig,
   SidebarHtmlConfig,
 } from './layouts/SidebarLayout.types.js';
 export type { WizardStep, WizardStepState, WizardStepChangeDetail } from './components/Wizard.js';

@@ -238,6 +238,26 @@ Does not navigate; fires a callback instead.
 
 ---
 
+### `menu` — button that opens a popup menu
+
+The flyout counterpart of `group`. The shell places it beside the sidebar (downwards on the
+full-width mobile panel), sets `aria-haspopup`/`aria-expanded` on the trigger, moves focus into the
+menu when it opens and back to the trigger on Escape or after an entry is chosen.
+
+```typescript
+{
+  type: 'menu',
+  icon: 'three-dots',
+  label: 'More',
+  items: [
+    { icon: 'download', label: 'Export', onClick: () => exportAll() },
+    { label: 'Purge cache', requirePermission: 'admin.cache', onClick: () => purge() },
+  ],
+}
+```
+
+---
+
 ### `html` — custom Lit template
 
 Renders arbitrary content inside the sidebar. Receives the current `SidebarState` so you can adapt the template when the sidebar is collapsed.

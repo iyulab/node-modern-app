@@ -176,7 +176,6 @@ Action button — triggers a callback instead of navigating.
 ```typescript
 interface SidebarButtonConfig {
   type: 'button';
-  id?: string;
   icon?: string;
   lib?: string;
   label: string | DirectiveResult;
@@ -191,11 +190,54 @@ Example:
 { type: 'button', icon: 'logout', label: 'Sign Out', onClick: () => auth.signOut() }
 ```
 
-`id` is passed straight through to the rendered `<u-sidebar-button>` host. **It does not enable
-anchoring a `u-popover` you place outside the layout** — the button lives inside
-`<u-sidebar-layout>`'s own shadow root, and `querySelector`/`for="#id"` never crosses a shadow
-boundary. If you need a popover anchored to a sidebar item, use `type: 'html'` and assemble both
-inside the same template — see [popup-style submenus](#popup-style-submenus-u-popover) below.
+For a button that opens a menu, use `type: 'menu'` below — not a button plus your own popover.
+
+---
+
+### `SidebarMenuConfig` — `type: 'menu'`
+
+A sidebar button that opens a popup menu — the flyout counterpart of `type: 'group'` (which expands
+in place).
+
+```typescript
+interface SidebarMenuConfig {
+  type: 'menu';
+  label: string | DirectiveResult;   // the trigger's label (its accessible name when slim)
+  icon?: string;
+  lib?: string;
+  items: SidebarMenuItemConfig[];
+}
+
+interface SidebarMenuItemConfig {
+  label: string | DirectiveResult;
+  icon?: string;
+  lib?: string;
+  disabled?: boolean;
+  onClick?: (event?: Event) => void;   // runs when chosen; the menu closes
+}
+```
+
+Example:
+
+```typescript
+{
+  type: 'menu', icon: 'three-dots', label: 'More',
+  items: [
+    { icon: 'download', label: 'Export', onClick: () => exportAll() },
+    { icon: 'gear', label: 'Settings', onClick: () => app.navigate('/settings') },
+  ],
+}
+```
+
+The shell owns what only it knows:
+
+- **Placement** — beside the sidebar, and downwards when the sidebar is the full-width mobile panel
+  (`mobile`/`mobile-open`), where there is no room beside it.
+- **Keyboard and focus** — the trigger carries `aria-haspopup="menu"` and `aria-expanded`; opening
+  moves focus to the first entry; Escape or choosing an entry closes the menu and returns focus to
+  the trigger.
+- **Permissions** — each entry takes `requirePermission`/`requireAnyPermission`; with
+  `hasPermission` set, a menu left with no entries is dropped.
 
 ---
 
@@ -229,41 +271,24 @@ Example:
 
 ---
 
-### Popup-style submenus (`u-popover`)
+### A custom flyout (`type: 'html'`)
 
-For a submenu that flies out from a sidebar item (rather than expanding in place like
-`SidebarGroupConfig`), assemble a `u-popover` and its trigger together inside a single
-`type: 'html'` item — both then live in the sidebar layout's own shadow root, which is required
-for `for="#id"` anchoring to resolve (see the `id` note above).
+`type: 'menu'` covers a list of actions. For anything else that flies out of the sidebar (a form, a
+card), assemble the trigger and a `u-popover` inside one `type: 'html'` item — both must live in the
+sidebar's shadow root, because `for="#id"` never crosses a shadow boundary.
 
 ```typescript
 {
   type: 'html',
-  render: (state) => html`
-    <u-sidebar-button id="more-trigger" icon="three-dots" label="More"></u-sidebar-button>
-    <u-popover for="#more-trigger" placement=${state.startsWith('mobile') ? 'bottom-start' : 'right-start'}>
-      <u-menu>
-        <u-menu-item @click=${doA}>Action A</u-menu-item>
-        <u-menu-item @click=${doB}>Action B</u-menu-item>
-      </u-menu>
-    </u-popover>
+  render: () => html`
+    <u-sidebar-button id="quick-note" icon="pencil" label="Note"></u-sidebar-button>
+    <u-popover for="#quick-note" placement="right-start">…</u-popover>
   `,
 }
 ```
 
-**A fixed `placement` is safe as of `@iyulab/components@1.37.1`.** On `mobile`/`mobile-open`
-the sidebar widens to occupy nearly the full screen, so a sideways placement (`right-start`,
-the natural desktop flyout) has room on neither side. `flip()` now falls back **across the**
-**axis** in exactly that case, landing the popover vertically instead of off-screen.
-
-⚠ Against an older `components` it did render off-screen and invisible — `flip()` only ever
-considered the opposite side on the same axis, found no room there either, and gave up. If you
-pin below `1.37.1`, keep choosing `placement` from `state` as the snippet above does.
-
-Choosing from `state` is still reasonable when you want to *decide* the direction rather than
-let `flip()` pick it. Either way this is not a `strategy="absolute"` vs `"fixed"` distinction —
-switching strategy changes nothing. Both behaviours are pinned in
-`tests/browser/sidebar-popover-submenu.browser.test.ts`.
+A fixed sideways `placement` stays on screen on the mobile panel as of `@iyulab/components@1.37.1`
+(`flip()` falls back across the axis); `tests/browser/sidebar-popover-submenu.browser.test.ts` pins it.
 
 ---
 
