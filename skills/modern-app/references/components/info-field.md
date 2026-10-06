@@ -40,7 +40,7 @@ and those are different states of the business. So the component owns the rule.
 | `size` | `'default'\|'lg'` | `'default'` | ✓ | `'lg'` renders the value at the `title` type-scale step — for dashboard KPI tiles composed inside `u-info-section` |
 | `trend` | `'up'\|'down'\|'flat'` | — | | Trend direction; renders a trend indicator when set, alongside `trendLabel`; pair with trendLabel for an accessible name — trend alone conveys direction by color only |
 | `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility |
-| `tone` | `'positive'\|'negative'\|'neutral'` | — | | Explicit tone override; resolves from `trend` when unset (`up→positive`, `down→negative`, `flat`/unset→`neutral`) but always wins over inference. Colors the value text itself, independent of `trend` — a static figure (e.g. a balance due) can be toned `negative` with no trend arrow |
+| `tone` | `'positive'\|'negative'\|'warning'\|'neutral'` | — | | Explicit tone override; resolves from `trend` when unset (`up→positive`, `down→negative`, `flat`/unset→`neutral`) but always wins over inference. Colors the value text itself, independent of `trend` — a static figure (e.g. a balance due) can be toned `negative` with no trend arrow. `warning` means "needs attention, not wrong" (a deadline coming up, a rate under target but within limits) and is never inferred |
 
 ⚠ `numeric` no longer right-aligns (it did before 0.25.0). A field is a label/value pair that owns
 one grid cell, with no neighbouring figures to line up, so right-aligning only pushed the value
@@ -73,8 +73,8 @@ stay level:
   blank="No downtime recorded for the failures"></u-info-field>
 ```
 
-`tone` colors a blank value too, so a reason that needs attention takes `tone="negative"`. Set it
-conditionally (`tone=${mttr == null ? 'negative' : undefined}`) — otherwise the value is toned
+`tone` colors a blank value too, so a reason that needs attention takes `tone="warning"`. Set it
+conditionally (`tone=${mttr == null ? 'warning' : undefined}`) — otherwise the value is toned
 as well once it exists.
 
 ## CSS Parts
@@ -99,3 +99,4 @@ as well once it exists.
 | `--u-text-label-size` | Unit size |
 | `--u-success-color-strong` | `tone="positive"` color (value and trend) |
 | `--u-danger-color-strong` | `tone="negative"` color (value and trend) |
+| `--u-warning-color-strong` | `tone="warning"` color (value and trend) |

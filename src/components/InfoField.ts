@@ -9,7 +9,7 @@ type ElementParts = 'host' | 'label' | 'value' | 'unit' | 'trend';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
 export type InfoFieldSize = 'default' | 'lg';
 export type InfoFieldTrend = 'up' | 'down' | 'flat';
-export type InfoFieldTone = 'positive' | 'negative' | 'neutral';
+export type InfoFieldTone = 'positive' | 'negative' | 'warning' | 'neutral';
 
 function inferTone(trend?: InfoFieldTrend): InfoFieldTone {
   if (trend === 'up') return 'positive';
@@ -107,8 +107,11 @@ export class InfoField extends StyledElement<ElementParts> {
    * direction-to-sentiment mapping (e.g. a falling "open tickets" count is `positive`).
    *
    * Colors the value text itself, independent of `trend` — a static "balance due" figure can be
-   * toned `negative` without a trend arrow. `neutral` has no visual effect on the value text
-   * (it already renders at full strength; only `positive`/`negative` stand out from it).
+   * toned `negative` without a trend arrow. `warning` is for "needs attention, not wrong" (a
+   * deadline coming up, a rate under target but within limits) and is never inferred from `trend`.
+   * `neutral` has no visual effect on the value text (it already renders at full strength; only
+   * `positive`/`negative`/`warning` stand out from it). Colors come from the theme's
+   * `--u-success|danger|warning-color-strong`.
    */
   @property({ type: String }) tone?: InfoFieldTone;
 

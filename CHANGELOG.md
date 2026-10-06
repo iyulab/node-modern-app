@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.38.0] - 2026-10-06
+
+### Added
+
+- **`u-info-field` `tone="warning"`** — "needs attention, not wrong" (a deadline coming up, a rate under target
+  but within limits). Paints the value and the trend with `--u-warning-color-strong`, like `positive`/`negative`
+  use the success/danger tokens. It is never inferred from `trend`, so existing fields are unchanged.
+- **`auth.renderUnavailable({ root, error, retry })`** on the boot auth gate — drawn when `me()` throws, that is,
+  when the session could not be checked (server down, offline). The gate no longer has only "signed in" or
+  "show the login screen": `me()` should throw rather than return `null` when it got no answer, and `retry()`
+  checks again. Without `renderUnavailable`, `app.load()` rejects with the error as before.
+
+### Documentation
+
+- The auth gate examples follow the three-state session lookup of `@iyulab/enterprise` 0.25
+  (`fetchMe()` returns `{ status }`): the README example used to pass the lookup straight through, which with
+  0.25 would treat every answer as signed in.
+
 ## [0.37.2] - 2026-10-06
 
 ### Fixed

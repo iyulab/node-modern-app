@@ -73,6 +73,10 @@ export const styles = css`
     color: var(--u-danger-color-strong, #C62828);
   }
 
+  .value.tone-warning {
+    color: var(--u-warning-color-strong, #8A4A00);
+  }
+
   .trend {
     font-size: var(--u-text-caption-size, 12px);
     margin-top: var(--u-space-3xs, 2px);
@@ -84,6 +88,10 @@ export const styles = css`
 
   .trend.tone-negative {
     color: var(--u-danger-color-strong, #C62828);
+  }
+
+  .trend.tone-warning {
+    color: var(--u-warning-color-strong, #8A4A00);
   }
 
   .trend.tone-neutral {

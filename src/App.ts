@@ -54,7 +54,7 @@ class App {
   private _router?: Router;
   private _screen?: ScreenObserver;
   private _user?: unknown;
-  private _loginTeardown?: () => void;
+  private _gateTeardown?: () => void;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {}
@@ -116,15 +116,23 @@ class App {
 
     // 부팅 인증 게이트 — 셸(레이아웃·라우터)을 만들기 전에 세션을 판정한다.
     if (config.auth) {
-      const user = await config.auth.me();
+      const root = config.root || document.body;
+      const reload = () => { void this.load(config); };
+      let user: unknown;
+      try {
+        user = await config.auth.me();
+      } catch (error) {
+        // 세션을 «모름»(서버 다운·오프라인) — 미인증이 아니므로 로그인 UI 를 그리지 않는다. 그릴 자리가
+        // 없으면 종전대로 load 가 그 오류로 실패한다.
+        if (!config.auth.renderUnavailable) throw error;
+        const teardown = config.auth.renderUnavailable({ root, error, retry: reload });
+        if (teardown) this._gateTeardown = teardown;
+        return;
+      }
       if (user == null) {
         // 미인증: 로그인 UI 를 그리고 셸 구성은 중단. 성공 시 load 재실행으로 셸을 띄운다.
-        const root = config.root || document.body;
-        const teardown = config.auth.renderLogin({
-          root,
-          onSuccess: () => { void this.load(config); },
-        });
-        if (teardown) this._loginTeardown = teardown;
+        const teardown = config.auth.renderLogin({ root, onSuccess: reload });
+        if (teardown) this._gateTeardown = teardown;
         return;
       }
       this._user = user;
@@ -161,9 +169,9 @@ class App {
   /** 앱 언로드 */
   public unload(): void {
     // 로그인 UI 정리(미인증 상태에서 렌더된 경우)
-    if (this._loginTeardown) {
-      this._loginTeardown();
-      this._loginTeardown = undefined;
+    if (this._gateTeardown) {
+      this._gateTeardown();
+      this._gateTeardown = undefined;
     }
     this._user = undefined;
 

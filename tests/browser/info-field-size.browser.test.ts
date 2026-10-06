@@ -55,3 +55,18 @@ describe('u-info-field — size="lg" (computed style)', () => {
       .toBeCloseTo(valueEl(valued).getBoundingClientRect().height, 0);
   });
 });
+
+describe('u-info-field — tone colors (computed style)', () => {
+  it('tone="warning" paints the value and the trend with the theme warning color, distinct from negative', async () => {
+    document.documentElement.style.setProperty('--u-warning-color-strong', 'rgb(1, 2, 3)');
+    try {
+      const warn = await mount(node => { node.label = 'due'; node.value = 3; node.tone = 'warning'; node.trendLabel = 'in 2 days'; });
+      const neg = await mount(node => { node.label = 'over'; node.value = 3; node.tone = 'negative'; });
+      expect(getComputedStyle(valueEl(warn)).color).toBe('rgb(1, 2, 3)');
+      expect(getComputedStyle(warn.shadowRoot!.querySelector('[part="trend"]') as HTMLElement).color).toBe('rgb(1, 2, 3)');
+      expect(getComputedStyle(valueEl(neg)).color).not.toBe('rgb(1, 2, 3)');
+    } finally {
+      document.documentElement.style.removeProperty('--u-warning-color-strong');
+    }
+  });
+});

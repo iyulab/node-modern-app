@@ -74,7 +74,8 @@ interface AppConfig {
   /**
    * Boot-time auth gate. When set, resolves the session via `me()` before the app
    * shell is built — authenticated shows the shell, unauthenticated renders
-   * `renderLogin`'s UI instead. Omit for full backward compatibility (no gate).
+   * `renderLogin`'s UI instead, and an unknown session (`me()` throws) renders
+   * `renderUnavailable`. Omit for full backward compatibility (no gate).
    * See the README's "부팅 인증 게이트" section for a worked example.
    */
   auth?: AuthGateConfig;
@@ -91,7 +92,11 @@ The framework owns only the orchestration (check → branch → reload) — sess
 
 ```typescript
 interface AuthGateConfig {
-  /** Resolve the current session. Return a value for authenticated, `null`/`undefined` for not. */
+  /**
+   * Resolve the current session. Return a value for authenticated, `null`/`undefined` for not.
+   * **Throw when the session could not be checked** (server down, offline) — returning `null`
+   * there would send a signed-in user to the login screen.
+   */
   me: () => Promise<unknown | null | undefined> | unknown | null | undefined;
 
   /**
@@ -99,6 +104,14 @@ interface AuthGateConfig {
    * success. Return a cleanup function to have it called on app load/`unload`.
    */
   renderLogin: (context: AuthGateContext) => (() => void) | void;
+
+  /**
+   * Renders a "can't reach the server" view into `context.root` when `me()` throws. Call
+   * `context.retry()` to check again (a retry button, the `online` event). Return a cleanup
+   * function to have it called on app load/`unload`. Without it, `app.load()` rejects with
+   * `me()`'s error.
+   */
+  renderUnavailable?: (context: AuthGateUnavailableContext) => (() => void) | void;
 
   /** Called once authenticated, right before the app shell is built. */
   onAuthenticated?: (user: unknown) => void | Promise<void>;
@@ -109,6 +122,15 @@ interface AuthGateContext {
   root: Element;
   /** Call on successful login — the app (re)loads and the shell appears. */
   onSuccess: () => void;
+}
+
+interface AuthGateUnavailableContext {
+  /** Root element to render into (same as `AppConfig.root`, default `document.body`). */
+  root: Element;
+  /** What `me()` threw. */
+  error: unknown;
+  /** Check again — the app (re)loads and calls `me()` again. */
+  retry: () => void;
 }
 ```
 

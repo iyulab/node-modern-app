@@ -39,6 +39,13 @@ describe('InfoField — tone은 trend 없이도 값 텍스트에 적용된다', 
     expect(valueEl(el).className).toContain('tone-positive');
   });
 
+  it('tone="warning" 은 값 텍스트에 warning 톤을 주고, trend 에서 유추되지 않는다', async () => {
+    const el = await mount(node => { node.label = '기한 임박'; node.value = 3; node.tone = 'warning'; });
+    expect(valueEl(el).className).toContain('tone-warning');
+    const down = await mount(node => { node.label = 'x'; node.value = 1; node.trend = 'down'; });
+    expect(valueEl(down).className).not.toContain('tone-warning');
+  });
+
   it('tone·trend 둘 다 없으면 값 텍스트는 neutral 톤(시각 효과 없음)이다', async () => {
     const el = await mount(node => { node.label = '건수'; node.value = 10; });
     expect(valueEl(el).className).toContain('tone-neutral');

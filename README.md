@@ -182,8 +182,13 @@ const auth = createAuthClient<User, Cred>({ meUrl: '/api/auth/me', loginUrl: '/a
 await app.load({
   layout: { type: 'sidebar', /* ... */ },
   auth: {
-    me: () => auth.fetchMe(),                         // null → 미인증 → renderLogin
+    me: async () => {
+      const s = await auth.fetchMe();
+      if (s.status === 'unknown') throw s.error;      // 모름(서버 다운·오프라인) → renderUnavailable
+      return s.status === 'authenticated' ? s.user : null; // null → 미인증 → renderLogin
+    },
     renderLogin: ({ root, onSuccess }) => renderLoginPage(root, auth, onSuccess),
+    renderUnavailable: ({ root, retry }) => renderOfflinePage(root, retry),
     onAuthenticated: (user) => setPermissions((user as User).Permissions),
   },
   routes: [ /* ... */ ],
@@ -193,6 +198,7 @@ app.user; // 인증된 현재 사용자(미인증/미사용 시 undefined)
 ```
 
 - `me()` 가 값을 반환하면 셸 로드, `null`/`undefined` 면 `renderLogin({ root, onSuccess })`.
+- `me()` 가 **던지면** 세션을 «모름» 으로 보고 로그인 UI 를 그리지 않는다 — `renderUnavailable({ root, error, retry })` 를 그리고, 없으면 `app.load()` 가 그 오류로 실패한다. 서버가 잠깐 503 을 낸 것을 «미인증» 으로 돌려주면 로그인된 사용자가 로그인 화면으로 간다.
 - 로그인 성공 시 `onSuccess()` 를 호출하면 앱이 재로드되어 셸이 나타나고 로그인 UI 는 정리된다.
 - `auth` 미지정 시 완전히 하위호환(게이트 없이 기존대로 로드).
 
