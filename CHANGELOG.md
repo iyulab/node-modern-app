@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.37.1] - 2026-10-06
+
+### Fixed
+
+- **The `u-timeline` rail is visible.** It used the weak border step, about 1.25:1 against a card — the
+  line joining the entries all but disappeared. It now uses `--u-border-color-strong`.
+
 ## [0.37.0] - 2026-10-06
 
 ### Added

@@ -74,7 +74,8 @@ export const itemStyles = css`
     flex: 1 1 auto;
     min-height: var(--u-space-md, 12px);
     margin-top: var(--u-space-2xs, 4px);
-    border-left: 1px solid var(--u-border-color, #E0E0E0);
+    /* The rail is what reads as a timeline — the weak border step (about 1.25:1 on a card) vanished. */
+    border-left: 1px solid var(--u-border-color-strong, #BDBDBD);
   }
   /* The last entry has no next marker to reach. */
   :host(:last-child) .line {
