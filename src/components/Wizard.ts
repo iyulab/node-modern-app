@@ -220,6 +220,22 @@ export class Wizard extends StyledElement<ElementParts> {
   }
 }
 
+/** Events `<u-wizard>` dispatches — bubbling and composed. */
+export interface WizardEventMap {
+  /** Cancelable: `preventDefault()` keeps the wizard on `from` (validation, unsaved work). */
+  'step-change': CustomEvent<WizardStepChangeDetail>;
+}
+
+/** Typed listeners for {@link WizardEventMap} — element-scoped, the DOM's own pattern (`HTMLMediaElementEventMap`). */
+export interface Wizard {
+  addEventListener<K extends keyof WizardEventMap>(type: K, listener: (this: Wizard, ev: WizardEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+  addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: Wizard, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+  removeEventListener<K extends keyof WizardEventMap>(type: K, listener: (this: Wizard, ev: WizardEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+  removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: Wizard, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
 declare global {
   interface HTMLElementTagNameMap {
     'u-wizard': Wizard;

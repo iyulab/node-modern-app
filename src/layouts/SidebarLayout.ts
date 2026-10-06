@@ -720,6 +720,22 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 }
 
+/** Events `<u-sidebar-layout>` dispatches — bubbling and composed. */
+export interface SidebarLayoutEventMap {
+  /** The overlay's close button was pressed, or Escape with focus inside the panel. Emptying the `overlay` slot is yours. */
+  'overlay-close': CustomEvent<null>;
+}
+
+/** Typed listeners for {@link SidebarLayoutEventMap} — element-scoped, the DOM's own pattern (`HTMLMediaElementEventMap`). */
+export interface SidebarLayout {
+  addEventListener<K extends keyof SidebarLayoutEventMap>(type: K, listener: (this: SidebarLayout, ev: SidebarLayoutEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+  addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: SidebarLayout, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+  removeEventListener<K extends keyof SidebarLayoutEventMap>(type: K, listener: (this: SidebarLayout, ev: SidebarLayoutEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+  removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: SidebarLayout, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
 declare global {
   interface HTMLElementTagNameMap {
     'u-sidebar-layout': SidebarLayout;

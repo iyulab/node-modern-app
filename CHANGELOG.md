@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.35.1] - 2026-10-06
+
+### Fixed
+
+- **`u-wizard`'s `step-change`, `u-master-detail-layout`'s `detail-close` and `u-sidebar-layout`'s
+  `overlay-close` are typed for TypeScript listeners** (`WizardEventMap`, `MasterDetailLayoutEventMap`,
+  `SidebarLayoutEventMap`, exported). `wizard.addEventListener('step-change', (e) => e.detail.to)` no
+  longer needs a cast; the React `onStepChange`/`onOverlayClose` props use the same types.
+
 ## [0.35.0] - 2026-10-06
 
 ### Changed

@@ -1,8 +1,8 @@
 import React from 'react';
 import { createComponent, type EventName } from '@lit/react';
-import { SidebarLayout as SidebarLayoutElement } from './layouts/SidebarLayout.js';
+import { SidebarLayout as SidebarLayoutElement, type SidebarLayoutEventMap } from './layouts/SidebarLayout.js';
 import { Wizard as WizardElement } from './components/Wizard.js';
-import type { WizardStepChangeDetail } from './components/Wizard.js';
+import type { WizardEventMap } from './components/Wizard.js';
 import type { GroupBoxLevel } from './components/GroupBox.js';
 import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone } from './components/InfoField.js';
 
@@ -23,7 +23,7 @@ export const SidebarLayout = createComponent({
   tagName: 'u-sidebar-layout',
   elementClass: SidebarLayoutElement,
   events: {
-    onOverlayClose: 'overlay-close' as EventName<CustomEvent>,
+    onOverlayClose: 'overlay-close' as EventName<SidebarLayoutEventMap['overlay-close']>,
   },
 });
 
@@ -41,7 +41,7 @@ export const Wizard = createComponent({
   tagName: 'u-wizard',
   elementClass: WizardElement,
   events: {
-    onStepChange: 'step-change' as EventName<CustomEvent<WizardStepChangeDetail>>,
+    onStepChange: 'step-change' as EventName<WizardEventMap['step-change']>,
   },
 });
 

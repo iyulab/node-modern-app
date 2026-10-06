@@ -153,6 +153,22 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
   }
 }
 
+/** Events `<u-master-detail-layout>` dispatches — bubbling and composed. */
+export interface MasterDetailLayoutEventMap {
+  /** The detail pane's close button was pressed (narrow width, overlay mode). Clearing the `detail` slot is yours. */
+  'detail-close': CustomEvent<null>;
+}
+
+/** Typed listeners for {@link MasterDetailLayoutEventMap} — element-scoped, the DOM's own pattern (`HTMLMediaElementEventMap`). */
+export interface MasterDetailLayout {
+  addEventListener<K extends keyof MasterDetailLayoutEventMap>(type: K, listener: (this: MasterDetailLayout, ev: MasterDetailLayoutEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+  addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: MasterDetailLayout, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
+  addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+  removeEventListener<K extends keyof MasterDetailLayoutEventMap>(type: K, listener: (this: MasterDetailLayout, ev: MasterDetailLayoutEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+  removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: MasterDetailLayout, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | EventListenerOptions): void;
+  removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
 declare global {
   interface HTMLElementTagNameMap {
     'u-master-detail-layout': MasterDetailLayout;

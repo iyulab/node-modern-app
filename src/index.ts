@@ -6,6 +6,7 @@ export type * from './types/AuthConfig';
 export type { SidebarPermissionGuard } from './layouts/SidebarPermission';
 // 셸 chrome 아이콘 오버라이드 — 소비자가 타입으로 쓸 수 있도록 이름을 공개한다.
 export type { SidebarIconsConfig } from './layouts/SidebarLayout.types';
+export type { SidebarLayoutEventMap } from './layouts/SidebarLayout.js';
 
 // 권한 기반 메뉴 필터 헬퍼(SidebarLayoutConfig.hasPermission 이 내부적으로 사용) — 재사용을 위해 노출
 export { filterSidebarItems } from './layouts/filterSidebarItems.js';
@@ -21,8 +22,9 @@ export { InfoField, isBlank } from './components/InfoField.js';
 export { EmptyState } from './components/EmptyState.js';
 export { ActionBar } from './components/ActionBar.js';
 export { MasterDetailLayout } from './components/MasterDetailLayout.js';
+export type { MasterDetailLayoutEventMap } from './components/MasterDetailLayout.js';
 export { Wizard } from './components/Wizard.js';
-export type { WizardStep, WizardStepState, WizardStepChangeDetail } from './components/Wizard.js';
+export type { WizardStep, WizardStepState, WizardStepChangeDetail, WizardEventMap } from './components/Wizard.js';
 
 // 반응형 번역 디렉티브 — `app.load({ i18n })` 가 초기화한 i18next 에 붙는다.
 export { translate } from './translate.js';
