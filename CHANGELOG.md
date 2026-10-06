@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.41.1] - 2026-10-07
+
+### Documentation
+
+- The `level` row of the `u-group-box` reference had unescaped `|` in its type cell, which split the row into extra
+  columns and put a stale `3` in the default column — the level is derived when unset.
+
 ## [0.41.0] - 2026-10-07
 
 ### Changed
