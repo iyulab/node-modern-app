@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.34.2] - 2026-10-06
+
+### Fixed
+
+- **The content area's scroll keys yield to the control that owns them** (`SidebarLayout`). With focus
+  on a button in the content, Space scrolled the page by a screen and the button never fired; with
+  focus in a widget that moves with the arrows itself (a tree, a menu, a radio group, a grid), each
+  arrow moved inside the widget and also scrolled the content. A key a widget already handled is left
+  alone, and Space on a button or link presses it.
+
 ## [0.34.1] - 2026-10-05
 
 ### Fixed

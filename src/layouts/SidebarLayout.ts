@@ -61,6 +61,15 @@ function isEditableElement(el: HTMLElement): boolean {
   return false;
 }
 
+/** Space 가 «누르기» 인 요소 — 버튼·링크와 그 역할들. 그 위의 Space 는 스크롤이 아니다. */
+const ACTIVATABLE_ROLES = new Set(['button', 'link', 'checkbox', 'switch', 'radio', 'menuitem', 'menuitemcheckbox', 'menuitemradio', 'option', 'tab', 'treeitem']);
+
+function isActivatable(el: HTMLElement): boolean {
+  const tag = el.tagName;
+  if (tag === 'BUTTON' || tag === 'SUMMARY' || (tag === 'A' && el.hasAttribute('href'))) return true;
+  return ACTIVATABLE_ROLES.has(el.getAttribute('role') ?? '');
+}
+
 function isScrollableY(el: Element): boolean {
   const style = getComputedStyle(el);
   return (style.overflowY === 'auto' || style.overflowY === 'scroll')
@@ -670,8 +679,12 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     // 스크롤 단축키로 가로채면 입력 자체가 막히므로(예: 폼 필드에서 띄어쓰기 불가) 건너뛴다.
     // web component shadow DOM 내부의 native input까지 잡기 위해, retarget된 e.target 대신
     // composedPath()[0](조합 경로상 실제 발신 요소)을 검사한다.
+    // 안쪽 위젯이 이미 쓴 키(트리·메뉴·라디오·그리드의 화살표 등)는 그 위젯의 것이다 — 함께 굴리지 않는다.
+    if (e.defaultPrevented) return;
     const origin = e.composedPath()[0];
     if (origin instanceof HTMLElement && isEditableElement(origin)) return;
+    // 버튼·링크 위의 Space 는 누르기다.
+    if (e.key === ' ' && origin instanceof HTMLElement && isActivatable(origin)) return;
 
     const main = this.shadowRoot?.querySelector<HTMLElement>('.main');
     if (!main) return;
