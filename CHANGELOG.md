@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- `u-wizard` keeps its live announcement inside the element — the absolutely positioned announcement escaped an
+  unpositioned scroll container and could stretch the document.
+
 ## [0.44.2] - 2026-10-07
 
 ### Fixed
