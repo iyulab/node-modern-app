@@ -104,6 +104,8 @@ optional** — when unset it derives from a role token, so an app that only sets
 | `--app-sidebar-active-icon-color` | `--app-sidebar-active-fg` | Active menu icon — e.g. a brand color on a light active background |
 | `--app-sidebar-active-indicator-color` | `--app-sidebar-active-bg` | Bar on the start edge of the active menu; the default matches the background, so it is not visible until set |
 | `--app-sidebar-active-indicator-width` | `3px` | Width of that bar |
+| `--app-sidebar-pressed-bg` | `--u-bg-color-active` | Surface of a toggle button that is on (`pressed`) — kept soft so it does not read as the current page |
+| `--app-sidebar-pressed-icon-color` | `--u-primary-color` | Icon of a toggle button that is on — shows the state when the sidebar is slim |
 | `--app-sidebar-width` | `260px` | Sidebar width (`default` / `modal` states) |
 | `--app-sidebar-width-slim` | `64px` | Sidebar width (`slim` state) |
 | `--app-header-bg` | `--u-bg-color-raised` | Mobile header background |

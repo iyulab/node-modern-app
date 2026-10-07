@@ -21,6 +21,13 @@ export interface SidebarButtonConfig extends SidebarPermissionGuard {
   lib?: string;
   label?: string | DirectiveResult;
   styles?: StyleMap<ElementParts>;
+  /**
+   * 켬/끔 버튼(토글)의 지금 상태 — 지정하면 안쪽 버튼이 `aria-pressed` 를 싣고 켜졌을 때 눌린 모양(옅은 면 · 강조 아이콘)으로
+   * 그려진다(슬림 모드에서도 아이콘으로 보인다). 이름은 상태와 무관하게 하나로 둔다(«현장 모드» — «켜기/끄기» 가 아니라).
+   * 셸은 렌더마다 읽는다: 값이면 설정 객체의 그 값을, 함수면 그 결과를. 그 버튼의 `onClick` 뒤에는 셸이 다시 그리므로,
+   * 클릭이 상태를 바꾸는 흔한 경우는 따로 할 일이 없다. 미지정이면 일반 버튼이다.
+   */
+  pressed?: boolean | (() => boolean);
   onClick?: (event?: Event) => void;
 }
 
@@ -37,6 +44,8 @@ export class SidebarButton extends StyledElement<ElementParts> {
   @property({ type: String }) icon?: string;
   /** `icon`을 해석할 등록 라이브러리 이름 */
   @property({ type: String }) lib?: string;
+  /** 켬/끔 상태 — 지정되면 토글 버튼(`aria-pressed`). 미지정이면 일반 버튼. */
+  @property({ type: Boolean, reflect: true }) pressed?: boolean;
   /** 버튼 텍스트 라벨 */
   @property({ type: String }) label?: string | DirectiveResult;
   /** 이 버튼이 여는 팝업의 종류 — 안쪽 `<button>` 의 `aria-haspopup` 으로 간다(셸의 `type: 'menu'` 트리거). */
@@ -57,7 +66,8 @@ export class SidebarButton extends StyledElement<ElementParts> {
     return html`
       <button part="base" ?compact=${this.compact}
         aria-haspopup=${ifDefined(this.haspopup)}
-        aria-expanded=${ifDefined(this.haspopup ? String(this.expanded) : undefined)}>
+        aria-expanded=${ifDefined(this.haspopup ? String(this.expanded) : undefined)}
+        aria-pressed=${ifDefined(this.pressed === undefined ? undefined : String(this.pressed))}>
         <u-icon part="icon"
           .lib=${this.lib}
           .name=${this.icon}

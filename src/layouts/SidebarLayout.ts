@@ -26,7 +26,7 @@ import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import type { SidebarItem, SidebarLayoutConfig, SidebarMenuConfig, SidebarState, SidebarParts } from './SidebarLayout.types';
-import type { SidebarButton } from '../components/SidebarButton';
+import type { SidebarButton, SidebarButtonConfig } from '../components/SidebarButton';
 import { filterSidebarItems } from './filterSidebarItems.js';
 import { styles } from './SidebarLayout.styles.js';
 
@@ -434,7 +434,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .lib="${item.lib}"
           .label="${item.label}"
           .styles="${item.styles as any}"
-          @click="${item.onClick}"
+          .pressed=${typeof item.pressed === 'function' ? item.pressed() : item.pressed}
+          @click=${(event: Event) => this.handleButtonItemClick(item, event)}
         ></u-sidebar-button>
       `;
     } else if(item.type === 'menu') {
@@ -505,6 +506,16 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       ? new URLPattern(pattern, window.location.origin)
       : pattern;
     return pattern.test(this.currentPath, window.location.origin);
+  }
+
+  /**
+   * 버튼 항목 클릭 — 소비자의 `onClick` 을 부른 뒤 다시 그린다. 켬/끔 버튼(`pressed`)은 그 클릭이 상태를 바꾸는 것이
+   * 흔하고, 설정 객체의 값이나 함수의 결과는 셸이 렌더할 때만 읽힌다.
+   */
+  private handleButtonItemClick(item: SidebarButtonConfig, event: Event) {
+    const result = item.onClick?.(event) as unknown;
+    this.requestUpdate();
+    if (result instanceof Promise) void result.finally(() => this.requestUpdate());
   }
 
   /** 브랜드 로고 클릭 핸들러: `href` 지정 시 해당 경로로, 아니면 홈으로 이동 */

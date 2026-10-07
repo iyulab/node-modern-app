@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.43.0] - 2026-10-07
+
+### Added
+
+- **Sidebar toggle buttons** — `SidebarButtonConfig.pressed` (`boolean` or a function). The button carries
+  `aria-pressed` and, when on, a soft surface and an accented icon (`--app-sidebar-pressed-bg`,
+  `--app-sidebar-pressed-icon-color`), visible in the slim sidebar and distinct from the current page's link. A
+  setting such as a field or dark mode no longer has to rename itself "turn on / turn off" to show its state. The
+  shell reads `pressed` on every render and re-renders after the button's `onClick`.
+
 ## [0.42.2] - 2026-10-07
 
 ### Fixed

@@ -18,6 +18,14 @@ export const styles = css`
   :host(:active) {
     background-color: var(--u-bg-color-active, #EEEEEE);
   }
+  /* 켜진 토글 — «현재 페이지»(활성 링크의 진한 면)와 구별되는 옅은 면 + 강조 아이콘. 위치와 설정이 같은 모양이면 섞인다.
+     아이콘 색이 상태를 나르므로 라벨이 숨는 슬림 모드에서도 보인다. */
+  :host([pressed]) {
+    background-color: var(--app-sidebar-pressed-bg, var(--u-bg-color-active, #EEEEEE));
+  }
+  :host([pressed]) u-icon {
+    color: var(--app-sidebar-pressed-icon-color, var(--u-primary-color, #1976D2));
+  }
 
   button {
     all: unset;

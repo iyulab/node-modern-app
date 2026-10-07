@@ -236,6 +236,21 @@ Does not navigate; fires a callback instead.
 }
 ```
 
+A setting the person turns on and off (dark mode, a field or compact mode, notifications) is a toggle: give it
+`pressed`. The button then carries `aria-pressed`, and when on it shows a soft surface and an accented icon
+(`--app-sidebar-pressed-bg`, `--app-sidebar-pressed-icon-color`) — visible when the sidebar is slim, and distinct
+from the current page's link. Keep one name for both states. The shell reads `pressed` on every render — a value
+from the config object, or a function's result — and re-renders after the button's `onClick`, so a click that
+flips the state needs nothing more:
+
+```typescript
+const fieldMode = {
+  type: 'button', icon: 'hand', label: 'Field mode',
+  pressed: () => density.isField(),
+  onClick: () => density.toggleField(),
+};
+```
+
 ---
 
 ### `menu` — button that opens a popup menu
