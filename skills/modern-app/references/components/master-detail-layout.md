@@ -13,7 +13,7 @@ Swap the `detail` slot's content when the selection changes:
 
 ```html
 <u-master-detail-layout>
-  <u-rich-table @selection-change=${e => (detail = renderRecord(e.detail.selected))}>
+  <u-rich-table @selection-change=${e => (detail = renderRecord(e.detail.selectedRows[0]))}>
     …
   </u-rich-table>
   <div slot="detail">${detail}</div>

@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.44.1] - 2026-10-07
+
+### Fixed
+
+- The master›detail examples (`docs/lob-primitives.md` and the `u-master-detail-layout` skill reference) read the
+  selection from `e.detail.selected`, which `u-rich-table`'s `selection-change` does not carry, and typed the event as
+  a `SelectionChangeEvent` that no package exports. They read `e.detail.selectedRows[0]`, typed by `RichTableEventMap`.
+
 ## [0.44.0] - 2026-10-07
 
 ### Added

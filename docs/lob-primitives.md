@@ -147,7 +147,7 @@ null · undefined · 빈 문자열   →  —      (아직 없음)
 ```html
 <u-master-detail-layout master-size="24rem">
   <u-rich-table filterable
-    @selection-change=${(e: SelectionChangeEvent) => (selected = e.detail.selected[0])}>
+    @selection-change=${(e: RichTableEventMap['selection-change']) => (selected = e.detail.selectedRows[0])}>
     …
   </u-rich-table>
   ${selected ? html`
