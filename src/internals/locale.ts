@@ -37,6 +37,10 @@ export interface ModernAppLocaleStrings {
   noResultsTitle: string;
   noResultsDescription: string;
 
+  /** Empty state — the list could not be loaded (`variant="error"`). */
+  errorTitle: string;
+  errorDescription: string;
+
   /** Accessible label for an overlay-mode close button (master-detail layout, sidebar layout overlay). */
   detailClose: string;
 
@@ -71,6 +75,8 @@ const EN_TABLE: Record<ModernAppMessageKey, string> = {
   noDataDescription: '',
   noResultsTitle: 'No matching results',
   noResultsDescription: 'Try changing your search terms or filters.',
+  errorTitle: 'Couldn’t load this list',
+  errorDescription: 'Something went wrong while loading. Try again.',
   detailClose: 'Close',
   toggleMobileMenu: 'Toggle menu',
   toggleSidebar: 'Toggle sidebar',
@@ -96,6 +102,8 @@ modernAppLocale.register('ko', {
   noDataDescription: '',
   noResultsTitle: '일치하는 결과가 없습니다',
   noResultsDescription: '검색어나 필터를 바꿔 보세요.',
+  errorTitle: '목록을 불러오지 못했습니다',
+  errorDescription: '불러오는 중 문제가 생겼습니다. 다시 시도해 주세요.',
   detailClose: '닫기',
   toggleMobileMenu: '메뉴 열고 닫기',
   toggleSidebar: '사이드바 열고 닫기',
@@ -159,6 +167,8 @@ export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
     noDataDescription: t('noDataDescription'),
     noResultsTitle: t('noResultsTitle'),
     noResultsDescription: t('noResultsDescription'),
+    errorTitle: t('errorTitle'),
+    errorDescription: t('errorDescription'),
     detailClose: t('detailClose'),
     toggleMobileMenu: t('toggleMobileMenu'),
     toggleSidebar: t('toggleSidebar'),

@@ -392,6 +392,24 @@ describe('u-empty-state — 두 variant 가 화면에서 다르다', () => {
       .not.toBe(partOf(b, 'title')!.textContent!.trim());
   });
 
+  it('🔴error — 불러오지 못함은 셋째 사실이다: 제 문구로, 보조기기에 알린다', async () => {
+    host.innerHTML = `<u-empty-state variant="no-data"></u-empty-state>
+                      <u-empty-state variant="no-results"></u-empty-state>
+                      <u-empty-state variant="error"></u-empty-state>`;
+    const [a, b, c] = [...host.children] as HTMLElement[];
+    await settle();
+    const title = (el: HTMLElement) => partOf(el, 'title')!.textContent!.trim();
+    expect(new Set([title(a), title(b), title(c)]).size).toBe(3);
+    expect(partOf(c, 'title')!.getAttribute('role')).toBe('alert');
+    expect(partOf(c, 'description')!.textContent!.trim()).not.toBe('');
+  });
+
+  it('NEGATIVE 오류가 아닌 빈 상태는 알리지 않는다(빈 목록은 경보가 아니다)', async () => {
+    host.innerHTML = `<u-empty-state variant="no-results"></u-empty-state>`;
+    await settle();
+    expect(partOf(host.firstElementChild as HTMLElement, 'title')!.hasAttribute('role')).toBe(false);
+  });
+
   it('액션이 없으면 액션 영역이 접힌다', async () => {
     host.innerHTML = `<u-empty-state></u-empty-state>`;
     const el = host.firstElementChild as HTMLElement;

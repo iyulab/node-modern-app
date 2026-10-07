@@ -54,7 +54,7 @@
 | `u-group-box` | 제목이 붙은 카드(`meta`로 제목 옆 건수·진척을 한 단 아래로 · `description`으로 제목 아래 설명 한 줄) | (기본) · `actions` | host · header · title · meta · description · actions · body |
 | `u-info-section` | `u-info-field` 들의 반응형 그리드 | (기본) | host · grid |
 | `u-info-field` | 읽기 전용 라벨-값 한 쌍(`size="lg"`로 대시보드 통계 타일, `unit`으로 단위, `trend`로 추세 표시) | (기본, `value` 를 이긴다) | host · label · value · unit · trend |
-| `u-empty-state` | 빈 상태 (`no-data` / `no-results`) | `icon` · `actions` | host · icon · title · description · actions |
+| `u-empty-state` | 빈 상태 (`no-data` / `no-results` / `error`) | `icon` · `actions` | host · icon · title · description · actions |
 | `u-action-bar` | 푸터 액션 바 — 위험 액션과 주 액션을 **거리로** 가른다 | `danger` · (기본) | host · danger · main |
 | `u-master-detail-layout` | master›detail 반응형 split-pane 셸. `detail` 슬롯이 채워지면 나타나고 비우면 사라진다. 좁은 자기 폭에서 detail 이 전체 오버레이로 전환(`overlayBreakpoint`, 기본 760px) | (기본, master) · `detail` | host · master · divider · detail · detail-close |
 | `u-wizard` | 다단계 흐름의 스텝 인디케이터 + 패널 + Back/Next. `steps`/`active`(controlled)/`linear`. 검증·저장재개는 컴포넌트 밖 — `step-change`(취소 가능)에서 소비자가 처리 | (기본, 스텝 패널들) · `actions` | host · indicator · step · panel · actions |
@@ -132,11 +132,12 @@ null · undefined · 빈 문자열   →  —      (아직 없음)
 주문"* 과 *"부수가 아직 안 정해진 주문"* 이 화면에서 똑같이 `—` 로 보였고, 그 둘은 업무적으로
 전혀 다른 상태였다.
 
-### 빈 상태는 두 종류다
+### 빈 상태는 세 종류다
 
 ```html
 <u-empty-state variant="no-data"></u-empty-state>      <!-- 아직 만들지 않았다 → 만들기 -->
 <u-empty-state variant="no-results"></u-empty-state>   <!-- 조건에 안 맞는다 → 조건 바꾸기 -->
+<u-empty-state variant="error"></u-empty-state>        <!-- 불러오지 못했다 → 다시 시도 (제목을 보조기기에 알린다) -->
 ```
 
 같은 문구로 보여 주면 사용자는 필터가 걸려 있는 줄 모르고 *"데이터가 사라졌다"* 로 읽는다.

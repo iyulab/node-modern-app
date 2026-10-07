@@ -23,6 +23,10 @@ type ElementParts = 'host' | 'icon' | 'title' | 'description' | 'actions';
  * </u-empty-state>
  *
  * <u-empty-state variant="no-results"></u-empty-state>
+ *
+ * <u-empty-state variant="error" .description=${error.message}>
+ *   <u-button slot="actions" @click=${retry}>Try again</u-button>
+ * </u-empty-state>
  * ```
  *
  * ⚠**기본 문구는 영어다** — 이 패키지는 범용 층이라 특정 언어를 기본값으로 가질 수 없다.
@@ -37,8 +41,11 @@ type ElementParts = 'host' | 'icon' | 'title' | 'description' | 'actions';
 export class EmptyState extends StyledElement<ElementParts> {
   static styles = [super.styles, styles];
 
-  /** `no-data` = 아직 없음 / `no-results` = 조건에 맞는 것이 없음. */
-  @property({ type: String }) variant: 'no-data' | 'no-results' = 'no-data';
+  /**
+   * `no-data` = 아직 없음 / `no-results` = 조건에 맞는 것이 없음 / `error` = 불러오지 못함.
+   * 셋은 다음 행동이 다르다(만들기 · 조건 바꾸기 · 다시 시도) — `error` 의 제목은 보조기기에 알린다(`role="alert"`).
+   */
+  @property({ type: String, reflect: true }) variant: 'no-data' | 'no-results' | 'error' = 'no-data';
   /** 제목. 비우면 variant 기본 문구. */
   @property({ type: String }) title = '';
   /** 보조 설명. 비우면 variant 기본 문구. */
@@ -55,6 +62,7 @@ export class EmptyState extends StyledElement<ElementParts> {
 
   private get defaults() {
     const t = getLocaleStrings(this.locale || undefined);
+    if (this.variant === 'error') return { icon: '⚠️', title: t.errorTitle, description: t.errorDescription };
     return this.variant === 'no-results'
       ? { icon: '🔍', title: t.noResultsTitle, description: t.noResultsDescription }
       : { icon: '📄', title: t.noDataTitle, description: t.noDataDescription };
@@ -67,7 +75,7 @@ export class EmptyState extends StyledElement<ElementParts> {
       <div class="icon" part="icon" aria-hidden="true">
         <slot name="icon">${d.icon}</slot>
       </div>
-      <p class="title" part="title">${this.title || d.title}</p>
+      <p class="title" part="title" role=${this.variant === 'error' ? 'alert' : nothing}>${this.title || d.title}</p>
       ${description ? html`<p class="description" part="description">${description}</p>` : nothing}
       <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
         <slot name="actions"

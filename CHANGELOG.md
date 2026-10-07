@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.44.0] - 2026-10-07
+
+### Added
+
+- **`u-empty-state variant="error"`** — the list could not be loaded, a third fact next to `no-data` (create one)
+  and `no-results` (change the query); its next step is trying again. Its own default wording (English and Korean
+  built in, `errorTitle` / `errorDescription` for other languages), and its title is announced (`role="alert"`) —
+  the other two variants are not alarms and stay quiet. `variant` now reflects to the attribute.
+
 ## [0.43.0] - 2026-10-07
 
 ### Added

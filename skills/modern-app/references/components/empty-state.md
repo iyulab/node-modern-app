@@ -15,6 +15,11 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 </u-empty-state>
 
 <u-empty-state variant="no-results"></u-empty-state>
+
+<!-- The list could not be loaded — the next step is trying again. The title is announced (role="alert"). -->
+<u-empty-state variant="error" description="Request failed (503)">
+  <u-button slot="actions">Try again</u-button>
+</u-empty-state>
 ```
 
 ## Slots
@@ -28,7 +33,7 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 
 | Property | Type | Default | Reflect | Description |
 |----------|------|---------|---------|-------------|
-| `variant` | `'no-data'\|'no-results'` | `'no-data'` | | Which fact is being shown; changes the default wording |
+| `variant` | `'no-data'\|'no-results'\|'error'` | `'no-data'` | ✓ | Which fact is being shown; changes the default wording. `error` (could not load) announces its title |
 | `title` | `string` | `''` | | Override the default title |
 | `description` | `string` | `''` | | Override the default description |
 | `locale` | `string` | `''` | | Locale tag override for built-in strings |
