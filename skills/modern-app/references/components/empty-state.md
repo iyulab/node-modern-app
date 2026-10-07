@@ -16,7 +16,7 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 
 <u-empty-state variant="no-results"></u-empty-state>
 
-<!-- The list could not be loaded — the next step is trying again. The title is announced (role="alert"). -->
+<!-- The list could not be loaded — the next step is trying again. The title and the reason (description) are announced together (role="alert") — the reason decides what to do next. -->
 <u-empty-state variant="error" description="Request failed (503)">
   <u-button slot="actions">Try again</u-button>
 </u-empty-state>
@@ -43,6 +43,7 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 | Part | Description |
 |------|-------------|
 | `icon` · `title` · `description` · `actions` | The four regions |
+| `message` | Wraps `title` and `description` — the alert of `variant="error"` |
 
 ## CSS Custom Properties
 

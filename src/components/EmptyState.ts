@@ -6,7 +6,7 @@ import { slotHasContent } from '../internals/slotted.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './EmptyState.styles.js';
 
-type ElementParts = 'host' | 'icon' | 'title' | 'description' | 'actions';
+type ElementParts = 'host' | 'icon' | 'message' | 'title' | 'description' | 'actions';
 
 /**
  * 빈 상태 — 목록·검색 결과가 비었을 때.
@@ -75,8 +75,12 @@ export class EmptyState extends StyledElement<ElementParts> {
       <div class="icon" part="icon" aria-hidden="true">
         <slot name="icon">${d.icon}</slot>
       </div>
-      <p class="title" part="title" role=${this.variant === 'error' ? 'alert' : nothing}>${this.title || d.title}</p>
-      ${description ? html`<p class="description" part="description">${description}</p>` : nothing}
+      <!-- 오류는 경보다 — 그 범위는 이 상태가 전하는 사실 전체(제목 + 사유)다. 사유가 다음 행동(다시 시도 · 권한 요청 ·
+           조건 고치기)을 가르므로 제목만 읽히면 듣는 사람이 다른 사실을 받는다. 행동 슬롯은 밖. -->
+      <div class="message" part="message" role=${this.variant === 'error' ? 'alert' : nothing}>
+        <p class="title" part="title">${this.title || d.title}</p>
+        ${description ? html`<p class="description" part="description">${description}</p>` : nothing}
+      </div>
       <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
         <slot name="actions"
           @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}

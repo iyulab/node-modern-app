@@ -19,6 +19,13 @@ export const styles = css`
     opacity: 0.7;
   }
 
+  /* 제목과 사유의 묶음 — 오류 변형의 경보 범위. 배치는 호스트와 같은 가운데 세로 줄. */
+  .message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   .title {
     margin: 0;
     font-size: var(--u-text-subtitle-size, 16px);

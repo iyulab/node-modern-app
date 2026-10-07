@@ -400,14 +400,28 @@ describe('u-empty-state — 두 variant 가 화면에서 다르다', () => {
     await settle();
     const title = (el: HTMLElement) => partOf(el, 'title')!.textContent!.trim();
     expect(new Set([title(a), title(b), title(c)]).size).toBe(3);
-    expect(partOf(c, 'title')!.getAttribute('role')).toBe('alert');
     expect(partOf(c, 'description')!.textContent!.trim()).not.toBe('');
+    // 경보의 범위는 제목 + 사유 — 행동 슬롯은 밖.
+    const alert = c.shadowRoot!.querySelector('[role="alert"]')!;
+    expect(alert.contains(partOf(c, 'title')!)).toBe(true);
+    expect(alert.contains(partOf(c, 'description')!)).toBe(true);
+    expect(alert.contains(partOf(c, 'actions')!)).toBe(false);
+  });
+
+  it('🔴error 의 사유(description)가 경보로 읽힌다 — 403 · 연결 끊김은 다음 행동이 다르다', async () => {
+    host.innerHTML = `<u-empty-state variant="error" description="'asset.read' permission is required."></u-empty-state>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    const alerts = [...el.shadowRoot!.querySelectorAll('[role="alert"]')].map((a) => a.textContent!.replace(/\s+/g, ' ').trim());
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0]).toContain("'asset.read' permission is required.");
+    expect(alerts[0]).toContain(partOf(el, 'title')!.textContent!.trim());
   });
 
   it('NEGATIVE 오류가 아닌 빈 상태는 알리지 않는다(빈 목록은 경보가 아니다)', async () => {
     host.innerHTML = `<u-empty-state variant="no-results"></u-empty-state>`;
     await settle();
-    expect(partOf(host.firstElementChild as HTMLElement, 'title')!.hasAttribute('role')).toBe(false);
+    expect((host.firstElementChild as HTMLElement).shadowRoot!.querySelector('[role]')).toBeNull();
   });
 
   it('액션이 없으면 액션 영역이 접힌다', async () => {

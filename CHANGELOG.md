@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.44.2] - 2026-10-07
+
+### Fixed
+
+- **`u-empty-state variant="error"` announces the reason, not only the title.** The alert was the title alone, so a
+  screen reader heard "Couldn't load" while the screen showed why — and the reason decides the next step (try again,
+  ask for permission, change the query). The alert is now the title and the description together (a new `message`
+  part wraps them); the actions stay outside it. The other variants stay quiet.
+
 ## [0.44.1] - 2026-10-07
 
 ### Fixed
