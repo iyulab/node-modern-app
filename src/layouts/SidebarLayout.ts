@@ -422,8 +422,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
     if(item.type === 'html') {
       const content = item.render(this.state);
-      return typeof content === 'string' 
-        ? unsafeHTML(content) 
+      // html-sink: 문서화된 HTML 계약 — `type: 'html'` 항목의 `render` 는 개발자가 쓰는 마크업이다
+      return typeof content === 'string'
+        ? unsafeHTML(content)
         : html`${content}`;
     } else if(item.type === 'button') {
       return html`
@@ -561,6 +562,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       return html`
         <u-link class="logo-link" aria-label=${name}>
           <span class="logo">
+            <!-- html-sink: documented HTML contract — a logo function returns markup the developer writes -->
             ${typeof content === 'string' ? unsafeHTML(content) : content}
           </span>
         </u-link>
