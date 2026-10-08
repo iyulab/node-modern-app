@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.47.1] - 2026-10-08
+
+### Fixed
+
+- **The default fallback titles the tab like the screen** — "You don’t have access", "Page not found" or
+  "Couldn’t open this page" (localized). The tab showed the router's diagnostic message instead
+  (`Page not found: http://…/x`, `Access denied: /admin`). Requires `@iyulab/router` 0.21, whose `fallback.title`
+  may be a function of the failure; the dependency range is now `^0.21.0`.
+- A route whose `render()` throws `NotFoundError` (the record does not exist) now gets the `not-found` screen —
+  router 0.21 passes a `RouteError` from `render()` through instead of wrapping it as a load failure.
+
 ## [0.47.0] - 2026-10-08
 
 ### Changed

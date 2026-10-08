@@ -4,6 +4,7 @@ import { app } from '../src/App.js';
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 import type { EmptyState } from '../src/components/EmptyState.js';
 import { variantOf } from '../src/internals/default-fallback.js';
+import { NotFoundError } from '../src/index.js';
 
 /**
  * **`fallback` 을 주지 않은 앱의 라우팅 실패는 빈 상태로 그려진다.**
@@ -29,6 +30,7 @@ async function load(extra: Record<string, unknown> = {}) {
       { path: '/home', render: () => document.createElement('section') },
       { path: '/admin', render: () => document.createElement('section') },
       { path: '/broken', render: () => { throw new Error('boom'); } },
+      { path: '/orders/:id', render: (ctx) => { throw new NotFoundError(ctx.pathname); } },
     ],
     ...extra,
   });
@@ -49,12 +51,15 @@ describe('기본 fallback', () => {
     await app.router!.go('/admin');
     expect(shown(root)?.variant).toBe('no-access');
     expect(root.querySelector('u-error-page')).toBeNull();
+    // 탭 제목은 화면 제목과 같다 — 진단 메시지(«Access denied: /admin»)가 아니다.
+    expect(document.title).toBe('You don’t have access');
   });
 
   it('없는 경로(404)는 not-found', async () => {
     const root = await load();
     await app.router!.go('/nowhere');
     expect(shown(root)?.variant).toBe('not-found');
+    expect(document.title).toBe('Page not found');
   });
 
   it('그 밖의 실패는 error — 제목은 화면 단위(목록 문구 아님), 설명은 오류 메시지', async () => {
@@ -64,6 +69,7 @@ describe('기본 fallback', () => {
     expect(el.variant).toBe('error');
     expect(el.title).toBe('Couldn’t open this page');
     expect(el.description).toBeTruthy();
+    expect(document.title).toBe('Couldn’t open this page');
   });
 
   it('제목은 활성 로케일을 따른다', async () => {
@@ -80,7 +86,13 @@ describe('기본 fallback', () => {
     expect(shown(root)).toBeNull();
   });
 
-  it('판정은 코드로 한다 — 라우트가 던진 상태도 같다', () => {
+  it('라우트가 고른 실패(render() 의 NotFoundError — 레코드 없음)도 not-found', async () => {
+    const root = await load();
+    await app.router!.go('/orders/7');
+    expect(shown(root)?.variant).toBe('not-found');
+  });
+
+  it('판정은 코드로 한다 — 가드가 던진 상태도 같다', () => {
     expect(variantOf({ code: 403 })).toBe('no-access');
     expect(variantOf({ code: '404' })).toBe('not-found');
     expect(variantOf({ code: 'CONTENT_RENDER_FAILED' })).toBe('error');
