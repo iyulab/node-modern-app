@@ -79,8 +79,11 @@ blocked screen from a missing one without depending on the router directly:
 import { app, AccessDeniedError } from '@iyulab/modern-app';
 import { html } from 'lit';
 
+const canAudit = () => false;   // your permission check
+
 await app.load({
-  // …
+  layout: { type: 'sidebar' },
+  routes: [{ path: '/audit', enter: canAudit, render: () => html`<audit-screen></audit-screen>` }],
   fallback: {
     render: (ctx) => ctx.error instanceof AccessDeniedError
       ? html`<u-empty-state variant="no-access"></u-empty-state>`
