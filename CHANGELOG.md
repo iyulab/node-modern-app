@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.45.0] - 2026-10-08
+
+### Changed (breaking)
+
+- **The boot auth gate reads `me()`'s answer by `status`.** `me()` returns an `AuthSession` —
+  `{ status: 'authenticated', user }`, `{ status: 'anonymous' }` or `{ status: 'unknown', error }` — the same shape
+  `@iyulab/enterprise`'s `createAuthClient().fetchMe()` returns, so the two connect as `me: () => auth.fetchMe()`.
+  Before, any value meant "signed in": a session client that answers "signed out" with an object (`fetchMe()` gives
+  `{ status: 'anonymous' }` on a 401) opened the shell to a user who had not signed in, with that object as
+  `app.user` — and `me`'s `unknown` return type let it type-check.
+  `anonymous` renders `renderLogin`; `unknown` (or `me()` throwing) renders `renderUnavailable` with the answer's
+  `error`. An answer whose `status` is not one of the three makes `app.load()` reject with a `TypeError` instead of
+  being guessed to mean signed in.
+  **Migrating:** return `{ status: 'authenticated', user }` where you returned the user and `{ status: 'anonymous' }`
+  where you returned `null`; with `@iyulab/enterprise`, drop the adapter and pass `auth.fetchMe` through.
+
 ## [0.44.3] - 2026-10-08
 
 ### Fixed
