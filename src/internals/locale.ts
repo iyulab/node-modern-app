@@ -41,6 +41,10 @@ export interface ModernAppLocaleStrings {
   errorTitle: string;
   errorDescription: string;
 
+  /** Empty state — the screen exists but this user may not see it (`variant="no-access"` — a route guard said no). */
+  noAccessTitle: string;
+  noAccessDescription: string;
+
   /** Accessible label for an overlay-mode close button (master-detail layout, sidebar layout overlay). */
   detailClose: string;
 
@@ -77,6 +81,8 @@ const EN_TABLE: Record<ModernAppMessageKey, string> = {
   noResultsDescription: 'Try changing your search terms or filters.',
   errorTitle: 'Couldn’t load this list',
   errorDescription: 'Something went wrong while loading. Try again.',
+  noAccessTitle: 'You don’t have access',
+  noAccessDescription: 'Ask an administrator for access if you need it.',
   detailClose: 'Close',
   toggleMobileMenu: 'Toggle menu',
   toggleSidebar: 'Toggle sidebar',
@@ -104,6 +110,8 @@ modernAppLocale.register('ko', {
   noResultsDescription: '검색어나 필터를 바꿔 보세요.',
   errorTitle: '목록을 불러오지 못했습니다',
   errorDescription: '불러오는 중 문제가 생겼습니다. 다시 시도해 주세요.',
+  noAccessTitle: '접근 권한이 없습니다',
+  noAccessDescription: '필요하면 관리자에게 권한을 요청하세요.',
   detailClose: '닫기',
   toggleMobileMenu: '메뉴 열고 닫기',
   toggleSidebar: '사이드바 열고 닫기',
@@ -169,6 +177,8 @@ export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
     noResultsDescription: t('noResultsDescription'),
     errorTitle: t('errorTitle'),
     errorDescription: t('errorDescription'),
+    noAccessTitle: t('noAccessTitle'),
+    noAccessDescription: t('noAccessDescription'),
     detailClose: t('detailClose'),
     toggleMobileMenu: t('toggleMobileMenu'),
     toggleSidebar: t('toggleSidebar'),

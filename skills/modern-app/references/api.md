@@ -190,8 +190,11 @@ interface FallbackRouteConfig {
 }
 ```
 
-`RouteError` is importable from `@iyulab/router` (`code`/`original`/`timestamp` alongside the
-inherited `message`) — always populated when the fallback fires.
+`RouteError` (`code`/`original`/`timestamp` alongside the inherited `message`) is always populated
+when the fallback fires. It and its subclasses (`AccessDeniedError` — an `enter` guard returned `false`,
+code 403 · `NotFoundError` · `ContentLoadError` · `ContentRenderError` · `OutletMissingError`) are
+exported from `@iyulab/modern-app` — tell a blocked screen from a missing one with
+`ctx.error instanceof AccessDeniedError` and render it as `<u-empty-state variant="no-access">`.
 
 ---
 

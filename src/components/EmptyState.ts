@@ -8,6 +8,9 @@ import { styles } from './EmptyState.styles.js';
 
 type ElementParts = 'host' | 'icon' | 'message' | 'title' | 'description' | 'actions';
 
+/** 빈 상태가 전하는 사실 — 다음 행동이 갈린다(`EmptyState.variant` 참조). */
+export type EmptyStateVariant = 'no-data' | 'no-results' | 'error' | 'no-access';
+
 /**
  * 빈 상태 — 목록·검색 결과가 비었을 때.
  *
@@ -27,6 +30,9 @@ type ElementParts = 'host' | 'icon' | 'message' | 'title' | 'description' | 'act
  * <u-empty-state variant="error" .description=${error.message}>
  *   <u-button slot="actions" @click=${retry}>Try again</u-button>
  * </u-empty-state>
+ *
+ * <!-- 라우트 가드가 막았다(403) — 장애가 아니라 권한의 사실이다. -->
+ * <u-empty-state variant="no-access"></u-empty-state>
  * ```
  *
  * ⚠**기본 문구는 영어다** — 이 패키지는 범용 층이라 특정 언어를 기본값으로 가질 수 없다.
@@ -42,10 +48,12 @@ export class EmptyState extends StyledElement<ElementParts> {
   static styles = [super.styles, styles];
 
   /**
-   * `no-data` = 아직 없음 / `no-results` = 조건에 맞는 것이 없음 / `error` = 불러오지 못함.
-   * 셋은 다음 행동이 다르다(만들기 · 조건 바꾸기 · 다시 시도) — `error` 의 제목은 보조기기에 알린다(`role="alert"`).
+   * `no-data` = 아직 없음 / `no-results` = 조건에 맞는 것이 없음 / `error` = 불러오지 못함 /
+   * `no-access` = 있지만 이 사용자에게 보여 줄 수 없음(라우트 가드의 거부 · 403).
+   * 넷은 다음 행동이 다르다(만들기 · 조건 바꾸기 · 다시 시도 · 권한 요청) — `error` 의 제목은 보조기기에 알린다(`role="alert"`).
+   * `no-access` 는 알리지 않는다 — 장애가 아니라 화면의 내용이고, 라우트 완료 때 본문으로 가는 포커스가 그것을 읽게 한다.
    */
-  @property({ type: String, reflect: true }) variant: 'no-data' | 'no-results' | 'error' = 'no-data';
+  @property({ type: String, reflect: true }) variant: EmptyStateVariant = 'no-data';
   /** 제목. 비우면 variant 기본 문구. */
   @property({ type: String }) title = '';
   /** 보조 설명. 비우면 variant 기본 문구. */
@@ -62,10 +70,12 @@ export class EmptyState extends StyledElement<ElementParts> {
 
   private get defaults() {
     const t = getLocaleStrings(this.locale || undefined);
-    if (this.variant === 'error') return { icon: '⚠️', title: t.errorTitle, description: t.errorDescription };
-    return this.variant === 'no-results'
-      ? { icon: '🔍', title: t.noResultsTitle, description: t.noResultsDescription }
-      : { icon: '📄', title: t.noDataTitle, description: t.noDataDescription };
+    switch (this.variant) {
+      case 'error': return { icon: '⚠️', title: t.errorTitle, description: t.errorDescription };
+      case 'no-access': return { icon: '🔒', title: t.noAccessTitle, description: t.noAccessDescription };
+      case 'no-results': return { icon: '🔍', title: t.noResultsTitle, description: t.noResultsDescription };
+      default: return { icon: '📄', title: t.noDataTitle, description: t.noDataDescription };
+    }
   }
 
   render() {

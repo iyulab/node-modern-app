@@ -279,8 +279,12 @@ interface RouteContext {
 
 ## `FallbackRouteConfig`
 
-`context` is a `RouteContext` plus `error: RouteError` (`RouteError` — importable from
-`@iyulab/router`, `code`/`original`/`timestamp` alongside the inherited `message`).
+`context` is a `RouteContext` plus `error: RouteError` (`code`/`original`/`timestamp` alongside the
+inherited `message`). `RouteError` and its subclasses — `AccessDeniedError` (an `enter` guard returned
+`false`, code 403) · `NotFoundError` (404) · `ContentLoadError` · `ContentRenderError` ·
+`OutletMissingError` — are exported from `@iyulab/modern-app`, so `ctx.error instanceof AccessDeniedError`
+works without a direct router dependency. A blocked screen is not an outage: render it with
+`<u-empty-state variant="no-access">`, not `variant="error"`.
 
 ```typescript
 interface FallbackRouteConfig {

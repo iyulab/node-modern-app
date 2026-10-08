@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.46.0] - 2026-10-08
+
+### Added
+
+- **`u-empty-state variant="no-access"`** — a screen this user may not see (a route `enter` guard returned
+  `false`). It is the fourth fact next to `no-data`, `no-results` and `error`, with its own next step (asking for
+  access) and its own default wording (English and Korean built in, `noAccessTitle`/`noAccessDescription` in
+  `modernAppLocale`). Unlike `error` it is not announced as an alert — a 403 is not an outage.
+- **The router's error classes and route types are exported from this package** — `RouteError`,
+  `AccessDeniedError`, `NotFoundError`, `ContentLoadError`, `ContentRenderError`, `OutletMissingError` and the
+  `RouteConfig`/`RouteContext`/`FallbackRouteConfig` types. A `fallback.render(ctx)` can tell a blocked screen from a
+  missing one (`ctx.error instanceof AccessDeniedError`) without declaring `@iyulab/router` itself.
+- `EmptyStateVariant` type.
+
+### Fixed
+
+- The React `IntrinsicElements` entry for `<u-empty-state>` (from `@iyulab/modern-app/react`) accepted only
+  `no-data` and `no-results`, so `variant="error"` did not type-check in JSX. It now uses the element's own type.
+
 ## [0.45.0] - 2026-10-08
 
 ### Changed (breaking)

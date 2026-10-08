@@ -418,6 +418,29 @@ describe('u-empty-state — 두 variant 가 화면에서 다르다', () => {
     expect(alerts[0]).toContain(partOf(el, 'title')!.textContent!.trim());
   });
 
+  it('🔴no-access — 가드가 막은 화면은 넷째 사실이다: 제 문구로, 경보 없이', async () => {
+    // 403 은 장애가 아니다 — `error` 로 그리면 «불러오지 못함» 으로 읽히고 보조기기에 경보로 알린다(#948).
+    host.innerHTML = `<u-empty-state variant="no-data"></u-empty-state>
+                      <u-empty-state variant="no-results"></u-empty-state>
+                      <u-empty-state variant="error"></u-empty-state>
+                      <u-empty-state variant="no-access"></u-empty-state>`;
+    const els = [...host.children] as HTMLElement[];
+    await settle();
+    const title = (el: HTMLElement) => partOf(el, 'title')!.textContent!.trim();
+    expect(new Set(els.map(title)).size).toBe(4);
+    const noAccess = els[3];
+    // 다음 행동(권한 요청)을 말하는 사유가 기본으로 있다.
+    expect(partOf(noAccess, 'description')!.textContent!.trim()).not.toBe('');
+    expect(noAccess.shadowRoot!.querySelector('[role]')).toBeNull();
+  });
+
+  it('no-access 의 내장 한국어 문구', async () => {
+    host.innerHTML = `<u-empty-state variant="no-access" locale="ko"></u-empty-state>`;
+    const el = host.firstElementChild as HTMLElement;
+    await settle();
+    expect(partOf(el, 'title')!.textContent!.trim()).toBe('접근 권한이 없습니다');
+  });
+
   it('NEGATIVE 오류가 아닌 빈 상태는 알리지 않는다(빈 목록은 경보가 아니다)', async () => {
     host.innerHTML = `<u-empty-state variant="no-results"></u-empty-state>`;
     await settle();

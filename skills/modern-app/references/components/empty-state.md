@@ -8,6 +8,8 @@ Shown when a list or a search comes back with nothing.
 *nothing has been created yet* and the next action is **create**. The second means *nothing
 matches these conditions* and the next action is **change the filter**. Show the same wording
 for both and a user with a filter still applied reads it as *"my data disappeared"*.
+The same holds for a screen this user may not see: it is neither empty nor broken, and its next
+action is **asking for access**.
 
 ```html
 <u-empty-state variant="no-data" title="No orders yet">
@@ -20,6 +22,9 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 <u-empty-state variant="error" description="Request failed (503)">
   <u-button slot="actions">Try again</u-button>
 </u-empty-state>
+
+<!-- A route guard said no (403) — not an outage, so it is not announced as an alert. -->
+<u-empty-state variant="no-access"></u-empty-state>
 ```
 
 ## Slots
@@ -33,7 +38,7 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 
 | Property | Type | Default | Reflect | Description |
 |----------|------|---------|---------|-------------|
-| `variant` | `'no-data'\|'no-results'\|'error'` | `'no-data'` | ✓ | Which fact is being shown; changes the default wording. `error` (could not load) announces its title |
+| `variant` | `'no-data'\|'no-results'\|'error'\|'no-access'` | `'no-data'` | ✓ | Which fact is being shown; changes the default wording. `error` (could not load) announces its title; `no-access` (this user may not see it) does not |
 | `title` | `string` | `''` | | Override the default title |
 | `description` | `string` | `''` | | Override the default description |
 | `locale` | `string` | `''` | | Locale tag override for built-in strings |
@@ -63,3 +68,23 @@ for both and a user with a filter still applied reads it as *"my data disappeare
 ⚠ Default wording is **English**, with Korean built in — choose the language with `Locale.set()` of
 `@iyulab/components`, register others with `modernAppLocale.register(lang, …)`, or pass
 `title`/`description` per screen.
+
+## Blocked routes
+
+A route `enter` guard that returns `false` raises `AccessDeniedError` (code 403) into the app
+`fallback`. The error classes are exported from `@iyulab/modern-app`, so the fallback can tell a
+blocked screen from a missing one without depending on the router directly:
+
+```typescript
+import { app, AccessDeniedError } from '@iyulab/modern-app';
+import { html } from 'lit';
+
+await app.load({
+  // …
+  fallback: {
+    render: (ctx) => ctx.error instanceof AccessDeniedError
+      ? html`<u-empty-state variant="no-access"></u-empty-state>`
+      : html`<u-empty-state variant="error" .description=${ctx.error.message}></u-empty-state>`,
+  },
+});
+```

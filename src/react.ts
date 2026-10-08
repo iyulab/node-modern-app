@@ -4,6 +4,7 @@ import { SidebarLayout as SidebarLayoutElement, type SidebarLayoutEventMap } fro
 import { Wizard as WizardElement } from './components/Wizard.js';
 import type { WizardEventMap } from './components/Wizard.js';
 import type { GroupBoxLevel } from './components/GroupBox.js';
+import type { EmptyStateVariant } from './components/EmptyState.js';
 import type { TimelineItemColor } from './components/TimelineItem.js';
 import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone } from './components/InfoField.js';
 
@@ -76,7 +77,8 @@ declare module 'react' {
         sticky?: boolean;
       };
       'u-empty-state': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
-        variant?: 'no-data' | 'no-results';
+        /** 요소의 유니온을 그대로 쓴다 — 손으로 옮긴 유니온이 `'error'` 를 빠뜨린 채 남아 있었다. */
+        variant?: EmptyStateVariant;
         title?: string;
         description?: string;
         locale?: string;

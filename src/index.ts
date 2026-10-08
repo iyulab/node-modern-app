@@ -4,6 +4,19 @@ export type * from './types/AppConfigs';
 export type * from './types/AppOptions';
 export type * from './types/AuthConfig';
 export type { SidebarPermissionGuard } from './layouts/SidebarPermission';
+
+// 라우팅 표면 — `app.load({ routes, fallback })` 이 받고 내는 것은 `@iyulab/router` 의 타입이다.
+// 여기서 다시 내보내지 않으면 소비앱은 «권한 거부»와 «없는 경로»를 가르려고(`ctx.error instanceof AccessDeniedError`)
+// 이 패키지의 의존을 직접 선언해야 했다(#948). 클래스는 값으로 낸다 — `instanceof` 는 같은 모듈의 클래스여야 성립한다.
+export type { RouteConfig, RouteContext, FallbackRouteConfig } from '@iyulab/router';
+export {
+  RouteError,
+  NotFoundError,
+  AccessDeniedError,
+  ContentLoadError,
+  ContentRenderError,
+  OutletMissingError,
+} from '@iyulab/router';
 // 셸 chrome 아이콘 오버라이드 — 소비자가 타입으로 쓸 수 있도록 이름을 공개한다.
 export type {
   SidebarIconsConfig,

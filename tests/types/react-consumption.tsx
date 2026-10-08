@@ -41,6 +41,12 @@ export function Screen() {
         </InfoSection>
       </GroupBox>
       <EmptyState title="No orders" description="Create one to get started." />
+      <EmptyState variant="no-access" />
+      {/* 원시 태그 증강(`IntrinsicElements`)도 요소와 같은 variant 를 받는다 — 손으로 옮긴 유니온이 `'error'` 를 빠뜨렸었다. */}
+      <u-empty-state variant="error" />
+      <u-empty-state variant="no-access" />
+      {/* @ts-expect-error — 없는 variant 는 거부한다 */}
+      <u-empty-state variant="forbidden" />
       <ActionBar sticky />
       <MasterDetailLayout masterSize="22rem" overlayBreakpoint={760} />
       <SidebarButton label="More" />
