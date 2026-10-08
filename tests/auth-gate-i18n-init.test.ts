@@ -16,7 +16,7 @@ describe('AppConfig.auth — 미인증 상태(renderLogin 경로)에서도 i18ne
       root,
       layout: { type: 'sidebar' },
       initialLoad: false,
-      auth: { me: () => null, renderLogin: () => {} },
+      auth: { me: () => ({ status: 'anonymous' as const }), renderLogin: () => {} },
       i18n: {
         lng: 'en',
         resources: { en: { translation: { greeting: 'Hello' } } },

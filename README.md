@@ -184,11 +184,7 @@ const auth = createAuthClient<User, Cred>({ meUrl: '/api/auth/me', loginUrl: '/a
 await app.load({
   layout: { type: 'sidebar', /* ... */ },
   auth: {
-    me: async () => {
-      const s = await auth.fetchMe();
-      if (s.status === 'unknown') throw s.error;      // 모름(서버 다운·오프라인) → renderUnavailable
-      return s.status === 'authenticated' ? s.user : null; // null → 미인증 → renderLogin
-    },
+    me: () => auth.fetchMe(),   // SessionState: authenticated · anonymous → renderLogin · unknown → renderUnavailable
     renderLogin: ({ root, onSuccess }) => renderLoginPage(root, auth, onSuccess),
     renderUnavailable: ({ root, retry }) => renderOfflinePage(root, retry),
     onAuthenticated: (user) => setPermissions((user as User).Permissions),
@@ -199,8 +195,9 @@ await app.load({
 app.user; // 인증된 현재 사용자(미인증/미사용 시 undefined)
 ```
 
-- `me()` 가 값을 반환하면 셸 로드, `null`/`undefined` 면 `renderLogin({ root, onSuccess })`.
-- `me()` 가 **던지면** 세션을 «모름» 으로 보고 로그인 UI 를 그리지 않는다 — `renderUnavailable({ root, error, retry })` 를 그리고, 없으면 `app.load()` 가 그 오류로 실패한다. 서버가 잠깐 503 을 낸 것을 «미인증» 으로 돌려주면 로그인된 사용자가 로그인 화면으로 간다.
+- `me()` 는 `AuthSession` — `{ status: 'authenticated', user }` · `{ status: 'anonymous' }` · `{ status: 'unknown', error }` — 을 돌려준다. `authenticated` 면 셸을 로드하고 `app.user` 는 `user` 다. `anonymous` 면 `renderLogin({ root, onSuccess })`.
+- `unknown`(또는 `me()` 가 **던짐**)이면 세션을 «모름» 으로 보고 로그인 UI 를 그리지 않는다 — `renderUnavailable({ root, error, retry })` 를 그리고, 없으면 `app.load()` 가 그 오류로 실패한다. 서버가 잠깐 503 을 낸 것을 «미인증» 으로 다루면 로그인된 사용자가 로그인 화면으로 간다.
+- `status` 가 셋 중 하나가 아닌 답(사용자 객체 · `null`)은 `app.load()` 가 `TypeError` 로 거절한다 — 인증으로 추측하지 않는다.
 - 로그인 성공 시 `onSuccess()` 를 호출하면 앱이 재로드되어 셸이 나타나고 로그인 UI 는 정리된다.
 - `auth` 미지정 시 완전히 하위호환(게이트 없이 기존대로 로드).
 

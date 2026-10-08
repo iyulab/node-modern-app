@@ -9,6 +9,7 @@ import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 import { ScreenObserver, type ScreenSize } from './internals/ScreenObserver';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs';
 import type { NotificationOptions } from './types/AppOptions';
+import type { AuthSession } from './types/AuthConfig';
 
 /**
  * `document.body` 를 셸의 뿌리로 쓸 때의 기본 크기 규칙.
@@ -122,25 +123,34 @@ class App {
     if (config.auth) {
       const root = config.root || document.body;
       const reload = () => { void this.load(config); };
-      let user: unknown;
+      let session: AuthSession;
       try {
-        user = await config.auth.me();
+        session = await config.auth.me();
       } catch (error) {
+        session = { status: 'unknown', error };
+      }
+      if (session?.status === 'unknown') {
         // 세션을 «모름»(서버 다운·오프라인) — 미인증이 아니므로 로그인 UI 를 그리지 않는다. 그릴 자리가
-        // 없으면 종전대로 load 가 그 오류로 실패한다.
-        if (!config.auth.renderUnavailable) throw error;
-        const teardown = config.auth.renderUnavailable({ root, error, retry: reload });
+        // 없으면 load 가 그 오류로 실패한다.
+        if (!config.auth.renderUnavailable) throw session.error;
+        const teardown = config.auth.renderUnavailable({ root, error: session.error, retry: reload });
         if (teardown) this._gateTeardown = teardown;
         return;
       }
-      if (user == null) {
+      if (session?.status === 'anonymous') {
         // 미인증: 로그인 UI 를 그리고 셸 구성은 중단. 성공 시 load 재실행으로 셸을 띄운다.
         const teardown = config.auth.renderLogin({ root, onSuccess: reload });
         if (teardown) this._gateTeardown = teardown;
         return;
       }
-      this._user = user;
-      await config.auth.onAuthenticated?.(user);
+      if (session?.status !== 'authenticated') {
+        // 판별되지 않는 답을 «인증됨»으로 추측하면 미인증 사용자에게 셸이 열린다 — 닫힌 쪽으로 실패한다.
+        throw new TypeError(
+          "auth.me() must return { status: 'authenticated', user } | { status: 'anonymous' } | { status: 'unknown', error }"
+        );
+      }
+      this._user = session.user;
+      await config.auth.onAuthenticated?.(session.user);
     }
 
     // 레이아웃 생성

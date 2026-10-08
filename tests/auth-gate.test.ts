@@ -13,7 +13,7 @@ describe('AppConfig.auth — 부팅 인증 게이트', () => {
     return root;
   }
 
-  it('미인증(me→null)이면 셸 대신 renderLogin 이 호출되고 라우터는 만들어지지 않는다', async () => {
+  it('미인증(anonymous)이면 셸 대신 renderLogin 이 호출되고 라우터는 만들어지지 않는다', async () => {
     const root = freshRoot();
     const renderLogin = vi.fn();
 
@@ -21,7 +21,7 @@ describe('AppConfig.auth — 부팅 인증 게이트', () => {
       root,
       layout: { type: 'sidebar' },
       initialLoad: false,
-      auth: { me: () => null, renderLogin },
+      auth: { me: () => ({ status: 'anonymous' as const }), renderLogin },
       routes: [{ path: '/home', render: () => document.createElement('section') }],
     });
 
@@ -31,7 +31,7 @@ describe('AppConfig.auth — 부팅 인증 게이트', () => {
     expect(app.user).toBeUndefined();
   });
 
-  it('인증(me→user)이면 셸이 로드되고 app.user 가 채워지며 onAuthenticated 가 호출된다', async () => {
+  it('인증(authenticated)이면 셸이 로드되고 app.user 가 채워지며 onAuthenticated 가 호출된다', async () => {
     const root = freshRoot();
     const onAuthenticated = vi.fn();
     const user = { Id: 'u1', Permissions: ['orders.read'] };
@@ -40,7 +40,7 @@ describe('AppConfig.auth — 부팅 인증 게이트', () => {
       root,
       layout: { type: 'sidebar' },
       initialLoad: false,
-      auth: { me: async () => user, renderLogin: () => {}, onAuthenticated },
+      auth: { me: async () => ({ status: 'authenticated' as const, user }), renderLogin: () => {}, onAuthenticated },
       routes: [{ path: '/home', render: () => document.createElement('section') }],
     });
 
@@ -60,7 +60,7 @@ describe('AppConfig.auth — 부팅 인증 게이트', () => {
       layout: { type: 'sidebar' },
       initialLoad: false,
       auth: {
-        me: () => (authed ? { Id: 'u1' } : null),
+        me: () => (authed ? { status: 'authenticated' as const, user: { Id: 'u1' } } : { status: 'anonymous' as const }),
         renderLogin: ({ onSuccess }) => {
           capturedOnSuccess = onSuccess;
           return teardown;

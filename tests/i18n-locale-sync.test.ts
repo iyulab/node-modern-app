@@ -12,7 +12,7 @@ const load = (lng: string) => app.load({
   root: document.body.appendChild(document.createElement('div')),
   layout: { type: 'sidebar' },
   initialLoad: false,
-  auth: { me: () => null, renderLogin: () => {} },
+  auth: { me: () => ({ status: 'anonymous' as const }), renderLogin: () => {} },
   i18n: { lng, resources: { en: { translation: {} }, ko: { translation: {} } } },
   routes: [],
 });
@@ -45,7 +45,7 @@ describe('i18next → components Locale · <html lang>', () => {
 
   it('NEGATIVE — i18n 을 설정하지 않은 앱은 Locale 을 건드리지 않는다', async () => {
     Locale.set('ko');
-    await app.load({ root: document.body.appendChild(document.createElement('div')), layout: { type: 'sidebar' }, initialLoad: false, auth: { me: () => null, renderLogin: () => {} }, routes: [] });
+    await app.load({ root: document.body.appendChild(document.createElement('div')), layout: { type: 'sidebar' }, initialLoad: false, auth: { me: () => ({ status: 'anonymous' as const }), renderLogin: () => {} }, routes: [] });
     expect(Locale.get()).toBe('ko');
   });
 });

@@ -116,8 +116,8 @@ export interface AppConfig {
   i18n?: I18nInitOptions;
 
   /**
-   * 부팅 인증 게이트(선택). 지정하면 앱 셸을 만들기 전에 `me()` 로 세션을 판정하여
-   * 인증 시 셸 로드, 미인증 시 `renderLogin` 으로 로그인 UI 를 띄운다. `me()` 가 던지면(세션 모름)
+   * 부팅 인증 게이트(선택). 지정하면 앱 셸을 만들기 전에 `me()` 의 답(`AuthSession`)으로 세션을 판정하여
+   * `authenticated` 면 셸 로드, `anonymous` 면 `renderLogin` 으로 로그인 UI, `unknown`(또는 `me()` 가 던짐)이면
    * `renderUnavailable` 을 그린다.
    * @see AuthGateConfig
    * @example
@@ -125,11 +125,7 @@ export interface AppConfig {
    * app.load({
    *   layout: { type: 'sidebar', ... },
    *   auth: {
-   *     me: async () => {                               // @iyulab/enterprise createAuthClient
-   *       const s = await authClient.fetchMe();
-   *       if (s.status === 'unknown') throw s.error;    // 모름 — 로그인이 아니라 renderUnavailable
-   *       return s.status === 'authenticated' ? s.user : null; // null → 미인증
-   *     },
+   *     me: () => authClient.fetchMe(),                 // @iyulab/enterprise createAuthClient — SessionState 그대로
    *     renderLogin: ({ root, onSuccess }) => renderLoginPage(root, onSuccess),
    *     renderUnavailable: ({ root, retry }) => renderOfflinePage(root, retry),
    *     onAuthenticated: (user) => setPermissions((user as User).Permissions),

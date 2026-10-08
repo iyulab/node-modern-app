@@ -16,7 +16,7 @@ describe('AppConfig.auth — 미인증 상태(renderLogin 경로)에서도 테�
       root,
       layout: { type: 'sidebar' },
       initialLoad: false,
-      auth: { me: () => null, renderLogin: () => {} },
+      auth: { me: () => ({ status: 'anonymous' as const }), renderLogin: () => {} },
       routes: [{ path: '/home', render: () => document.createElement('section') }],
     });
 

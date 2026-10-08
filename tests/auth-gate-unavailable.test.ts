@@ -51,7 +51,7 @@ describe('AppConfig.auth — 세션 모름', () => {
       layout: { type: 'sidebar' },
       initialLoad: false,
       auth: {
-        me: () => { if (!up) throw new Error('offline'); return { Id: 'u1' }; },
+        me: () => { if (!up) throw new Error('offline'); return { status: 'authenticated' as const, user: { Id: 'u1' } }; },
         renderLogin: () => {},
         renderUnavailable: (ctx) => { retry = ctx.retry; return teardown; },
       },

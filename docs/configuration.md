@@ -73,8 +73,8 @@ interface AppConfig {
 
   /**
    * Boot-time auth gate. When set, resolves the session via `me()` before the app
-   * shell is built — authenticated shows the shell, unauthenticated renders
-   * `renderLogin`'s UI instead, and an unknown session (`me()` throws) renders
+   * shell is built — `authenticated` shows the shell, `anonymous` renders
+   * `renderLogin`'s UI instead, and `unknown` (or `me()` throwing) renders
    * `renderUnavailable`. Omit for full backward compatibility (no gate).
    * See the README's "부팅 인증 게이트" section for a worked example.
    */
@@ -91,13 +91,23 @@ The framework owns only the orchestration (check → branch → reload) — sess
 `@iyulab/enterprise`'s `createAuthClient`/`createODataService`).
 
 ```typescript
+/**
+ * A session lookup's answer. "Signed out" and "could not tell" are different answers — treating a
+ * brief 503 as signed out sends a signed-in user to the login screen. `@iyulab/enterprise`'s
+ * `createAuthClient().fetchMe()` returns exactly this shape: `me: () => auth.fetchMe()`.
+ */
+type AuthSession<TUser = unknown> =
+  | { status: 'authenticated'; user: TUser }   // shell loads; app.user = user
+  | { status: 'anonymous' }                    // renderLogin
+  | { status: 'unknown'; error: unknown };     // renderUnavailable
+
 interface AuthGateConfig {
   /**
-   * Resolve the current session. Return a value for authenticated, `null`/`undefined` for not.
-   * **Throw when the session could not be checked** (server down, offline) — returning `null`
-   * there would send a signed-in user to the login screen.
+   * Resolve the current session — sync or async. Throwing counts as `unknown`. An answer whose
+   * `status` is not one of the three makes `app.load()` reject with a `TypeError`: a user object
+   * or `null` is never guessed to mean "signed in".
    */
-  me: () => Promise<unknown | null | undefined> | unknown | null | undefined;
+  me: () => AuthSession | Promise<AuthSession>;
 
   /**
    * Renders login UI into `context.root` when unauthenticated. Call `context.onSuccess()` on
@@ -106,10 +116,11 @@ interface AuthGateConfig {
   renderLogin: (context: AuthGateContext) => (() => void) | void;
 
   /**
-   * Renders a "can't reach the server" view into `context.root` when `me()` throws. Call
+   * Renders a "can't reach the server" view into `context.root` when the session is `unknown`
+   * (or `me()` throws). Call
    * `context.retry()` to check again (a retry button, the `online` event). Return a cleanup
    * function to have it called on app load/`unload`. Without it, `app.load()` rejects with
-   * `me()`'s error.
+   * that error.
    */
   renderUnavailable?: (context: AuthGateUnavailableContext) => (() => void) | void;
 
@@ -127,7 +138,7 @@ interface AuthGateContext {
 interface AuthGateUnavailableContext {
   /** Root element to render into (same as `AppConfig.root`, default `document.body`). */
   root: Element;
-  /** What `me()` threw. */
+  /** The `unknown` answer's `error`, or what `me()` threw. */
   error: unknown;
   /** Check again — the app (re)loads and calls `me()` again. */
   retry: () => void;
