@@ -110,15 +110,15 @@ describe('InfoField — 빈 값 대 0', () => {
   });
 });
 
-describe('EmptyState — 넷은 서로 다른 사실이다', () => {
-  it('네 variant 의 기본 제목이 언어마다 서로 다르다', () => {
+describe('EmptyState — 다섯은 서로 다른 사실이다', () => {
+  it('다섯 variant 의 기본 제목이 언어마다 서로 다르다', () => {
     // 같은 문구를 쓰면 사용자는 필터가 걸려 있는 줄 모르고 "데이터가 사라졌다"로 읽고, 권한 거부를 장애로 읽는다.
     // ⚠종전 판은 EmptyState.ts 의 소스 모양(삼항 연산자)을 정규식으로 읽었다 — 분기 모양을 바꾸면 결함 없이 깨진다.
     for (const lang of ['en', 'ko']) {
       const t = getLocaleStrings(lang);
-      const titles = [t.noDataTitle, t.noResultsTitle, t.errorTitle, t.noAccessTitle];
+      const titles = [t.noDataTitle, t.noResultsTitle, t.errorTitle, t.noAccessTitle, t.notFoundTitle];
       expect(titles.every(Boolean), lang).toBe(true);
-      expect(new Set(titles).size, lang).toBe(4);
+      expect(new Set(titles).size, lang).toBe(5);
     }
   });
 });

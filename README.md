@@ -38,12 +38,13 @@ await app.load({
     { path: 'users',     render: () => html`<users-page></users-page>` },
     { path: 'users/:id', render: (ctx) => html`<user-detail .userId=${ctx.params.id}></user-detail>` },
   ],
-  fallback: {
-    render: (ctx) => html`<error-page .error=${ctx.error}></error-page>`,
-  },
   theme: { default: 'system' },
 });
 ```
+
+A route that fails is drawn inside the shell as an empty state: a guard's refusal (403) as
+`<u-empty-state variant="no-access">`, an unknown address (404) as `variant="not-found"`, anything else as
+`variant="error"` with the error message. Pass `fallback: { render: (ctx) => … }` to draw your own instead.
 
 ### Icons
 

@@ -45,6 +45,14 @@ export interface ModernAppLocaleStrings {
   noAccessTitle: string;
   noAccessDescription: string;
 
+  /** Empty state — the address points at nothing (`variant="not-found"` — the router found no route, a 404). */
+  notFoundTitle: string;
+  notFoundDescription: string;
+
+  /** Default route fallback — the title when a route failed for another reason (load or render failure). The
+   *  `error` variant's own default title speaks of a list. */
+  routeErrorTitle: string;
+
   /** Accessible label for an overlay-mode close button (master-detail layout, sidebar layout overlay). */
   detailClose: string;
 
@@ -83,6 +91,9 @@ const EN_TABLE: Record<ModernAppMessageKey, string> = {
   errorDescription: 'Something went wrong while loading. Try again.',
   noAccessTitle: 'You don’t have access',
   noAccessDescription: 'Ask an administrator for access if you need it.',
+  notFoundTitle: 'Page not found',
+  notFoundDescription: 'Check the address, or go back to the previous screen.',
+  routeErrorTitle: 'Couldn’t open this page',
   detailClose: 'Close',
   toggleMobileMenu: 'Toggle menu',
   toggleSidebar: 'Toggle sidebar',
@@ -112,6 +123,9 @@ modernAppLocale.register('ko', {
   errorDescription: '불러오는 중 문제가 생겼습니다. 다시 시도해 주세요.',
   noAccessTitle: '접근 권한이 없습니다',
   noAccessDescription: '필요하면 관리자에게 권한을 요청하세요.',
+  notFoundTitle: '페이지를 찾을 수 없습니다',
+  notFoundDescription: '주소를 확인하거나 이전 화면으로 돌아가 주세요.',
+  routeErrorTitle: '화면을 열지 못했습니다',
   detailClose: '닫기',
   toggleMobileMenu: '메뉴 열고 닫기',
   toggleSidebar: '사이드바 열고 닫기',
@@ -179,6 +193,9 @@ export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
     errorDescription: t('errorDescription'),
     noAccessTitle: t('noAccessTitle'),
     noAccessDescription: t('noAccessDescription'),
+    notFoundTitle: t('notFoundTitle'),
+    notFoundDescription: t('notFoundDescription'),
+    routeErrorTitle: t('routeErrorTitle'),
     detailClose: t('detailClose'),
     toggleMobileMenu: t('toggleMobileMenu'),
     toggleSidebar: t('toggleSidebar'),

@@ -286,6 +286,10 @@ inherited `message`). `RouteError` and its subclasses — `AccessDeniedError` (a
 works without a direct router dependency. A blocked screen is not an outage: render it with
 `<u-empty-state variant="no-access">`, not `variant="error"`.
 
+Leave `fallback` out and the app draws these states itself: 403 → `<u-empty-state variant="no-access">` ·
+404 → `variant="not-found"` · any other failure → `variant="error"` with the title "Couldn’t open this page"
+and the error message as its description. A `fallback` you give replaces that default entirely.
+
 ```typescript
 interface FallbackRouteConfig {
   /** Sets `document.title` when the fallback renders. */

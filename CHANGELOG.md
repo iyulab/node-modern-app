@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.47.0] - 2026-10-08
+
+### Changed
+
+- **An app with no `fallback` draws a failed route as `<u-empty-state>`**, inside the shell: a route `enter` guard's
+  refusal (403) as `no-access`, an address with no route (404) as the new `not-found`, and any other failure (the
+  route could not be loaded or rendered) as `error`, titled "Couldn’t open this page" with the error message as its
+  description. Before, the router's own error page (a large status code) was drawn — outside this package's look, and
+  a refusal looked like an outage. A `fallback` you pass is used as before and replaces the default entirely.
+
+### Added
+
+- **`u-empty-state variant="not-found"`** — nothing at this address; the next step is checking the address or going
+  back. Not announced as an alert. Default wording in English and Korean (`notFoundTitle`/`notFoundDescription` in
+  `modernAppLocale`), and `routeErrorTitle` for the default fallback's error screen.
+
+### Documentation
+
+- The empty-state reference's blocked-routes example passes a complete app config (the published 0.46.0 skill
+  document left out the required `layout`).
+
 ## [0.46.0] - 2026-10-08
 
 ### Added

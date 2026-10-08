@@ -58,6 +58,8 @@ export interface AppConfig {
 
   /**
    * 라우팅 실패 시 대체 컨텐츠 설정
+   * - 주지 않으면 `<u-empty-state>` 로 그린다 — 403(가드 거부) `no-access` · 404 `not-found` ·
+   *   그 밖 `error`(오류 메시지가 설명). 주면 이것이 그대로 쓰인다.
    */
   fallback?: FallbackRouteConfig;
 

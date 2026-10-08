@@ -25,6 +25,9 @@ action is **asking for access**.
 
 <!-- A route guard said no (403) — not an outage, so it is not announced as an alert. -->
 <u-empty-state variant="no-access"></u-empty-state>
+
+<!-- The address points at nothing (404) — the next step is checking the address or going back. -->
+<u-empty-state variant="not-found"></u-empty-state>
 ```
 
 ## Slots
@@ -38,7 +41,7 @@ action is **asking for access**.
 
 | Property | Type | Default | Reflect | Description |
 |----------|------|---------|---------|-------------|
-| `variant` | `'no-data'\|'no-results'\|'error'\|'no-access'` | `'no-data'` | ✓ | Which fact is being shown; changes the default wording. `error` (could not load) announces its title; `no-access` (this user may not see it) does not |
+| `variant` | `'no-data'\|'no-results'\|'error'\|'no-access'\|'not-found'` | `'no-data'` | ✓ | Which fact is being shown; changes the default wording. `error` (could not load) announces its title; `no-access` (this user may not see it) and `not-found` (nothing at this address) do not |
 | `title` | `string` | `''` | | Override the default title |
 | `description` | `string` | `''` | | Override the default description |
 | `locale` | `string` | `''` | | Locale tag override for built-in strings |
@@ -69,11 +72,30 @@ action is **asking for access**.
 `@iyulab/components`, register others with `modernAppLocale.register(lang, …)`, or pass
 `title`/`description` per screen.
 
-## Blocked routes
+## Blocked and missing routes
 
-A route `enter` guard that returns `false` raises `AccessDeniedError` (code 403) into the app
-`fallback`. The error classes are exported from `@iyulab/modern-app`, so the fallback can tell a
-blocked screen from a missing one without depending on the router directly:
+**An app that gives `app.load()` no `fallback` gets this element by default**: a route `enter` guard
+that returns `false` (`AccessDeniedError`, code 403) shows `no-access`, an address with no route
+(`NotFoundError`, 404) shows `not-found`, and any other failure (the route could not be loaded or
+rendered) shows `error` with the page-level title "Couldn’t open this page" and the error message as
+its description. The screen is drawn inside the shell, so the sidebar stays.
+
+```typescript
+import { app } from '@iyulab/modern-app';
+import { html } from 'lit';
+
+const canAudit = () => false;   // your permission check
+
+await app.load({
+  layout: { type: 'sidebar' },
+  routes: [{ path: '/audit', enter: canAudit, render: () => html`<audit-screen></audit-screen>` }],
+  // no fallback — /audit shows <u-empty-state variant="no-access">
+});
+```
+
+Give a `fallback` to draw something else — it replaces the default entirely. The error classes are
+exported from `@iyulab/modern-app`, so it can tell a blocked screen from a missing one without
+depending on the router directly:
 
 ```typescript
 import { app, AccessDeniedError } from '@iyulab/modern-app';

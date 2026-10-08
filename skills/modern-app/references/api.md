@@ -196,6 +196,9 @@ code 403 · `NotFoundError` · `ContentLoadError` · `ContentRenderError` · `Ou
 exported from `@iyulab/modern-app` — tell a blocked screen from a missing one with
 `ctx.error instanceof AccessDeniedError` and render it as `<u-empty-state variant="no-access">`.
 
+Without a `fallback`, `app.load()` draws `<u-empty-state>` itself: 403 → `no-access` · 404 → `not-found` ·
+anything else → `error` (title "Couldn’t open this page", the error message as description).
+
 ---
 
 ## `I18nInitOptions`
