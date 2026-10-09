@@ -183,10 +183,13 @@ interface RouteContext {
 
 ```typescript
 interface FallbackRouteConfig {
-  /** Sets `document.title` when the fallback renders. */
-  title?: string;
+  /**
+   * Sets `document.title` when the fallback renders. A function is called with each failure — use it when the
+   * title depends on the error. Returning nothing (or an empty string) falls back to the error message.
+   */
+  title?: string | ((context: RouteContext & { error: RouteError }) => string | undefined);
 
-  render: (context: RouteContext & { error: RouteError }) => RenderResult | Promise<RenderResult>;
+  render?: (context: RouteContext & { error: RouteError }) => unknown;
 }
 ```
 
@@ -198,6 +201,8 @@ exported from `@iyulab/modern-app` — tell a blocked screen from a missing one 
 
 Without a `fallback`, `app.load()` draws `<u-empty-state>` itself: 403 → `no-access` · 404 → `not-found` ·
 anything else → `error` (title "Couldn’t open this page", the error message as description).
+That default is exported as `defaultFallback` — an app that constructs its own `Router` passes it
+(`new Router({ root, routes, fallback: defaultFallback })`) to get the same screens and tab titles.
 
 ---
 

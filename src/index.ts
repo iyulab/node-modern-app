@@ -17,6 +17,8 @@ export {
   ContentRenderError,
   OutletMissingError,
 } from '@iyulab/router';
+// 실패 화면 정책 — `app.load()` 가 `fallback` 없이 쓰는 것. `Router` 를 직접 구성하는 앱도 같은 화면을 받는다(#977).
+export { defaultFallback } from './defaultFallback.js';
 // 셸 chrome 아이콘 오버라이드 — 소비자가 타입으로 쓸 수 있도록 이름을 공개한다.
 export type {
   SidebarIconsConfig,

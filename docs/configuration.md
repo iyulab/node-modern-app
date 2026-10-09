@@ -290,12 +290,26 @@ Leave `fallback` out and the app draws these states itself: 403 → `<u-empty-st
 404 → `variant="not-found"` · any other failure → `variant="error"` with the title "Couldn’t open this page"
 and the error message as its description. A `fallback` you give replaces that default entirely.
 
+That default is exported as `defaultFallback`. An app that builds its own `Router` instead of calling
+`app.load()` passes it to get the same screens and tab titles, and keeps getting the package's fixes to them:
+
+```typescript
+import { Router } from '@iyulab/router';
+import { defaultFallback } from '@iyulab/modern-app';
+
+new Router({ root, routes, fallback: defaultFallback });
+// Change one part and keep the rest: { ...defaultFallback, render: (ctx) => … }
+```
+
 ```typescript
 interface FallbackRouteConfig {
-  /** Sets `document.title` when the fallback renders. */
-  title?: string;
+  /**
+   * Sets `document.title` when the fallback renders. A function is called with each failure — use it when the
+   * title depends on the error. Returning nothing (or an empty string) falls back to the error message.
+   */
+  title?: string | ((context: RouteContext & { error: RouteError }) => string | undefined);
 
-  render: (context: RouteContext & { error: RouteError }) => TemplateResult | Promise<TemplateResult>;
+  render?: (context: RouteContext & { error: RouteError }) => unknown;
 }
 ```
 

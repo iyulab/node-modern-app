@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- `defaultFallback` — the failure screens `app.load()` draws when it gets no `fallback` (403 → `no-access`, 404 →
+  `not-found`, anything else → `error`, with matching tab titles). An app that constructs its own `Router` passes it
+  as `fallback` to get the same screens instead of copying the mapping, and keeps getting the fixes made to it.
+
+### Documentation
+
+- `FallbackRouteConfig` was shown with a string-only `title` and a required `render`; `title` also takes a function
+  of the failure, and `render` is optional.
+
 ## [0.48.0] - 2026-10-09
 
 ### Changed

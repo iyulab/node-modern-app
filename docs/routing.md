@@ -147,6 +147,10 @@ fallback: {
 }
 ```
 
+Leave `fallback` out and `app.load()` draws the failure with `<u-empty-state>`. That default is exported as
+`defaultFallback` for an app that constructs its own `Router` — see
+[Configuration › `FallbackRouteConfig`](./configuration.md#fallbackrouteconfig).
+
 ---
 
 ## Nested routes

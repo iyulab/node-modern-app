@@ -7,7 +7,7 @@ import { Toast } from '@iyulab/components/dist/utilities/Toast.js';
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 import { ScreenObserver, type ScreenSize } from './internals/ScreenObserver';
-import { defaultFallback } from './internals/default-fallback';
+import { defaultFallback } from './defaultFallback.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs';
 import type { NotificationOptions } from './types/AppOptions';
 import type { AuthSession } from './types/AuthConfig';
@@ -174,7 +174,7 @@ class App {
       basepath: config.basepath,
       mode: config.routerMode,
       routes: config.routes,
-      // 주지 않으면 빈 상태 어휘로 그린다(403 no-access · 404 not-found · 그 밖 error) — internals/default-fallback.
+      // 주지 않으면 빈 상태 어휘로 그린다(403 no-access · 404 not-found · 그 밖 error) — defaultFallback.ts(공개 — `Router` 를 직접 쓰는 앱도 같은 화면).
       fallback: config.fallback ?? defaultFallback,
       enter: config.enter,
       initialLoad: config.initialLoad,

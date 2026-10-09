@@ -3,8 +3,9 @@ import { describe, it, expect, afterEach } from 'vitest';
 import { app } from '../src/App.js';
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 import type { EmptyState } from '../src/components/EmptyState.js';
-import { variantOf } from '../src/internals/default-fallback.js';
-import { NotFoundError } from '../src/index.js';
+import { variantOf } from '../src/defaultFallback.js';
+import { NotFoundError, defaultFallback } from '../src/index.js';
+import { Router } from '@iyulab/router';
 
 /**
  * **`fallback` 을 주지 않은 앱의 라우팅 실패는 빈 상태로 그려진다.**
@@ -97,5 +98,62 @@ describe('기본 fallback', () => {
     expect(variantOf({ code: '404' })).toBe('not-found');
     expect(variantOf({ code: 'CONTENT_RENDER_FAILED' })).toBe('error');
     expect(variantOf({ code: 500 })).toBe('error');
+  });
+});
+
+/**
+ * **`Router` 를 직접 구성하는 앱도 같은 실패 화면을 받는다**(#977) — 공개 진입점의 `defaultFallback` 을 넘기면
+ * `app.load()` 와 같은 변종 · 같은 탭 제목. 종전에는 이 매핑을 베껴야 했고 판의 수정(0.47.1 탭 제목)을 받지 못했다.
+ */
+describe('공개 defaultFallback — Router 직접 구성', () => {
+  afterEach(() => {
+    Locale.set('en');
+    document.body.replaceChildren();
+  });
+
+  async function direct() {
+    const root = document.createElement('div');
+    root.appendChild(document.createElement('u-outlet'));
+    document.body.appendChild(root);
+    const router = new Router({
+      root,
+      initialLoad: false,
+      enter: (ctx) => ctx.pathname !== '/admin',
+      routes: [
+        { path: '/home', render: () => document.createElement('section') },
+        { path: '/admin', render: () => document.createElement('section') },
+      ],
+      fallback: defaultFallback,
+    });
+    return { root, router };
+  }
+
+  it('없는 경로 → not-found · 탭 제목은 화면 제목', async () => {
+    const { root, router } = await direct();
+    await router.go('/nowhere');
+    expect((root.querySelector('u-empty-state') as EmptyState | null)?.variant).toBe('not-found');
+    expect(document.title).toBe('Page not found');
+  });
+
+  it('가드 거부 → no-access', async () => {
+    const { root, router } = await direct();
+    await router.go('/admin');
+    expect((root.querySelector('u-empty-state') as EmptyState | null)?.variant).toBe('no-access');
+    expect(document.title).toBe('You don’t have access');
+  });
+
+  it('감싸서 일부만 바꿀 수 있다 — 제목은 그대로 따른다', async () => {
+    const root = document.createElement('div');
+    root.appendChild(document.createElement('u-outlet'));
+    document.body.appendChild(root);
+    const router = new Router({
+      root,
+      initialLoad: false,
+      routes: [],
+      fallback: { ...defaultFallback, render: () => Object.assign(document.createElement('p'), { id: 'mine' }) },
+    });
+    await router.go('/nowhere');
+    expect(root.querySelector('#mine')).not.toBeNull();
+    expect(document.title).toBe('Page not found');
   });
 });

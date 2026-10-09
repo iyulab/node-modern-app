@@ -1,7 +1,7 @@
 import type { FallbackRouteConfig, FallbackRouteContext, RouteError } from '@iyulab/router';
 
-import { EmptyState, type EmptyStateVariant } from '../components/EmptyState.js';
-import { getLocaleStrings } from './locale.js';
+import { EmptyState, type EmptyStateVariant } from './components/EmptyState.js';
+import { getLocaleStrings } from './internals/locale.js';
 
 /**
  * `app.load()` 에 `fallback` 을 주지 않은 앱의 라우팅 실패 화면 — 앱 프레임워크의 빈 상태 어휘로 그린다.
@@ -35,6 +35,21 @@ function titleOf(ctx: FallbackRouteContext): string {
   }
 }
 
+/**
+ * 라우팅 실패 화면 — `app.load()` 가 `fallback` 없이 쓰는 바로 그것.
+ *
+ * ★**왜 공개하는가**(#977): 실패를 이 패키지의 말과 모양으로 그리는 정책은 이 패키지 것인데, 종전에는 `App` 경로만
+ *   받았다. `Router` 를 직접 구성하는 앱(셸을 자기 라우트 트리의 부모로 그리는 경우 등)은 매핑을 베껴야 했고, 베낀
+ *   쪽은 판이 고친 것(0.47.1 의 탭 제목)을 받지 못했다. 이 값을 넘기면 판이 바뀔 때 같이 바뀐다.
+ *
+ * 상태가 없다 — 로캘은 그릴 때 읽는다. 일부만 바꾸려면 감싼다: `{ ...defaultFallback, render: (ctx) => … }`.
+ *
+ * @example
+ * ```ts
+ * import { defaultFallback } from '@iyulab/modern-app';
+ * new Router({ root, routes, fallback: defaultFallback });
+ * ```
+ */
 export const defaultFallback: FallbackRouteConfig = {
   title: titleOf,
   render: (ctx) => {
