@@ -17,6 +17,11 @@
   - `setDefaultLocale(lang)` → `Locale.set(lang)`; `setDefaultLocale(undefined)` has no replacement (there is
     nothing to hand back).
 
+### Documentation
+
+- Examples import `Locale`/`Theme`/`formatCurrency` from their own module in `@iyulab/components`
+  (`dist/utilities/…`) — the components barrel registers every component even when one value is taken from it.
+
 ## [0.47.1] - 2026-10-08
 
 ### Fixed

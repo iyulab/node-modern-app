@@ -155,7 +155,7 @@ handed to `Locale` and to `<html lang>`.
 Register other languages, or your own wording, in the same namespace:
 
 ```typescript
-import { Locale } from '@iyulab/components';
+import { Locale } from '@iyulab/components/dist/utilities/Locale.js'; // the barrel would register every component
 import { modernAppLocale } from '@iyulab/modern-app';
 
 Locale.set('ko');                       // built-in Korean — nothing to register
