@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import dts from 'vite-plugin-dts';
+import stripCssComments from '@iyulab/components/plugins/vite-plugin-strip-css-comments.js';
 import reactWrapper from '@iyulab/components/plugins/vite-plugin-react-wrapper.js';
 
 export default defineConfig({
@@ -36,6 +37,8 @@ export default defineConfig({
     },
   },
   plugins: [
+    // `css` 템플릿 안 주석은 문자열이라 번들러가 지우지 못한다 — 정본 플러그인으로 걷는다(components `plugins/`).
+    stripCssComments(),
     // 래퍼 생성기는 `@iyulab/components` 의 «정본» 을 그대로 쓴다 — 사본을 두지 않는다.
     // 셸 레이아웃(`src/layouts`)은 대상이 아니다: 소비자는 설정으로 얻는다.
     reactWrapper({

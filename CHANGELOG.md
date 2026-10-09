@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Comments inside the components' `css` styles are no longer shipped. A tagged template's body is a string, so a
+  consumer's bundler could not remove them; they were design notes, sent to every browser.
+
 ### Removed
 
 - **Breaking** — `registerLocale()` and `setDefaultLocale()`, deprecated since 0.26.0. The language is chosen in one
