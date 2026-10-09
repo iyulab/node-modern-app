@@ -170,9 +170,8 @@ modernAppLocale.register('ja', {
 
 A partial table is enough — untranslated keys fall back to English, and a registration for a
 built-in language overrides only the keys it gives. An element's own `locale`
-attribute overrides the active language for that element. `registerLocale`/`setDefaultLocale` still
-work but are deprecated: a `setDefaultLocale()` call takes precedence over `Locale` until it is
-called with `undefined`.
+attribute overrides the active language for that element. The language is chosen in one place —
+`Locale.set()` (the old `registerLocale`/`setDefaultLocale` were removed in 0.48.0).
 
 ---
 

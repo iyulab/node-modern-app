@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { getLocaleStrings, getDefaultLocale, setDefaultLocale, modernAppLocale } from '../src/internals/locale.js';
+import { getLocaleStrings, getDefaultLocale, modernAppLocale } from '../src/internals/locale.js';
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 /**
@@ -16,7 +16,6 @@ import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
  */
 describe('내장 ko 표', () => {
   beforeEach(() => {
-    setDefaultLocale(undefined);
     Locale.set('en');
   });
 

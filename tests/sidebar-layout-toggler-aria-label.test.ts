@@ -3,7 +3,8 @@ import { describe, it, expect, afterEach, beforeEach } from 'vitest';
 import '../src/layouts/SidebarLayout.js';
 import type { SidebarLayout } from '../src/layouts/SidebarLayout.js';
 import type { SidebarLayoutConfig } from '../src/layouts/SidebarLayout.types';
-import { registerLocale, setDefaultLocale } from '../src/internals/locale.js';
+import { modernAppLocale } from '../src/internals/locale.js';
+import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 /**
  * 모바일 헤더·사이드바 헤더의 토글 버튼 둘 다 아이콘 전용인데 `aria-label`이 없었다 —
@@ -26,7 +27,7 @@ async function mount(config: SidebarLayoutConfig, locale?: string): Promise<Side
 const mobileToggler = (el: SidebarLayout) => el.shadowRoot!.querySelector('.mobile-header .toggler')!;
 const sidebarToggler = (el: SidebarLayout) => el.shadowRoot!.querySelector('.sidebar-header .toggler')!;
 
-beforeEach(() => setDefaultLocale(undefined));
+beforeEach(() => Locale.set('en'));
 
 afterEach(() => {
   els.forEach(el => el.remove());
@@ -45,7 +46,7 @@ describe('SidebarLayout — 토글 버튼 aria-label', () => {
   });
 
   it('등록된 로케일이 두 토글 버튼 모두에 반영된다', async () => {
-    registerLocale('ko', { toggleMobileMenu: '메뉴 열기/닫기', toggleSidebar: '사이드바 접기/펼치기' });
+    modernAppLocale.register('ko', { toggleMobileMenu: '메뉴 열기/닫기', toggleSidebar: '사이드바 접기/펼치기' });
     const el = await mount({ type: 'sidebar' }, 'ko');
     expect(mobileToggler(el).getAttribute('aria-label')).toBe('메뉴 열기/닫기');
     expect(sidebarToggler(el).getAttribute('aria-label')).toBe('사이드바 접기/펼치기');

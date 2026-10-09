@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Removed
+
+- **Breaking** — `registerLocale()` and `setDefaultLocale()`, deprecated since 0.26.0. The language is chosen in one
+  place, `Locale.set()` of `@iyulab/components`; a `setDefaultLocale()` call used to override it for this package only.
+  Migrate:
+  - `registerLocale(lang, strings)` → `modernAppLocale.register(lang, strings)`. A function-valued
+    `wizardStepAnnouncement` becomes a template: `'Step {index} of {total}: {label}'`.
+  - `setDefaultLocale(lang)` → `Locale.set(lang)`; `setDefaultLocale(undefined)` has no replacement (there is
+    nothing to hand back).
+
 ## [0.47.1] - 2026-10-08
 
 ### Fixed

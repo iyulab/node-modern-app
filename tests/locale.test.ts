@@ -2,8 +2,6 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { readFileSync, globSync } from 'fs';
 import { resolve, join, basename } from 'path';
 import {
-  registerLocale,
-  setDefaultLocale,
   getLocaleStrings,
   getDefaultLocale,
   modernAppLocale,
@@ -23,7 +21,6 @@ const root = resolve(__dirname, '..');
  */
 describe('로케일 레지스트리', () => {
   beforeEach(() => {
-    setDefaultLocale(undefined);
     Locale.set('en');
   });
 
@@ -34,19 +31,19 @@ describe('로케일 레지스트리', () => {
   });
 
   it('등록한 로케일이 이긴다', () => {
-    registerLocale('ko', { back: '뒤로' });
+    modernAppLocale.register('ko', { back: '뒤로' });
     expect(getLocaleStrings('ko').back).toBe('뒤로');
   });
 
   it('부분 등록은 영어와 병합된다 — 한 문자열만 번역할 수 있다', () => {
-    registerLocale('fr', { back: 'Retour' });
+    modernAppLocale.register('fr', { back: 'Retour' });
     const t = getLocaleStrings('fr');
     expect(t.back).toBe('Retour');
     expect(t.noResultsTitle).toBe('No matching results');
   });
 
   it('★기본 언어로 떨어진다 — 소비자는 `ko` 를 등록하고 브라우저는 `ko-KR` 을 준다', () => {
-    registerLocale('ko', { back: '뒤로' });
+    modernAppLocale.register('ko', { back: '뒤로' });
     expect(getLocaleStrings('ko-KR').back).toBe('뒤로');
   });
 
@@ -54,9 +51,9 @@ describe('로케일 레지스트리', () => {
     expect(getLocaleStrings('de').back).toBe('Back');
   });
 
-  it('`setDefaultLocale` 이 명시하지 않은 컴포넌트에 적용된다', () => {
-    registerLocale('ko', { back: '뒤로' });
-    setDefaultLocale('ko');
+  it('`Locale.set` 이 명시하지 않은 컴포넌트에 적용된다', () => {
+    modernAppLocale.register('ko', { back: '뒤로' });
+    Locale.set('ko');
     expect(getLocaleStrings().back).toBe('뒤로');
   });
 
@@ -74,20 +71,13 @@ describe('로케일 레지스트리', () => {
  */
 describe('Locale.namespace 이관 (#416)', () => {
   beforeEach(() => {
-    setDefaultLocale(undefined);
     Locale.set('en');
   });
 
-  it('🔴`setDefaultLocale` 을 부르지 않으면 `Locale.get()` 을 따른다', () => {
+  it('🔴`Locale.get()` 을 따른다', () => {
     modernAppLocale.register('ko', { toggleSidebar: '사이드바 접기/펼치기' });
     Locale.set('ko');
     expect(getLocaleStrings().toggleSidebar).toBe('사이드바 접기/펼치기');
-  });
-
-  it('`registerLocale` 로 등록한 표도 `Locale.set()` 하나로 선다 — 기존 소비자 호환', () => {
-    registerLocale('ja', { back: '戻る' });
-    Locale.set('ja-JP');
-    expect(getLocaleStrings().back).toBe('戻る');
   });
 
   it('요소의 `locale` 이 활성 로케일을 이긴다', () => {
@@ -96,14 +86,10 @@ describe('Locale.namespace 이관 (#416)', () => {
     expect(getLocaleStrings('ko').back).toBe('뒤로');
   });
 
-  it('`setDefaultLocale` 을 부르면 여전히 이긴다 — `undefined` 로 `Locale` 에 되돌린다', () => {
-    modernAppLocale.register('ko', { back: '뒤로' });
-    modernAppLocale.register('fr', { back: 'Retour' });
-    Locale.set('fr');
-    setDefaultLocale('ko');
-    expect(getLocaleStrings().back).toBe('뒤로');
-    setDefaultLocale(undefined);
-    expect(getLocaleStrings().back).toBe('Retour');
+  it('언어를 고르는 길은 `Locale.set` 하나다 — 옛 `setDefaultLocale`/`registerLocale` 은 없다', async () => {
+    const mod: Record<string, unknown> = await import('../src/internals/locale.js');
+    expect(Object.keys(mod)).not.toContain('setDefaultLocale');
+    expect(Object.keys(mod)).not.toContain('registerLocale');
   });
 
   it('`components` 사슬을 그대로 탄다 — 지역 없는 태그가 지역형 표로', () => {
@@ -118,8 +104,8 @@ describe('Locale.namespace 이관 (#416)', () => {
     expect(getLocaleStrings().wizardStepAnnouncement(2, 3, '확인')).toBe('3단계 중 2단계: 확인');
   });
 
-  it('`registerLocale` 의 함수형 알림도 계속 동작한다 — 사슬을 거쳐서', () => {
-    registerLocale('de', { wizardStepAnnouncement: (i, n, l) => `Schritt ${i}/${n}: ${l}` });
+  it('다른 언어의 알림도 템플릿으로 — 지역 태그는 언어 표로 떨어진다', () => {
+    modernAppLocale.register('de', { wizardStepAnnouncement: 'Schritt {index}/{total}: {label}' });
     Locale.set('de-AT');
     expect(getLocaleStrings().wizardStepAnnouncement(1, 4, 'Start')).toBe('Schritt 1/4: Start');
   });
@@ -167,6 +153,6 @@ describe('범용 층에 한국어 기본값이 없다', () => {
       for (const s of stringLiterals(readFileSync(file, 'utf-8')))
         if (HANGUL.test(s)) offenders.push(`${basename(rel)}: ${s.slice(0, 40)}`);
     }
-    expect(offenders, '범용 층의 기본값은 영어여야 한다 — 한국어는 registerLocale 로').toEqual([]);
+    expect(offenders, '범용 층의 기본값은 영어여야 한다 — 한국어는 modernAppLocale.register 로').toEqual([]);
   });
 });

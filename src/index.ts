@@ -60,11 +60,8 @@ export { translate } from './translate.js';
 
 // 크롬 문구 — `@iyulab/components` 의 `Locale.namespace('modern-app')`. 범용 층이라 기본값이 **영어**다.
 // 영어·한국어는 내장이고, 다른 언어는 소비자가 등록한다(`modernAppLocale.register(lang, { … })`). 언어는 `Locale.set()` 하나로 고른다.
-// `registerLocale`/`setDefaultLocale` 은 호환용으로 남는다(deprecated).
 export {
   modernAppLocale,
-  registerLocale,
-  setDefaultLocale,
   getLocaleStrings,
   getDefaultLocale,
 } from './internals/locale.js';

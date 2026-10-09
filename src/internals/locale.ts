@@ -19,9 +19,8 @@
  * non-Korean consumer. Language excludes harder than aesthetics: an odd-looking default is
  * awkward, an unreadable one is unusable.
  *
- * Resolution for one element: its own `locale` attribute → `setDefaultLocale()` (deprecated,
- * when called) → the active `Locale`. Each step walks the `components` lookup chain (exact →
- * shortened tag → the language's default regional table → English).
+ * Resolution for one element: its own `locale` attribute → the active `Locale`. Each step walks the
+ * `components` lookup chain (exact → shortened tag → the language's default regional table → English).
  */
 import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
@@ -137,49 +136,16 @@ modernAppLocale.register('ko', {
   wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}',
 });
 
-/* ── Deprecated registry surface — kept so existing apps keep working ─────────────────────────
-   `registerLocale` accepted a function for `wizardStepAnnouncement`. A namespace stores strings,
-   so a registered function is stored under a per-locale token and called when the chain lands on
-   it — the chain itself stays the namespace's. */
-let defaultLang: string | undefined;
-const announcers = new Map<string, ModernAppLocaleStrings['wizardStepAnnouncement']>();
-const ANNOUNCER_TOKEN = '\u0000modern-app:announcer:';
-
-/**
- * @deprecated Register with `modernAppLocale.register(lang, strings)` and choose the language with
- * `Locale.set()`. This forwards to the namespace; a function-valued `wizardStepAnnouncement` keeps
- * working (the namespace form is a `{index}`/`{total}`/`{label}` template).
- */
-export function registerLocale(lang: string, strings: Partial<ModernAppLocaleStrings>): void {
-  const { wizardStepAnnouncement, ...rest } = strings;
-  const table: Partial<Record<ModernAppMessageKey, string>> = { ...rest };
-  if (wizardStepAnnouncement) {
-    const key = lang.toLowerCase();
-    announcers.set(key, wizardStepAnnouncement);
-    table.wizardStepAnnouncement = ANNOUNCER_TOKEN + key;
-  }
-  modernAppLocale.register(lang, table);
-}
-
-/**
- * @deprecated Choose the language with `Locale.set()` of `@iyulab/components` — this package now
- * follows it. When called, this still takes precedence over `Locale` for elements without their
- * own `locale`; `setDefaultLocale(undefined)` hands the choice back to `Locale`.
- */
-export function setDefaultLocale(lang: string | undefined): void {
-  defaultLang = lang;
-}
-
-/** One string, resolved for an element's `locale` (empty → `setDefaultLocale` → active `Locale`). */
+/** One string, resolved for an element's `locale` (empty → the active `Locale`). */
 function text(lang: string | undefined, key: ModernAppMessageKey, params?: Record<string, string | number>): string {
-  const value = modernAppLocale.textIn(lang || defaultLang, key, params);
+  const value = modernAppLocale.textIn(lang || undefined, key, params);
   // Every key has an English entry, so getting the key back means «empty in every table» —
   // `noDataDescription` is empty on purpose (no description unless the app gives one).
   return value === key ? '' : value;
 }
 
 /**
- * Resolve every chrome string for a language tag (empty → `setDefaultLocale` → active `Locale`).
+ * Resolve every chrome string for a language tag (empty → the active `Locale`).
  */
 export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
   const t = (key: Exclude<ModernAppMessageKey, 'wizardStepAnnouncement'>) => text(lang, key);
@@ -204,12 +170,7 @@ export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
     pageLoading: t('pageLoading'),
     wizardBack: t('wizardBack'),
     wizardNext: t('wizardNext'),
-    wizardStepAnnouncement: (index, total, label) => {
-      const value = text(lang, 'wizardStepAnnouncement', { index, total, label });
-      return value.startsWith(ANNOUNCER_TOKEN)
-        ? announcers.get(value.slice(ANNOUNCER_TOKEN.length))!(index, total, label)
-        : value;
-    },
+    wizardStepAnnouncement: (index, total, label) => text(lang, 'wizardStepAnnouncement', { index, total, label }),
   };
 }
 
