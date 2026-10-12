@@ -74,9 +74,11 @@ async function load(extra: Record<string, unknown> = {}) {
   return layout;
 }
 const screen = () => root?.querySelector('[data-screen]')?.getAttribute('data-screen');
-const dialog = () => document.querySelector('u-dialog');
+// 열린 대화상자만 — 닫힌 대화상자는 닫힘 전환(300ms) 동안 문서에 남는다. 그 사이에 다음 대화상자가 열리면 문서 순서로
+// 첫 버튼을 고르는 질의가 닫히는 쪽을 누른다(CI 에서 실제로 그렇게 실패했다).
+const dialog = () => document.querySelector('u-dialog[open]');
 const button = (label: string) =>
-  Array.from(document.querySelectorAll<HTMLElement>('u-dialog u-button')).find((b) => b.textContent?.trim() === label);
+  Array.from(document.querySelectorAll<HTMLElement>('u-dialog[open] u-button')).find((b) => b.textContent?.trim() === label);
 const track = () => releases.push(trackUnsavedChanges(() => dirty));
 
 describe('app.load — 저장 안 한 변경이 있는 화면을 떠날 때', () => {
