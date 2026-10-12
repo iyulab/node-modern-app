@@ -3,10 +3,6 @@ import { css } from 'lit';
 export const styles = css`
   :host {
     display: block;
-    /* 아래 @container 질의의 기준 — 카드는 «화면»이 아니라 «자기 폭»으로 접힌다.
-       사이드바가 열린 1280px 화면의 좁은 본문에서도, 넓은 본문을 가진 태블릿에서도
-       같은 판단을 하려면 기준이 자기 폭이어야 한다. */
-    container-type: inline-size;
     /* 카드 = 떠 있는 컨테이너(--u-panel-bg-color) — u-card 와 같은 면·반경·선이다.
        페이지는 --u-canvas-bg-color 위에 있으므로 카드는 바탕보다 한 단 밝은 면으로 선다
        (종전에는 페이지가 흰색이라 카드를 크롬 틴트 --u-bg-color-raised 로 칠해 구분했다). */
@@ -14,6 +10,17 @@ export const styles = css`
     border: 1px solid var(--u-border-color, #E0E0E0);
     border-radius: var(--u-radius-xl, 8px);
     box-shadow: var(--u-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04));
+  }
+
+  /* 아래 @container 질의의 기준 — 카드는 «화면»이 아니라 «자기 폭»으로 접힌다. 사이드바가 열린 1280px
+     화면의 좁은 본문에서도, 넓은 본문을 가진 태블릿에서도 같은 판단을 하려면 기준이 자기 폭이어야 한다.
+     슬롯 내용의 이름 없는 @container 질의(하우스 격자 등)도 평탄 트리 조상인 이 상자를 기준으로 삼는다.
+     🔴**컨테이너는 호스트가 아니라 섀도 안의 이 상자다.** 호스트에 두었을 때, 형제 «fieldset disabled» 전환과
+     같은 커밋에서 내용이 바뀐 카드가 높이 2px(테두리뿐)로 접힌 채 남는 Chromium 실측 보고가 있었다 — 강제
+     재배치로만 돌아왔고 호스트의 container-type 을 걷으면 생기지 않았다. 호스트는 평범한 블록으로 바깥
+     배치에 참여한다. 이 상자의 폭은 호스트 내용 폭과 같아 질의 결과는 그대로다. */
+  .frame {
+    container-type: inline-size;
   }
 
   .header {
