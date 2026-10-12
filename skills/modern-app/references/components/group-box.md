@@ -18,6 +18,13 @@ up different on every screen.
 The body is a flex column with token spacing, so block children get vertical rhythm and share
 a left edge without any consumer CSS.
 
+**Width comes from outside.** The card folds by its own width (at 480px or less the header
+actions move under the title), so its content is a size query container and does not size the
+card. In normal flow and in grid `1fr` columns that is invisible; where a box sizes to its
+content — a flex row item without `flex: 1`, `inline-block`, a grid `auto` column — give the card
+a width (`flex: 1 1 20rem`, `width: …`), or it shrinks to its border. Unnamed `@container`
+queries in your slotted content resolve to the card's width.
+
 ## Slots
 
 | Name | Description |
