@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.50.0] - 2026-10-12
+
+### Added
+
+- **The shell returns to where you were reading.** `app.load()` turns on `@iyulab/router`'s scroll restoration with
+  the sidebar layout's main box — the shell scrolls that box, not the document, so the browser's own restoration
+  never reached it. Back, Forward and a reload bring a screen back at the position you left it, waiting for content
+  that grows after rendering; a new navigation starts at the top. `AppConfig.scrollRestoration: false` turns it off,
+  and a layout `scrollBehavior` hook keeps scrolling to itself (restoration is then off).
+
+### Changed
+
+- Requires `@iyulab/router` 0.22. Route contexts carry `navigation` (`{ type, entryKey }` — `push`, `replace`,
+  `reload`, `traverse`), so a hand-built `RouteContext` needs one. `<u-link>` asks the router to navigate instead of
+  pushing an entry and dispatching a synthetic `popstate`, so a `popstate` the app hears is a real Back or Forward;
+  code without the router navigates with `navigate()` from `@iyulab/router`.
+- The `u-group-box` reference says where its width comes from: it folds by its own width, so where a box sizes to
+  its content (a flex row item without `flex: 1`, `inline-block`, a grid `auto` column) give the card a width.
+
 ## [0.49.1] - 2026-10-12
 
 ### Fixed
