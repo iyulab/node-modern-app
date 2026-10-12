@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.51.0] - 2026-10-12
+
+### Changed
+
+- **`@iyulab/router` is a peer dependency** (`^0.23.0`), not a dependency. The app shell and the app share one
+  router: `RouteContext` and the other router types re-exported from this package, `<u-link>`, `navigate()` and the
+  new selection channels (`selection()`, `SelectionController`, `useSelection` from `@iyulab/router/react`) all
+  need the same copy the shell uses. As a dependency, an app that also installed `@iyulab/router` itself could end up
+  with two copies — two registrations of `u-link`, and a selection channel that does not see the shell's router.
+  npm 7+ and pnpm install the peer for you; an app that lists `@iyulab/router` should list `^0.23.0`.
+- Requires `@iyulab/router` 0.23 (selection channels — no change to the routing contract).
+
 ## [0.50.0] - 2026-10-12
 
 ### Added
