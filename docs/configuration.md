@@ -60,6 +60,14 @@ interface AppConfig {
   useIntercept?: boolean;
 
   /**
+   * Return to where you were reading when Back, Forward or a reload brings a screen back — the shell's
+   * main box scrolls, which the browser's own restoration does not reach. A new navigation starts at the
+   * top. Giving the layout a `scrollBehavior` hook hands scrolling to that hook and turns this off.
+   * @default true
+   */
+  scrollRestoration?: boolean;
+
+  /**
    * Layout configuration.
    * Only 'sidebar' type is currently supported.
    */

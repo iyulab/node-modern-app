@@ -34,6 +34,12 @@ interface AppConfig {
   /** Intercept `<a>` tag clicks for client-side routing. Default: true */
   useIntercept?: boolean;
 
+  /**
+   * Back / Forward / reload return to where you were in the shell's main box; a new navigation starts at
+   * the top. Off when the layout has a `scrollBehavior` hook. Default: true
+   */
+  scrollRestoration?: boolean;
+
   /** Layout configuration. Currently only 'sidebar' is supported. */
   layout: LayoutConfig;
 

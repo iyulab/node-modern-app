@@ -94,6 +94,13 @@ export interface AppConfig {
   useIntercept?: boolean;
 
   /**
+   * 뒤로·앞으로 가기와 새로 고침으로 돌아온 화면을 보던 자리로 되돌린다(라우터의 `scrollRestoration` — 셸의 본문 상자를 굴린다).
+   * 새 이동은 맨 위로. 레이아웃의 `scrollBehavior` 를 주면 그 훅이 스크롤을 맡고 이것은 꺼진다.
+   * @default true
+   */
+  scrollRestoration?: boolean;
+
+  /**
    * 애플리케이션이 렌더링될 루트 HTML 요소
    * @default document.body
    */

@@ -179,6 +179,11 @@ class App {
       enter: config.enter,
       initialLoad: config.initialLoad,
       useIntercept: config.useIntercept,
+      // 셸은 문서가 아니라 본문 상자를 굴린다 — 브라우저의 문서 복원이 닿지 않는 자리라 라우터가 항목별로 되돌린다.
+      // 레이아웃의 `scrollBehavior` 훅을 준 앱은 그 훅이 맡는다(둘이 같은 상자를 다투지 않게).
+      scrollRestoration: config.scrollRestoration !== false && !config.layout.scrollBehavior
+        ? { container: () => (this._layout as { mainElement?: HTMLElement | null } | undefined)?.mainElement }
+        : false,
     });
   }
 
