@@ -10,7 +10,8 @@
   `app.navigate()`, the sidebar, a selection channel, Back and Forward) the shell asks «Discard unsaved changes?» in
   an in-app dialog — **Discard** leaves, **Keep editing** stays with the screen and the address unchanged. Leaving
   the document (reload, another site, closing the tab) gets the browser's own `beforeunload` confirmation. When
-  nothing is unsaved, nothing is asked and nothing waits. A check that throws counts as unsaved.
+  nothing is unsaved, nothing is asked and nothing waits. A check that throws counts as unsaved. Keep the draft on
+  `input` rather than `change` — `change` fires only when a field is left.
 - `confirmDiscardChanges(options?)` asks the same question anywhere — a modal drawer's cancellable `hide` event is
   the place for «close without saving». `hasUnsavedChanges()` reads every registered check. `unsavedChangesGuard`
   wires the same behaviour into a `Router` an app builds itself (`new Router({ leave: unsavedChangesGuard })`).

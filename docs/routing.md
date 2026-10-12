@@ -232,6 +232,10 @@ function OrderEditor() {
 Without a component, `trackUnsavedChanges(() => dirty)` returns a function that removes the check.
 `hasUnsavedChanges()` reads all of them.
 
+**Keep the draft on `input`, not `change`.** A text field's `change` fires only when the field is left (or Enter is
+pressed), so text typed just before Escape or Back would not count as unsaved — the check would say «clean» and
+nothing would be asked. Fields that save on `change` (an inline quantity that is written at once) are not drafts.
+
 **Closing a modal drawer is not a navigation** — ask the same question from the drawer's cancellable `hide`
 event, with the same wording:
 

@@ -256,6 +256,8 @@ drawer.addEventListener('hide', async (e) => {
 ```
 
 `app.load({ leave })` runs first; `Router` built by hand: `new Router({ leave: unsavedChangesGuard })`.
+Track the draft on `input`, not `change` — `change` fires only when the field is left, so text typed before Escape
+or Back would read as clean.
 
 ## Routes with progress
 
