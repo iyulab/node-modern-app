@@ -7,10 +7,17 @@ export const styles = css`
     gap: var(--u-space-md, 12px);
     flex-wrap: wrap;
     margin-bottom: var(--u-space-2xl, 24px);
-    /* 아래 @container 질의의 기준 — 이 컴포넌트는 «화면»이 아니라 «자기 폭»으로 접힌다. */
-    container-type: inline-size;
   }
 
+  /* 좁을 때(자기 폭 640px 미만): 액션이 제목 아래로 내려가고 **왼쪽 정렬**로 폭을 채운다.
+     ★오른쪽 정렬을 유지하면 손가락이 닿기 어려운 쪽으로 몰린다.
+     🔴**«화면»이 아니라 «자기 폭»을 본다** — 셸 안에서 사이드바가 열려 본문이 500px 인 1280px 화면에서도
+     접히고, 넓은 본문을 가진 좁은 화면에서는 접히지 않는다. 그 판단을 크기 containment(@container)가 아니라
+     제목의 flex-basis 임계가 한다(«Holy Albatross» — u-group-box 머리말 주석의 근거와 같다: containment 가
+     Chromium 에서 같은 커밋의 재배치 뒤 상자를 접힌 채 남겼다).
+     ★임계는 **액션** 의 flex-basis 가 건다 — 제목에 걸면 같은 줄의 «뒤로» 링크와 제목이 갈라진다. 넓으면 basis 가
+     음수(→ 0)라 액션은 최소 폭(fit-content = 내용 폭)으로 제목 오른쪽에 서고, 좁으면 basis 가 매우 커져 혼자 한
+     줄을 채운다(내용은 왼쪽부터). */
   .heading {
     flex: 1 1 auto;
     min-width: 0; /* 긴 제목이 액션을 밀어내지 않게 — 줄바꿈이 아니라 축소가 먼저다 */
@@ -93,30 +100,14 @@ export const styles = css`
   }
 
   .actions {
-    flex: 0 0 auto;
+    flex: 0 1 calc((640px - 100%) * 999);
+    min-width: fit-content;
     display: flex;
     align-items: center;
     gap: var(--u-space-sm, 8px);
-    margin-left: auto;
   }
   /* 빈 액션 래퍼는 접는다(슬롯 배정은 'slotchange' 로 추적 — internals/slotted.ts). */
   .actions.empty {
     display: none;
-  }
-
-  /* 좁을 때: 액션이 제목 아래로 내려가고 **왼쪽 정렬**이 된다.
-     ★오른쪽 정렬을 유지하면 손가락이 닿기 어려운 쪽으로 몰린다.
-
-     🔴**«화면»이 아니라 «자기 폭»을 본다(@container).** 종전에는 @media 였고, 그러면
-     이 프리미티브가 **자기가 얼마나 좁은지와 무관하게** 접혔다 — 셸 안에서 사이드바가 열려
-     본문이 500px 인 1280px 화면에서는 접히지 않고, 반대로 넓은 본문을 가진 좁은 화면에서는
-     불필요하게 접혔다. 컴포넌트가 스스로 판단할 수 있는 것은 **자기 컨테이너 폭**뿐이다.
-     ⚠container-type: inline-size 는 인라인 축 containment 를 만든다 — 이 호스트는 블록
-     레벨이고 자식이 호스트 폭에 기대므로 무해하다(폭별 회귀 테스트가 감시한다). */
-  @container (max-width: 640px) {
-    .actions {
-      margin-left: 0;
-      width: 100%;
-    }
   }
 `;

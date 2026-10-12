@@ -12,19 +12,21 @@ export const styles = css`
     box-shadow: var(--u-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04));
   }
 
-  /* 아래 @container 질의의 기준 — 카드는 «화면»이 아니라 «자기 폭»으로 접힌다. 사이드바가 열린 1280px
-     화면의 좁은 본문에서도, 넓은 본문을 가진 태블릿에서도 같은 판단을 하려면 기준이 자기 폭이어야 한다.
-     슬롯 내용의 이름 없는 @container 질의(하우스 격자 등)도 평탄 트리 조상인 이 상자를 기준으로 삼는다.
-     🔴**컨테이너는 호스트가 아니라 섀도 안의 이 상자다.** 호스트에 두었을 때, 형제 «fieldset disabled» 전환과
-     같은 커밋에서 내용이 바뀐 카드가 높이 2px(테두리뿐)로 접힌 채 남는 Chromium 실측 보고가 있었다 — 강제
-     재배치로만 돌아왔고 호스트의 container-type 을 걷으면 생기지 않았다. 호스트는 평범한 블록으로 바깥
-     배치에 참여한다. 이 상자의 폭은 호스트 내용 폭과 같아 질의 결과는 그대로다. */
-  .frame {
-    container-type: inline-size;
-  }
+  /* 🔴**크기 containment 를 두지 않는다**(container-type 없음 — 호스트에도 섀도 안에도). 카드가 «자기 폭» 으로
+     접히는 판단은 아래 헤더의 고유 크기 배치(flex-basis 임계)가 한다. 컨테이너를 호스트에 두었을 때도, 섀도 안
+     상자로 옮겼을 때도, 형제 «fieldset disabled» 전환이나 위쪽 블록 삽입과 같은 커밋 뒤 카드가 높이 2px(테두리뿐)로
+     접힌 채 남는 Chromium 실측 보고가 있었다 — 강제 재배치로만 돌아왔고 containment 를 걷으면 생기지 않았다.
+     슬롯 내용도 이 카드를 질의 컨테이너로 삼지 않는다 — 하우스 격자는 컨테이너 없이 선다. */
 
+  /* 좁을 때(헤더 안쪽 폭 = 카드 480px − 좌우 여백): 툴바(검색·필터)가 제목 아래로 내려가고 폭을 채운다.
+     ⚠**제목과 툴바가 한 줄에 남으면 둘 다 읽히지 않는다** — 제목은 잘리고 입력은 손가락보다 좁아진다.
+     초안(R4)이 *"좁은 화면에서 접히는 규칙을 라이브러리가 정한다"* 로 요구한 것이 이 자리다.
+     ★임계는 제목의 flex-basis 가 건다: calc((임계 − 100%) × 999) 는 넓으면 음수(→ 0), 좁으면 매우 커져
+     제목이 한 줄을 혼자 차지한다(«Holy Albatross»). 제목은 남는 폭을 거의 다(9999) 받아 넓을 때 툴바를
+     오른쪽에 둔다. 툴바는 1 만 받아 넓을 때는 내용 폭, 혼자 남은 줄에서는 폭을 채운다. */
   .header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     gap: var(--u-space-sm, 8px);
     padding: var(--u-space-xl, 20px) var(--u-space-xl, 20px) 0;
@@ -43,7 +45,7 @@ export const styles = css`
 
   /* 제목과 설명 한 줄을 세로로 묶는다 — 액션은 그 오른쪽에 선다. */
   .titles {
-    flex: 1 1 auto;
+    flex: 9999 1 calc((480px - 2 * var(--u-space-xl, 20px) - 100%) * 999);
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -82,7 +84,7 @@ export const styles = css`
   }
 
   .actions {
-    flex: 0 0 auto;
+    flex: 1 0 auto;
     display: flex;
     align-items: center;
     gap: var(--u-space-sm, 8px);
@@ -110,18 +112,6 @@ export const styles = css`
     gap: var(--u-space-md, 12px);
   }
 
-  /* 좁을 때: 헤더의 툴바(검색·필터)가 제목 아래로 내려가고 폭을 채운다.
-     ⚠**제목과 툴바가 한 줄에 남으면 둘 다 읽히지 않는다** — 제목은 잘리고 입력은
-     손가락보다 좁아진다. 초안(R4)이 *"좁은 화면에서 접히는 규칙을 라이브러리가 정한다"*
-     로 요구한 것이 이 자리다. 480px 는 «제목 + 입력»이 함께 설 수 있는 하한이다. */
-  @container (max-width: 480px) {
-    .header {
-      flex-wrap: wrap;
-    }
-    .actions {
-      width: 100%;
-    }
-  }
   /* 표를 카드 가장자리까지 붙일 때. 헤더가 있으면 위 여백만 남긴다 —
      0 으로 만들면 제목과 표가 붙어 읽기 어려워진다. */
   .body.flush {

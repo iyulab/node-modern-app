@@ -62,8 +62,10 @@
 
 ### 🔴 접힘은 «화면»이 아니라 «자기 폭»으로 판단한다 (0.10.0)
 
-`u-page-header`·`u-group-box`·`u-action-bar` 는 `@container` 로 접힌다(`container-type:
-inline-size`). 종전에는 `@media` 였고, 그러면 프리미티브가 **자기가 얼마나 좁은지와 무관하게**
+`u-page-header`(640px)·`u-group-box`(480px)·`u-action-bar`(420px)는 **자기 폭**으로 접힌다. 판단은 크기
+containment(`@container`)가 아니라 고유 크기 배치 — 한 항목의 `flex-basis: calc((임계 − 100%) × 999)` — 가 한다
+(0.52.0 — containment 가 Chromium 에서 같은 커밋의 재배치 뒤 카드를 높이 2px 로 접힌 채 남겼다). 0.10.0 의 첫 판은
+`@media` 였고, 그러면 프리미티브가 **자기가 얼마나 좁은지와 무관하게**
 접혔다 — 사이드바가 열려 본문이 500px 인 1280px 화면에서는 접히지 않고, 넓은 본문을 가진 좁은
 화면에서는 불필요하게 접혔다.
 

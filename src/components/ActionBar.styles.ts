@@ -6,13 +6,19 @@ export const styles = css`
     align-items: center;
     gap: var(--u-space-sm, 8px);
     padding: var(--u-space-md, 12px) 0;
-    /* 자기 폭으로 접힌다 — 아래 질의의 기준. 화면 폭이 아니라 자기 상황을 본다.
-       ⚠**컨테이너는 «자손»을 위한 것이다** — @container 안에서 :host 자신을 겨냥하면
-       그 질의는 이 호스트가 아니라 **바깥의 다른 컨테이너**를 본다(실측으로 밟았다:
-       360px 에서 접히지 않았다). 그래서 줄바꿈 자체는 여기서 항상 허용하고, 좁을 때의
-       «폭 채우기»만 자손 규칙으로 건다. */
-    flex-wrap: wrap;
-    container-type: inline-size;
+    /* 자기 폭(420px 미만)으로 접힌다 — 두 무리가 각자 한 줄을 차지하고 **주 액션이 위로** 온다.
+       ⚠주 액션을 아래에 두면 위험 액션이 엄지 위치에 온다. 순서는 wrap-reverse 가 뒤집는다: 첫 줄(위험)이
+       아래, 다음 줄(주)이 위. 한 줄일 때는 그대로 «위험 왼쪽 · 주 오른쪽» 이다.
+       임계는 크기 containment(@container)가 아니라 두 무리의 flex-basis 가 건다(«Holy Albatross» — u-group-box
+       머리말 주석의 근거와 같다). */
+    flex-wrap: wrap-reverse;
+  }
+
+  /* 넓으면 basis 0 → 최소 폭(fit-content = 내용 폭)으로, 좁으면 basis 가 매우 커져 각자 한 줄을 채운다. */
+  .danger,
+  .main {
+    flex: 0 1 calc((420px - 100%) * 999);
+    min-width: fit-content;
   }
 
   /* 위험 액션(삭제 등)은 **왼쪽 끝**, 주 액션은 오른쪽 끝.
@@ -51,19 +57,5 @@ export const styles = css`
     background-color: var(--u-bg-color, #FFFFFF);
     border-top: 1px solid var(--u-border-color-weak, #EEEEEE);
     padding: var(--u-space-md, 12px) 0;
-  }
-
-  /* 좁을 때: 두 무리가 각자 한 줄을 차지하고 주 액션이 위로 온다.
-     ⚠주 액션을 아래에 두면 위험 액션이 엄지 위치에 온다 — 순서를 뒤집는 이유다. */
-  @container (max-width: 420px) {
-    .main {
-      order: -1;
-      width: 100%;
-      margin-left: 0;
-    }
-    .danger {
-      width: 100%;
-      margin-right: 0;
-    }
   }
 `;

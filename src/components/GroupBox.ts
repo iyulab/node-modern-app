@@ -94,8 +94,7 @@ export class GroupBox extends StyledElement<ElementParts> {
 
   render() {
     const hasHeader = !!this.title || !!this.description || this.hasActions;
-    // `.frame` 이 좁은 폭 질의의 컨테이너다 — 호스트가 아니라(스타일 주석 참조).
-    return html`<div class="frame">
+    return html`
       <div class="header ${this.divider ? 'divider' : ''} ${hasHeader ? '' : 'empty'}" part="header">
         <div class="titles">
           ${staticHtml`<${HEADINGS[this.headingLevel]} class="title" part="title">${this.title}${this.title && this.meta ? html` <span class="meta" part="meta">${this.meta}</span>` : ''}</${HEADINGS[this.headingLevel]}>`}
@@ -107,8 +106,7 @@ export class GroupBox extends StyledElement<ElementParts> {
           ></slot>
         </div>
       </div>
-      <div class="body ${this.flush ? 'flush' : ''}" part="body"><slot></slot></div>
-    </div>`;
+      <div class="body ${this.flush ? 'flush' : ''}" part="body"><slot></slot></div>`;
   }
 }
 

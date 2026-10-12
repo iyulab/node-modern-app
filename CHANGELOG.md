@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.52.0] - 2026-10-12
+
+### Changed
+
+- 🔴**`u-group-box`, `u-page-header` and `u-action-bar` no longer use size containment.** In Chromium a
+  `container-type: inline-size` box — on the host, and after 0.49.1 on an inner box — could stay collapsed to its
+  border (2px high) after a commit that changed layout elsewhere on the page (a sibling `fieldset` turning
+  `disabled`, a block appearing above it), until something forced a relayout. The three still fold by their own
+  width at the same points (480px, 640px, 420px); the threshold is now an item's `flex-basis`. Consequences:
+  - Unnamed `@container` queries in content slotted into `u-group-box` no longer resolve to the card. Lay that
+    content out intrinsically, or give it a container of your own.
+  - A card in a box that sizes to its content (a flex row item without `flex: 1`, `inline-block`, a grid `auto`
+    column) now sizes to its content instead of shrinking to its border.
+  - `u-group-box`'s header folds when the card is narrower than 480px, measured on the card's border box as before.
+  - The inner `.frame` wrapper `u-group-box` gained in 0.49.1 is gone; the header and body are direct children of
+    the shadow root again.
+
 ## [0.51.0] - 2026-10-12
 
 ### Changed
