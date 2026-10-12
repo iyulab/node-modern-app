@@ -170,6 +170,13 @@ interface RouteContext {
   metadata: Record<string, unknown>;
 
   /**
+   * How this screen was reached. `type` is `push` (a new entry), `replace`, `reload`, or `traverse`
+   * (Back/Forward returned to an existing entry). `entryKey` names the history entry — the same value
+   * when you come back to it, so per-entry memory (scroll, selection) keys on it.
+   */
+  navigation: { type: 'push' | 'replace' | 'reload' | 'traverse'; entryKey: string };
+
+  /**
    * Report loading progress (0–100).
    * Drives the progress bar shown in the layout header.
    */

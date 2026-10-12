@@ -42,7 +42,8 @@ function fakeRouteContext(pathname = '/detail'): RouteContext {
     query: new URLSearchParams(),
     progress: () => {},
     metadata: {},
-  };
+    navigation: { type: 'push', entryKey: 'test' },
+  } as RouteContext;
 }
 
 const mainContent = (el: SidebarLayout) =>

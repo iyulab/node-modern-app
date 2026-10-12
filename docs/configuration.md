@@ -272,6 +272,9 @@ interface RouteContext {
 
   metadata: Record<string, unknown>;
   progress: (value: number) => void;
+
+  /** How this screen was reached — `type`: `push` · `replace` · `reload` · `traverse` (Back/Forward); `entryKey`: the history entry's key, the same when you come back to it. */
+  navigation: { type: 'push' | 'replace' | 'reload' | 'traverse'; entryKey: string };
 }
 ```
 

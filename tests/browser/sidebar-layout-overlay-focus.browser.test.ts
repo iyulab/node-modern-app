@@ -86,7 +86,8 @@ function fakeRouteContext(pathname = '/next'): RouteContext {
     href: `https://example.com${pathname}`, origin: 'https://example.com', basepath: '/',
     path: pathname, pathname, params: {}, query: new URLSearchParams(),
     progress: () => {}, metadata: {},
-  };
+    navigation: { type: 'push', entryKey: 'test' },
+  } as RouteContext;
 }
 
 describe('SidebarLayout overlay — focus moves into the panel when it opens', () => {
