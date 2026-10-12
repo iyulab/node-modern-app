@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.52.1] - 2026-10-12
+
+### Fixed
+
+- The Korean hidden new-tab hint reads `, 새 창에서 열림` instead of `(새 창에서 열림)`. NVDA's Korean symbol table speaks
+  parentheses at the default punctuation level, so every sidebar link that opens a new tab was announced as «… 여는 괄호 새 창에서 열림 닫는
+  괄호 …»; a comma is only a pause there.
+
 ## [0.52.0] - 2026-10-12
 
 ### Changed

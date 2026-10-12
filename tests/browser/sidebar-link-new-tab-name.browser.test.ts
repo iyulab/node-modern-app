@@ -39,7 +39,7 @@ describe('u-sidebar-link — 새 창 링크의 접근성 이름', () => {
   it('로케일을 따른다', async () => {
     Locale.set('ko');
     await mount('target="_blank"');
-    await expect.element(page.getByRole('link', { name: 'Help (새 창에서 열림)' })).toBeInTheDocument();
+    await expect.element(page.getByRole('link', { name: /^Help ?, 새 창에서 열림$/ })).toBeInTheDocument();
   });
 
   it('화면에는 보이지 않는다', async () => {

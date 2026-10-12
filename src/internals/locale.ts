@@ -129,7 +129,7 @@ modernAppLocale.register('ko', {
   toggleMobileMenu: '메뉴 열고 닫기',
   toggleSidebar: '사이드바 열고 닫기',
   skipToContent: '본문으로 건너뛰기',
-  opensInNewTab: '(새 창에서 열림)',
+  opensInNewTab: ', 새 창에서 열림',
   pageLoading: '페이지 불러오는 중',
   wizardBack: '이전',
   wizardNext: '다음',
