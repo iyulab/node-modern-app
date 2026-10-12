@@ -211,21 +211,34 @@ A screen with input the user has not saved registers one check, and both ways of
 When nothing is unsaved, nothing is asked and nothing waits.
 
 ```typescript
+import { LitElement, html } from 'lit';
 import { UnsavedChangesController } from '@iyulab/modern-app';
 
 class OrderEditor extends LitElement {
-  // registered while the element is connected
-  readonly unsaved = new UnsavedChangesController(this, () => this.form.dirty);
+  private saved = 'Aster Trading';
+  private draft = this.saved;
+  // Registered while the element is connected; read each time a way out asks. `readonly`, not `private` —
+  // the field is held for its effect, and `noUnusedLocals` flags a private field nobody reads.
+  readonly unsaved = new UnsavedChangesController(this, () => this.draft !== this.saved);
+
+  render() {
+    return html`<u-input
+      label="Customer"
+      .value=${this.draft}
+      @input=${(e: Event) => { this.draft = (e.target as HTMLInputElement).value; }}
+    ></u-input>`;
+  }
 }
 ```
 
 ```tsx
+import { useState } from 'react';
 import { useUnsavedChanges } from '@iyulab/modern-app/react';
 
-function OrderEditor() {
-  const [draft, setDraft] = useState(order);
-  useUnsavedChanges(draft !== order);
-  // ...
+function OrderEditor({ saved }: { saved: string }) {
+  const [draft, setDraft] = useState(saved);
+  useUnsavedChanges(draft !== saved);
+  return <input value={draft} onInput={(e) => setDraft(e.currentTarget.value)} />;
 }
 ```
 
