@@ -20,6 +20,12 @@ A client-side SPA framework built on Lit Element. Provides a single `app` single
 npm install @iyulab/modern-app
 ```
 
+`@iyulab/router` and `@iyulab/components` are peer dependencies — npm 7+ and pnpm install them for you, and the
+app shares the shell's copy. After installing or upgrading, `npm ls @iyulab/router @iyulab/modern-app` should list
+one version of each. In a workspace where another package declares them as broad peers (`"*"`), an upgrade can
+leave the older copy installed with no install error; remove the older entries from the lockfile and
+`node_modules`, then install again.
+
 ---
 
 ## Bootstrap

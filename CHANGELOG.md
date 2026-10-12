@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.52.2] - 2026-10-13
+
+### Documentation
+
+- The installation section says how to check the 0.51 peer move: `npm ls @iyulab/router @iyulab/modern-app` should
+  list one version of each. An upgrade does not always fail when an older copy stays — in a workspace where another
+  package declares them as broad peers (`"*"`), the older copy keeps satisfying that package and stays installed with
+  no install error. Remove the older entries from the lockfile and `node_modules`, then install again.
+  `@iyulab/router` 0.23.1 names this cause when a second copy loads.
+
 ## [0.52.1] - 2026-10-12
 
 ### Fixed
