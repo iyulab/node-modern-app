@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.49.1] - 2026-10-12
+
+### Fixed
+
+- `u-group-box` is no longer a size container itself; the query container for its narrow layout is a box inside its
+  shadow root of the same width. In Chromium a card whose content changed in the same commit that disabled a sibling
+  `<fieldset>` could stay collapsed to its border (2px tall) until something forced a relayout, and the host's
+  `container-type` was the ingredient. Narrow-width rules — the card's own header, and unnamed `@container` queries
+  in slotted content — resolve to the same width as before.
+
 ## [0.49.0] - 2026-10-09
 
 ### Added
