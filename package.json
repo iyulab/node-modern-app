@@ -60,12 +60,12 @@
     "test:react-types": "tsc -p tsconfig.react-smoke.json"
   },
   "dependencies": {
-    "@iyulab/router": "^0.22.0",
     "i18next": "^26.3.6",
     "lit": "^3.3.3"
   },
   "peerDependencies": {
     "@iyulab/components": ">=2.8.0",
+    "@iyulab/router": "^0.23.0",
     "@lit/react": "^1.0.8",
     "react": "^18.0.0 || ^19.0.0"
   },
@@ -78,7 +78,8 @@
     }
   },
   "devDependencies": {
-    "@iyulab/components": "^2.19.0",
+    "@iyulab/components": "^2.20.3",
+    "@iyulab/router": "^0.23.0",
     "@lit/react": "^1.0.8",
     "@types/node": "^26.1.1",
     "@types/react": "^19.3.0",
