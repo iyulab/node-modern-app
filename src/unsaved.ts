@@ -93,7 +93,7 @@ export function unsavedChangesGuard(_ctx?: RouteLeaveContext): boolean | Promise
  * @example
  * ```ts
  * class OrderPage extends LitElement {
- *   private unsaved = new UnsavedChangesController(this, () => this.form.dirty);
+ *   readonly unsaved = new UnsavedChangesController(this, () => this.form.dirty);
  * }
  * ```
  */

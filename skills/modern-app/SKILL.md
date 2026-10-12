@@ -244,7 +244,7 @@ Back/Forward included) and the browser asks before the document is left (`before
 ```ts
 import { UnsavedChangesController, confirmDiscardChanges } from '@iyulab/modern-app';
 // Lit
-private unsaved = new UnsavedChangesController(this, () => this.form.dirty);
+readonly unsaved = new UnsavedChangesController(this, () => this.form.dirty);
 // React: useUnsavedChanges(dirty) from '@iyulab/modern-app/react'
 // Plain: const release = trackUnsavedChanges(() => dirty);
 // A modal drawer's close is not a navigation — ask from its cancellable `hide` event:

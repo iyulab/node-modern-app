@@ -215,7 +215,7 @@ import { UnsavedChangesController } from '@iyulab/modern-app';
 
 class OrderEditor extends LitElement {
   // registered while the element is connected
-  private unsaved = new UnsavedChangesController(this, () => this.form.dirty);
+  readonly unsaved = new UnsavedChangesController(this, () => this.form.dirty);
 }
 ```
 
