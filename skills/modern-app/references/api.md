@@ -28,6 +28,12 @@ interface AppConfig {
    */
   enter?: (ctx: RouteContext) => Promise<string | boolean> | string | boolean;
 
+  /**
+   * Global guard called before the current screen is replaced (after the route `leave` guards).
+   * `false` = stay. Unsaved changes do not need it — see «Unsaved changes» in routing.md.
+   */
+  leave?: (ctx: RouteLeaveContext) => Promise<boolean> | boolean;
+
   /** Auto-navigate to the current URL on load. Default: true */
   initialLoad?: boolean;
 
@@ -133,6 +139,12 @@ interface RouteConfig {
    * - Return `true` (or nothing) to proceed.
    */
   enter?: (context: RouteContext) => Promise<string | boolean> | string | boolean;
+
+  /**
+   * Guard called before this route's screen is replaced — `false` stays (Back/Forward included).
+   * Gets `{ from, to }`; `to` is the destination's address.
+   */
+  leave?: (context: RouteLeaveContext) => Promise<boolean> | boolean;
 
   /** Child routes, matched relative to this route's path. */
   children?: RouteConfig[];

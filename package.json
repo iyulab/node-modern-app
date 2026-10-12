@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "web-framework by iyulab based on lit-element",
-  "version": "0.52.2",
+  "version": "0.53.0",
   "keywords": [
     "iyulab",
     "web-framework",
@@ -65,7 +65,7 @@
   },
   "peerDependencies": {
     "@iyulab/components": ">=2.8.0",
-    "@iyulab/router": "^0.23.0",
+    "@iyulab/router": "^0.24.0",
     "@lit/react": "^1.0.8",
     "react": "^18.0.0 || ^19.0.0"
   },
@@ -79,7 +79,7 @@
   },
   "devDependencies": {
     "@iyulab/components": "^2.20.3",
-    "@iyulab/router": "^0.23.0",
+    "@iyulab/router": "^0.24.0",
     "@lit/react": "^1.0.8",
     "@types/node": "^26.1.1",
     "@types/react": "^19.3.0",

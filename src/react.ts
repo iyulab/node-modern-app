@@ -7,6 +7,7 @@ import type { GroupBoxLevel } from './components/GroupBox.js';
 import type { EmptyStateVariant } from './components/EmptyState.js';
 import type { TimelineItemColor } from './components/TimelineItem.js';
 import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone } from './components/InfoField.js';
+import { trackUnsavedChanges } from './unsaved.js';
 
 // `SidebarLayout`을 `app.load()` 없이 이 서브패스만으로 단독 마운트하는 소비자를 위한
 // 반응형 구동 수단 — `SidebarLayout`의 large→slim/medium→modal/small→mobile 전환은
@@ -14,6 +15,23 @@ import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone } fr
 // 이것이 유일한 공개 진입점이다(예: `useEffect`에서 생성하고 정리 시 `destroy()`).
 export { ScreenObserver } from './internals/ScreenObserver.js';
 export type { ScreenSize, ScreenObserverConfig, ScreenResizeEvent } from './internals/ScreenObserver.js';
+
+/**
+ * React 화면의 «저장 안 한 변경» — 마운트된 동안 판정을 등록한다(`trackUnsavedChanges`). 셸(`app.load()`)이 떠나기 전에
+ * «변경을 버릴까요?» 를 묻고, 문서 이탈(새로 고침 · 탭 닫기)에는 브라우저 확인이 걸린다. 값은 매 렌더의 것을 본다.
+ *
+ * ```tsx
+ * function OrderForm() {
+ *   const [draft, setDraft] = useState(initial);
+ *   useUnsavedChanges(draft !== initial);
+ * }
+ * ```
+ */
+export function useUnsavedChanges(dirty: boolean): void {
+  const latest = React.useRef(dirty);
+  latest.current = dirty;
+  React.useEffect(() => trackUnsavedChanges(() => latest.current), []);
+}
 
 /**
  * React wrapper for `<u-sidebar-layout>`. `config` is an `@property({ type: Object })` —

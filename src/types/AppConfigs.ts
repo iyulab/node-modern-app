@@ -1,5 +1,5 @@
 import type { InitOptions, Module, Newable, NewableModule } from "i18next";
-import type { RouteConfig, FallbackRouteConfig, RouteContext } from "@iyulab/router";
+import type { RouteConfig, FallbackRouteConfig, RouteContext, RouteLeaveContext } from "@iyulab/router";
 import type { ThemeInitOptions } from "@iyulab/components/dist/utilities/Theme.js";
 import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
 import type { AuthGateConfig } from "./AuthConfig";
@@ -80,6 +80,17 @@ export interface AppConfig {
    * ```
    */
   enter?: (ctx: RouteContext) => Promise<string | boolean> | string | boolean;
+
+  /**
+   * 모든 라우트 전환 전에, 지금 화면을 떠나기 전에 호출되는 글로벌 leave 함수입니다(`@iyulab/router` 의 `RouterConfig.leave`).
+   * - `false` 반환: 이동 취소(화면과 주소가 그대로)
+   * - `true`/무반환: 통과
+   *
+   * 저장 안 한 변경은 이것 없이 막힌다 — 화면이 `trackUnsavedChanges(isDirty)`(Lit `UnsavedChangesController` · React
+   * `useUnsavedChanges`)로 판정을 등록하면 셸이 이 함수 다음에 «변경을 버릴까요?» 를 묻고, 문서 이탈(새로 고침 · 탭 닫기)에는
+   * 브라우저 확인을 건다. 이 함수는 그 밖의 «떠나도 되는가» 판정의 자리다.
+   */
+  leave?: (ctx: RouteLeaveContext) => Promise<boolean> | boolean;
 
   /**
    * 초기 로드 시 현재 URL로 라우팅을 자동으로 수행할지 여부를 설정합니다.

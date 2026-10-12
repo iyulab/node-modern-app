@@ -8,7 +8,7 @@ export type { SidebarPermissionGuard } from './layouts/SidebarPermission';
 // 라우팅 표면 — `app.load({ routes, fallback })` 이 받고 내는 것은 `@iyulab/router` 의 타입이다.
 // 여기서 다시 내보내지 않으면 소비앱은 «권한 거부»와 «없는 경로»를 가르려고(`ctx.error instanceof AccessDeniedError`)
 // 이 패키지의 의존을 직접 선언해야 했다(#948). 클래스는 값으로 낸다 — `instanceof` 는 같은 모듈의 클래스여야 성립한다.
-export type { RouteConfig, RouteContext, FallbackRouteConfig } from '@iyulab/router';
+export type { RouteConfig, RouteContext, FallbackRouteConfig, RouteLeaveContext } from '@iyulab/router';
 export {
   RouteError,
   NotFoundError,
@@ -56,6 +56,17 @@ export { MasterDetailLayout } from './components/MasterDetailLayout.js';
 export type { MasterDetailLayoutEventMap } from './components/MasterDetailLayout.js';
 export { Wizard } from './components/Wizard.js';
 export type { WizardStep, WizardStepState, WizardStepChangeDetail, WizardEventMap } from './components/Wizard.js';
+
+// «저장 안 한 변경» — 화면이 판정을 등록하면 라우터 이동(확인 대화상자)과 문서 이탈(`beforeunload`)이 함께 묻는다.
+// `app.load()` 는 라우터에 배선한다 · `Router` 를 직접 만드는 앱은 `leave: unsavedChangesGuard`.
+export {
+  trackUnsavedChanges,
+  hasUnsavedChanges,
+  confirmDiscardChanges,
+  unsavedChangesGuard,
+  UnsavedChangesController,
+} from './unsaved.js';
+export type { DiscardChangesOptions } from './unsaved.js';
 
 // 반응형 번역 디렉티브 — `app.load({ i18n })` 가 초기화한 i18next 에 붙는다.
 export { translate } from './translate.js';

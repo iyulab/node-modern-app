@@ -67,6 +67,14 @@ export interface ModernAppLocaleStrings {
    *  assistive technology while idle). */
   pageLoading: string;
 
+  /** Unsaved changes — the confirmation asked before a screen with unsaved changes is left (`confirmDiscardChanges`). */
+  discardTitle: string;
+  discardMessage: string;
+  /** The button that leaves and drops the changes. */
+  discardConfirm: string;
+  /** The button that stays. */
+  discardCancel: string;
+
   /** Wizard — default Back/Next action labels ("Submit" wording is the consumer's call). */
   wizardBack: string;
   wizardNext: string;
@@ -99,6 +107,10 @@ const EN_TABLE: Record<ModernAppMessageKey, string> = {
   skipToContent: 'Skip to main content',
   opensInNewTab: '(opens in a new tab)',
   pageLoading: 'Loading page',
+  discardTitle: 'Discard unsaved changes?',
+  discardMessage: 'Changes on this screen have not been saved.',
+  discardConfirm: 'Discard',
+  discardCancel: 'Keep editing',
   wizardBack: 'Back',
   wizardNext: 'Next',
   wizardStepAnnouncement: 'Step {index} of {total}: {label}',
@@ -131,6 +143,10 @@ modernAppLocale.register('ko', {
   skipToContent: '본문으로 건너뛰기',
   opensInNewTab: ', 새 창에서 열림',
   pageLoading: '페이지 불러오는 중',
+  discardTitle: '저장하지 않은 변경을 버릴까요?',
+  discardMessage: '이 화면에서 바꾼 내용이 저장되지 않았습니다.',
+  discardConfirm: '버리기',
+  discardCancel: '계속 편집',
   wizardBack: '이전',
   wizardNext: '다음',
   wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}',
@@ -168,6 +184,10 @@ export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
     skipToContent: t('skipToContent'),
     opensInNewTab: t('opensInNewTab'),
     pageLoading: t('pageLoading'),
+    discardTitle: t('discardTitle'),
+    discardMessage: t('discardMessage'),
+    discardConfirm: t('discardConfirm'),
+    discardCancel: t('discardCancel'),
     wizardBack: t('wizardBack'),
     wizardNext: t('wizardNext'),
     wizardStepAnnouncement: (index, total, label) => text(lang, 'wizardStepAnnouncement', { index, total, label }),

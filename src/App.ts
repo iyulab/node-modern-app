@@ -8,6 +8,7 @@ import { Locale } from '@iyulab/components/dist/utilities/Locale.js';
 
 import { ScreenObserver, type ScreenSize } from './internals/ScreenObserver';
 import { defaultFallback } from './defaultFallback.js';
+import { unsavedChangesGuard } from './unsaved.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs';
 import type { NotificationOptions } from './types/AppOptions';
 import type { AuthSession } from './types/AuthConfig';
@@ -177,6 +178,13 @@ class App {
       // 주지 않으면 빈 상태 어휘로 그린다(403 no-access · 404 not-found · 그 밖 error) — defaultFallback.ts(공개 — `Router` 를 직접 쓰는 앱도 같은 화면).
       fallback: config.fallback ?? defaultFallback,
       enter: config.enter,
+      // 앱의 판정 다음 «저장 안 한 변경» — 둘 다 바로 답하면(대부분의 이동) 기다리지 않는다.
+      leave: (ctx) => {
+        const own = config.leave ? config.leave(ctx) : true;
+        if (own === false) return false;
+        if (own === true) return unsavedChangesGuard(ctx);
+        return Promise.resolve(own).then((value) => (value === false ? false : unsavedChangesGuard(ctx)));
+      },
       initialLoad: config.initialLoad,
       useIntercept: config.useIntercept,
       // 셸은 문서가 아니라 본문 상자를 굴린다 — 브라우저의 문서 복원이 닿지 않는 자리라 라우터가 항목별로 되돌린다.

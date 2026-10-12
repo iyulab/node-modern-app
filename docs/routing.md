@@ -49,6 +49,12 @@ interface RouteConfig {
   enter?: (context: RouteContext) => Promise<string | boolean> | string | boolean;
 
   /**
+   * Guard called before this route's screen is replaced — `false` stays (Back/Forward included).
+   * Gets `{ from, to }`; `to` is the destination's address.
+   */
+  leave?: (context: RouteLeaveContext) => Promise<boolean> | boolean;
+
+  /**
    * Render function. May be async. Returns a Lit `TemplateResult`, an `HTMLElement`, or a React
    * element — return the React element itself and the outlet creates and unmounts its React
    * root for you (wrapping your own root in a container skips that unmount and leaks).
@@ -191,6 +197,60 @@ app.router?.routes;     // registered RouteConfig array
 ```
 
 ---
+
+## Unsaved changes
+
+A screen with input the user has not saved registers one check, and both ways of leaving ask it:
+
+- **A navigation** (a link, `app.navigate()`, the sidebar, a selection channel, Back and Forward) — the shell asks
+  «Discard unsaved changes?» in an in-app dialog with **Discard** and **Keep editing**. Keep editing stays: the
+  screen and the address do not change.
+- **Leaving the document** (reload, another site, closing the tab) — the browser's own confirmation
+  (`beforeunload`; browsers show their own wording).
+
+When nothing is unsaved, nothing is asked and nothing waits.
+
+```typescript
+import { UnsavedChangesController } from '@iyulab/modern-app';
+
+class OrderEditor extends LitElement {
+  // registered while the element is connected
+  private unsaved = new UnsavedChangesController(this, () => this.form.dirty);
+}
+```
+
+```tsx
+import { useUnsavedChanges } from '@iyulab/modern-app/react';
+
+function OrderEditor() {
+  const [draft, setDraft] = useState(order);
+  useUnsavedChanges(draft !== order);
+  // ...
+}
+```
+
+Without a component, `trackUnsavedChanges(() => dirty)` returns a function that removes the check.
+`hasUnsavedChanges()` reads all of them.
+
+**Closing a modal drawer is not a navigation** — ask the same question from the drawer's cancellable `hide`
+event, with the same wording:
+
+```typescript
+import { confirmDiscardChanges } from '@iyulab/modern-app';
+
+drawer.addEventListener('hide', async (event) => {
+  if (!form.dirty) return;
+  event.preventDefault();
+  if (await confirmDiscardChanges()) {
+    form.reset();
+    drawer.hide();
+  }
+});
+```
+
+`app.load({ leave })` adds a check of your own before this one. An app that builds `Router` itself wires the same
+behaviour with `new Router({ leave: unsavedChangesGuard })`. The wording is `modernAppLocale` (`discardTitle`,
+`discardMessage`, `discardConfirm`, `discardCancel` — English and Korean built in).
 
 ## Authentication & Guards
 

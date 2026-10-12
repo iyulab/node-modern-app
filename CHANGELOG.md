@@ -1,6 +1,26 @@
 # Changelog
 
-## [0.52.2] - 2026-10-13
+## [0.53.0] - 2026-10-13
+
+### Added
+
+- **Unsaved changes are not dropped without asking.** A screen registers one check —
+  `UnsavedChangesController(host, () => dirty)` (Lit), `useUnsavedChanges(dirty)` (`/react`) or
+  `trackUnsavedChanges(() => dirty)` — and both ways of leaving ask it. Before a navigation (a link,
+  `app.navigate()`, the sidebar, a selection channel, Back and Forward) the shell asks «Discard unsaved changes?» in
+  an in-app dialog — **Discard** leaves, **Keep editing** stays with the screen and the address unchanged. Leaving
+  the document (reload, another site, closing the tab) gets the browser's own `beforeunload` confirmation. When
+  nothing is unsaved, nothing is asked and nothing waits. A check that throws counts as unsaved.
+- `confirmDiscardChanges(options?)` asks the same question anywhere — a modal drawer's cancellable `hide` event is
+  the place for «close without saving». `hasUnsavedChanges()` reads every registered check. `unsavedChangesGuard`
+  wires the same behaviour into a `Router` an app builds itself (`new Router({ leave: unsavedChangesGuard })`).
+- `AppConfig.leave` — a global check of your own, asked before the unsaved-changes one (`@iyulab/router`'s
+  `RouterConfig.leave`). `RouteLeaveContext` is re-exported.
+- Built-in strings `discardTitle`, `discardMessage`, `discardConfirm`, `discardCancel` (English and Korean).
+
+### Changed
+
+- **Requires `@iyulab/router` 0.24** (peer `^0.24.0`) — the version with `leave` guards.
 
 ### Documentation
 
