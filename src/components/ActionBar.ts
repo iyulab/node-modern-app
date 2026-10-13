@@ -5,7 +5,7 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './ActionBar.styles.js';
 
-type ElementParts = 'host' | 'danger' | 'main';
+type ElementParts = 'host' | 'danger' | 'summary' | 'main';
 
 /**
  * 푸터 액션 바 — 상세·편집 화면 맨 아래의 같은 골격.
@@ -24,10 +24,13 @@ type ElementParts = 'host' | 'danger' | 'main';
  * ```
  *
  * 배치 규칙: **위험 액션은 왼쪽 끝, 주 액션은 오른쪽 끝** — 거리가 안전장치다.
- * 좁아지면 두 무리가 각자 한 줄을 갖고 **주 액션이 위로** 온다(엄지 위치에 위험 액션을
+ * 좁아지면 무리마다 한 줄을 갖고 **주 액션이 위로** 온다(엄지 위치에 위험 액션을
  * 두지 않기 위해서다).
  *
- * 오버라이드: `part`(host·danger·main) + slot 치환.
+ * `summary` 슬롯은 주 액션이 무엇을 할지 말하는 글이다(«변경 1건 · 주문 번호») — 위험 액션 뒤에서
+ * 남는 폭을 채운다. 시트 가장자리에 붙는 바닥이면 `--action-bar-padding-inline` 으로 안쪽 여백을 준다.
+ *
+ * 오버라이드: `part`(host·danger·summary·main) + slot 치환.
  */
 @customElement('u-action-bar')
 export class ActionBar extends StyledElement<ElementParts> {
@@ -45,12 +48,19 @@ export class ActionBar extends StyledElement<ElementParts> {
    * (`internals/slotted.ts` 참조). 빈 래퍼가 남으면 주 액션이 가운데로 밀린다.
    */
   @state() private hasDanger = false;
+  /** 요약 슬롯 배정 상태 — 비면 래퍼를 접는다(위와 같은 이유). */
+  @state() private hasSummary = false;
 
   render() {
     return html`
       <div class="danger ${this.hasDanger ? '' : 'empty'}" part="danger">
         <slot name="danger"
           @slotchange=${(e: Event) => (this.hasDanger = slotHasContent(e.target as HTMLSlotElement))}
+        ></slot>
+      </div>
+      <div class="summary ${this.hasSummary ? '' : 'empty'}" part="summary">
+        <slot name="summary"
+          @slotchange=${(e: Event) => (this.hasSummary = slotHasContent(e.target as HTMLSlotElement))}
         ></slot>
       </div>
       <div class="main" part="main"><slot></slot></div>

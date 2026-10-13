@@ -75,3 +75,45 @@ describe('u-action-bar', () => {
     expect(getComputedStyle(bar).position).not.toBe('sticky');
   });
 });
+
+describe('u-action-bar summary', () => {
+  it('sits at the leading edge and fills the space before the main actions', async () => {
+    const bar = await mount(800, `<span slot="summary">1 change · Order number</span><button>Cancel</button><button>Save</button>`);
+    const host = bar.getBoundingClientRect();
+    const summary = rect(bar, 'summary');
+    const main = rect(bar, 'main');
+    expect(summary.left).toBeCloseTo(host.left, 0);
+    expect(summary.right).toBeLessThanOrEqual(main.left);
+    expect(main.right).toBeCloseTo(host.right, 0);
+    // it takes the free width (grow), not just its text
+    expect(summary.width).toBeGreaterThan(400);
+  });
+
+  it('follows the danger action, and the main actions still end the bar', async () => {
+    const bar = await mount(800, `<button slot="danger">Delete</button><span slot="summary">Unsaved</span><button>Save</button>`);
+    const danger = rect(bar, 'danger');
+    const summary = rect(bar, 'summary');
+    const main = rect(bar, 'main');
+    expect(summary.left).toBeGreaterThanOrEqual(danger.right);
+    expect(main.left).toBeGreaterThanOrEqual(summary.right);
+  });
+
+  it('narrow — each group on its own line, main actions on top', async () => {
+    const bar = await mount(360, `<button slot="danger">Delete</button><span slot="summary">1 change</span><button>Cancel</button><button>Save</button>`);
+    const summary = rect(bar, 'summary');
+    expect(rect(bar, 'main').top).toBeLessThan(summary.top);
+    expect(summary.top).toBeLessThan(rect(bar, 'danger').top);
+  });
+
+  it('NEGATIVE: an empty summary takes no room', async () => {
+    const bar = await mount(800, `<button>Save</button>`);
+    expect(rect(bar, 'summary').width).toBe(0);
+  });
+
+  it('--action-bar-padding-inline insets the groups from a sheet edge', async () => {
+    const bar = await mount(800, `<span slot="summary">x</span><button>Save</button>`, 'style="--action-bar-padding-inline: 20px"');
+    const host = bar.getBoundingClientRect();
+    expect(rect(bar, 'summary').left).toBeCloseTo(host.left + 20, 0);
+    expect(rect(bar, 'main').right).toBeCloseTo(host.right - 20, 0);
+  });
+});

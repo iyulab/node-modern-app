@@ -5,7 +5,7 @@ export const styles = css`
     display: flex;
     align-items: center;
     gap: var(--u-space-sm, 8px);
-    padding: var(--u-space-md, 12px) 0;
+    padding: var(--u-space-md, 12px) var(--action-bar-padding-inline, 0);
     /* 자기 폭(420px 미만)으로 접힌다 — 두 무리가 각자 한 줄을 차지하고 **주 액션이 위로** 온다.
        ⚠주 액션을 아래에 두면 위험 액션이 엄지 위치에 온다. 순서는 wrap-reverse 가 뒤집는다: 첫 줄(위험)이
        아래, 다음 줄(주)이 위. 한 줄일 때는 그대로 «위험 왼쪽 · 주 오른쪽» 이다.
@@ -36,6 +36,18 @@ export const styles = css`
     display: none;
   }
 
+  /* 주 액션이 무엇을 할지 말하는 글 — 위험 액션 뒤에서 남는 폭을 채운다(넓을 때 basis 0 · grow 1). 좁으면
+     다른 무리처럼 한 줄을 차지한다. 조용한 글이라 라벨 단의 약한 글자색. */
+  .summary {
+    flex: 1 1 calc((420px - 100%) * 999);
+    min-width: 0;
+    font-size: var(--u-text-label-size, 13px);
+    color: var(--u-txt-color-weak, #616161);
+  }
+  .summary.empty {
+    display: none;
+  }
+
   .main {
     display: flex;
     align-items: center;
@@ -56,6 +68,6 @@ export const styles = css`
     bottom: 0;
     background-color: var(--u-bg-color, #FFFFFF);
     border-top: 1px solid var(--u-border-color-weak, #EEEEEE);
-    padding: var(--u-space-md, 12px) 0;
+    padding: var(--u-space-md, 12px) var(--action-bar-padding-inline, 0);
   }
 `;

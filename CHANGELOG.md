@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`u-action-bar` `summary` slot** — what the main action will do («1 change · Order number»). It follows the
+  danger actions and fills the free width; below 420px it takes its own line between the main actions (on top) and
+  the danger actions. Label-size, weak text.
+- `--action-bar-padding-inline` — inline padding for a bar that runs to a side sheet's edges (default `0`).
+
+### Fixed
+
+- The `u-action-bar` skill reference placed the main actions at the leading edge and the danger actions at the
+  trailing edge — the reverse of what the bar does. It now describes the actual layout.
+
 ## [0.53.1] - 2026-10-13
 
 ### Fixed
