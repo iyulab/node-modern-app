@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.53.1] - 2026-10-13
+
+### Fixed
+
+- **Group headers and sidebar buttons follow the navigation item tokens.** `--app-sidebar-item-gap`,
+  `--app-sidebar-item-padding` and `--app-sidebar-item-radius` were read by links only, and `--app-sidebar-icon-size` by
+  links and group headers — a theme that set them got three different label starts in one sidebar (links, group
+  headers, and footer buttons such as a theme toggle). All three item kinds now read all four. Without the tokens the
+  defaults are unchanged.
+
+### Documentation
+
+- The unsaved-changes examples are complete snippets for Lit and React, and hold `UnsavedChangesController` in a
+  `readonly` field (a `private` one is flagged by `noUnusedLocals`).
+
 ## [0.53.0] - 2026-10-13
 
 ### Added

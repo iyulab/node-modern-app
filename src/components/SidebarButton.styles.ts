@@ -7,7 +7,7 @@ export const styles = css`
     color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
     background-color: transparent;
     border: none;
-    border-radius: 8px;
+    border-radius: var(--app-sidebar-item-radius, 8px);
     transition: all var(--u-duration-normal, 220ms) ease;
     cursor: pointer;
   }
@@ -34,8 +34,9 @@ export const styles = css`
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
-    gap: 12px;
-    padding: 8px 12px;
+    /* 항목 축 — 링크·그룹 머리와 같은 토큰. 바닥 버튼만 다른 정렬이면 한 사이드바에 글자 시작이 셋이 된다. */
+    gap: var(--app-sidebar-item-gap, 12px);
+    padding: var(--app-sidebar-item-padding, 8px 12px);
     /* 호스트 하한(--u-target-size, 미설정 = 0) — 상자는 border-box(기반 스타일)라 여백을 포함한다. */
     min-height: var(--u-target-size, 0px);
   }
@@ -52,7 +53,7 @@ export const styles = css`
   u-icon {
     flex-shrink: 0;
     color: inherit;
-    font-size: 20px;
+    font-size: var(--app-sidebar-icon-size, 20px);
   }
 
   /* ★SidebarLink 와 같은 자리·같은 단(label). 두 곳이 어긋나면 목록이 계단이 된다. */
