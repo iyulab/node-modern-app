@@ -114,6 +114,11 @@ export class InfoField extends StyledElement<ElementParts> {
    * `--u-success|danger|warning-color-strong`.
    */
   @property({ type: String }) tone?: InfoFieldTone;
+  /**
+   * 값 아래의 보조 줄 — 그 값의 근거나 다른 단위의 같은 양(«1,764,211 units» · «Settled ₩743,188,120»).
+   * 추세 문구는 `trendLabel` 이다(방향과 색을 갖는다).
+   */
+  @property({ type: String }) description?: string;
 
   /** 라벨을 이름으로 준 슬롯 위젯과 그때의 라벨 — 소비자가 바꾼 이름은 우리 것이 아니다. */
   private readonly namedWidgets = new WeakMap<Element, string>();
@@ -190,6 +195,7 @@ export class InfoField extends StyledElement<ElementParts> {
           ${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
         </div>
       ` : ''}
+      ${this.description ? html`<div class="description" part="description">${this.description}</div>` : ''}
     `;
   }
 }

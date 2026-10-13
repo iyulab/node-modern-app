@@ -8,6 +8,9 @@
   danger actions and fills the free width; below 420px it takes its own line between the main actions (on top) and
   the danger actions. Label-size, weak text.
 - `--action-bar-padding-inline` — inline padding for a bar that runs to a side sheet's edges (default `0`).
+- **`u-info-section layout="strip"` — a stat strip.** The totals of a result as cells on one bordered surface, split
+  by 1px dividers: all side by side, or all stacked once the strip is narrower than 640px — never three plus one.
+- `u-info-field` `description` — a supporting line below the value (its basis, or the same amount in another unit).
 
 ### Fixed
 

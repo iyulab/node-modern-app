@@ -82,6 +82,14 @@ export const styles = css`
     margin-top: var(--u-space-3xs, 2px);
   }
 
+  /* 보조 줄 — 라벨보다 한 단 더 약하게(값 → 추세 → 근거 순으로 읽힌다). */
+  .description {
+    font-size: var(--u-text-caption-size, 12px);
+    line-height: var(--u-text-caption-leading, 1.5);
+    color: var(--u-txt-color-weaker, #757575);
+    margin-top: var(--u-space-3xs, 2px);
+  }
+
   .trend.tone-positive {
     color: var(--u-success-color-strong, #1B5E20);
   }

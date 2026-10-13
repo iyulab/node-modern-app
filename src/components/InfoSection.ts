@@ -6,6 +6,9 @@ import { styles } from './InfoSection.styles.js';
 
 type ElementParts = 'host' | 'grid';
 
+/** 배치 — `grid` 라벨-값 칸의 반응형 그리드 · `strip` 지표 띠(구분선으로 나뉜 한 면의 칸). */
+export type InfoSectionLayout = 'grid' | 'strip';
+
 /**
  * 정보 섹션 — `u-info-field` 들의 반응형 그리드.
  *
@@ -22,6 +25,11 @@ type ElementParts = 'host' | 'grid';
  * ```
  *
  * `min` 으로 한 칸의 최소 폭을 조절한다(기본 160px). 라벨이 긴 도메인은 값을 올린다.
+ *
+ * `layout="strip"` 은 지표 띠다 — 결과의 합계를 문장이 아니라 칸으로(목록 위 «주문 962 · 청구 ₩…»).
+ * 한 면 위에 1px 구분선으로 나뉜 칸들이 **전부 나란히, 아니면 전부 쌓인다**(띠 폭 640px 미만 — 들쭉날쭉한 줄을
+ * 만들지 않는다). 임계는 크기 containment 가 아니라 칸의 flex-basis 가 건다(«Holy Albatross» — u-action-bar 와 같은
+ * 근거). 구분선은 칸 사이 1px 간격으로 비치는 면의 테두리 색이라 가로·세로가 저절로 바뀐다. 이 배치에서 `min` 은 쓰지 않는다.
  */
 @customElement('u-info-section')
 export class InfoSection extends StyledElement<ElementParts> {
@@ -29,6 +37,8 @@ export class InfoSection extends StyledElement<ElementParts> {
 
   /** 한 칸의 최소 폭(px). 이 값보다 좁아지면 열 수가 줄어든다. */
   @property({ type: Number }) min = 160;
+  /** 배치 — `grid`(기본) · `strip`(지표 띠). */
+  @property({ type: String, reflect: true }) layout: InfoSectionLayout = 'grid';
 
   render() {
     // ⚠인라인 스타일은 이 한 값뿐이다 — 그리드 트랙은 CSS 변수로 계산해야 하고
