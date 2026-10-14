@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Removed
+
+- An unused custom property on `u-sidebar-group` (`--group-accent`) — nothing read it; group colours come from the
+  `--app-sidebar-group-*` tokens.
+
 ## [0.54.0] - 2026-10-14
 
 ### Added

@@ -2,9 +2,6 @@ import { css } from 'lit';
 
 export const styles = css`
   :host {
-    /* SidebarLink 과 같은 원천 — 그룹 강조는 활성 링크와 같은 색 계열이어야 한다 */
-    --group-accent: var(--app-sidebar-active-bg, var(--u-primary-color, #1976D2));
-
     display: flex;
     flex-direction: column;
     color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
