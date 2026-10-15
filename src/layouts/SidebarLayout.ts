@@ -610,7 +610,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     } else if (size === 'small') {
       this.state = this.state === 'mobile' ? 'mobile-open' : 'mobile';
     } else {
-      console.warn('Unknown screen size:', size);
+      console.warn('[@iyulab/modern-app] unknown screen size:', size);
     }
   }
 
@@ -873,7 +873,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     } else if (size === 'small') {
       this.state = 'mobile';
     } else {
-      console.warn('Unknown screen size:', size);
+      console.warn('[@iyulab/modern-app] unknown screen size:', size);
     }
   }
 }

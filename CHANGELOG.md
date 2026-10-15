@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Console diagnostics begin with `[@iyulab/modern-app]`, so a message in a console shared by several packages says which one wrote it (several also say what to do next).
+
 ### Removed
 
 - An unused custom property on `u-sidebar-group` (`--group-accent`) — nothing read it; group colours come from the

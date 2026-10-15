@@ -49,7 +49,7 @@ export function hasUnsavedChanges(): boolean {
     try {
       if (isDirty()) return true;
     } catch (error) {
-      console.error('Unsaved-changes check failed — treating the screen as unsaved:', error);
+      console.error('[@iyulab/modern-app] the unsaved-changes check threw — treating the screen as unsaved:', error);
       return true;
     }
   }
