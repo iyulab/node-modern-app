@@ -97,6 +97,8 @@ describe('u-info-field — tile', () => {
       </u-info-field>`);
     const slot = part(el, 'trend')!.querySelector('slot[name="trend-icon"]') as HTMLSlotElement;
     expect(slot.assignedElements()[0]?.id).toBe('icon');
+    // a gap between the icon and the caption
+    expect(parseFloat(getComputedStyle(document.getElementById('icon')!).marginInlineEnd)).toBeGreaterThan(0);
     // the slotted icon does not count as the value
     expect(part(el, 'value')!.textContent!.trim()).toBe('71');
   });

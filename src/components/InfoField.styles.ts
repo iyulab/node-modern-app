@@ -126,6 +126,11 @@ export const styles = css`
     font-size: var(--u-text-caption-size, 12px);
     margin-top: var(--u-space-3xs, 2px);
   }
+  /* 상태 표시는 글자 앞에서 한 칸 띄워, 글자 높이 가운데에. */
+  ::slotted([slot="trend-icon"]) {
+    margin-inline-end: 0.3em;
+    vertical-align: -0.125em;
+  }
 
   /* 보조 줄 — 라벨보다 한 단 더 약하게(값 → 추세 → 근거 순으로 읽힌다). */
   .description {
