@@ -69,6 +69,20 @@ constrained.
 .page { height: 100%; }   /* or any constrained height on the parent */
 ```
 
+A long list usually does the opposite on purpose — the page scrolls, and the layout is as tall as
+the list. The detail pane is built for that too: it sticks to the top of the scroll container it
+sits in, so a record picked far down the list is shown beside it, in view. Its height is capped at
+what that container shows (a longer record scrolls inside the pane), and below it there is nothing
+but the list. In overlay mode the covering pane takes the visible height of that container the
+same way, rather than the whole list's height.
+
+With a height from the parent the pane fills it, as before. If a sticky bar sits at the top of the
+scroll container, move the pane below it:
+
+```css
+u-master-detail-layout::part(detail) { top: 3rem; }  /* the cap leaves room for the offset */
+```
+
 ## Printing
 
 On print media the panes follow what was on screen. Side by side, both panes print and grow

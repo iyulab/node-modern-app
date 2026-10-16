@@ -85,13 +85,22 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
     typeof this.attachInternals === 'function' ? this.attachInternals() : undefined;
 
   private resizeObserver?: ResizeObserver;
+  /** 상세 칸이 붙는 스크롤 영역 — 없으면(문서가 스크롤한다) 뷰포트. */
+  private scroller: Element | null = null;
+  private detailFrame = 0;
 
   connectedCallback(): void {
     super.connectedCallback();
     this.resizeObserver = new ResizeObserver(entries => {
-      this.applyOverlay(entries[0]?.contentRect.width ?? 0);
+      for (const entry of entries) {
+        if (entry.target === this) this.applyOverlay(entry.contentRect.width);
+      }
+      this.scheduleDetailMax();
     });
     this.resizeObserver.observe(this);
+    this.scroller = scrollParentOf(this);
+    if (this.scroller) this.resizeObserver.observe(this.scroller);
+    else window.addEventListener('resize', this.scheduleDetailMax);
   }
 
   /**
@@ -115,7 +124,28 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this.resizeObserver?.disconnect();
+    window.removeEventListener('resize', this.scheduleDetailMax);
+    cancelAnimationFrame(this.detailFrame);
+    this.scroller = null;
   }
+
+  /**
+   * 상세 칸의 높이 상한 — min(그릇 높이, 스크롤 영역 높이 − 칸의 top). 칸은 스크롤 영역 위에
+   * 붙으므로(sticky) 그 영역의 보이는 높이가 칸이 보일 수 있는 전부다. 그릇 높이가 그보다 낮으면
+   * 그릇 안에 머문다.
+   * 다음 프레임에 쓴다 — 크기 관찰 콜백 안에서 크기를 바꾸면 관찰 루프 경고가 난다.
+   */
+  private scheduleDetailMax = (): void => {
+    cancelAnimationFrame(this.detailFrame);
+    this.detailFrame = requestAnimationFrame(() => {
+      const detail = this.shadowRoot?.querySelector<HTMLElement>('.detail');
+      if (!detail || !this.isConnected) return;
+      const viewport = this.scroller ? this.scroller.clientHeight : document.documentElement.clientHeight;
+      const top = parseFloat(getComputedStyle(detail).top) || 0;
+      const max = Math.max(0, Math.min(this.getBoundingClientRect().height, viewport - top));
+      this.style.setProperty('--_detail-max', `${max}px`);
+    });
+  };
 
   protected updated(changed: PropertyValues): void {
     super.updated(changed);
@@ -128,6 +158,9 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
     }
     if (changed.has('hasDetail')) {
       this.internals?.states?.[this.hasDetail ? 'add' : 'delete']('detail');
+    }
+    if (changed.has('hasDetail') || changed.has('hasPlaceholder')) {
+      this.scheduleDetailMax();
     }
     // 폭이 그대로여도 기준이 바뀌면 판정이 바뀐다 — 리사이즈를 기다리지 않는다.
     if (changed.has('overlayBreakpoint')) {
@@ -169,6 +202,22 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
         <slot name="detail-placeholder" ?hidden=${this.hasDetail} @slotchange=${this.handlePlaceholderSlotChange}></slot>
       </div>
     `;
+  }
+}
+
+/**
+ * sticky 칸이 붙는 스크롤 영역 — 가장 가까운 «넘침을 가두는» 조상(섀도 경계를 넘어 찾는다).
+ * 문서 자신이 스크롤하면 null(뷰포트).
+ */
+function scrollParentOf(el: Element): Element | null {
+  let node: Node | null = el;
+  for (;;) {
+    const current: Node = node;
+    node = current instanceof Element && current.assignedSlot
+      ? current.assignedSlot
+      : current.parentNode instanceof ShadowRoot ? current.parentNode.host : current.parentNode;
+    if (!(node instanceof Element) || node === document.documentElement || node === document.body) return null;
+    if (/(auto|scroll|hidden|overlay)/.test(getComputedStyle(node).overflowY)) return node;
   }
 }
 

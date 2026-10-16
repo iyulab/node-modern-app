@@ -4,6 +4,14 @@
 
 ### Fixed
 
+- `u-master-detail-layout`: in a container with no height of its own (the page scrolls a long list), the detail pane
+  sticks to the top of the scroll container instead of stretching to the list's height with the record at its top —
+  a row picked far down the list showed its detail above the visible area. The pane is capped at the visible height of
+  that container and scrolls inside past it. In overlay mode the covering pane is placed over the visible part of the
+  list the same way (it covered the whole list from its top). With a height from the parent the panes look as before.
+  A `top` set through `::part(detail)` moves the pane below a sticky bar.
+- React: the `u-master-detail-layout` JSX attribute map includes `detail-size`.
+
 - Skill reference `u-master-detail-layout`: the `detailSize` row of the properties table is no longer split by the `|` in its type.
 
 ## [0.55.0] - 2026-10-16

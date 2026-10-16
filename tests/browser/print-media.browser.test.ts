@@ -127,8 +127,11 @@ describe('u-sidebar-layout — print media', () => {
 
     const shadow = md.shadowRoot!;
     const detailPane = shadow.querySelector('.detail') as HTMLElement;
-    // Screen stays as it was: the detail covers the master.
-    expect(getComputedStyle(detailPane).position).toBe('absolute');
+    // Screen stays as it was: the detail covers the master (the layout has a height here, so all of it).
+    const covered = detailPane.getBoundingClientRect();
+    const box = md.getBoundingClientRect();
+    expect([covered.left, covered.top, covered.width, covered.height].map(Math.round))
+      .toEqual([box.left, box.top, box.width, box.height].map(Math.round));
 
     // 실측(수정 전): detail 은 master 높이 300 에 묶여 1500 중 1200 이 잘렸고 닫기 버튼이 찍혔다.
     await setMedia('print');

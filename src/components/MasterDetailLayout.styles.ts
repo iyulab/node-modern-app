@@ -51,21 +51,43 @@ export const styles = css`
     display: none;
   }
 
+  /*
+   * 상세 칸은 «보이는 자리» 에 머문다 — 스크롤 영역 위에 붙는다(sticky).
+   * 그릇 높이가 정해지지 않은 화면(목록이 길어 페이지가 스크롤한다)에서 늘어난 칸의 맨 위에
+   * 내용을 두면, 목록을 내려 고른 행의 상세가 화면 밖에 있다. 그래서 칸을 늘이지 않고
+   * (align-self: flex-start) 스크롤 영역 위에 붙인다.
+   * 높이 상한 --_detail-max 는 JS 가 잰다 — min(그릇 높이, 스크롤 영역 높이 − top).
+   * ⚠CSS 로는 못 한다: 높이가 정해지지 않은 그릇에서 min(100%, …) 은 식 전체가 풀리지 않아
+   *   none 이 된다(실측). 100dvh 는 셸 머리만큼 칸 아래를 화면 밖에 둔다.
+   * 그릇 높이가 정해졌으면 min-height 가 칸을 그 높이까지 채운다(종전 모양) — 정해지지 않았으면
+   * 같은 식이 풀리지 않아 칸은 내용 높이다.
+   * 기준선은 ::part(detail) 의 top 으로 옮긴다(위에 붙은 머리줄이 있으면) — JS 가 그 값을 읽는다.
+   */
   .detail {
     flex: 1 1 auto;
     min-width: 0;
-    position: relative;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    min-height: min(100%, var(--_detail-max, 100%));
+    max-height: var(--_detail-max, none);
+    box-sizing: border-box;
     overflow: auto;
   }
   .detail.empty {
     display: none;
   }
 
-  /* 오버레이 모드: detail 이 master 위에 뜬다. master 의 flex-basis 를 넘겨받으므로
-     master 를 가리는 만큼만 자리를 차지하면 된다 — inset:0 로 host 전체를 덮는다. */
+  /* 오버레이 모드: detail 이 master 위에 뜬다 — 같은 행에서 폭 전체(flex-basis 100%)를 차지하고
+     음의 왼쪽 여백으로 master 자리에 겹친다. 절대배치(inset: 0)가 아닌 이유: 그릇이 목록 높이로
+     늘면 덮은 칸의 내용이 그 맨 위, 화면 밖에 있다. 흐름 안에 두어야 sticky 로 보이는 자리에 붙는다.
+     높이는 보이는 영역(--_detail-max) — 재기 전에는 그릇 높이. */
   :host([overlay]) .detail {
-    position: absolute;
-    inset: 0;
+    flex: 0 0 100%;
+    margin-left: -100%;
+    height: var(--_detail-max, 100%);
+    min-height: 0;
+    max-height: none;
     z-index: 1;
     background-color: var(--u-panel-bg-color, #FFFFFF);
     box-shadow: var(--u-shadow-lg, 0 4px 12px rgba(0, 0, 0, 0.16), 0 2px 4px rgba(0, 0, 0, 0.06));
@@ -124,8 +146,16 @@ export const styles = css`
       display: none;
     }
     :host([overlay]) .detail {
-      position: static;
+      margin-left: 0;
+      height: auto;
       box-shadow: none;
+    }
+    /* sticky 와 화면 높이 상한은 종이에 뜻이 없다 — 상세를 흐름에 두고 전부 찍는다. */
+    .detail {
+      position: static;
+      align-self: stretch;
+      min-height: 0;
+      max-height: none;
     }
   }
 `;

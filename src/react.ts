@@ -157,6 +157,7 @@ declare module 'react' {
       };
       'u-master-detail-layout': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         'master-size'?: string;
+        'detail-size'?: string;
         'overlay-breakpoint'?: number | string;
         locale?: string;
       };
