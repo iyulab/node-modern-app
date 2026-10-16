@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- `u-info-field appearance="tile"`: the corner is the card step (`--u-radius-xl`, as `u-card` and `u-group-box`) — 0.56.0
+  drew it a step smaller (`--u-radius-lg`, the control step).
+
 ## [0.56.0] - 2026-10-17
 
 ### Added

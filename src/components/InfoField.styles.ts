@@ -47,7 +47,7 @@ export const styles = css`
   :host([appearance="tile"]) {
     padding: var(--u-space-md, 12px);
     border: 1px solid var(--u-border-color, #E0E0E0);
-    border-radius: var(--u-radius-lg, 6px);
+    border-radius: var(--u-radius-xl, 8px); /* 카드 면과 같은 단(u-card · u-group-box) */
     background-color: var(--u-bg-color, #FFFFFF);
     box-sizing: border-box;
   }

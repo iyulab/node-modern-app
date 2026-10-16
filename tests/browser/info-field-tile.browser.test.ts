@@ -35,6 +35,18 @@ describe('u-info-field — tile', () => {
     expect(p.paddingTop).toBe('0px');
   });
 
+  it('a tile is a card surface — the same corner step as u-group-box', async () => {
+    document.documentElement.style.setProperty('--u-radius-xl', '10px');
+    document.documentElement.style.setProperty('--u-radius-lg', '6px');
+    try {
+      const [tile] = await mount(`<u-info-field appearance="tile" label="MTBF" value="412"></u-info-field>`);
+      expect(getComputedStyle(tile).borderTopLeftRadius).toBe('10px');
+    } finally {
+      document.documentElement.style.removeProperty('--u-radius-xl');
+      document.documentElement.style.removeProperty('--u-radius-lg');
+    }
+  });
+
   it('tone reflects to the host, and a warning tile takes the warning face and border', async () => {
     const [warn, calm] = await mount(`
       <u-info-field appearance="tile" tone="warning" label="PM" value="71" unit="%"></u-info-field>
