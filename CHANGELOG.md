@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.55.2] - 2026-10-17
+
+### Fixed
+
+- `u-master-detail-layout` overlay mode in a right-to-left document: the covering detail pane sat outside the layout
+  (0.55.1 placed it with a physical left margin). It now covers the list in both directions.
+- `u-master-detail-layout` overlay mode: something in the list with its own `z-index` — a table's sticky header row —
+  was painted over the covering detail pane. While covered, the list is its own stacking context.
+
 ## [0.55.1] - 2026-10-17
 
 ### Fixed
