@@ -98,7 +98,7 @@ own margin; that is inherent to printing two columns.
 | Property | Type | Default | Reflect | Description |
 |----------|------|---------|---------|-------------|
 | `masterSize` | `string` | `'22rem'` | | Fixed width of the master pane, a CSS length (`master-size`) |
-| `detailSize` | `string | undefined` | `undefined` | ✓ | Fixed width of the detail pane (`detail-size`) — the master then fills the rest and `masterSize` is not used |
+| `detailSize` | `string \| undefined` | `undefined` | ✓ | Fixed width of the detail pane (`detail-size`) — the master then fills the rest and `masterSize` is not used |
 | `overlayBreakpoint` | `number` | `760` | | Below this self width in px, detail becomes a full overlay (`overlay-breakpoint`) |
 | `locale` | `string` | `''` | | Language tag for the close button's accessible label |
 

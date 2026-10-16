@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- Skill reference `u-master-detail-layout`: the `detailSize` row of the properties table is no longer split by the `|` in its type.
+
 ## [0.55.0] - 2026-10-16
 
 ### Added
