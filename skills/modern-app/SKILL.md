@@ -245,7 +245,8 @@ Back/Forward included) and the browser asks before the document is left (`before
 import { UnsavedChangesController, confirmDiscardChanges } from '@iyulab/modern-app';
 // Lit
 readonly unsaved = new UnsavedChangesController(this, () => this.form.dirty);
-// React: useUnsavedChanges(dirty) from '@iyulab/modern-app/react'
+// React: const unsaved = useUnsavedChanges(dirty) from '@iyulab/modern-app/react'
+// Saved (or deleted) and leaving in the same tick: unsaved.markClean() before navigate() — until the next render
 // Plain: const release = trackUnsavedChanges(() => dirty);
 // A modal drawer's close is not a navigation — ask from its cancellable `hide` event:
 drawer.addEventListener('hide', async (e) => {

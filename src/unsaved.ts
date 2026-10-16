@@ -89,7 +89,8 @@ export function unsavedChangesGuard(_ctx?: RouteLeaveContext): boolean | Promise
 }
 
 /**
- * Lit 요소의 «저장 안 한 변경» — 연결된 동안 판정을 등록하고, 떨어지면 해제한다.
+ * Lit 요소의 «저장 안 한 변경» — 연결된 동안 판정을 등록하고, 떨어지면 해제한다. 저장 · 삭제 뒤 같은 틱에 떠날 때는
+ * `markClean()` — 다음 갱신 전까지의 이동은 묻지 않는다(판정이 폼 상태를 아직 내리지 않았어도).
  * @example
  * ```ts
  * class OrderPage extends LitElement {
@@ -99,13 +100,24 @@ export function unsavedChangesGuard(_ctx?: RouteLeaveContext): boolean | Promise
  */
 export class UnsavedChangesController implements ReactiveController {
   private release?: () => void;
+  private clean = false;
+  private readonly check = () => !this.clean && this.isDirty();
 
   constructor(host: ReactiveControllerHost, private readonly isDirty: () => boolean) {
     host.addController(this);
   }
 
+  /** 지금 상태는 저장됐다 — 호스트의 다음 갱신 전까지의 이동은 묻지 않는다. */
+  markClean(): void {
+    this.clean = true;
+  }
+
   hostConnected(): void {
-    this.release ??= trackUnsavedChanges(this.isDirty);
+    this.release ??= trackUnsavedChanges(this.check);
+  }
+
+  hostUpdated(): void {
+    this.clean = false;
   }
 
   hostDisconnected(): void {

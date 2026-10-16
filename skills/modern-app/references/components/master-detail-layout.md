@@ -20,6 +20,24 @@ Swap the `detail` slot's content when the selection changes:
 </u-master-detail-layout>
 ```
 
+While nothing is in the `detail` slot the master takes the whole width — a fixed master with an
+empty two-thirds beside it reads as a broken page. To keep the detail place visible with a «pick a
+record» message instead, put it in `slot="detail-placeholder"`; it shows while `detail` is empty
+and steps aside once it is filled (not in overlay mode, where it would cover the master).
+
+## A wide list with a side panel
+
+`masterSize` fixes the master — the mail / settings shape (narrow list, wide detail). For the
+opposite — a wide table with a record summary beside it — set `detail-size`: the detail takes that
+width and the master fills the rest. With the detail empty the table takes everything.
+
+```html
+<u-master-detail-layout detail-size="24rem">
+  <u-rich-table …></u-rich-table>
+  <aside slot="detail">…selected record…</aside>
+</u-master-detail-layout>
+```
+
 On a narrow container (self width, not viewport — see below) the detail pane switches to a
 full overlay above the master pane, with a small close button that fires `detail-close`.
 Clearing the detail slot yourself (in response to the event) is what actually dismisses it —
@@ -72,13 +90,15 @@ own margin; that is inherent to printing two columns.
 | Name | Description |
 |------|-------------|
 | *(default)* | Master area |
-| `detail` | Detail area — present ⇒ shown, empty ⇒ hidden |
+| `detail` | Detail area — present ⇒ shown, empty ⇒ hidden (the master then takes the whole width) |
+| `detail-placeholder` | Shown in the detail place while `detail` is empty — side by side only |
 
 ## Properties
 
 | Property | Type | Default | Reflect | Description |
 |----------|------|---------|---------|-------------|
 | `masterSize` | `string` | `'22rem'` | | Fixed width of the master pane, a CSS length (`master-size`) |
+| `detailSize` | `string | undefined` | `undefined` | ✓ | Fixed width of the detail pane (`detail-size`) — the master then fills the rest and `masterSize` is not used |
 | `overlayBreakpoint` | `number` | `760` | | Below this self width in px, detail becomes a full overlay (`overlay-breakpoint`) |
 | `locale` | `string` | `''` | | Language tag for the close button's accessible label |
 

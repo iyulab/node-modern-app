@@ -187,3 +187,61 @@ describe('u-master-detail-layout — masterSize', () => {
     expect(width).toBeCloseTo(480, 0);
   });
 });
+
+describe('u-master-detail-layout — wide list with a side panel', () => {
+  it('🔴the master takes the whole width while the detail is empty', async () => {
+    host.style.width = '1000px';
+    host.innerHTML = `<u-master-detail-layout>master</u-master-detail-layout>`;
+    const el = host.firstElementChild as MasterDetailLayout;
+    await settle();
+    expect(partOf(el, 'master')!.getBoundingClientRect().width).toBeCloseTo(1000, 0);
+  });
+
+  it('🔴detail-size fixes the detail and the master fills the rest', async () => {
+    host.style.width = '1000px';
+    host.innerHTML = `
+      <u-master-detail-layout detail-size="320px">
+        master
+        <div slot="detail">detail</div>
+      </u-master-detail-layout>`;
+    const el = host.firstElementChild as MasterDetailLayout;
+    await settle();
+    expect(partOf(el, 'detail')!.getBoundingClientRect().width).toBeCloseTo(320, 0);
+    expect(partOf(el, 'master')!.getBoundingClientRect().width).toBeCloseTo(679, 0); // 1px divider
+    // 상세를 비우면 목록이 전부
+    el.querySelector('[slot="detail"]')!.remove();
+    await settle();
+    expect(partOf(el, 'master')!.getBoundingClientRect().width).toBeCloseTo(1000, 0);
+  });
+
+  it('🔴a detail-placeholder holds the detail place while nothing is chosen, and steps aside for the detail', async () => {
+    host.style.width = '1000px';
+    host.innerHTML = `
+      <u-master-detail-layout>
+        master
+        <p slot="detail-placeholder" id="ph">Pick a record</p>
+      </u-master-detail-layout>`;
+    const el = host.firstElementChild as MasterDetailLayout;
+    await settle();
+    expect(partOf(el, 'master')!.getBoundingClientRect().width).toBeCloseTo(352, 0); // 22rem
+    expect(host.querySelector('#ph')!.getBoundingClientRect().width).toBeGreaterThan(0);
+    const detail = document.createElement('div');
+    detail.slot = 'detail';
+    detail.textContent = 'record';
+    el.append(detail);
+    await settle();
+    expect(host.querySelector('#ph')!.getBoundingClientRect().width).toBe(0);
+    expect(detail.getBoundingClientRect().width).toBeGreaterThan(0);
+  });
+
+  it('NEGATIVE — in overlay mode the placeholder does not cover the master', async () => {
+    host.style.width = '600px';
+    host.innerHTML = `
+      <u-master-detail-layout>
+        master
+        <p slot="detail-placeholder" id="ph">Pick a record</p>
+      </u-master-detail-layout>`;
+    await settle();
+    expect(host.querySelector('#ph')!.getBoundingClientRect().width).toBe(0);
+  });
+});

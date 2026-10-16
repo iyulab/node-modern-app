@@ -16,6 +16,18 @@ export const styles = css`
     overflow: auto;
   }
 
+  /* 상세 자리가 비면(detail 도 자리표시도 없음) master 가 전부 쓴다 — 고정 폭에 머물면 나머지가 빈 칸이다. */
+  .master.alone {
+    flex: 1 1 auto;
+  }
+  /* detail-size: 고정 폭은 detail 쪽 — 넓은 목록 곁의 요약 패널. master 가 나머지를 채운다. */
+  :host([detail-size]) .master {
+    flex: 1 1 auto;
+  }
+  :host([detail-size]:not([overlay])) .detail {
+    flex: 0 0 var(--_detail-size);
+  }
+
   /* 좁을 때(자기 폭 기준, JS 로 잰 'overlay' 속성 — @container 아님, 클래스 상단 주석 참조):
      master 가 전체 폭을 채운다. detail 은 그 위 오버레이로 뜬다. */
   :host([overlay]) .master {
@@ -32,6 +44,10 @@ export const styles = css`
      항상 참이다. */
   .divider.empty,
   :host([overlay]) .divider {
+    display: none;
+  }
+  /* 오버레이 모드의 자리표시는 띄우지 않는다 — 고른 것이 없으면 master 만 보인다. */
+  :host([overlay]) .detail.placeholder {
     display: none;
   }
 
@@ -102,6 +118,7 @@ export const styles = css`
       overflow: visible;
     }
     .detail-close,
+    .detail.placeholder,
     :host([overlay]) .detail-close,
     :host([overlay]) .master.covered {
       display: none;

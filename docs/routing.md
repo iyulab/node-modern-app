@@ -245,6 +245,13 @@ function OrderEditor({ saved }: { saved: string }) {
 Without a component, `trackUnsavedChanges(() => dirty)` returns a function that removes the check.
 `hasUnsavedChanges()` reads all of them.
 
+**Saving and leaving in one step.** A save handler that navigates right after the request — `await post(draft);
+navigate(...)` — leaves before the next render, so the check still sees the pre-save `dirty` and would ask. Call
+`markClean()` first: the hook returns it (`const unsaved = useUnsavedChanges(dirty); … unsaved.markClean();`), and
+`UnsavedChangesController` has it too. It covers navigations until the next render (React) or update (Lit); after that
+the check reads the new value again, so a screen that stays and keeps editing still asks. A delete that leaves is the
+same.
+
 **Keep the draft on `input`, not `change`.** A text field's `change` fires only when the field is left (or Enter is
 pressed), so text typed just before Escape or Back would not count as unsaved — the check would say «clean» and
 nothing would be asked. Fields that save on `change` (an inline quantity that is written at once) are not drafts.

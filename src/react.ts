@@ -16,6 +16,15 @@ import { trackUnsavedChanges } from './unsaved.js';
 export { ScreenObserver } from './internals/ScreenObserver.js';
 export type { ScreenSize, ScreenObserverConfig, ScreenResizeEvent } from './internals/ScreenObserver.js';
 
+/** `useUnsavedChanges` 가 돌려주는 것. */
+export interface UnsavedChangesHandle {
+  /**
+   * 지금 값은 저장됐다(또는 버려도 된다) — 다음 렌더 전까지의 이동은 묻지 않는다. 저장 · 삭제 성공 뒤 같은 틱에 떠날 때 부른다:
+   * 이동 순간의 판정은 아직 저장 전 렌더의 `dirty` 를 본다. 다음 렌더부터는 다시 그 렌더의 값을 본다.
+   */
+  markClean(): void;
+}
+
 /**
  * React 화면의 «저장 안 한 변경» — 마운트된 동안 판정을 등록한다(`trackUnsavedChanges`). 셸(`app.load()`)이 떠나기 전에
  * «변경을 버릴까요?» 를 묻고, 문서 이탈(새로 고침 · 탭 닫기)에는 브라우저 확인이 걸린다. 값은 매 렌더의 것을 본다.
@@ -23,14 +32,23 @@ export type { ScreenSize, ScreenObserverConfig, ScreenResizeEvent } from './inte
  * ```tsx
  * function OrderForm() {
  *   const [draft, setDraft] = useState(initial);
- *   useUnsavedChanges(draft !== initial);
+ *   const unsaved = useUnsavedChanges(draft !== initial);
+ *   async function save() {
+ *     const row = await post(draft);
+ *     unsaved.markClean();          // 저장했다 — 이어지는 이동은 묻지 않는다
+ *     navigate(`/orders/${row.id}`);
+ *   }
  * }
  * ```
  */
-export function useUnsavedChanges(dirty: boolean): void {
+export function useUnsavedChanges(dirty: boolean): UnsavedChangesHandle {
   const latest = React.useRef(dirty);
   latest.current = dirty;
-  React.useEffect(() => trackUnsavedChanges(() => latest.current), []);
+  const clean = React.useRef(false);
+  // 렌더가 커밋될 때마다 `markClean()` 을 걷는다 — 그 뒤의 판정은 새 렌더의 값이다.
+  React.useEffect(() => { clean.current = false; });
+  React.useEffect(() => trackUnsavedChanges(() => !clean.current && latest.current), []);
+  return React.useMemo(() => ({ markClean: () => { clean.current = true; } }), []);
 }
 
 /**

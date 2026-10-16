@@ -6,6 +6,7 @@ import {
   trackUnsavedChanges,
   hasUnsavedChanges,
   UnsavedChangesController,
+  unsavedChangesGuard,
 } from '../../src/unsaved.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import React from 'react';
@@ -209,5 +210,48 @@ describe('useUnsavedChanges (React)', () => {
     flushSync(() => r.unmount());
     expect(hasUnsavedChanges()).toBe(false);
     container.remove();
+  });
+});
+
+describe('markClean — «저장하고 곧장 떠난다»', () => {
+  it('🔴React: 저장 뒤 같은 틱의 이동은 묻지 않는다 · 다음 렌더부터는 다시 그 값을 본다', () => {
+    let handle!: ReturnType<typeof useUnsavedChanges>;
+    function Form({ dirty }: { dirty: boolean }) {
+      handle = useUnsavedChanges(dirty);
+      return null;
+    }
+    const container = document.body.appendChild(document.createElement('div'));
+    const r = createRoot(container);
+    flushSync(() => r.render(React.createElement(Form, { dirty: true })));
+    expect(hasUnsavedChanges()).toBe(true);
+    // save() 의 끝: 기준값 갱신은 다음 렌더 — 이동은 지금
+    handle.markClean();
+    expect(hasUnsavedChanges()).toBe(false);
+    expect(unsavedChangesGuard()).toBe(true);
+    // 머물러 계속 고치면(다음 렌더가 여전히 dirty) 다시 묻는다
+    flushSync(() => r.render(React.createElement(Form, { dirty: true })));
+    expect(hasUnsavedChanges()).toBe(true);
+    flushSync(() => r.unmount());
+    container.remove();
+  });
+
+  it('🔴Lit: markClean() 은 호스트의 다음 갱신까지', async () => {
+    class SaveView extends LitElement {
+      static properties = { draft: {} };
+      draft = 'typed';
+      unsaved = new UnsavedChangesController(this, () => this.draft !== '');
+      render() { return html`<span>${this.draft}</span>`; }
+    }
+    customElements.define('x-unsaved-save', SaveView);
+    const el = document.createElement('x-unsaved-save') as SaveView;
+    document.body.appendChild(el);
+    await el.updateComplete;
+    expect(hasUnsavedChanges()).toBe(true);
+    el.unsaved.markClean();
+    expect(unsavedChangesGuard()).toBe(true);
+    el.draft = 'typed more';
+    await el.updateComplete;
+    expect(hasUnsavedChanges()).toBe(true);
+    el.remove();
   });
 });

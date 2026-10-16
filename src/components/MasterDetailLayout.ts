@@ -48,8 +48,14 @@ type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
 export class MasterDetailLayout extends StyledElement<ElementParts> {
   static styles = [super.styles, styles];
 
-  /** master 영역의 고정 폭(CSS 길이). detail 은 나머지 공간을 채운다. */
+  /** master 영역의 고정 폭(CSS 길이). detail 은 나머지 공간을 채운다. detail 이 비면 master 가 전부 쓴다. */
   @property({ type: String, attribute: 'master-size' }) masterSize = '22rem';
+
+  /**
+   * detail 영역의 고정 폭(CSS 길이) — 주면 detail 이 이 폭이고 master 가 나머지를 채운다(`masterSize` 는 쓰지 않는다).
+   * 넓은 목록 곁에 레코드 요약을 붙이는 «곁 패널» 배치. 비우면 종전대로 master 가 고정 폭이다.
+   */
+  @property({ type: String, attribute: 'detail-size', reflect: true }) detailSize?: string;
 
   /**
    * 이 값(px, 자기 폭 기준) 미만이면 detail 이 전체 오버레이로 전환된다.
@@ -66,6 +72,8 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
 
   /** detail 슬롯 배정 상태 — CSS `:has()` 로는 알 수 없다(`internals/slotted.ts` 참조). */
   @state() private hasDetail = false;
+  /** `detail-placeholder` 슬롯 배정 상태 — detail 이 비었을 때 그 자리에 보인다. */
+  @state() private hasPlaceholder = false;
 
   /**
    * `:state(detail)` 을 싣는 자리. 인쇄 규칙이 «한 판만 보이는가» 를 호스트에서 갈라야 해서
@@ -114,6 +122,10 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
     if (changed.has('masterSize')) {
       this.style.setProperty('--_master-size', this.masterSize);
     }
+    if (changed.has('detailSize')) {
+      if (this.detailSize) this.style.setProperty('--_detail-size', this.detailSize);
+      else this.style.removeProperty('--_detail-size');
+    }
     if (changed.has('hasDetail')) {
       this.internals?.states?.[this.hasDetail ? 'add' : 'delete']('detail');
     }
@@ -136,11 +148,17 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
     this.hasDetail = slotHasContent(e.target as HTMLSlotElement);
   };
 
+  private handlePlaceholderSlotChange = (e: Event) => {
+    this.hasPlaceholder = slotHasContent(e.target as HTMLSlotElement);
+  };
+
   render() {
+    // 상세 자리: 채워졌으면 detail · 비었는데 자리표시가 있으면 placeholder · 둘 다 없으면 비어서 master 가 전부 쓴다.
+    const pane = this.hasDetail ? '' : this.hasPlaceholder ? 'placeholder' : 'empty';
     return html`
-      <div class="master ${this.hasDetail ? 'covered' : ''}" part="master"><slot></slot></div>
-      <div class="divider ${this.hasDetail ? '' : 'empty'}" part="divider"></div>
-      <div class="detail ${this.hasDetail ? '' : 'empty'}" part="detail">
+      <div class="master ${this.hasDetail ? 'covered' : ''} ${pane === 'empty' ? 'alone' : ''}" part="master"><slot></slot></div>
+      <div class="divider ${pane}" part="divider"></div>
+      <div class="detail ${pane}" part="detail">
         <u-button class="detail-close" part="detail-close" appearance="plain"
           aria-label=${getLocaleStrings(this.locale || undefined).detailClose}
           @click=${this.handleDetailClose}
@@ -148,6 +166,7 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
           <u-icon lib="internal" name="x"></u-icon>
         </u-button>
         <slot name="detail" @slotchange=${this.handleDetailSlotChange}></slot>
+        <slot name="detail-placeholder" ?hidden=${this.hasDetail} @slotchange=${this.handlePlaceholderSlotChange}></slot>
       </div>
     `;
   }

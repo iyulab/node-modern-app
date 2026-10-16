@@ -2,9 +2,21 @@
 
 ## [Unreleased]
 
+### Added
+
+- `u-master-detail-layout` `detail-size`: the detail pane takes that width and the master fills the rest — a wide
+  list with a record summary beside it. `masterSize` keeps the opposite shape (narrow list, wide detail).
+- `u-master-detail-layout` `slot="detail-placeholder"`: shown in the detail place while nothing is chosen (side by side).
+- `useUnsavedChanges(dirty)` returns `{ markClean }`, and `UnsavedChangesController` has `markClean()`: the current state
+  is saved, so navigations until the next render (React) or update (Lit) do not ask. A save handler that navigates in
+  the same tick — `await post(draft); navigate(...)` — was asked «Discard unsaved changes?», because the check still
+  read the pre-save render’s `dirty`.
+
 ### Changed
 
 - Console diagnostics begin with `[@iyulab/modern-app]`, so a message in a console shared by several packages says which one wrote it (several also say what to do next).
+- **Breaking:** `u-master-detail-layout`: while the `detail` slot is empty the master takes the whole width (it stayed at
+  `masterSize` beside an empty area). To keep the narrow master with a message beside it, use `detail-placeholder`.
 
 ### Removed
 
