@@ -271,6 +271,10 @@ menu when it opens and back to the trigger on Escape or after an entry is chosen
 }
 ```
 
+An account menu at the foot of the sidebar takes `avatar` (`{ src, initials }`, in place of the
+icon) and `description` (a second, weaker line such as the role). The trigger's name is both lines;
+a slim sidebar shows the avatar alone.
+
 ---
 
 ### `html` — custom Lit template

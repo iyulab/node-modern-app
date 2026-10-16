@@ -34,6 +34,7 @@ export type {
   SidebarHtmlConfig,
   SidebarState,
 } from './layouts/SidebarLayout.types';
+export type { SidebarAvatar } from './components/SidebarButton.js';
 export type { SidebarLayoutEventMap } from './layouts/SidebarLayout.js';
 
 // 권한 기반 메뉴 필터 헬퍼(SidebarLayoutConfig.hasPermission 이 내부적으로 사용) — 재사용을 위해 노출

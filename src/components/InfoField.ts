@@ -7,7 +7,8 @@ import { styles } from './InfoField.styles.js';
 
 type ElementParts = 'host' | 'label' | 'value' | 'unit' | 'trend';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
-export type InfoFieldSize = 'default' | 'lg';
+export type InfoFieldSize = 'default' | 'lg' | 'xl';
+export type InfoFieldAppearance = 'plain' | 'tile';
 export type InfoFieldTrend = 'up' | 'down' | 'flat';
 export type InfoFieldTone = 'positive' | 'negative' | 'warning' | 'neutral';
 
@@ -38,7 +39,17 @@ export function isBlank(v: unknown): boolean {
  * <u-info-field label="거래처">동서인쇄</u-info-field>   <!-- 슬롯이 value 를 이긴다 -->
  * <u-info-field label="합계" format="currency" currency="KRW" .value=${order.total}></u-info-field>
  * <u-info-field label="미결 작업지시" size="lg" .value=${12} unit="건"></u-info-field>
+ * <u-info-field appearance="tile" size="xl" label="MTBF" .value=${412} unit="h" tone="warning" .trendLabel=${'목표 500h 미달'}></u-info-field>
  * ```
+ *
+ * @slot - 값(문자열 `value` 대신 — 슬롯이 이긴다)
+ * @slot trend-icon - 추세 줄 앞의 상태 표시(예: 주의 아이콘). 추세 줄이 있을 때(`trend` · `trendLabel`) 그린다.
+ * @csspart label - 라벨
+ * @csspart value - 값
+ * @csspart unit - 단위
+ * @csspart trend - 추세 줄
+ * @csspart description - 값 아래 보조 줄(값이 비고 `blankReason` 이 있으면 그 사유)
+ * @cssprop --info-field-xl-size - `size="xl"` 값의 글자 크기(기본 `--u-text-display-size`)
  */
 @customElement('u-info-field')
 export class InfoField extends StyledElement<ElementParts> {
@@ -85,7 +96,8 @@ export class InfoField extends StyledElement<ElementParts> {
   /**
    * Display size. `'lg'` renders the value at the `title` type-scale step
    * (`--u-text-title-size`/`--u-text-title-weight`) — intended for dashboard KPI tiles
-   * composed inside `u-info-section`. Reflects to the `size` attribute so
+   * composed inside `u-info-section`. `'xl'` is the figure read at a glance (the `display`
+   * step, or `--info-field-xl-size`). Reflects to the `size` attribute so
    * `:host([size="lg"])` styling works.
    */
   @property({ type: String, reflect: true }) size: InfoFieldSize = 'default';
@@ -113,7 +125,19 @@ export class InfoField extends StyledElement<ElementParts> {
    * `positive`/`negative`/`warning` stand out from it). Colors come from the theme's
    * `--u-success|danger|warning-color-strong`.
    */
-  @property({ type: String }) tone?: InfoFieldTone;
+  @property({ type: String, reflect: true }) tone?: InfoFieldTone;
+  /**
+   * `tile` — a bordered surface (border · radius · padding · surface colour) for a grid of KPI tiles; with a `tone`
+   * of `warning` / `negative` / `positive` the whole tile takes that tone's soft face and border. `plain` (default) is
+   * the bare label-value pair.
+   */
+  @property({ type: String, reflect: true }) appearance: InfoFieldAppearance = 'plain';
+  /**
+   * Why the value is blank — shown on the line under the value (where the description goes) while the value line keeps
+   * the `blank` placeholder at full size. Without it a blank `lg`/`xl` value shrinks to body text, since the placeholder
+   * may itself be a sentence.
+   */
+  @property({ type: String, attribute: 'blank-reason' }) blankReason?: string;
   /**
    * 값 아래의 보조 줄 — 그 값의 근거나 다른 단위의 같은 양(«1,764,211 units» · «Settled ₩743,188,120»).
    * 추세 문구는 `trendLabel` 이다(방향과 색을 갖는다).
@@ -160,8 +184,10 @@ export class InfoField extends StyledElement<ElementParts> {
   }
 
   private get hasSlotted(): boolean {
-    return this.childNodes.length > 0 &&
-      [...this.childNodes].some(n => n.nodeType !== Node.TEXT_NODE || (n.textContent ?? '').trim() !== '');
+    // 이름 있는 슬롯(`trend-icon`)에 든 자식은 값이 아니다.
+    return [...this.childNodes].some(n => n.nodeType === Node.ELEMENT_NODE
+      ? !(n as Element).hasAttribute('slot')
+      : n.nodeType === Node.TEXT_NODE && (n.textContent ?? '').trim() !== '');
   }
 
   private formatValue(): string {
@@ -181,6 +207,7 @@ export class InfoField extends StyledElement<ElementParts> {
 
   render() {
     const blank = !this.hasSlotted && isBlank(this.value);
+    const reason = blank && this.blankReason ? this.blankReason : undefined;
     const numeric = this.numeric || this.format === 'number' || this.format === 'currency';
     const showTrend = this.trend !== undefined || this.trendLabel !== undefined;
     const effectiveTone = this.tone ?? inferTone(this.trend);
@@ -188,14 +215,14 @@ export class InfoField extends StyledElement<ElementParts> {
     const unit = !blank && this.unit ? html`<span class="unit" part="unit">${this.unit}</span>` : '';
     return html`
       <div class="label" part="label">${this.label}</div>
-      <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} tone-${effectiveTone}" part="value">${
+      <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} ${reason ? 'reasoned' : ''} tone-${effectiveTone}" part="value">${
         this.hasSlotted ? html`<slot @slotchange=${() => void this.nameSlottedWidgets()}></slot>` : blank ? this.blank : this.formatValue()}${unit}</div>
       ${showTrend ? html`
         <div class="trend tone-${effectiveTone}" part="trend">
-          ${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
+          <slot name="trend-icon"></slot>${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
         </div>
       ` : ''}
-      ${this.description ? html`<div class="description" part="description">${this.description}</div>` : ''}
+      ${reason ?? this.description ? html`<div class="description" part="description">${reason ?? this.description}</div>` : ''}
     `;
   }
 }

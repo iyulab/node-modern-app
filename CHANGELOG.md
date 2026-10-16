@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- `u-info-field` KPI tiles: `appearance="tile"` (a bordered surface — border, radius, padding, surface colour; with a
+  `tone` the whole tile takes that tone's soft face and border), `size="xl"` (the figure read at a glance — the
+  `display` step, or `--info-field-xl-size`), `blank-reason` (`—` stays on the value line at figure size, the reason
+  goes on the line under it) and a `trend-icon` slot at the start of the trend line. `tone` now reflects to the
+  attribute.
+- Sidebar `type: 'menu'`: `avatar` (`{ src, initials }`, drawn in place of the icon) and `description` (a second,
+  weaker line) — the account block at the foot of the sidebar. The trigger's accessible name is both lines; a slim
+  sidebar shows the avatar alone. `SidebarAvatar` is exported.
+
 ## [0.55.2] - 2026-10-17
 
 ### Fixed

@@ -4,13 +4,20 @@ import { ifDefined } from 'lit/directives/if-defined.js';
 import type { DirectiveResult } from 'lit/directive.js';
 
 import '@iyulab/components/dist/components/icon/UIcon.js';
+import '@iyulab/components/dist/components/avatar/UAvatar.js';
 import { DEFAULT_NAV_ICON } from '../internals/nav-icon.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarButton.styles.js';
 
 /** 버튼 항목 부분 */
-type ElementParts = 'host' | 'base' | 'icon' | 'label';
+type ElementParts = 'host' | 'base' | 'icon' | 'avatar' | 'label' | 'description';
+
+/** 사이드바 버튼의 정체 표시 — 사진, 없으면 머리글자(두 글자까지). */
+export interface SidebarAvatar {
+  src?: string;
+  initials?: string;
+}
 
 /** 버튼 항목 구성 */
 export interface SidebarButtonConfig extends SidebarPermissionGuard {
@@ -52,6 +59,13 @@ export class SidebarButton extends StyledElement<ElementParts> {
   @property({ type: String }) haspopup?: 'menu';
   /** 팝업이 열려 있는가 — `haspopup` 과 함께 `aria-expanded` 로 간다. 팝업이 없는 버튼에는 붙이지 않는다. */
   @property({ type: Boolean }) expanded = false;
+  /**
+   * 아이콘 대신 그리는 정체 표시(셸의 계정 메뉴) — 사진(`src`), 없으면 머리글자(`initials`). 꾸밈이라 보조기기에서 숨긴다:
+   * 이름은 라벨과 `description` 이 준다.
+   */
+  @property({ type: Object }) avatar?: SidebarAvatar;
+  /** 라벨 아래 둘째 줄(역할 · 소속) — 더 작고 약한 글자. 접힌(slim) 사이드바에서는 라벨과 함께 숨고 이름에는 남는다. */
+  @property({ type: String }) description?: string | DirectiveResult;
 
   /** 포커스는 안쪽 `<button>` 으로 — 호스트는 포커스를 받지 않는다(팝업을 닫을 때 셸이 이것으로 되돌린다). */
   override focus(options?: FocusOptions): void {
@@ -68,13 +82,17 @@ export class SidebarButton extends StyledElement<ElementParts> {
         aria-haspopup=${ifDefined(this.haspopup)}
         aria-expanded=${ifDefined(this.haspopup ? String(this.expanded) : undefined)}
         aria-pressed=${ifDefined(this.pressed === undefined ? undefined : String(this.pressed))}>
-        <u-icon part="icon"
-          .lib=${this.lib}
-          .name=${this.icon}
-          .fallback=${DEFAULT_NAV_ICON}
-        ></u-icon>
+        ${this.avatar
+          ? html`<u-avatar part="avatar" aria-hidden="true" .image=${this.avatar.src} .label=${this.avatar.initials}></u-avatar>`
+          : html`<u-icon part="icon"
+              .lib=${this.lib}
+              .name=${this.icon}
+              .fallback=${DEFAULT_NAV_ICON}
+            ></u-icon>`}
         <span part="label" ?compact=${this.compact}>
-          ${this.label}
+          ${this.description
+            ? html`<span class="line">${this.label}</span><span class="description" part="description">${this.description}</span>`
+            : this.label}
         </span>
       </button>
     `;

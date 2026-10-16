@@ -6,7 +6,7 @@ import type { WizardEventMap } from './components/Wizard.js';
 import type { GroupBoxLevel } from './components/GroupBox.js';
 import type { EmptyStateVariant } from './components/EmptyState.js';
 import type { TimelineItemColor } from './components/TimelineItem.js';
-import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone } from './components/InfoField.js';
+import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone, InfoFieldAppearance } from './components/InfoField.js';
 import { trackUnsavedChanges } from './unsaved.js';
 
 // `SidebarLayout`을 `app.load()` 없이 이 서브패스만으로 단독 마운트하는 소비자를 위한
@@ -98,6 +98,7 @@ export type {
   SidebarMenuItemConfig,
   SidebarHtmlConfig,
 } from './layouts/SidebarLayout.types.js';
+export type { SidebarAvatar } from './components/SidebarButton.js';
 export type { WizardStep, WizardStepState, WizardStepChangeDetail } from './components/Wizard.js';
 
 // React JSX.IntrinsicElements 증강 — 래퍼 없이 원시 태그를 JSX 에 쓰는 소비자를 위한 것이다.
@@ -143,6 +144,9 @@ declare module 'react' {
          *  아님)상 실제 HTML 속성명은 `trendlabel`이다. */
         trendlabel?: string;
         tone?: InfoFieldTone;
+        appearance?: InfoFieldAppearance;
+        'blank-reason'?: string;
+        description?: string;
       };
       'u-info-section': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         min?: number | string;

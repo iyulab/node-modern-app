@@ -377,6 +377,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         .icon="${item.icon}"
         .lib="${item.lib}"
         .label="${item.label}"
+        .avatar=${item.avatar}
+        .description=${item.description}
       ></u-sidebar-button>
       <u-popover for="#${menuId}" placement=${placement} autofocus
         @show=${() => { this.openMenu = menuId; }}

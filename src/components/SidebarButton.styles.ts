@@ -67,6 +67,28 @@ export const styles = css`
     text-overflow: ellipsis;
   }
 
+  /* 정체 표시(계정 메뉴) — 아이콘 자리에 같은 폭으로. 슬림에서는 이것만 보인다. */
+  u-avatar {
+    flex-shrink: 0;
+    width: calc(var(--app-sidebar-icon-size, 20px) + 8px);
+    height: calc(var(--app-sidebar-icon-size, 20px) + 8px);
+    font-size: var(--u-text-caption-size, 12px);
+  }
+
+  /* 두 줄 라벨 — 이름(라벨 단) · 역할 · 소속(한 단 아래 · 약하게). 블록이라 접근 이름에서도 두 낱말로 갈린다. */
+  .line,
+  .description {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .description {
+    font-size: var(--u-text-caption-size, 12px);
+    font-weight: var(--u-text-body-weight, 400);
+    line-height: var(--u-text-caption-leading, 1.5);
+    color: var(--u-txt-color-weak, #616161);
+  }
+
   /*
    * 접힌 상태의 라벨 - 시각적으로만 숨긴다. 접근성 트리에는 남아 항목의 이름이 된다
    * (hidden 은 트리에서도 빼서 이름 없는 항목을 만들었다). 절대배치라 flex 배치와 gap 에 끼지 않는다.

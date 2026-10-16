@@ -221,6 +221,8 @@ interface SidebarMenuConfig {
   label: string | DirectiveResult;   // the trigger's label (its accessible name when slim)
   icon?: string;
   lib?: string;
+  avatar?: { src?: string; initials?: string };   // in place of the icon — an account menu
+  description?: string | DirectiveResult;         // a second, weaker line; part of the name
   items: SidebarMenuItemConfig[];
 }
 
@@ -254,6 +256,22 @@ The shell owns what only it knows:
   the trigger.
 - **Permissions** — each entry takes `requirePermission`/`requireAnyPermission`; with
   `hasPermission` set, a menu left with no entries is dropped.
+
+**Account menu.** `avatar` and `description` turn the trigger into the account block at the foot of
+the sidebar — the avatar in place of the icon, the name on the label line, a role or organisation
+on a smaller line under it. The accessible name is both lines; a slim sidebar shows the avatar
+alone.
+
+```typescript
+footer: [{
+  type: 'menu', label: user.name, description: user.role,
+  avatar: { src: user.photoUrl, initials: user.initials },
+  items: [
+    { label: 'Change password', onClick: () => app.navigate('/account/password') },
+    { label: 'Sign out', onClick: () => auth.signOut() },
+  ],
+}]
+```
 
 ---
 

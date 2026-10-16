@@ -5,7 +5,7 @@ import type { StyleMap } from "../internals/StyledElement";
 import type { SidebarLinkConfig } from "../components/SidebarLink";
 import type { SidebarSectionConfig } from "../components/SidebarSection";
 import type { SidebarGroupConfig } from "../components/SidebarGroup";
-import type { SidebarButtonConfig } from "../components/SidebarButton";
+import type { SidebarButtonConfig, SidebarAvatar } from "../components/SidebarButton";
 import type { SidebarPermissionGuard } from "./SidebarPermission";
 
 export type { SidebarPermissionGuard } from "./SidebarPermission";
@@ -92,6 +92,14 @@ export interface SidebarMenuConfig extends SidebarPermissionGuard {
   label: string | DirectiveResult;
   icon?: string;
   lib?: string;
+  /**
+   * Who the menu belongs to (an account menu at the foot of the sidebar) — drawn in place of the icon: a picture
+   * (`src`), else up to two `initials`. Decorative: the name comes from `label` and `description`. A slim sidebar shows
+   * the avatar alone.
+   */
+  avatar?: SidebarAvatar;
+  /** A second, weaker line under the label — a role, an organisation. Part of the trigger's accessible name. */
+  description?: string | DirectiveResult;
   items: SidebarMenuItemConfig[];
 }
 

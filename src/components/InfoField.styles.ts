@@ -35,6 +35,39 @@ export const styles = css`
     font-weight: var(--u-text-title-weight, 700);
   }
 
+  /* 한눈에 읽는 숫자 — 대시보드 · 상세 화면 지표 타일. 행간은 글자에 붙인다(제목 단 이상에서 본문 행간은 너무 벌어진다). */
+  :host([size="xl"]) .value {
+    font-size: var(--info-field-xl-size, var(--u-text-display-size, 26px));
+    font-weight: var(--u-text-display-weight, 700);
+    line-height: var(--u-text-display-leading, 1.4);
+    letter-spacing: var(--u-text-display-tracking, -0.02em);
+  }
+
+  /* 타일 — 지표 격자의 한 칸. 면 · 테두리 · 반경 · 안쪽 여백을 테마 토큰으로(격자의 간격은 담는 쪽 몫). */
+  :host([appearance="tile"]) {
+    padding: var(--u-space-md, 12px);
+    border: 1px solid var(--u-border-color, #E0E0E0);
+    border-radius: var(--u-radius-lg, 6px);
+    background-color: var(--u-bg-color, #FFFFFF);
+    box-sizing: border-box;
+  }
+  /* 상태 타일 — 면과 테두리가 그 상태를 말한다(글자색만으로는 격자에서 눈에 띄지 않는다). neutral 은 무규칙. */
+  :host([appearance="tile"][tone="warning"]) {
+    background-color: var(--u-warning-bg-color, #FFF59D);
+    border-color: var(--u-warning-color-weak, #FFEB3B);
+  }
+  :host([appearance="tile"][tone="negative"]) {
+    background-color: var(--u-danger-bg-color, #FFEBEE);
+    border-color: var(--u-danger-color-weak, #F44336);
+  }
+  :host([appearance="tile"][tone="positive"]) {
+    background-color: var(--u-success-bg-color, #E8F5E9);
+    border-color: var(--u-success-color-weak, #4CAF50);
+  }
+  @media (forced-colors: active) {
+    :host([appearance="tile"]) { border-color: CanvasText; }
+  }
+
   /* "아직 없음"은 값보다 약하게 — 다만 **읽을 수 있어야 한다.**
      ⚠더 흐리게 만들고 싶은 유혹이 있는데, 이 자리가 안 읽히면 사용자는 빈 칸인지
      로딩 중인지 구별하지 못한다. */
@@ -51,6 +84,18 @@ export const styles = css`
     font-size: var(--u-text-body-size, 14px);
     font-weight: var(--u-text-body-weight, 400);
     min-height: calc(var(--u-text-title-size, 20px) * var(--u-text-body-leading, 1.6));
+  }
+  :host([size="xl"]) .value.blank {
+    font-size: var(--u-text-body-size, 14px);
+    font-weight: var(--u-text-body-weight, 400);
+    min-height: calc(var(--info-field-xl-size, var(--u-text-display-size, 26px)) * var(--u-text-display-leading, 1.4));
+  }
+  /* 사유가 아래 줄에 따로 있으면 값 줄의 자리표시(—)는 짧은 기호다 — 값 크기 그대로 두어 격자의 숫자들과 같은 줄에 선다. */
+  :host([size="lg"]) .value.blank.reasoned {
+    font-size: var(--u-text-title-size, 20px);
+  }
+  :host([size="xl"]) .value.blank.reasoned {
+    font-size: var(--info-field-xl-size, var(--u-text-display-size, 26px));
   }
 
   /* 단위는 값보다 한 단 아래 — 크기·굵기·색 셋을 함께 낮춰야 KPI 숫자가 강조를 지킨다.
