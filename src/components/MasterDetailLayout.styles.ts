@@ -33,6 +33,12 @@ export const styles = css`
   :host([overlay]) .master {
     flex: 1 1 auto;
   }
+  /* 덮인 동안 master 를 스태킹 컨텍스트로 가둔다 — 목록 안의 z-index 를 가진 것(표의 sticky 머리행 등)이
+     덮은 detail(z-index 1)과 같은 컨텍스트에서 겨뤄 패널을 뚫고 칠해졌다. 덮인 목록은 조작 대상이 아니므로
+     그 안의 떠 있는 것이 갇혀도 잃는 것이 없다 — 덮이지 않은 동안은 가두지 않는다. */
+  :host([overlay]) .master.covered {
+    isolation: isolate;
+  }
 
   .divider {
     flex: 0 0 auto;
@@ -79,12 +85,12 @@ export const styles = css`
   }
 
   /* 오버레이 모드: detail 이 master 위에 뜬다 — 같은 행에서 폭 전체(flex-basis 100%)를 차지하고
-     음의 왼쪽 여백으로 master 자리에 겹친다. 절대배치(inset: 0)가 아닌 이유: 그릇이 목록 높이로
+     음의 시작쪽 여백(RTL 에서도 맞도록 논리 속성)으로 master 자리에 겹친다. 절대배치(inset: 0)가 아닌 이유: 그릇이 목록 높이로
      늘면 덮은 칸의 내용이 그 맨 위, 화면 밖에 있다. 흐름 안에 두어야 sticky 로 보이는 자리에 붙는다.
      높이는 보이는 영역(--_detail-max) — 재기 전에는 그릇 높이. */
   :host([overlay]) .detail {
     flex: 0 0 100%;
-    margin-left: -100%;
+    margin-inline-start: -100%;
     height: var(--_detail-max, 100%);
     min-height: 0;
     max-height: none;
@@ -146,7 +152,7 @@ export const styles = css`
       display: none;
     }
     :host([overlay]) .detail {
-      margin-left: 0;
+      margin-inline-start: 0;
       height: auto;
       box-shadow: none;
     }

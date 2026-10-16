@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { page } from 'vitest/browser';
 import '@iyulab/components/styles/tokens.css';
 import '../../src/components/MasterDetailLayout.js';
 import type { MasterDetailLayout } from '../../src/components/MasterDetailLayout.js';
@@ -95,6 +96,18 @@ describe('u-master-detail-layout — container without a height (the page scroll
   });
 });
 
+describe('u-master-detail-layout — right-to-left', () => {
+  it('covers the list in overlay mode in a right-to-left document too', async () => {
+    scroller.dir = 'rtl';
+    const el = mount({ width: 500, height: 400 });
+    await frames();
+    expect(el.hasAttribute('overlay')).toBe(true);
+    const rect = detailOf(el).getBoundingClientRect();
+    const host = el.getBoundingClientRect();
+    expect([rect.left, rect.width].map(Math.round)).toEqual([host.left, host.width].map(Math.round));
+  });
+});
+
 describe('u-master-detail-layout — container with a height (unchanged shape)', () => {
   it('fills the full height beside the list even when the record is short', async () => {
     const el = mount({ width: 1000, height: 400 });
@@ -118,5 +131,45 @@ describe('u-master-detail-layout — container with a height (unchanged shape)',
     const host = el.getBoundingClientRect();
     expect([rect.top, rect.left, rect.width, rect.height].map(Math.round))
       .toEqual([host.top, host.left, host.width, host.height].map(Math.round));
+  });
+});
+
+/** What is painted at a viewport point (CSS pixels) — paint order, not hit-testing. */
+async function paintedAt(x: number, y: number): Promise<[number, number, number]> {
+  const shot = (await page.screenshot({ save: false, base64: true } as never)) as unknown as { base64: string } | string;
+  const img = new Image();
+  await new Promise((resolve, reject) => {
+    img.onload = resolve;
+    img.onerror = reject;
+    img.src = `data:image/png;base64,${typeof shot === 'string' ? shot : shot.base64}`;
+  });
+  const scale = img.width / window.innerWidth;
+  const canvas = document.createElement('canvas');
+  canvas.width = img.width;
+  canvas.height = img.height;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(img, 0, 0);
+  const [r, g, b] = ctx.getImageData(Math.round(x * scale), Math.round(y * scale), 1, 1).data;
+  return [r, g, b];
+}
+
+describe('u-master-detail-layout — overlay paint order', () => {
+  it('paints the covering detail over a positioned list header with its own z-index', async () => {
+    scroller.style.width = '500px';
+    scroller.innerHTML = `
+      <div style="height: 400px">
+        <u-master-detail-layout>
+          <div style="height: 1500px">
+            <div style="position: sticky; top: 0; z-index: 3; height: 60px; background: rgb(255, 0, 0)"></div>
+          </div>
+          <div slot="detail" style="height: 200px; background: rgb(0, 255, 0)"></div>
+        </u-master-detail-layout>
+      </div>`;
+    const el = scroller.querySelector('u-master-detail-layout') as MasterDetailLayout;
+    await frames();
+    expect(el.hasAttribute('overlay')).toBe(true);
+    const box = el.getBoundingClientRect();
+    const [r, g, b] = await paintedAt(box.left + box.width / 2, box.top + 30);
+    expect({ r: r > 200, g: g > 200, b: b < 60 }).toEqual({ r: false, g: true, b: true });
   });
 });
