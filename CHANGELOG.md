@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- The unsaved-changes guard still asks when its dialog cannot load — a deployment replaced the hashed chunk while a tab
+  with an edited form stayed open, or the network is gone. The import failure reached the router as «the guard threw»,
+  so the screen stayed and every navigation was silently blocked; it now asks the same question with `window.confirm`
+  (and warns). The dialog module also loads when the first screen registers a check, not at the moment of asking.
+
 ## [0.56.1] - 2026-10-17
 
 ### Fixed

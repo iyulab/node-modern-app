@@ -33,6 +33,8 @@ const onBeforeUnload = (event: BeforeUnloadEvent) => {
 export function trackUnsavedChanges(isDirty: () => boolean): () => void {
   if (predicates.size === 0 && typeof window !== 'undefined') {
     window.addEventListener('beforeunload', onBeforeUnload);
+    // 물을 대화상자를 지금 싣는다 — 묻는 순간에 네트워크가 필요하면, 배포로 청크가 바뀐 뒤 열려 있던 탭에서 묻지 못한다.
+    loadDialog().catch(() => { /* 묻는 순간에 다시 시도하고, 그래도 안 되면 네이티브로 묻는다 */ });
   }
   predicates.add(isDirty);
   return () => {
@@ -70,14 +72,40 @@ export interface DiscardChangesOptions {
  */
 export async function confirmDiscardChanges(options?: DiscardChangesOptions): Promise<boolean> {
   const strings = getLocaleStrings();
-  // 대화상자는 묻는 순간에만 싣는다 — 등록만 하는 화면이 대화상자 모듈을 끌어오지 않게.
-  const { Dialog } = await import('@iyulab/components/dist/utilities/Dialog.js');
-  return Dialog.confirm(options?.message ?? strings.discardMessage, {
-    title: options?.title ?? strings.discardTitle,
+  const title = options?.title ?? strings.discardTitle;
+  const message = options?.message ?? strings.discardMessage;
+  let Dialog: DialogApi;
+  try {
+    ({ Dialog } = await loadDialog());
+  } catch (error) {
+    // 대화상자 모듈을 못 실으면(배포로 청크가 바뀐 탭 · 오프라인) 묻지 못한 채 머물면 모든 이동이 조용히 막힌다 —
+    // 같은 문장을 브라우저 네이티브로 묻는다(청크가 필요 없다).
+    console.warn('[@iyulab/modern-app] the discard-changes dialog could not load — asking with window.confirm instead:', error);
+    return typeof window !== 'undefined' && typeof window.confirm === 'function'
+      ? window.confirm(`${title}\n\n${message}`)
+      : false;
+  }
+  return Dialog.confirm(message, {
+    title,
     confirmLabel: options?.confirmLabel ?? strings.discardConfirm,
     cancelLabel: options?.cancelLabel ?? strings.discardCancel,
     confirmColor: 'danger',
   });
+}
+
+type DialogApi = typeof import('@iyulab/components/dist/utilities/Dialog.js')['Dialog'];
+let dialogModule: Promise<{ Dialog: DialogApi }> | undefined;
+
+/**
+ * 대화상자 모듈 — 가드를 처음 등록할 때 싣는다(등록만 하는 화면이 없는 앱은 끌어오지 않는다). 실패한 시도는 잊어
+ * 다음에 다시 싣는다.
+ */
+function loadDialog(): Promise<{ Dialog: DialogApi }> {
+  dialogModule ??= import('@iyulab/components/dist/utilities/Dialog.js').catch((error: unknown) => {
+    dialogModule = undefined;
+    throw error;
+  });
+  return dialogModule;
 }
 
 /**
