@@ -320,7 +320,7 @@ class App {
 
     // 레이아웃이 완전히 렌더링될 때까지 대기
     if ('updateComplete' in layout) {
-      await (layout as any).updateComplete;
+      await layout.updateComplete; // `in` 이 좁힌다
     }
     return layout;
   }

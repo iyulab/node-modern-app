@@ -435,7 +435,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .icon="${item.icon}"
           .lib="${item.lib}"
           .label="${item.label}"
-          .styles="${item.styles as any}"
+          .styles="${item.styles}"
           .pressed=${typeof item.pressed === 'function' ? item.pressed() : item.pressed}
           @click=${(event: Event) => this.handleButtonItemClick(item, event)}
         ></u-sidebar-button>
@@ -456,7 +456,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .navigate="${item.navigate}"
           .target="${item.target}"
           .count=${item.href in this.counts ? this.counts[item.href] : item.count}
-          .styles="${item.styles as any}"
+          .styles="${item.styles}"
         ></u-sidebar-link>
       `;
     } else if(item.type === 'section') {
@@ -465,7 +465,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           ?compact=${this.state === 'slim'}
           .mainTitle="${item.title}"
           .subTitle="${item.subTitle}"
-          .styles="${item.styles as any}">
+          .styles="${item.styles}">
           ${repeat(item.items,
             (_, idx) => idx,
             (subItem) => this.renderItem(subItem))}
@@ -488,7 +488,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .icon="${item.icon}"
           .lib="${item.lib}"
           .label="${item.label}"
-          .styles="${item.styles as any}">
+          .styles="${item.styles}">
           ${repeat(item.items,
             (_, idx) => idx,
             (subItem) => this.renderItem(subItem))}
