@@ -105,6 +105,27 @@ the `trend-icon` slot:
 </u-info-section>
 ```
 
+A small picture beside the figure — a trend sparkline, a progress ring — goes in the `visual` slot. It sits at the end
+of the value line, aligned to the figure's baseline edge, and takes no room when empty. The field does not draw the
+picture: it gives it a place. Mark a decorative picture `aria-hidden="true"`; give one that carries information its own
+name (`role="img"` and `aria-label`) (`0.57.0~`):
+
+```html
+<u-info-field appearance="tile" size="xl" label="Received today" .value=${48} trend="up" .trendLabel=${'+6 vs yesterday'}>
+  <svg slot="visual" aria-hidden="true" width="96" height="32" viewBox="0 0 96 32">
+    <polyline points="0,24 19,20 38,22 57,14 76,16 95,8" fill="none" stroke="currentColor" stroke-width="2" />
+  </svg>
+</u-info-field>
+```
+
+## Slots
+
+| Slot | Description |
+|------|-------------|
+| (default) | The value, in place of the string `value` (the slot wins) |
+| `trend-icon` | A status mark at the start of the trend line, drawn when there is a trend line |
+| `visual` | A small picture at the end of the value line (sparkline, ring) — empty takes no room |
+
 ## CSS Parts
 
 | Part | Description |
@@ -112,6 +133,7 @@ the `trend-icon` slot:
 | `label` · `value` · `trend` | The label, the value, and the (optional) trend indicator |
 | `unit` | The unit, inside `value` (only when `unit` is set and the value is not blank) |
 | `description` | The supporting line (when `description` is set, or the value is blank and `blankReason` is set) |
+| `visual` | The box holding the `visual` slot (not drawn when the slot is empty) |
 
 ## CSS Custom Properties
 

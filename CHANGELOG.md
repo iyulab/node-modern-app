@@ -6,6 +6,8 @@
 
 - **Sidebar `subtitle`** — one line under the app title (what the app is), in the expanded sidebar header. It hides with
   the title when the sidebar is slim; the mobile header keeps one line.
+- **`u-info-field` `visual` slot** — a small picture at the end of the value line (a trend sparkline, a progress ring),
+  for KPI tiles. The field gives it a place and draws nothing itself; an empty slot takes no room.
 - **Logo from a registered icon library** — `logo: { icon, lib }`, the same pair the menu items take. A string logo
   could only be found at `u-icon`'s default path. `SidebarLogoIcon` is exported.
 

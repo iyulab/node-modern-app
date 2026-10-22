@@ -14,7 +14,26 @@ export const styles = css`
     margin-bottom: var(--u-space-3xs, 2px);
   }
 
+  /* 값과 그 옆의 작은 그림(visual 슬롯) — 그림은 값의 아래 끝선에 맞춘다. 그림이 없으면 값만 남는다. */
+  .value-row {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--u-space-sm, 8px);
+    min-width: 0;
+  }
+  .visual {
+    flex: none;
+    display: flex;
+    align-items: flex-end;
+  }
+  .visual[hidden] {
+    display: none;
+  }
+
   .value {
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: var(--u-text-body-size, 14px);
     font-weight: var(--u-text-label-weight, 600);
     line-height: var(--u-text-body-leading, 1.6);
