@@ -35,7 +35,7 @@ const ICON_SELECTORS = new Set([
   '.icon',        // SidebarGroup · EmptyState — 그룹/빈 상태 아이콘
   '.caret',       // SidebarGroup — 펼침 표시
   '.logo',        // SidebarLayout — 브랜드 마크
-  '.toggler',     // SidebarLayout — 사이드바 토글 버튼
+  '.toggler u-icon', // SidebarLayout — 사이드바 토글 버튼의 아이콘(크기는 버튼이 아니라 아이콘에 건다)
 ]);
 
 type Decl = { rel: string; selector: string; prop: string; value: string; line: number };

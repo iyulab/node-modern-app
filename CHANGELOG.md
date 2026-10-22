@@ -14,7 +14,11 @@
 
 - The sidebar header is no taller than its content: the collapse button's icon is 20px, but the size was set on the
   button, so its em-based height and padding grew with it (the header was 85px tall). The header's vertical padding is
-  also 12px instead of 16px.
+  also 12px instead of 16px, and the mobile header matches it.
+- The open mobile panel starts below the mobile header. It used to start at the top of the screen and rely on its own
+  header, hidden under the mobile header, being the same height — when the two differed, the first menu item slid
+  under the mobile header, and the hidden header's toggle still took keyboard focus. The panel no longer draws that
+  duplicate header, and a popover opened inside the panel no longer flips up under the mobile header.
 
 ## [0.56.2] - 2026-10-17
 

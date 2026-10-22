@@ -155,6 +155,16 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
    */
   @state() private mainTabStop = false;
   private mainSizeObserver?: ResizeObserver;
+
+  /**
+   * 모바일 머리 줄(`.mobile-header`)의 실제 높이 — 모바일 패널이 그 아래에서 시작한다(`--_mobile-header-block-size`).
+   * 종전에는 패널이 맨 위(0)에서 시작하고 패널 안의 자기 머리 줄이 모바일 머리 줄 밑에 깔려 높이를 채웠다. 두 머리 줄의
+   * 높이가 같다는 우연에 기댄 배치라 한쪽만 바뀌어도 내용이 머리 줄 밑으로 들어갔고, 깔린 머리 줄의 버튼은 보이지 않는데
+   * Tab 으로 포커스가 갔다. 그리고 패널이 덮인 자리까지 «자기 상자» 로 가져 위치 계산이 머리 줄 밑을 빈 자리로 봤다.
+   * 높이는 밀도 토큰에 따라 달라 재서 쓴다.
+   */
+  @state() private mobileHeaderBlockSize = 0;
+  private mobileHeaderObserver?: ResizeObserver;
   /**
    * 오버레이를 연 컨트롤 — 닫힐 때 포커스를 되돌릴 곳.
    * ★슬롯 배정 «시점» 에 잡는다. 렌더가 본문에 `inert` 를 걸면 그 컨트롤이 쥐던 포커스는
@@ -207,6 +217,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     OverlayManager.closeLayer(this);
     this.mainSizeObserver?.disconnect();
     this.mainSizeObserver = undefined;
+    this.mobileHeaderObserver?.disconnect();
+    this.mobileHeaderObserver = undefined;
     super.disconnectedCallback();
   }
 
@@ -221,6 +233,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   protected updated(changed: PropertyValues): void {
     super.updated(changed);
     this.observeMainSize();
+    this.observeMobileHeader();
     if (changed.has('hasOverlay')) {
       this.internals?.states?.[this.hasOverlay ? 'add' : 'delete']('overlay');
       if (this.hasOverlay) {
@@ -288,7 +301,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       </div>
 
       <!-- Sidebar -->
-      <aside class="sidebar" part="sidebar" state="${this.state}">
+      <aside class="sidebar" part="sidebar" state="${this.state}"
+        style="--_mobile-header-block-size: ${this.mobileHeaderBlockSize}px">
         <!-- Sidebar Header -->
         <div class="sidebar-header" part="sidebar-header">
           ${this.renderLogo()}
@@ -666,6 +680,17 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
     this.mainSizeObserver = new ResizeObserver(() => this.syncMainTabStop());
     this.mainSizeObserver.observe(main);
     this.observeContentSize();
+  }
+
+  private observeMobileHeader(): void {
+    if (this.mobileHeaderObserver || typeof ResizeObserver === 'undefined') return;
+    const header = this.shadowRoot?.querySelector<HTMLElement>('.mobile-header');
+    if (!header) return;
+    this.mobileHeaderObserver = new ResizeObserver(([entry]) => {
+      const size = entry?.borderBoxSize?.[0]?.blockSize ?? header.getBoundingClientRect().height;
+      if (size !== this.mobileHeaderBlockSize) this.mobileHeaderBlockSize = size;
+    });
+    this.mobileHeaderObserver.observe(header);
   }
 
   private observedContent: Element[] = [];

@@ -157,21 +157,32 @@ export const styles = css`
     bottom: 0;
     left: 0;
   }
+  /* 모바일 패널은 모바일 머리 줄 아래에서 시작한다(높이는 셸이 재서 넘긴다). 패널 안의 머리 줄은 모바일 머리 줄과 같은
+     것(로고 · 제목 · 토글)이라 그리지 않는다 — 그리면 머리 줄 밑에 깔린 채 포커스를 받는다. */
+  .sidebar[state="mobile"] .sidebar-header,
+  .sidebar[state="mobile-open"] .sidebar-header {
+    display: none;
+  }
   .sidebar[state="mobile"] {
     position: absolute;
-    top: 0;
+    top: var(--_mobile-header-block-size, 0px);
     bottom: 0;
     left: 0;
     right: 0;
     transform: translateY(-100%);
   }
+  /* 열린 모바일 패널은 자기 상자 밖이 보이지 않는다 — 위는 머리 줄(.mobile-header)이 더 높은 층에서 덮는다.
+     transform 이 이 상자를 떠 있는 자손의 기준 상자로 만들어, 안쪽 .sidebar-main 의 스크롤 잘림은 팝오버에 닿지 않는다.
+     그래서 이 상자가 잘라야 위치 계산(floating-ui)이 «보이는 영역» 을 안다: 없으면 머리 줄 밑 자리를 비었다고 보고
+     위로 뒤집어 덮인다. */
   .sidebar[state="mobile-open"] {
     position: absolute;
-    top: 0;
+    top: var(--_mobile-header-block-size, 0px);
     bottom: 0;
     left: 0;
     right: 0;
     transform: translateY(0);
+    overflow: hidden;
   }
 
   /* Mobile Header */
@@ -183,7 +194,7 @@ export const styles = css`
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 16px;
+    padding: 12px 16px;
     background: var(--app-header-bg, var(--u-bg-color-raised, #FAFAFA));
     color: var(--app-header-fg, var(--u-txt-color, #212121));
     border-bottom: 1px solid var(--u-border-color-weak, #EEEEEE);
