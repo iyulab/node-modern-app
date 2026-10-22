@@ -14,11 +14,14 @@ The only layout type currently available is `'sidebar'`. It provides a responsiv
 interface SidebarLayoutConfig {
   type: 'sidebar';
 
-  /** Icon name (string) | image ({ src, alt?, href? }) | custom render function. */
-  logo?: string | { src: string; alt?: string; href?: string } | ((state: SidebarState) => TemplateResult<1> | HTMLElement | string);
+  /** Icon name (string) | icon from a registered library ({ icon, lib? }) | image ({ src, alt?, href? }) | custom render function. */
+  logo?: string | { icon: string; lib?: string } | { src: string; alt?: string; href?: string } | ((state: SidebarState) => TemplateResult<1> | HTMLElement | string);
 
   /** Application title displayed beside the logo. */
   title?: string;
+
+  /** One line under the title — what the app is. Shown in the expanded sidebar header only. */
+  subtitle?: string;
 
   /** Main (top) navigation items. */
   main?: SidebarItem[];
@@ -108,7 +111,8 @@ name that fails to resolve (a 404 or an unknown name) draws the default navigati
 home target never collapses to nothing; leaving `logo` out draws no logo at all.
 
 ```typescript
-logo: 'rocket',                                          // icon name (u-icon)
+logo: 'rocket',                                          // icon name (u-icon, its default path)
+logo: { icon: 'files', lib: 'lucide' },                  // icon from a registered library
 logo: { src: '/assets/logo.svg', alt: 'Acme' },           // image, click → home
 logo: { src: '/assets/logo.svg', href: '/dashboard' },    // image, click → custom route
 logo: (state) => html`<img src=${state === 'slim' ? '/mark.svg' : '/logo.svg'} />`, // custom render

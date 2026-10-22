@@ -62,6 +62,17 @@ export const styles = css`
     overflow: hidden;
     text-overflow: ellipsis;
   }
+  /* 제목 아래 한 줄 — 앱이 무엇인지. 제목의 말줄임을 그대로 따른다. */
+  .title .subtitle {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--u-txt-color-weak, #616161);
+    font-size: var(--u-text-caption-size, 12px);
+    line-height: var(--u-text-caption-leading, 1.5);
+    font-weight: var(--u-text-caption-weight, 400);
+    letter-spacing: var(--u-text-caption-tracking, 0);
+  }
 
   /*
    * 토글러의 "테두리·배경 없음"은 마크업의 appearance="plain" 이 낸다.

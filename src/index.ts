@@ -25,6 +25,7 @@ export type {
   SidebarLayoutConfig,
   SidebarItem,
   SidebarLogoConfig,
+  SidebarLogoIcon,
   SidebarLinkConfig,
   SidebarSectionConfig,
   SidebarGroupConfig,

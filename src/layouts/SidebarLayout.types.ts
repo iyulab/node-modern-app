@@ -65,8 +65,18 @@ export interface SidebarLogoImage {
 /** 커스텀 로고 렌더 함수. `SidebarHtmlConfig.render`와 동일한 반환 타입 */
 export type SidebarLogoRenderer = (state: SidebarState) => TemplateResult<1> | HTMLElement | string;
 
-/** 최상단 앱 로고 설정: 아이콘명(문자열, 기존 동작) | 이미지 | 커스텀 렌더 함수 */
-export type SidebarLogoConfig = string | SidebarLogoImage | SidebarLogoRenderer;
+/**
+ * 등록된 아이콘 라이브러리의 아이콘 로고 — 메뉴 항목과 같은 `icon` + `lib` 짝.
+ * 문자열 로고는 라이브러리를 고르지 못해 `u-icon` 의 기본 경로(`iconBasepath`)에서만 찾는다.
+ */
+export interface SidebarLogoIcon {
+  icon: string;
+  /** `icon` 을 찾을 등록 라이브러리(`IconRegistry`). 없으면 문자열 로고와 같다. */
+  lib?: string;
+}
+
+/** 최상단 앱 로고 설정: 아이콘명(문자열, 기존 동작) | 라이브러리 아이콘 | 이미지 | 커스텀 렌더 함수 */
+export type SidebarLogoConfig = string | SidebarLogoIcon | SidebarLogoImage | SidebarLogoRenderer;
 
 /** One entry of a `type: 'menu'` popup. */
 export interface SidebarMenuItemConfig extends SidebarPermissionGuard {
@@ -120,6 +130,11 @@ export interface SidebarLayoutConfig {
   logo?: SidebarLogoConfig;
   /** 앱 제목 */
   title?: string;
+  /**
+   * 제목 아래 한 줄 — 앱이 무엇인지(«여신 서류 보관 시스템»). 펼친 사이드바의 머리에만 보인다: 접힌 사이드바는 제목과 함께 숨고,
+   * 모바일 머리 줄은 한 줄을 지킨다.
+   */
+  subtitle?: string;
   
   /** 상단/메인 메뉴 아이템 항목들 */
   main?: SidebarItem[];

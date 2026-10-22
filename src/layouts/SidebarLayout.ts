@@ -308,6 +308,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           ${this.renderLogo()}
           <span class="title" ?hidden=${this.state === 'slim'}>
             ${this.config.title}
+            ${this.config.subtitle ? html`<span class="subtitle" part="subtitle">${this.config.subtitle}</span>` : nothing}
           </span>
           <u-button class="toggler" appearance="plain"
             aria-label=${getLocaleStrings(this.locale || undefined).toggleSidebar}
@@ -579,6 +580,17 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         <u-link class="logo-link" aria-label=${name}>
           <u-icon class="logo"
             .name="${logo}"
+            .fallback=${DEFAULT_NAV_ICON}
+          ></u-icon>
+        </u-link>
+      `;
+    }
+    if (typeof logo === 'object' && 'icon' in logo) {
+      return html`
+        <u-link class="logo-link" aria-label=${name}>
+          <u-icon class="logo"
+            .lib=${logo.lib}
+            .name="${logo.icon}"
             .fallback=${DEFAULT_NAV_ICON}
           ></u-icon>
         </u-link>

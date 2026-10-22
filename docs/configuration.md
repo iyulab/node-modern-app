@@ -180,8 +180,10 @@ type LayoutConfig = SidebarLayoutConfig & {
 ```typescript
 interface SidebarLayoutConfig {
   type: 'sidebar';
-  logo?: string | { src: string; alt?: string; href?: string } | ((state: SidebarState) => TemplateResult<1> | HTMLElement | string);
+  logo?: string | { icon: string; lib?: string } | { src: string; alt?: string; href?: string } | ((state: SidebarState) => TemplateResult<1> | HTMLElement | string);
   title?: string;
+  /** One line under the title — shown in the expanded sidebar header only. */
+  subtitle?: string;
   main?: SidebarItem[];
   footer?: SidebarItem[];
 
