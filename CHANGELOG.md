@@ -1,5 +1,21 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **The sidebar group holding the current screen opens.** A group whose link matches the current address expands when
+  it becomes current and folds again when the current screen moves elsewhere — a group the user opened or folded by
+  hand stays as they left it. The group header now states its state with `aria-expanded`.
+- Links inside a sidebar group draw no icon unless one is given. The default icon keeps a link visible when the sidebar
+  is slim, and inside a group the group's own icon does that.
+
+### Fixed
+
+- The sidebar header is no taller than its content: the collapse button's icon is 20px, but the size was set on the
+  button, so its em-based height and padding grew with it (the header was 85px tall). The header's vertical padding is
+  also 12px instead of 16px.
+
 ## [0.56.2] - 2026-10-17
 
 ### Fixed

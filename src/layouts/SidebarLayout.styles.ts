@@ -74,10 +74,13 @@ export const styles = css`
    * color: inherit 는 유지한다 — 헤더 색을 따라가게 하려는 의도이고 plain 의 기본 전경
    * (--u-txt-color)보다 이 레이아웃의 뜻이 앞선다.
    */
+  /* 아이콘만 키운다 — 버튼에 글자 크기를 걸면 em 으로 잡힌 버튼 높이·여백이 함께 커져 머리 줄 전체가 높아진다. */
   .toggler {
     color: inherit;
-    font-size: 20px;
     padding: 0px;
+  }
+  .toggler u-icon {
+    font-size: 20px;
   }
   .toggler:hover {
     color: var(--u-txt-color-hover, #1565C0);
@@ -194,7 +197,7 @@ export const styles = css`
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 16px;
+    padding: 12px 16px;
     border-bottom: 1px solid var(--u-border-color-weak, #EEEEEE);
     user-select: none;
   }

@@ -1,4 +1,4 @@
-﻿import { html } from 'lit';
+﻿import { html, nothing, type PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
@@ -42,7 +42,26 @@ export class SidebarGroup extends StyledElement<ElementParts> {
   @property({ type: String }) lib?: string;
   /** 네비게이션 아이템 데이터 */
   @property({ type: String }) label?: string | DirectiveResult;
-  
+
+  /** 현재 화면 때문에 스스로 펼친 상태인가 — 사용자가 머리를 누르면 그 뒤로는 사용자의 상태다. */
+  private openedForCurrent = false;
+
+  /**
+   * 현재 화면을 품은 묶음은 펼친다 — 접힌 채면 «지금 어디인가» 가 메뉴에 보이지 않는다.
+   * 그렇게 스스로 연 묶음은 현재 화면이 떠나면 다시 접는다(옮겨 다닐수록 메뉴가 길어지지 않게).
+   * 사용자가 연 묶음 · 사용자가 다시 접은 묶음은 건드리지 않는다.
+   */
+  protected willUpdate(changed: PropertyValues<this>) {
+    if (!changed.has('selected')) return;
+    if (this.selected && this.collapsed) {
+      this.collapsed = false;
+      this.openedForCurrent = true;
+    } else if (!this.selected && this.openedForCurrent) {
+      this.collapsed = true;
+      this.openedForCurrent = false;
+    }
+  }
+
   render() {
     // ⚠콤팩트 상태의 라벨은 `compact` 속성으로 **시각적으로만** 숨긴다(스타일의 visually-hidden) —
     //   내용이 곧 헤더 버튼의 이름이라 라벨 타입(문자열·번역 디렉티브)을 가리지 않는다. `hidden` 은
@@ -51,6 +70,7 @@ export class SidebarGroup extends StyledElement<ElementParts> {
       <button part="header"
         ?compact=${this.compact}
         ?selected=${this.selected}
+        aria-expanded=${this.compact ? nothing : String(!this.collapsed)}
         @click=${this.handleButtonClick}>
         <!--
           ⚠ ?hidden 을 걸지 않는다. 접힌 상태에서는 라벨과 캐럿이 모두 숨으므로,
@@ -89,6 +109,7 @@ export class SidebarGroup extends StyledElement<ElementParts> {
       ulink?.click(); 
     } else {
       this.collapsed = !this.collapsed;
+      this.openedForCurrent = false;
     }
   }
 }

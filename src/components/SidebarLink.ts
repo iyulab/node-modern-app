@@ -1,5 +1,5 @@
 ﻿import { html, nothing } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { DirectiveResult } from 'lit/directive.js';
 
 import '@iyulab/components/dist/components/icon/UIcon.js';
@@ -83,6 +83,17 @@ export class SidebarLink extends StyledElement<ElementParts> {
   /** 항목 끝의 건수 — 처리할 일이 있을 때만. `undefined`·빈 문자열이면 그리지 않는다. */
   @property() count?: number | string;
 
+  /**
+   * 묶음(`u-sidebar-group`) 안의 링크인가. 기본 아이콘은 사이드바가 접혀 라벨이 숨을 때 항목이 빈 줄이 되지 않게 하는
+   * 것인데, 묶음 안 링크는 접히면 묶음 머리가 대신 남는다 — 그래서 아이콘을 주지 않은 묶음 안 링크에는 폴백을 그리지 않는다.
+   */
+  @state() private nested = false;
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.nested = this.parentElement?.localName === 'u-sidebar-group';
+  }
+
   render() {
     // ⚠**앵커를 유지하는 것이 요점이다.** 이것이 표현되지 않으면 소비앱은 `type: 'button'` +
     //   `location.assign()` 으로 우회하게 되는데, 그러면 가운데 클릭·주소 복사·상태바 미리보기·
@@ -100,11 +111,13 @@ export class SidebarLink extends StyledElement<ElementParts> {
         aria-current=${this.selected ? 'page' : nothing}
       >
         <div class="container" part="base" ?compact=${this.compact}>
-          <u-icon part="icon"
-            .lib=${this.lib}
-            .name=${this.icon}
-            .fallback=${DEFAULT_NAV_ICON}
-          ></u-icon>
+          ${this.icon || !this.nested
+            ? html`<u-icon part="icon"
+                .lib=${this.lib}
+                .name=${this.icon}
+                .fallback=${DEFAULT_NAV_ICON}
+              ></u-icon>`
+            : nothing}
           <span part="label" ?compact=${this.compact}>
             ${this.label}
           </span>
