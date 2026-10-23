@@ -25,10 +25,17 @@ export const styles = css`
     border-radius: var(--u-radius-xl, 8px);
     overflow: hidden;
   }
+  /* 칸 여백은 칸이 자기 섀도 안에서 그린다(u-info-field 의 --_info-field-padding) — 여기서 ::slotted 로 준 여백은
+     문서의 전역 리셋(Tailwind preflight 류)에 진다: 캡슐화 문맥이 다르면 문서 쪽 normal 선언이 이긴다.
+     u-info-field 가 아닌 칸에는 종전대로 ::slotted 여백을 준다(리셋 아래에서는 그 칸이 스스로 여백을 가져야 한다). */
   :host([layout="strip"]) ::slotted(*) {
     flex: 1 1 calc((640px - 100%) * 999);
     min-width: 0;
-    padding: var(--u-space-md, 12px) var(--u-space-lg, 16px);
     background: var(--u-bg-color, #FFFFFF);
+    --_info-field-padding: var(--u-space-md, 12px) var(--u-space-lg, 16px);
+  }
+  /* reset-ok: u-info-field 가 아닌 칸은 그 안쪽을 이 요소가 그릴 수 없다 — 리셋 아래에서는 그 칸이 스스로 여백을 가져야 한다(스킬 문서). */
+  :host([layout="strip"]) ::slotted(:not(u-info-field)) {
+    padding: var(--u-space-md, 12px) var(--u-space-lg, 16px);
   }
 `;

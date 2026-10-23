@@ -90,19 +90,21 @@ export class EmptyState extends StyledElement<ElementParts> {
     const d = this.defaults;
     const description = this.description || d.description;
     return html`
-      <div class="icon" part="icon" aria-hidden="true">
-        <slot name="icon">${d.icon}</slot>
-      </div>
-      <!-- 오류는 경보다 — 그 범위는 이 상태가 전하는 사실 전체(제목 + 사유)다. 사유가 다음 행동(다시 시도 · 권한 요청 ·
-           조건 고치기)을 가르므로 제목만 읽히면 듣는 사람이 다른 사실을 받는다. 행동 슬롯은 밖. -->
-      <div class="message" part="message" role=${this.variant === 'error' ? 'alert' : nothing}>
-        <p class="title" part="title">${this.title || d.title}</p>
-        ${description ? html`<p class="description" part="description">${description}</p>` : nothing}
-      </div>
-      <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
-        <slot name="actions"
-          @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
-        ></slot>
+      <div class="base" part="base">
+        <div class="icon" part="icon" aria-hidden="true">
+          <slot name="icon">${d.icon}</slot>
+        </div>
+        <!-- 오류는 경보다 — 그 범위는 이 상태가 전하는 사실 전체(제목 + 사유)다. 사유가 다음 행동(다시 시도 · 권한 요청 ·
+             조건 고치기)을 가르므로 제목만 읽히면 듣는 사람이 다른 사실을 받는다. 행동 슬롯은 밖. -->
+        <div class="message" part="message" role=${this.variant === 'error' ? 'alert' : nothing}>
+          <p class="title" part="title">${this.title || d.title}</p>
+          ${description ? html`<p class="description" part="description">${description}</p>` : nothing}
+        </div>
+        <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
+          <slot name="actions"
+            @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
+          ></slot>
+        </div>
       </div>
     `;
   }

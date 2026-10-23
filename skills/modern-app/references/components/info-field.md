@@ -130,10 +130,13 @@ name (`role="img"` and `aria-label`) (`0.57.0~`):
 
 | Part | Description |
 |------|-------------|
+| `base` | The field's box — a tile's surface, border and padding (and a strip cell's padding) are drawn here rather than on the host |
 | `label` · `value` · `trend` | The label, the value, and the (optional) trend indicator |
 | `unit` | The unit, inside `value` (only when `unit` is set and the value is not blank) |
 | `description` | The supporting line (when `description` is set, or the value is blank and `blankReason` is set) |
 | `visual` | The box holding the `visual` slot (not drawn when the slot is empty) |
+
+The host only takes its place in the layout. Padding, borders and spacing live on `base` inside the shadow root, so a document-wide reset such as Tailwind's preflight (`* { padding: 0; border: 0 }`) cannot strip them — document rules beat `:host` rules whatever their specificity. Restyle the box with `::part(base)`.
 
 ## CSS Custom Properties
 

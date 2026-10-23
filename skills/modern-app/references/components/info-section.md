@@ -51,7 +51,7 @@ A stat strip — the totals above a list, as cells rather than a sentence:
 |----------|-------------|
 | `--u-space-lg` / `--u-space-xl` | Grid gap (row / column) |
 | `--u-border-color` · `--u-radius-xl` · `--u-bg-color` | Strip surface, dividers and corner; cell background |
-| `--u-space-md` / `--u-space-lg` | Strip cell padding (block / inline) |
+| `--u-space-md` / `--u-space-lg` | Strip cell padding (block / inline) — a `u-info-field` cell draws it inside its own `base` part, so a document-wide reset cannot strip it; any other child element gets it as host padding |
 
 ⚠ Column width is set via the `min` property, not a custom property — it's applied as an inline
 style per instance, so a `--info-min` override in a stylesheet would lose to it.

@@ -8,6 +8,15 @@
   `JSX.IntrinsicElements` declared only `min` for `u-info-section`, so the documented strip layout was a `TS2322`
   for raw-tag JSX consumers. It now takes `layout?: InfoSectionLayout`. Types only — runtime is unchanged. A test now
   compares every augmented tag with the attributes its element declares, so the two cannot drift apart again.
+- **Padding, borders and spacing survive a document-wide reset.** Under Tailwind's preflight
+  (`* { padding: 0; border: 0 solid; margin: 0 }`) a `u-info-section layout="strip"` cell lost its padding, a
+  `u-info-field appearance="tile"` lost its border and padding, a `u-group-box` lost its border, and `u-empty-state`,
+  `u-action-bar` and `u-page-header` lost their padding or the space under them, and a `u-info-field` trend icon
+  touched its caption. Document rules beat `:host` and
+  `::slotted()` rules whatever their specificity, so a box drawn on the host is a box any reset removes. These elements
+  now draw their box on a new `base` part inside the shadow root; the host only takes its place in the layout.
+  Restyle the box with `::part(base)` — padding or a border you set on the host now adds outside it. A strip cell that
+  is not a `u-info-field` still gets its padding as host padding.
 
 ## [0.58.0] - 2026-10-23
 

@@ -36,9 +36,12 @@ rather than negative margins (the bar cannot know its parent's padding).
 
 | Part | Description |
 |------|-------------|
+| `base` | The bar's box — layout, padding and the sticky top border are drawn here rather than on the host |
 | `main` | Main action group |
 | `danger` | Destructive action group |
 | `summary` | Summary text wrapper |
+
+The host only takes its place in the layout. Padding, borders and spacing live on `base` inside the shadow root, so a document-wide reset such as Tailwind's preflight (`* { padding: 0; border: 0 }`) cannot strip them — document rules beat `:host` rules whatever their specificity. Restyle the box with `::part(base)`.
 
 ## CSS Custom Properties
 

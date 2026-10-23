@@ -53,17 +53,19 @@ export class ActionBar extends StyledElement<ElementParts> {
 
   render() {
     return html`
-      <div class="danger ${this.hasDanger ? '' : 'empty'}" part="danger">
-        <slot name="danger"
-          @slotchange=${(e: Event) => (this.hasDanger = slotHasContent(e.target as HTMLSlotElement))}
-        ></slot>
+      <div class="base" part="base">
+        <div class="danger ${this.hasDanger ? '' : 'empty'}" part="danger">
+          <slot name="danger"
+            @slotchange=${(e: Event) => (this.hasDanger = slotHasContent(e.target as HTMLSlotElement))}
+          ></slot>
+        </div>
+        <div class="summary ${this.hasSummary ? '' : 'empty'}" part="summary">
+          <slot name="summary"
+            @slotchange=${(e: Event) => (this.hasSummary = slotHasContent(e.target as HTMLSlotElement))}
+          ></slot>
+        </div>
+        <div class="main" part="main"><slot></slot></div>
       </div>
-      <div class="summary ${this.hasSummary ? '' : 'empty'}" part="summary">
-        <slot name="summary"
-          @slotchange=${(e: Event) => (this.hasSummary = slotHasContent(e.target as HTMLSlotElement))}
-        ></slot>
-      </div>
-      <div class="main" part="main"><slot></slot></div>
     `;
   }
 }

@@ -95,18 +95,21 @@ export class GroupBox extends StyledElement<ElementParts> {
   render() {
     const hasHeader = !!this.title || !!this.description || this.hasActions;
     return html`
-      <div class="header ${this.divider ? 'divider' : ''} ${hasHeader ? '' : 'empty'}" part="header">
-        <div class="titles">
-          ${staticHtml`<${HEADINGS[this.headingLevel]} class="title" part="title">${this.title}${this.title && this.meta ? html` <span class="meta" part="meta">${this.meta}</span>` : ''}</${HEADINGS[this.headingLevel]}>`}
-          ${this.description ? html`<p class="description" part="description">${this.description}</p>` : nothing}
+      <div class="base" part="base">
+        <div class="header ${this.divider ? 'divider' : ''} ${hasHeader ? '' : 'empty'}" part="header">
+          <div class="titles">
+            ${staticHtml`<${HEADINGS[this.headingLevel]} class="title" part="title">${this.title}${this.title && this.meta ? html` <span class="meta" part="meta">${this.meta}</span>` : ''}</${HEADINGS[this.headingLevel]}>`}
+            ${this.description ? html`<p class="description" part="description">${this.description}</p>` : nothing}
+          </div>
+          <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
+            <slot name="actions"
+              @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
+            ></slot>
+          </div>
         </div>
-        <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
-          <slot name="actions"
-            @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
-          ></slot>
-        </div>
+        <div class="body ${this.flush ? 'flush' : ''}" part="body"><slot></slot></div>
       </div>
-      <div class="body ${this.flush ? 'flush' : ''}" part="body"><slot></slot></div>`;
+    `;
   }
 }
 

@@ -46,10 +46,13 @@ do).
 
 | Part | Description |
 |------|-------------|
+| `base` | The card's box — surface, border, corner and shadow are drawn here rather than on the host |
 | `header` · `title` · `actions` | Header row |
 | `meta` | Secondary text inside the title |
 | `description` | One-line description under the title |
 | `body` | Body wrapper |
+
+The host only takes its place in the layout. Padding, borders and spacing live on `base` inside the shadow root, so a document-wide reset such as Tailwind's preflight (`* { padding: 0; border: 0 }`) cannot strip them — document rules beat `:host` rules whatever their specificity. Restyle the box with `::part(base)`.
 
 ## CSS Custom Properties
 

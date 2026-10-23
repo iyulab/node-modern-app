@@ -35,17 +35,19 @@ export class SidebarSection extends StyledElement<ElementParts> {
   
   render() {
     return html`
-      <div class="header" part="header" ?hidden=${this.compact}>
-        <span class="title" part="title">
-          ${this.mainTitle}
-        </span>
-        <span class="subtitle" part="subtitle" ?hidden=${!this.subTitle}>
-          ${this.subTitle}
-        </span>
-      </div>
+      <div class="base" part="base">
+        <div class="header" part="header" ?hidden=${this.compact}>
+          <span class="title" part="title">
+            ${this.mainTitle}
+          </span>
+          <span class="subtitle" part="subtitle" ?hidden=${!this.subTitle}>
+            ${this.subTitle}
+          </span>
+        </div>
       
-      <div class="items" part="items">
-        <slot></slot>
+        <div class="items" part="items">
+          <slot></slot>
+        </div>
       </div>
     `;
   }

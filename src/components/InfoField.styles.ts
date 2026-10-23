@@ -6,6 +6,17 @@ export const styles = css`
     min-width: 0;
   }
 
+  /* 상자(여백 · 테두리)는 섀도 안 .base 가 그린다 — 캡슐화 문맥이 다르면 문서 쪽 normal 선언이 :host 를 이기므로,
+     문서의 전역 리셋(Tailwind preflight 류)이 호스트에 둔 여백 · 테두리를 지운다.
+     --_info-field-padding 은 지표 띠(u-info-section layout="strip")가 칸 여백을 넘기는 통로다 — 사용자 정의 속성은
+     리셋이 건드리지 않는다. 안쪽 내용으로는 물려주지 않는다(값 슬롯에 든 다른 칸이 같은 여백을 받지 않게). */
+  .base {
+    padding: var(--_info-field-padding, 0);
+  }
+  .base > * {
+    --_info-field-padding: initial;
+  }
+
   .label {
     font-size: var(--u-text-caption-size, 12px);
     font-weight: var(--u-text-caption-weight, 400);
@@ -63,28 +74,29 @@ export const styles = css`
   }
 
   /* 타일 — 지표 격자의 한 칸. 면 · 테두리 · 반경 · 안쪽 여백을 테마 토큰으로(격자의 간격은 담는 쪽 몫). */
-  :host([appearance="tile"]) {
-    padding: var(--u-space-md, 12px);
+  :host([appearance="tile"]) .base {
+    box-sizing: border-box;
+    height: 100%;
+    padding: var(--_info-field-padding, var(--u-space-md, 12px));
     border: 1px solid var(--u-border-color, #E0E0E0);
     border-radius: var(--u-radius-xl, 8px); /* 카드 면과 같은 단(u-card · u-group-box) */
     background-color: var(--u-bg-color, #FFFFFF);
-    box-sizing: border-box;
   }
   /* 상태 타일 — 면과 테두리가 그 상태를 말한다(글자색만으로는 격자에서 눈에 띄지 않는다). neutral 은 무규칙. */
-  :host([appearance="tile"][tone="warning"]) {
+  :host([appearance="tile"][tone="warning"]) .base {
     background-color: var(--u-warning-bg-color, #FFF59D);
     border-color: var(--u-warning-color-weak, #FFEB3B);
   }
-  :host([appearance="tile"][tone="negative"]) {
+  :host([appearance="tile"][tone="negative"]) .base {
     background-color: var(--u-danger-bg-color, #FFEBEE);
     border-color: var(--u-danger-color-weak, #F44336);
   }
-  :host([appearance="tile"][tone="positive"]) {
+  :host([appearance="tile"][tone="positive"]) .base {
     background-color: var(--u-success-bg-color, #E8F5E9);
     border-color: var(--u-success-color-weak, #4CAF50);
   }
   @media (forced-colors: active) {
-    :host([appearance="tile"]) { border-color: CanvasText; }
+    :host([appearance="tile"]) .base { border-color: CanvasText; }
   }
 
   /* "아직 없음"은 값보다 약하게 — 다만 **읽을 수 있어야 한다.**
@@ -145,9 +157,15 @@ export const styles = css`
     font-size: var(--u-text-caption-size, 12px);
     margin-top: var(--u-space-3xs, 2px);
   }
-  /* 상태 표시는 글자 앞에서 한 칸 띄워, 글자 높이 가운데에. */
-  ::slotted([slot="trend-icon"]) {
+  /* 상태 표시는 글자 앞에서 한 칸 띄워, 글자 높이 가운데에. 간격은 섀도 안 상자가 갖는다 — ::slotted 의 여백은 문서의 전역
+     리셋(Tailwind preflight 류)에 진다. */
+  .trend-icon {
     margin-inline-end: 0.3em;
+  }
+  .trend-icon[hidden] {
+    display: none;
+  }
+  ::slotted([slot="trend-icon"]) {
     vertical-align: -0.125em;
   }
 

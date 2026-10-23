@@ -39,11 +39,14 @@ screens nobody opens.
 
 | Part | Description |
 |------|-------------|
+| `base` | The header's box — layout and the space under it are drawn here rather than on the host |
 | `back` | Back link |
 | `heading` | Eyebrow + title + subtitle wrapper |
 | `eyebrow` | Eyebrow row (hidden when empty) |
 | `title` · `subtitle` | Text elements |
 | `status` · `actions` | Slot wrappers |
+
+The host only takes its place in the layout. Padding, borders and spacing live on `base` inside the shadow root, so a document-wide reset such as Tailwind's preflight (`* { padding: 0; border: 0 }`) cannot strip them — document rules beat `:host` rules whatever their specificity. Restyle the box with `::part(base)`.
 
 ## CSS Custom Properties
 

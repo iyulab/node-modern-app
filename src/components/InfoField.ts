@@ -46,6 +46,7 @@ export function isBlank(v: unknown): boolean {
  * @slot trend-icon - 추세 줄 앞의 상태 표시(예: 주의 아이콘). 추세 줄이 있을 때(`trend` · `trendLabel`) 그린다.
  * @slot visual - 값과 같은 줄 끝의 작은 그림(추세 미니 차트 · 진행 고리 등). 값을 대신하지 않는다 — 장식이면 `aria-hidden="true"`,
  *   그 자체로 정보면 자기 이름(`role="img"` + `aria-label`)을 준다. 비면 자리를 차지하지 않는다.
+ * @csspart base - 칸의 상자 — 타일의 면 · 테두리 · 여백과 지표 띠 칸의 여백을 호스트가 아니라 여기서 그린다(문서 전역 리셋에 지지 않게)
  * @csspart label - 라벨
  * @csspart value - 값
  * @csspart unit - 단위
@@ -187,6 +188,8 @@ export class InfoField extends StyledElement<ElementParts> {
   }
 
   /** `visual` 슬롯에 든 것이 있는가 — 비면 그 상자를 그리지 않는다(값 옆에 빈 간격을 남기지 않게). */
+  /** 추세 아이콘 슬롯이 찼는가 — 그 옆 간격은 섀도 안 상자가 갖는다(`::slotted` 여백은 문서의 전역 리셋에 진다). */
+  @state() private hasTrendIcon = false;
   @state() private hasVisual = false;
 
   private get hasSlotted(): boolean {
@@ -220,20 +223,22 @@ export class InfoField extends StyledElement<ElementParts> {
     const glyph = this.trend === 'up' ? '▲' : this.trend === 'down' ? '▼' : '';
     const unit = !blank && this.unit ? html`<span class="unit" part="unit">${this.unit}</span>` : '';
     return html`
-      <div class="label" part="label">${this.label}</div>
-      <div class="value-row">
-        <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} ${reason ? 'reasoned' : ''} tone-${effectiveTone}" part="value">${
-          this.hasSlotted ? html`<slot @slotchange=${() => void this.nameSlottedWidgets()}></slot>` : blank ? this.blank : this.formatValue()}${unit}</div>
-        <div class="visual" part="visual" ?hidden=${!this.hasVisual}>
-          <slot name="visual" @slotchange=${(e: Event) => { this.hasVisual = (e.target as HTMLSlotElement).assignedElements().length > 0; }}></slot>
+      <div class="base" part="base">
+        <div class="label" part="label">${this.label}</div>
+        <div class="value-row">
+          <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} ${reason ? 'reasoned' : ''} tone-${effectiveTone}" part="value">${
+            this.hasSlotted ? html`<slot @slotchange=${() => void this.nameSlottedWidgets()}></slot>` : blank ? this.blank : this.formatValue()}${unit}</div>
+          <div class="visual" part="visual" ?hidden=${!this.hasVisual}>
+            <slot name="visual" @slotchange=${(e: Event) => { this.hasVisual = (e.target as HTMLSlotElement).assignedElements().length > 0; }}></slot>
+          </div>
         </div>
+        ${showTrend ? html`
+          <div class="trend tone-${effectiveTone}" part="trend">
+            <span class="trend-icon" ?hidden=${!this.hasTrendIcon}><slot name="trend-icon" @slotchange=${(e: Event) => { this.hasTrendIcon = (e.target as HTMLSlotElement).assignedElements().length > 0; }}></slot></span>${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
+          </div>
+        ` : ''}
+        ${reason ?? this.description ? html`<div class="description" part="description">${reason ?? this.description}</div>` : ''}
       </div>
-      ${showTrend ? html`
-        <div class="trend tone-${effectiveTone}" part="trend">
-          <slot name="trend-icon"></slot>${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
-        </div>
-      ` : ''}
-      ${reason ?? this.description ? html`<div class="description" part="description">${reason ?? this.description}</div>` : ''}
     `;
   }
 }

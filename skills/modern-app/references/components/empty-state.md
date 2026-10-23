@@ -50,8 +50,11 @@ action is **asking for access**.
 
 | Part | Description |
 |------|-------------|
+| `base` | The block's box — layout and padding are drawn here rather than on the host |
 | `icon` · `title` · `description` · `actions` | The four regions |
 | `message` | Wraps `title` and `description` — the alert of `variant="error"` |
+
+The host only takes its place in the layout. Padding, borders and spacing live on `base` inside the shadow root, so a document-wide reset such as Tailwind's preflight (`* { padding: 0; border: 0 }`) cannot strip them — document rules beat `:host` rules whatever their specificity. Restyle the box with `::part(base)`.
 
 ## CSS Custom Properties
 

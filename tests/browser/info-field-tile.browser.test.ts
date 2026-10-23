@@ -24,13 +24,14 @@ describe('u-info-field — tile', () => {
     const [tile, plain] = await mount(`
       <u-info-field appearance="tile" label="MTBF" value="412"></u-info-field>
       <u-info-field label="MTBF" value="412"></u-info-field>`);
-    const t = getComputedStyle(tile);
+    // 상자는 섀도 안 base 가 그린다(문서 리셋에 지지 않게).
+    const t = getComputedStyle(part(tile, 'base')!);
     expect(t.borderTopStyle).toBe('solid');
     expect(parseFloat(t.borderTopWidth)).toBeGreaterThan(0);
     expect(parseFloat(t.borderTopLeftRadius)).toBeGreaterThan(0);
     expect(parseFloat(t.paddingTop)).toBeGreaterThan(0);
     expect(t.backgroundColor).not.toBe(transparent);
-    const p = getComputedStyle(plain);
+    const p = getComputedStyle(part(plain, 'base')!);
     expect(p.borderTopStyle).toBe('none');
     expect(p.paddingTop).toBe('0px');
   });
@@ -40,7 +41,7 @@ describe('u-info-field — tile', () => {
     document.documentElement.style.setProperty('--u-radius-lg', '6px');
     try {
       const [tile] = await mount(`<u-info-field appearance="tile" label="MTBF" value="412"></u-info-field>`);
-      expect(getComputedStyle(tile).borderTopLeftRadius).toBe('10px');
+      expect(getComputedStyle(part(tile, 'base')!).borderTopLeftRadius).toBe('10px');
     } finally {
       document.documentElement.style.removeProperty('--u-radius-xl');
       document.documentElement.style.removeProperty('--u-radius-lg');
@@ -52,8 +53,8 @@ describe('u-info-field — tile', () => {
       <u-info-field appearance="tile" tone="warning" label="PM" value="71" unit="%"></u-info-field>
       <u-info-field appearance="tile" label="PM" value="96" unit="%"></u-info-field>`);
     expect(warn.getAttribute('tone')).toBe('warning');
-    const w = getComputedStyle(warn);
-    const c = getComputedStyle(calm);
+    const w = getComputedStyle(part(warn, 'base')!);
+    const c = getComputedStyle(part(calm, 'base')!);
     expect(w.backgroundColor).not.toBe(c.backgroundColor);
     expect(w.borderTopColor).not.toBe(c.borderTopColor);
   });
@@ -61,6 +62,7 @@ describe('u-info-field — tile', () => {
   it('NEGATIVE a toned plain field keeps no face — only its value text is toned', async () => {
     const [el] = await mount(`<u-info-field tone="warning" label="PM" value="71"></u-info-field>`);
     expect(getComputedStyle(el).backgroundColor).toBe(transparent);
+    expect(getComputedStyle(part(el, 'base')!).backgroundColor).toBe(transparent);
   });
 
   it('size="xl" draws the value larger than lg', async () => {
@@ -97,8 +99,11 @@ describe('u-info-field — tile', () => {
       </u-info-field>`);
     const slot = part(el, 'trend')!.querySelector('slot[name="trend-icon"]') as HTMLSlotElement;
     expect(slot.assignedElements()[0]?.id).toBe('icon');
-    // a gap between the icon and the caption
-    expect(parseFloat(getComputedStyle(document.getElementById('icon')!).marginInlineEnd)).toBeGreaterThan(0);
+    // a gap between the icon and the caption — held by the shadow box around the slot, so a document reset cannot remove it
+    await el.updateComplete;
+    const box = part(el, 'trend')!.querySelector('.trend-icon') as HTMLElement;
+    expect(box.hidden).toBe(false);
+    expect(parseFloat(getComputedStyle(box).marginInlineEnd)).toBeGreaterThan(0);
     // the slotted icon does not count as the value
     expect(part(el, 'value')!.textContent!.trim()).toBe('71');
   });

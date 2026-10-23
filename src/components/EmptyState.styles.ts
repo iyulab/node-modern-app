@@ -1,7 +1,13 @@
 import { css } from 'lit';
 
 export const styles = css`
+  /* 호스트는 자리만 잡고 상자(여백 · 테두리 · 간격)는 섀도 안 .base 가 그린다 — 캡슐화 문맥이 다르면 문서 쪽 normal
+     선언이 :host 를 이기므로, 문서의 전역 리셋(Tailwind preflight 류)이 호스트에 둔 여백 · 테두리를 지운다. */
   :host {
+    display: block;
+  }
+
+  .base {
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -59,7 +59,8 @@ describe('u-info-section layout="strip"', () => {
     const { section, cells } = await mount(900, 'layout="strip"');
     const grid = getComputedStyle(section.shadowRoot!.querySelector('[part="grid"]')!);
     expect(grid.borderTopWidth).toBe('1px');
-    expect(parseFloat(getComputedStyle(cells[0]).paddingLeft)).toBeGreaterThan(0);
+    // 칸 여백은 칸이 자기 섀도 안 base 에 그린다(문서 리셋에 지지 않게).
+    expect(parseFloat(getComputedStyle(cells[0].shadowRoot!.querySelector('[part="base"]')!).paddingLeft)).toBeGreaterThan(0);
   });
 
   it('NEGATIVE: the default grid keeps its gaps and no surface', async () => {
@@ -68,6 +69,7 @@ describe('u-info-section layout="strip"', () => {
     expect(grid.display).toBe('grid');
     expect(grid.borderTopWidth).toBe('0px');
     expect(parseFloat(getComputedStyle(cells[0]).paddingLeft)).toBe(0);
+    expect(parseFloat(getComputedStyle(cells[0].shadowRoot!.querySelector('[part="base"]')!).paddingLeft)).toBe(0);
   });
 });
 

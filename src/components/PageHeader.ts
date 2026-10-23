@@ -67,31 +67,33 @@ export class PageHeader extends StyledElement<ElementParts> {
 
   render() {
     return html`
-      ${this.back
-        ? html`<a class="back" part="back" href=${this.back}>${this.backLabel || getLocaleStrings(this.locale || undefined).back}</a>`
-        : nothing}
-      <div class="heading" part="heading">
-        <div class="eyebrow ${this.eyebrow || this.hasEyebrow ? '' : 'empty'}" part="eyebrow">
-          <slot name="eyebrow"
-            @slotchange=${(e: Event) => (this.hasEyebrow = slotHasContent(e.target as HTMLSlotElement))}
-          >${this.eyebrow ?? nothing}</slot>
-        </div>
-        <div class="title-row">
-          <h1 class="title" part="title">${this.title}</h1>
-          <span class="status ${this.hasStatus ? '' : 'empty'}" part="status">
-            <slot name="status"
-              @slotchange=${(e: Event) => (this.hasStatus = slotHasContent(e.target as HTMLSlotElement))}
-            ></slot>
-          </span>
-        </div>
-        ${this.subtitle
-          ? html`<p class="subtitle" part="subtitle">${this.subtitle}</p>`
+      <div class="base" part="base">
+        ${this.back
+          ? html`<a class="back" part="back" href=${this.back}>${this.backLabel || getLocaleStrings(this.locale || undefined).back}</a>`
           : nothing}
-      </div>
-      <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
-        <slot name="actions"
-          @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
-        ></slot>
+        <div class="heading" part="heading">
+          <div class="eyebrow ${this.eyebrow || this.hasEyebrow ? '' : 'empty'}" part="eyebrow">
+            <slot name="eyebrow"
+              @slotchange=${(e: Event) => (this.hasEyebrow = slotHasContent(e.target as HTMLSlotElement))}
+            >${this.eyebrow ?? nothing}</slot>
+          </div>
+          <div class="title-row">
+            <h1 class="title" part="title">${this.title}</h1>
+            <span class="status ${this.hasStatus ? '' : 'empty'}" part="status">
+              <slot name="status"
+                @slotchange=${(e: Event) => (this.hasStatus = slotHasContent(e.target as HTMLSlotElement))}
+              ></slot>
+            </span>
+          </div>
+          ${this.subtitle
+            ? html`<p class="subtitle" part="subtitle">${this.subtitle}</p>`
+            : nothing}
+        </div>
+        <div class="actions ${this.hasActions ? '' : 'empty'}" part="actions">
+          <slot name="actions"
+            @slotchange=${(e: Event) => (this.hasActions = slotHasContent(e.target as HTMLSlotElement))}
+          ></slot>
+        </div>
       </div>
     `;
   }
