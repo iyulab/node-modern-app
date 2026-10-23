@@ -463,6 +463,15 @@ routes: [
 The screen gives the way back itself (a link to the menu) — the shell has nothing on screen to return with. The
 state is the reflected `immersive` attribute on `u-sidebar-layout` (`0.58.0~`).
 
+A screen can also own its background: `metadata: { theme: 'dark' }` (or `'light'`) applies that theme while the screen
+is current, without changing or storing the user's choice (`Theme.override` from `@iyulab/components`), and the next
+screen that does not ask returns to it. A floor board stays dark on the TV and in a browser where the user picked
+light.
+
+```ts
+{ path: 'board', metadata: { shell: 'hidden', theme: 'dark' }, render: () => html`<floor-board></floor-board>` }
+```
+
 ## Printing
 
 On print media the shell drops its app chrome and lets the content flow across pages: the

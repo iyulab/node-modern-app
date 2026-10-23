@@ -15,6 +15,7 @@ import '@iyulab/components/dist/components/menu-item/UMenuItem.js';
 import { createDevWarner } from '@iyulab/components/dist/utilities/devWarning.js';
 import { isFocusCandidate, querySelectorDeep } from '@iyulab/components/dist/utilities/elements.js';
 import { OverlayManager } from '@iyulab/components/dist/utilities/OverlayManager.js';
+import { Theme } from '@iyulab/components/dist/utilities/Theme.js';
 // 부수효과 import — 이 모듈이 그리는 `<u-progress-bar>` 을 등록한다(타입으로만 가져오면 빌드가 import 를 지운다 — 데코레이터 메타데이터가 우연히 붙잡고 있었다).
 import '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
 import type { UProgressBar } from '@iyulab/components/dist/components/progress-bar/UProgressBar.js';
@@ -127,6 +128,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
    * next screen does not ask for it; the screen itself gives the way back.
    */
   @property({ type: Boolean, reflect: true }) immersive = false;
+  /** 지금 화면이 건 일시 테마가 있는가 — 다음 화면이 아무것도 묻지 않으면 걷어 사용자 선호로 돌려준다. */
+  private routeTheme = false;
   /**
    * Live counts for link items, keyed by the item's `href` — overrides the static `count` of the
    * item config. Set through `app.setNavCount(href, value)`; assigning a new object re-renders.
@@ -215,6 +218,10 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   disconnectedCallback() {
+    if (this.routeTheme) {
+      Theme.override(null);
+      this.routeTheme = false;
+    }
     window.removeEventListener('route-begin', this.handleRouteBegin);
     window.removeEventListener('route-done', this.handleRouteDone);
     window.removeEventListener('route-progress', this.handleRouteProgress);
@@ -676,6 +683,11 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   /** 라우트 변경 완료 핸들러 */
   private handleRouteDone = (event: RouteDoneEvent) => {
     this.immersive = event.context.metadata?.shell === 'hidden';
+    // 화면이 자기 바탕을 정한다(`metadata.theme`) — 선호는 건드리지 않고(Theme.override), 떠나면 걷는다.
+    const theme = event.context.metadata?.theme;
+    const wanted = theme === 'dark' || theme === 'light' ? theme : null;
+    if (wanted || this.routeTheme) Theme.override(wanted);
+    this.routeTheme = wanted !== null;
     this.progressBarEl.value = 100;
     setTimeout(() => {
       this.routeLoading = false;

@@ -3,6 +3,7 @@ import '@iyulab/components/styles/tokens.css';
 import '../../src/layouts/SidebarLayout.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import { RouteDoneEvent, type RouteContext } from '@iyulab/router';
+import { Theme } from '@iyulab/components/dist/utilities/Theme.js';
 
 /**
  * A screen can take the whole viewport — a wall display, a kiosk — by asking for it in its route
@@ -39,7 +40,12 @@ const shown = (el: SidebarLayout, selector: string) => {
   return getComputedStyle(node).display !== 'none';
 };
 
-afterEach(() => document.body.replaceChildren());
+afterEach(() => {
+  document.body.replaceChildren();
+  Theme.override(null);
+  document.documentElement.removeAttribute('theme');
+  document.documentElement.removeAttribute('data-theme');
+});
 
 describe('immersive route', () => {
   it('an ordinary route keeps the sidebar and the page padding', async () => {
@@ -66,5 +72,26 @@ describe('immersive route', () => {
     await el.updateComplete;
     expect(el.hasAttribute('immersive')).toBe(false);
     expect(shown(el, '.sidebar')).toBe(true);
+  });
+
+  it('metadata.theme sets the screen’s own theme and leaves the preference alone; the next route returns to it', async () => {
+    Theme.set('light');
+    const el = await mount();
+    window.dispatchEvent(new RouteDoneEvent(context({ shell: 'hidden', theme: 'dark' })));
+    await el.updateComplete;
+    expect(document.documentElement.getAttribute('theme')).toBe('dark');
+    expect(Theme.get()).toBe('light');
+
+    window.dispatchEvent(new RouteDoneEvent(context()));
+    await el.updateComplete;
+    expect(document.documentElement.getAttribute('theme')).toBe('light');
+  });
+
+  it('NEGATIVE — a route without metadata.theme leaves the applied theme as it is', async () => {
+    Theme.set('dark');
+    const el = await mount();
+    window.dispatchEvent(new RouteDoneEvent(context({ shell: 'hidden' })));
+    await el.updateComplete;
+    expect(document.documentElement.getAttribute('theme')).toBe('dark');
   });
 });

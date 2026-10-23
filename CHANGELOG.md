@@ -7,6 +7,9 @@
 - **A screen without the shell.** A route with `metadata: { shell: 'hidden' }` takes the whole viewport while it is
   current — no sidebar, mobile header or page padding — for a wall display or a kiosk. The next ordinary route gets
   the chrome back. The layout reflects it as `immersive`.
+- **A screen with its own theme.** `metadata: { theme: 'dark' | 'light' }` applies that theme while the route is
+  current without changing or storing the user's choice, and the next route returns to it. Needs `@iyulab/components`
+  with `Theme.override` (the next minor).
 
 ### Fixed
 
