@@ -47,6 +47,9 @@ export function Screen() {
       <u-empty-state variant="no-access" />
       {/* @ts-expect-error — 없는 variant 는 거부한다 */}
       <u-empty-state variant="forbidden" />
+      <u-info-section layout="strip" />
+      {/* @ts-expect-error — 없는 배치는 거부한다 */}
+      <u-info-section layout="row" />
       <ActionBar sticky />
       <MasterDetailLayout masterSize="22rem" overlayBreakpoint={760} />
       <SidebarButton label="More" />

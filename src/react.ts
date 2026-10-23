@@ -6,6 +6,7 @@ import type { WizardEventMap } from './components/Wizard.js';
 import type { GroupBoxLevel } from './components/GroupBox.js';
 import type { EmptyStateVariant } from './components/EmptyState.js';
 import type { TimelineItemColor } from './components/TimelineItem.js';
+import type { InfoSectionLayout } from './components/InfoSection.js';
 import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone, InfoFieldAppearance } from './components/InfoField.js';
 import { trackUnsavedChanges } from './unsaved.js';
 
@@ -150,6 +151,7 @@ declare module 'react' {
       };
       'u-info-section': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         min?: number | string;
+        layout?: InfoSectionLayout;
       };
       'u-timeline': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
       'u-timeline-item': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {

@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **`<u-info-section layout="strip">` type-checks in JSX.** The `@iyulab/modern-app/react` augmentation of
+  `JSX.IntrinsicElements` declared only `min` for `u-info-section`, so the documented strip layout was a `TS2322`
+  for raw-tag JSX consumers. It now takes `layout?: InfoSectionLayout`. Types only — runtime is unchanged. A test now
+  compares every augmented tag with the attributes its element declares, so the two cannot drift apart again.
+
 ## [0.58.0] - 2026-10-23
 
 ### Added

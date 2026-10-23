@@ -1,0 +1,70 @@
+import { describe, it, expect } from 'vitest';
+import { readFileSync, readdirSync } from 'fs';
+import { resolve, join } from 'path';
+
+const root = resolve(__dirname, '..');
+const read = (rel: string) => readFileSync(join(root, rel), 'utf-8');
+
+/**
+ * `src/react.ts` 의 `JSX.IntrinsicElements` 증강 ↔ 요소 클래스의 공개 속성.
+ *
+ * 증강은 손으로 쓴 선언이라 요소에 속성이 늘어도 따라오지 않는다 — `u-info-section` 의
+ * `layout` 이 빠진 채 게시돼, 원시 태그를 JSX 로 쓰는 소비자가 `layout="strip"` 에서
+ * `TS2322` 를 받았다. 소비자는 같은 키를 다른 타입으로 다시 선언할 수 없어 우회도 막힌다.
+ *
+ * ⇒ 대상(요소 · 속성)은 소스에서 도출하고, 규칙(어느 요소가 대상 밖인가)만 손으로 쓴다.
+ * 속성 이름은 Lit 규칙대로 — `attribute: 'x'` 면 그 이름, `attribute: false` 면 속성 없음,
+ * 아니면 프로퍼티 이름의 소문자(kebab 이 아니다).
+ */
+
+/** 셸 부품은 셸 설정으로 그려진다(속성으로 쓰는 표면이 아니다). */
+const SHELL_PARTS = /^Sidebar/;
+/** `createComponent` 래퍼가 따로 있는 요소 — 원시 태그 증강의 대상이 아니다. */
+const WRAPPED = new Set(['u-wizard', 'u-sidebar-layout']);
+
+function elementAttributes(src: string): { tag: string; attrs: string[] } | null {
+  const tag = /@customElement\('([^']+)'\)/.exec(src)?.[1];
+  if (!tag) return null;
+  const attrs: string[] = [];
+  const re = /@property\((\{[^)]*\})?\)\s*(?:override\s+|declare\s+)?(\w+)/g;
+  for (const m of src.matchAll(re)) {
+    const options = m[1] ?? '';
+    if (/attribute:\s*false/.test(options)) continue;
+    const named = /attribute:\s*'([^']+)'/.exec(options)?.[1];
+    attrs.push(named ?? m[2].toLowerCase());
+  }
+  return { tag, attrs: attrs.sort() };
+}
+
+function declaredKeys(reactSrc: string): Map<string, string[]> {
+  const block = reactSrc.slice(reactSrc.indexOf('interface IntrinsicElements'));
+  const out = new Map<string, string[]>();
+  const entry = /'(u-[\w-]+)':\s*React\.DetailedHTMLProps<[^;]*?>(?:\s*&\s*\{([\s\S]*?)\n\s{6}\})?;/g;
+  for (const m of block.matchAll(entry)) {
+    const body = (m[2] ?? '').replace(/\/\*\*[\s\S]*?\*\//g, '');
+    const keys = [...body.matchAll(/^\s*'?([\w-]+)'?\?:/gm)].map(k => k[1]);
+    out.set(m[1], keys.sort());
+  }
+  return out;
+}
+
+const elements = readdirSync(join(root, 'src/components'))
+  .filter(f => f.endsWith('.ts') && !f.endsWith('.styles.ts') && !SHELL_PARTS.test(f))
+  .map(f => elementAttributes(read(`src/components/${f}`)))
+  .filter((e): e is { tag: string; attrs: string[] } => !!e && !WRAPPED.has(e.tag));
+
+const declared = declaredKeys(read('src/react.ts'));
+
+describe('React 원시 태그 증강 — 요소 공개 속성과 같다', () => {
+  it('대상 요소를 찾는다', () => {
+    expect(elements.length).toBeGreaterThan(5);
+    expect(declared.size).toBeGreaterThan(5);
+  });
+
+  for (const { tag, attrs } of elements) {
+    it(`${tag}`, () => {
+      expect(declared.has(tag), `${tag} 가 IntrinsicElements 에 없다`).toBe(true);
+      expect(declared.get(tag)).toEqual(attrs);
+    });
+  }
+});
