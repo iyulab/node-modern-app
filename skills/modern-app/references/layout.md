@@ -448,6 +448,21 @@ on a component such as `UInput`) — `@iyulab/router` 0.16.1 and later report `r
 React has committed the screen. While the overlay is open the shell does none of this: the route
 underneath is inert and focus stays in the panel.
 
+## A screen without the shell
+
+A screen that owns the whole viewport — a wall display on the production floor, a kiosk, a full-screen viewer —
+asks for it in its route. While that screen is current the shell draws no sidebar, no mobile header and no page
+padding; the next screen that does not ask gets them back.
+
+```ts
+routes: [
+  { path: 'board', metadata: { shell: 'hidden' }, render: () => html`<floor-board></floor-board>` },
+]
+```
+
+The screen gives the way back itself (a link to the menu) — the shell has nothing on screen to return with. The
+state is the reflected `immersive` attribute on `u-sidebar-layout` (`0.58.0~`).
+
 ## Printing
 
 On print media the shell drops its app chrome and lets the content flow across pages: the

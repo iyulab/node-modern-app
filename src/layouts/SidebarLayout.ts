@@ -122,6 +122,12 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   /** 사이드바 레이아웃 설정 */
   @property({ type: Object }) config?: SidebarLayoutConfig;
   /**
+   * The current screen takes the whole viewport: no sidebar, no mobile header, no page padding — a wall
+   * display, a kiosk, a full-screen viewer. Set by the route (`metadata: { shell: 'hidden' }`) and cleared when the
+   * next screen does not ask for it; the screen itself gives the way back.
+   */
+  @property({ type: Boolean, reflect: true }) immersive = false;
+  /**
    * Live counts for link items, keyed by the item's `href` — overrides the static `count` of the
    * item config. Set through `app.setNavCount(href, value)`; assigning a new object re-renders.
    */
@@ -669,6 +675,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
 
   /** 라우트 변경 완료 핸들러 */
   private handleRouteDone = (event: RouteDoneEvent) => {
+    this.immersive = event.context.metadata?.shell === 'hidden';
     this.progressBarEl.value = 100;
     setTimeout(() => {
       this.routeLoading = false;

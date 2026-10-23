@@ -19,6 +19,16 @@ export const styles = css`
   :host([state="mobile-open"]) {
     flex-direction: column;
   }
+  /* 전체 화면 라우트(metadata.shell: 'hidden') — 크롬을 걷고 본문이 뷰포트 전체를 쓴다. 돌아가는 길은 화면이 준다. */
+  :host([immersive]) .sidebar,
+  :host([immersive]) .mobile-header,
+  :host([immersive]) .backdrop,
+  :host([immersive]) .skip-link {
+    display: none;
+  }
+  :host([immersive]) .main {
+    padding: 0;
+  }
 
   .logo {
     color: var(--u-txt-color, #212121);
