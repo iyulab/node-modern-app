@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **A sidebar link's count meets the text contrast floor under every palette.** It was dimmed with `opacity: 0.8`,
+  which fell below 4.5:1 where the resting link colour is already a mid grey (about 4.2:1 for `#5B5E63` on white).
+  The count now paints in the label's colour; it stays one type step smaller.
+
 ## [0.57.0] - 2026-10-23
 
 ### Added

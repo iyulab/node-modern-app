@@ -105,14 +105,14 @@ export const styles = css`
   }
 
   /* 건수 — 라벨 끝, 숫자는 표 숫자처럼 자릿수가 흔들리지 않게. 접힌 사이드바에서는 라벨처럼
-     시각적으로만 숨긴다(접근 가능한 이름에는 남는다). */
+     시각적으로만 숨긴다(접근 가능한 이름에는 남는다). 라벨보다 한 단 작은 글자로 물러서고 색은 라벨 그대로다 —
+     불투명도로 흐리면 링크 색이 이미 옅은 팔레트에서 11px 글자의 대비 하한(4.5:1) 아래로 내려간다. */
   .count {
     flex: none;
     margin-inline-start: auto;
     font-size: var(--u-text-overline-size, 11px);
     font-weight: var(--u-text-caption-weight, 400);
     font-variant-numeric: tabular-nums;
-    opacity: 0.8;
   }
   .count[compact] {
     position: absolute;
