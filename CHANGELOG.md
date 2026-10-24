@@ -1,5 +1,22 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`<u-stage-flow>` — how many records wait at each stage.** For the first row of a screen where work moves through
+  fixed stages: each stage's count is drawn as a bar on one scale (the largest stage, or `max`), a flow mark sits
+  between stages, a stage can be toned `warning` or `negative` with a `note` that says why, and a stage with `href` is
+  a single link. Narrow containers wrap the stages onto more rows. Exported types: `StageFlowItem`, `StageFlowTone`.
+- **`<u-attention-list>` — what is waiting on a person.** One line each: an urgency rail, what and why, the count
+  and the action that goes to it. The lines share one grid, so counts and buttons stand in the same columns; a line
+  with a count of `0` stays, quieter, with no action. Exported types: `AttentionItem`, `AttentionTone`.
+- **A sidebar count can say work has piled up.** A link's `countTone: 'warning' | 'negative'` draws its count as a
+  filled pill (`count-tone` on `u-sidebar-link`); `app.setNavCount(href, value, tone)` sets it live. Exported type
+  `SidebarCountTone`.
+- **React wrappers `StageFlow` and `AttentionList`** from `@iyulab/modern-app/react`, so their property-only
+  `items` work on React 18 too.
+
 ## [0.59.0] - 2026-10-23
 
 ### Fixed

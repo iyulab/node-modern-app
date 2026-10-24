@@ -52,7 +52,17 @@ export interface SidebarLinkConfig extends SidebarPermissionGuard {
    * The value can also be set later without rebuilding the layout: `app.setNavCount(href, n)`.
    */
   count?: number | string;
+
+  /**
+   * How urgent the count is. `neutral` (default) is a quiet number; `warning` and `negative` draw it as a
+   * filled pill — the one place in the sidebar where work has piled up past what is normal. Say why on the
+   * screen it leads to; the pill only points there. Live: `app.setNavCount(href, n, tone)`.
+   */
+  countTone?: SidebarCountTone;
 }
+
+/** 사이드바 건수의 톤 — `neutral` 조용한 숫자 · `warning`·`negative` 채운 알약(밀린 일). */
+export type SidebarCountTone = 'neutral' | 'warning' | 'negative';
 
 /**
  * SidebarLink 컴포넌트는 계층형 네비게이션 아이템을 표시합니다.
@@ -82,6 +92,8 @@ export class SidebarLink extends StyledElement<ElementParts> {
   @property({ type: String }) target?: '_self' | '_blank';
   /** 항목 끝의 건수 — 처리할 일이 있을 때만. `undefined`·빈 문자열이면 그리지 않는다. */
   @property() count?: number | string;
+  /** 건수의 톤 — `warning`·`negative` 면 채운 알약으로 그린다(밀린 일). 기본 `neutral`. */
+  @property({ type: String, attribute: 'count-tone', reflect: true }) countTone?: SidebarCountTone;
 
   /**
    * 묶음(`u-sidebar-group`) 안의 링크인가. 기본 아이콘은 사이드바가 접혀 라벨이 숨을 때 항목이 빈 줄이 되지 않게 하는

@@ -34,6 +34,7 @@ export type {
   SidebarMenuItemConfig,
   SidebarHtmlConfig,
   SidebarState,
+  SidebarCountTone,
 } from './layouts/SidebarLayout.types';
 export type { SidebarAvatar } from './components/SidebarButton.js';
 export type { SidebarLayoutEventMap } from './layouts/SidebarLayout.js';
@@ -57,6 +58,10 @@ export { ActionBar } from './components/ActionBar.js';
 export { MasterDetailLayout } from './components/MasterDetailLayout.js';
 export type { MasterDetailLayoutEventMap } from './components/MasterDetailLayout.js';
 export { Wizard } from './components/Wizard.js';
+export { StageFlow } from './components/StageFlow.js';
+export type { StageFlowItem, StageFlowTone } from './components/StageFlow.js';
+export { AttentionList } from './components/AttentionList.js';
+export type { AttentionItem, AttentionTone } from './components/AttentionList.js';
 export type { WizardStep, WizardStepState, WizardStepChangeDetail, WizardEventMap } from './components/Wizard.js';
 
 // «저장 안 한 변경» — 화면이 판정을 등록하면 라우터 이동(확인 대화상자)과 문서 이탈(`beforeunload`)이 함께 묻는다.

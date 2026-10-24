@@ -9,7 +9,7 @@ import type { SidebarButtonConfig, SidebarAvatar } from "../components/SidebarBu
 import type { SidebarPermissionGuard } from "./SidebarPermission";
 
 export type { SidebarPermissionGuard } from "./SidebarPermission";
-export type { SidebarLinkConfig } from "../components/SidebarLink";
+export type { SidebarLinkConfig, SidebarCountTone } from "../components/SidebarLink";
 export type { SidebarSectionConfig } from "../components/SidebarSection";
 export type { SidebarGroupConfig } from "../components/SidebarGroup";
 export type { SidebarButtonConfig } from "../components/SidebarButton";

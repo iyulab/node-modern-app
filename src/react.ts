@@ -3,6 +3,8 @@ import { createComponent, type EventName } from '@lit/react';
 import { SidebarLayout as SidebarLayoutElement, type SidebarLayoutEventMap } from './layouts/SidebarLayout.js';
 import { Wizard as WizardElement } from './components/Wizard.js';
 import type { WizardEventMap } from './components/Wizard.js';
+import { StageFlow as StageFlowElement } from './components/StageFlow.js';
+import { AttentionList as AttentionListElement } from './components/AttentionList.js';
 import type { GroupBoxLevel } from './components/GroupBox.js';
 import type { EmptyStateVariant } from './components/EmptyState.js';
 import type { TimelineItemColor } from './components/TimelineItem.js';
@@ -86,7 +88,29 @@ export const Wizard = createComponent({
 
 export type WizardProps = React.ComponentProps<typeof Wizard>;
 
-export type { SidebarLayoutElement, WizardElement };
+/**
+ * React wrapper for `<u-stage-flow>`. `items` is property-only (`attribute: false`) — a raw custom element
+ * in React 18 JSX would stringify it into an attribute nobody reads — so this wrapper keeps `items` working
+ * on React 18 as well as 19.
+ */
+export const StageFlow = createComponent({
+  react: React,
+  tagName: 'u-stage-flow',
+  elementClass: StageFlowElement,
+});
+
+export type StageFlowProps = React.ComponentProps<typeof StageFlow>;
+
+/** React wrapper for `<u-attention-list>` — `items` is property-only, kept working on React 18 like `StageFlow`'s. */
+export const AttentionList = createComponent({
+  react: React,
+  tagName: 'u-attention-list',
+  elementClass: AttentionListElement,
+});
+
+export type AttentionListProps = React.ComponentProps<typeof AttentionList>;
+
+export type { SidebarLayoutElement, WizardElement, StageFlowElement, AttentionListElement };
 export type {
   SidebarLayoutConfig,
   SidebarItem,
@@ -154,6 +178,15 @@ declare module 'react' {
         layout?: InfoSectionLayout;
       };
       'u-timeline': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>;
+      'u-stage-flow': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        unit?: string;
+        label?: string;
+        numbered?: boolean;
+        max?: number | string;
+      };
+      'u-attention-list': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        label?: string;
+      };
       'u-timeline-item': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         heading?: string;
         datetime?: string;

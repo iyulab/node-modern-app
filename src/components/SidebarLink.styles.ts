@@ -114,6 +114,21 @@ export const styles = css`
     font-weight: var(--u-text-caption-weight, 400);
     font-variant-numeric: tabular-nums;
   }
+  /* 밀린 일 — 채운 알약. 사이드바에서 «여기가 평소보다 쌓였다» 를 가리키는 단 하나의 표시라 아껴 쓴다. */
+  :host([count-tone="warning"]) .count:not([compact]),
+  :host([count-tone="negative"]) .count:not([compact]) {
+    padding-inline: var(--u-space-xs, 6px);
+    border-radius: var(--u-radius-pill, 9999px);
+    font-weight: var(--u-text-label-weight, 600);
+  }
+  :host([count-tone="warning"]) .count:not([compact]) {
+    background: var(--u-warning-color, #FDD835);
+    color: var(--u-warning-txt-color, #000000);
+  }
+  :host([count-tone="negative"]) .count:not([compact]) {
+    background: var(--u-danger-color, #D32F2F);
+    color: var(--u-danger-txt-color, #FFFFFF);
+  }
   .count[compact] {
     position: absolute;
     width: 1px;

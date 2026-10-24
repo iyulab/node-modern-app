@@ -12,6 +12,7 @@ import { unsavedChangesGuard } from './unsaved.js';
 import type { AppConfig, LayoutConfig } from './types/AppConfigs';
 import type { NotificationOptions } from './types/AppOptions';
 import type { AuthSession } from './types/AuthConfig';
+import type { SidebarCountTone } from './components/SidebarLink.js';
 
 /**
  * `document.body` 를 셸의 뿌리로 쓸 때의 기본 크기 규칙.
@@ -260,16 +261,28 @@ class App {
    *
    * ```ts
    * app.setNavCount('/reviews', 12);
+   * app.setNavCount('/billing', 669, 'negative');   // piled up — drawn as a filled pill
    * app.setNavCount('/reviews', undefined);
    * ```
+   *
+   * `tone` overrides the item's static `countTone`; leave it out to keep that (or neutral). Clearing the count clears
+   * the live tone too.
    */
-  public setNavCount(href: string, value: number | string | undefined): void {
-    const layout = this._layout as (HTMLElement & { counts?: Record<string, number | string | undefined> }) | undefined;
+  public setNavCount(href: string, value: number | string | undefined, tone?: SidebarCountTone): void {
+    const layout = this._layout as (HTMLElement & {
+      counts?: Record<string, number | string | undefined>;
+      countTones?: Record<string, SidebarCountTone | undefined>;
+    }) | undefined;
     if (!layout || !('counts' in layout)) return;
     const next = { ...layout.counts };
-    if (value === undefined) delete next[href];
-    else next[href] = value;
+    const tones = { ...(layout.countTones ?? {}) };
+    if (value === undefined) { delete next[href]; delete tones[href]; }
+    else {
+      next[href] = value;
+      if (tone !== undefined) tones[href] = tone;
+    }
     layout.counts = next;
+    layout.countTones = tones;
   }
 
   /** 공지 메시지 */

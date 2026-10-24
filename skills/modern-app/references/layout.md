@@ -66,6 +66,8 @@ interface SidebarLinkConfig {
   target?: '_self' | '_blank';
   /** Work waiting behind the item, shown at its end. Change it at runtime with app.setNavCount(href, n). */
   count?: number | string;
+  /** How urgent the count is: 'neutral' (default) a quiet number, 'warning' | 'negative' a filled pill. */
+  countTone?: 'neutral' | 'warning' | 'negative';
   styles?: StyleMap<'host' | 'base' | 'icon' | 'label' | 'count'>;
 }
 ```
@@ -102,6 +104,15 @@ they ask for action, or the sidebar turns into a dashboard.
 
 // later, without rebuilding the layout — `undefined` clears it
 app.setNavCount('/reviews', 3);
+```
+
+When work has piled up past what is normal, give the count a tone: `warning` or `negative` draws it
+as a filled pill — keep it for the one item that needs it, and say why on the screen it leads to.
+
+```typescript
+{ type: 'link', icon: 'receipt', label: 'Billing', href: '/billing', count: 669, countTone: 'negative' }
+
+app.setNavCount('/billing', 669, 'negative');   // live; leaving the tone out keeps the configured one
 ```
 
 The count is `part="count"`; in the compact sidebar it stays in the link's accessible

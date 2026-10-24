@@ -67,3 +67,33 @@ describe('app.setNavCount', () => {
     (app as unknown as { _layout?: HTMLElement })._layout = undefined;
   });
 });
+
+describe('SidebarLink — count tone', () => {
+  it('reflects the tone so the count can be drawn as a pill; no tone stays a plain number', async () => {
+    const hot = await mount({ href: '/billing', label: 'Billing', count: 669, countTone: 'negative' });
+    expect(hot.getAttribute('count-tone')).toBe('negative');
+    expect(countPart(hot)?.textContent).toBe('669');
+    const calm = await mount({ href: '/paid', label: 'Paid', count: 399 });
+    expect(calm.hasAttribute('count-tone')).toBe(false);
+  });
+});
+
+describe('app.setNavCount — tone', () => {
+  it('sets a live tone with the count, keeps the static one when left out, and clears it with the count', () => {
+    const layout = document.createElement('div') as unknown as HTMLElement & { counts: Record<string, unknown>; countTones: Record<string, unknown> };
+    layout.counts = {};
+    layout.countTones = {};
+    els.push(layout);
+    (app as unknown as { _layout: HTMLElement })._layout = layout;
+
+    app.setNavCount('/billing', 669, 'negative');
+    expect(layout.countTones).toEqual({ '/billing': 'negative' });
+    app.setNavCount('/billing', 670);
+    expect(layout.countTones).toEqual({ '/billing': 'negative' });
+    app.setNavCount('/billing', undefined);
+    expect(layout.counts).toEqual({});
+    expect(layout.countTones).toEqual({});
+
+    (app as unknown as { _layout?: HTMLElement })._layout = undefined;
+  });
+});

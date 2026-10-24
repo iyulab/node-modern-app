@@ -6,6 +6,7 @@ import { repeat } from 'lit/directives/repeat.js';
 import '../components/SidebarSection';
 import '../components/SidebarGroup';
 import '../components/SidebarLink';
+import type { SidebarCountTone } from '../components/SidebarLink';
 import '../components/SidebarButton';
 import '@iyulab/components/dist/components/icon/UIcon.js';
 import '@iyulab/components/dist/components/button/UButton.js';
@@ -135,6 +136,8 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
    * item config. Set through `app.setNavCount(href, value)`; assigning a new object re-renders.
    */
   @property({ type: Object }) counts: Record<string, number | string | undefined> = {};
+  /** Live count tones for link items, keyed by `href` — overrides the item's static `countTone`. Set through `app.setNavCount(href, value, tone)`. */
+  @property({ type: Object }) countTones: Record<string, SidebarCountTone | undefined> = {};
   /** 크롬 문자열(토글 버튼 접근성 라벨 등) 로케일 — 이 요소만 다른 언어로 쓸 때. 비우면 `Locale` 의 활성 로케일 */
   @property({ type: String }) locale = '';
 
@@ -484,6 +487,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .navigate="${item.navigate}"
           .target="${item.target}"
           .count=${item.href in this.counts ? this.counts[item.href] : item.count}
+          .countTone=${item.href in this.countTones ? this.countTones[item.href] : item.countTone}
           .styles="${item.styles}"
         ></u-sidebar-link>
       `;
