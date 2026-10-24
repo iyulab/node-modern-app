@@ -1,5 +1,13 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **A toned `u-info-field` tile keeps its description readable.** On a `positive`, `warning` or `negative` tile the
+  description line now takes the weak text step instead of the weaker one — under a palette whose weaker step only
+  clears 4.5:1 on white, it fell to about 4.4:1 on the tinted face. An untoned tile keeps the quieter step.
+
 ## [0.60.0] - 2026-10-24
 
 ### Added

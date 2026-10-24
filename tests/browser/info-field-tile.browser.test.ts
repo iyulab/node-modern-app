@@ -107,4 +107,41 @@ describe('u-info-field — tile', () => {
     // the slotted icon does not count as the value
     expect(part(el, 'value')!.textContent!.trim()).toBe('71');
   });
+
+  it('a toned tile keeps its description at the text floor (4.5:1) on the tinted face', async () => {
+    // A palette whose weaker step only clears 4.5:1 on white — the tinted faces are darker than white.
+    const tokens: Record<string, string> = {
+      '--u-txt-color-weak': 'rgb(102, 102, 102)',
+      '--u-txt-color-weaker': 'rgb(107, 111, 117)',
+      '--u-success-bg-color': 'rgb(230, 244, 234)',
+      '--u-warning-bg-color': 'rgb(254, 245, 230)',
+      '--u-danger-bg-color': 'rgb(253, 236, 234)',
+    };
+    for (const [k, v] of Object.entries(tokens)) document.documentElement.style.setProperty(k, v);
+    try {
+      const tiles = await mount(['positive', 'warning', 'negative'].map((tone) =>
+        `<u-info-field appearance="tile" tone="${tone}" label="L" value="1" description="Why it reads so"></u-info-field>`).join(''));
+      for (const tile of tiles) {
+        const ratio = contrast(getComputedStyle(part(tile, 'description')!).color, getComputedStyle(part(tile, 'base')!).backgroundColor);
+        expect(ratio, `${tile.getAttribute('tone')} tile description`).toBeGreaterThanOrEqual(4.5);
+      }
+      // An untoned tile keeps the quieter step — it stands on the plain face.
+      const [plain] = await mount(`<u-info-field appearance="tile" label="L" value="1" description="d"></u-info-field>`);
+      expect(getComputedStyle(part(plain, 'description')!).color).toBe('rgb(107, 111, 117)');
+    } finally {
+      for (const k of Object.keys(tokens)) document.documentElement.style.removeProperty(k);
+    }
+  });
 });
+
+function contrast(a: string, b: string): number {
+  const lum = (c: string) => {
+    const [r, g, bl] = c.match(/[\d.]+/g)!.map(Number).map((v) => {
+      const s = v / 255;
+      return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
+  };
+  const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+}

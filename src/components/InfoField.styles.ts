@@ -95,6 +95,12 @@ export const styles = css`
     background-color: var(--u-success-bg-color, #E8F5E9);
     border-color: var(--u-success-color-weak, #4CAF50);
   }
+  /* 물든 면 위의 보조 줄은 한 단 올린다 — weaker 단은 흰 면 기준이라 물든 면에서 4.5:1 아래로 떨어진다. */
+  :host([appearance="tile"][tone="warning"]) .description,
+  :host([appearance="tile"][tone="negative"]) .description,
+  :host([appearance="tile"][tone="positive"]) .description {
+    color: var(--u-txt-color-weak, #616161);
+  }
   @media (forced-colors: active) {
     :host([appearance="tile"]) .base { border-color: CanvasText; }
   }
