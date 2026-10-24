@@ -246,6 +246,8 @@ const NOT_A_TARGET = new Set<string>([
   //   ⚠`u-sidebar-layout` 의 `.toggler` 도 `u-button` 이지만 **여기서 잰다** — 이 패키지의 시트가 `padding: 0` 과
   //   `font-size` 로 **치수를 덮어쓰기** 때문이다(아래 FIXTURES). «누가 치수를 정하는가» 가 경계다.
   'u-master-detail-layout',
+  // 행동은 형제 `u-button`(`size="sm"`)이고 이 패키지 시트는 격자 칸만 준다 — 치수는 components 게이트가 잰다.
+  'u-attention-list',
 ]);
 
 /**
@@ -303,6 +305,21 @@ const navItem = (tag: string, part: string): Fixture[] => [
 
 /** 실제로 재는 것 — 대표 픽스처와 그 안의 타깃. 상태가 여럿이면 배열. */
 const FIXTURES: Record<string, Fixture | Fixture[]> = {
+  'u-stage-flow': {
+    // `href` 를 가진 단계는 단계 전체가 링크 하나(`a.stage`)다 — 치수(막대 · 숫자 · 라벨 묶음)를 이 패키지가 정한다.
+    html: '<u-stage-flow></u-stage-flow>',
+    prepare: async (host) => {
+      const flow = host as HTMLElement & { items: unknown; updateComplete: Promise<unknown> };
+      flow.items = [
+        { label: 'Received', count: 40, href: '#received' },
+        { label: 'Picking', count: 12, href: '#picking' },
+        { label: 'Shipped', count: 0, href: '#shipped' },
+      ];
+      await flow.updateComplete;
+      if (inShadow(flow, 'a.stage').length !== 3) throw new Error('단계 링크가 렌더되지 않았다');
+    },
+    targets: () => inShadow(document.querySelector('u-stage-flow')!, 'a.stage'),
+  },
   'u-page-header': [
     {
       // 뒤로가기(`a.back`)는 `back` 이 있을 때만 렌더된다 — 없으면 타깃이 아예 없고 그것을 «통과» 로 읽으면 미탐이다.
@@ -553,7 +570,7 @@ describe('WCAG 2.2 SC 2.5.8 — 타깃 크기(최소) 게이트', () => {
       expect(
         `판정 ${Object.keys(FIXTURES).length}(${states}상태) · 미판정 ${unjudged.length}(${unjudged.join(' ')})` +
         ` · 대상아님 ${NOT_A_TARGET.size} · 인라인예외 ${INLINE_PROSE.size}`,
-      ).toBe('판정 6(10상태) · 미판정 0() · 대상아님 9 · 인라인예외 0');
+      ).toBe('판정 7(11상태) · 미판정 0() · 대상아님 10 · 인라인예외 0');
     });
 
     it('규칙 표에 «등록되지 않은» 이름이 남아 있지 않다 (표가 낡지 않게)', () => {
