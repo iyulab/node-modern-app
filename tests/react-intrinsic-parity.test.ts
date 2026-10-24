@@ -41,11 +41,14 @@ function propertyAttributes(src: string): string[] {
   return attrs;
 }
 
-function elementAttributes(src: string): { tag: string; attrs: string[] } | null {
+function elementAttributes(src: string): { tag: string; attrs: string[]; unverified?: true } | null {
   const tag = /@customElement\('([^']+)'\)/.exec(src)?.[1];
   if (!tag) return null;
   // components 의 클래스를 상속한 요소(`u-side-panel`)는 그 사슬의 속성이 공개 표면이다.
-  const attrs = [src, ...(componentsBaseSources(src, root) ?? [])].flatMap(propertyAttributes);
+  // 형제 소스가 없는 단독 클론에서는 그 사슬을 읽을 수 없다 — 판정하지 않는다(빈 표면으로 읽으면 정당한 선언이 위반이 된다).
+  const bases = componentsBaseSources(src, root);
+  if (bases && bases.length === 0) return { tag, attrs: [], unverified: true };
+  const attrs = [src, ...(bases ?? [])].flatMap(propertyAttributes);
   return { tag, attrs: [...new Set(attrs)].sort() };
 }
 
@@ -64,7 +67,7 @@ function declaredKeys(reactSrc: string): Map<string, string[]> {
 const elements = readdirSync(join(root, 'src/components'))
   .filter(f => f.endsWith('.ts') && !f.endsWith('.styles.ts') && !SHELL_PARTS.test(f))
   .map(f => elementAttributes(read(`src/components/${f}`)))
-  .filter((e): e is { tag: string; attrs: string[] } => !!e && !WRAPPED.has(e.tag));
+  .filter((e): e is { tag: string; attrs: string[]; unverified?: true } => !!e && !WRAPPED.has(e.tag));
 
 const declared = declaredKeys(read('src/react.ts'));
 
@@ -74,8 +77,8 @@ describe('React 원시 태그 증강 — 요소 공개 속성과 같다', () => 
     expect(declared.size).toBeGreaterThan(5);
   });
 
-  for (const { tag, attrs } of elements) {
-    it(`${tag}`, () => {
+  for (const { tag, attrs, unverified } of elements) {
+    it.skipIf(unverified)(`${tag}`, () => {
       expect(declared.has(tag), `${tag} 가 IntrinsicElements 에 없다`).toBe(true);
       expect(declared.get(tag)).toEqual(attrs);
     });
