@@ -290,6 +290,7 @@ re-assembled per screen — that is where a product stops looking like one produ
 - [`u-info-field`](./references/components/info-field.md) — Read-only label/value pair that keeps "not set" and "zero" distinct
 - [`u-empty-state`](./references/components/empty-state.md) — Empty list or empty search, worded differently because they are different facts
 - [`u-action-bar`](./references/components/action-bar.md) — Closing action row with a separated destructive group
+- [`u-side-panel`](./references/components/side-panel.md) — Right-hand panel for an edit form or a selected item's detail: slides in from the right, close button by default, full screen on a phone
 - [`u-timeline`](./references/components/timeline.md) — Status or activity history: what happened, and when
 - [`u-stage-flow`](./references/components/stage-flow.md) — How many records wait at each stage of a process, as bars on one scale, with the stuck stage called out
 - [`u-attention-list`](./references/components/attention-list.md) — What is waiting on a person, one line each: urgency, what and why, how many, and the action that goes to it

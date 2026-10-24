@@ -58,6 +58,7 @@ export type { TimelineItemColor } from './components/TimelineItem.js';
 export { ActionBar } from './components/ActionBar.js';
 export { MasterDetailLayout } from './components/MasterDetailLayout.js';
 export type { MasterDetailLayoutEventMap } from './components/MasterDetailLayout.js';
+export { SidePanel } from './components/SidePanel.js';
 export { Wizard } from './components/Wizard.js';
 export { StageFlow } from './components/StageFlow.js';
 export type { StageFlowItem, StageFlowTone } from './components/StageFlow.js';

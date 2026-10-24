@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- **`u-side-panel` — the right-hand panel for an edit form or a selected item's detail.** It is `u-drawer` with the
+  defaults a side panel wants: it comes in from the right and has a close button at the top right of its header. Below
+  640px it covers the whole screen (the drawer's own behaviour; `@iyulab/components` with the safe-area fix keeps the
+  header and footer off a notch). Use it for work you open and close; keep `u-master-detail-layout` for a detail that
+  stays beside its list.
+
 ## [0.60.1] - 2026-10-24
 
 ### Fixed

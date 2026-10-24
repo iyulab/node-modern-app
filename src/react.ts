@@ -200,6 +200,10 @@ declare module 'react' {
         'overlay-breakpoint'?: number | string;
         locale?: string;
       };
+      'u-side-panel': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        open?: boolean;
+        placement?: 'left' | 'right' | 'top' | 'bottom';
+      };
       'u-page-header': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         title?: string;
         subtitle?: string;

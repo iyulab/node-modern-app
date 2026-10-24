@@ -57,6 +57,7 @@
 | `u-empty-state` | 빈 상태 (`no-data` / `no-results` / `error` / `no-access` / `not-found`) | `icon` · `actions` | host · icon · title · description · actions |
 | `u-action-bar` | 푸터 액션 바 — 위험 액션과 주 액션을 **거리로** 가른다 | `danger` · (기본) | host · danger · main |
 | `u-master-detail-layout` | master›detail 반응형 split-pane 셸. `detail` 슬롯이 채워지면 나타나고 비우면 사라진다. 좁은 자기 폭에서 detail 이 전체 오버레이로 전환(`overlayBreakpoint`, 기본 760px) | (기본, master) · `detail` | host · master · divider · detail · detail-close |
+| `u-side-panel` | 오른쪽 사이드 패널 — 편집 폼 · 선택한 항목의 상세를 본문 위에. `u-drawer` 에 기본값만 다르다(오른쪽 · 닫기 X). 640px 이하 전체 화면. 상세가 목록 옆에 **늘** 있어야 하면 `u-master-detail-layout`, 열었다 닫는 작업이면 이것 | `header` · (기본) · `footer` | panel · header · body · footer · close-btn |
 | `u-wizard` | 다단계 흐름의 스텝 인디케이터 + 패널 + Back/Next. `steps`/`active`(controlled)/`linear`. 검증·저장재개는 컴포넌트 밖 — `step-change`(취소 가능)에서 소비자가 처리 | (기본, 스텝 패널들) · `actions` | host · indicator · step · panel · actions |
 | `u-timeline` · `u-timeline-item` | 상태·활동 이력 — «언제 무엇이». 항목마다 레일의 표지(`color` = 역할색 · `icon`) · `heading` · `datetime`(`<time datetime>`, 활성 로케일 서식) · 본문. 목록 의미 구조(항목 수가 읽힌다). ⚠색만으로 상태를 전하지 않는다 — `heading` 에 말로 | (기본, 본문) · `heading` · `time` | list(목록) · host · rail · marker · line · content · header · heading · time · body(항목) |
 
