@@ -1,12 +1,15 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync, readdirSync } from 'fs';
+import { existsSync, readFileSync, readdirSync } from 'fs';
 import { resolve, join } from 'path';
+import { componentsBaseSources } from './inherited-source';
 
 import { isBlank } from '../src/components/InfoField.js';
 import { getLocaleStrings } from '../src/internals/locale.js';
 
 const root = resolve(__dirname, '..');
 const read = (rel: string) => readFileSync(join(root, rel), 'utf-8');
+/** components 의 클래스를 상속한 요소인가 — 그 시트 · part 는 기반 클래스의 것이다. */
+const inherited = (name: string) => componentsBaseSources(read(`src/components/${name}.ts`), root) !== null;
 
 /**
  * LOB 프리미티브 목록 — **도출한다.**
@@ -43,6 +46,8 @@ describe('LOB 프리미티브 — 토큰 계약', () => {
     // 소비자가 밀도·테마를 바꿔도 그 자리만 따라오지 않는다.
     const offenders: string[] = [];
     for (const name of PRIMITIVES) {
+      // components 의 요소를 기본값만 바꿔 상속한 것(`SidePanel` = `UDrawer`)은 시트가 없다 — 그 시트는 components 가 잰다.
+      if (!existsSync(join(root, `src/components/${name}.styles.ts`)) && inherited(name)) continue;
       const src = read(`src/components/${name}.styles.ts`);
       const body = src
         .replace(/\/\*[\s\S]*?\*\//g, '') // 주석 제거
@@ -80,7 +85,13 @@ describe('LOB 프리미티브 — 토큰 계약', () => {
   it('모든 프리미티브가 `part` 를 노출한다 (오버라이드 경로)', () => {
     // part 가 없으면 소비자는 섀도 DOM 안에 손댈 방법이 없고, 결국 컴포넌트를 통째로
     // 복제한다 — 그 순간 이 계층은 쓰기 전보다 나쁜 상태를 만든다.
-    const missing = PRIMITIVES.filter(n => !/part="/.test(read(`src/components/${n}.ts`)));
+    // 상속한 요소의 part 는 기반 클래스의 템플릿에 있다(형제 소스가 없는 단독 클론이면 판정하지 않는다).
+    const missing = PRIMITIVES.filter((n) => {
+      const src = read(`src/components/${n}.ts`);
+      const bases = componentsBaseSources(src, root);
+      if (bases && bases.length === 0) return false;
+      return ![src, ...(bases ?? [])].some((s) => /part="/.test(s));
+    });
     expect(missing).toEqual([]);
   });
 

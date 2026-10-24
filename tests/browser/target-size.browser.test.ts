@@ -248,6 +248,8 @@ const NOT_A_TARGET = new Set<string>([
   'u-master-detail-layout',
   // 행동은 형제 `u-button`(`size="sm"`)이고 이 패키지 시트는 격자 칸만 준다 — 치수는 components 게이트가 잰다.
   'u-attention-list',
+  // `u-drawer` 그 자체(기본값만 다르다) — 닫기 X 의 치수는 components 의 drawer 시트가 정하고 거기 게이트가 잰다.
+  'u-side-panel',
 ]);
 
 /**
@@ -570,7 +572,7 @@ describe('WCAG 2.2 SC 2.5.8 — 타깃 크기(최소) 게이트', () => {
       expect(
         `판정 ${Object.keys(FIXTURES).length}(${states}상태) · 미판정 ${unjudged.length}(${unjudged.join(' ')})` +
         ` · 대상아님 ${NOT_A_TARGET.size} · 인라인예외 ${INLINE_PROSE.size}`,
-      ).toBe('판정 7(11상태) · 미판정 0() · 대상아님 10 · 인라인예외 0');
+      ).toBe('판정 7(11상태) · 미판정 0() · 대상아님 11 · 인라인예외 0');
     });
 
     it('규칙 표에 «등록되지 않은» 이름이 남아 있지 않다 (표가 낡지 않게)', () => {

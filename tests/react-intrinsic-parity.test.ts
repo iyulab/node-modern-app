@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync } from 'fs';
 import { resolve, join } from 'path';
+import { componentsBaseSources } from './inherited-source';
 
 const root = resolve(__dirname, '..');
 const read = (rel: string) => readFileSync(join(root, rel), 'utf-8');
@@ -22,18 +23,30 @@ const SHELL_PARTS = /^Sidebar/;
 /** `createComponent` 래퍼가 따로 있는 요소 — 원시 태그 증강의 대상이 아니다. */
 const WRAPPED = new Set(['u-wizard', 'u-sidebar-layout']);
 
+/** `@property(…)` 선언의 속성 이름 — 옵션 안의 괄호(`converter: f<T>()`)를 넘어 짝을 맞춰 읽는다. */
+function propertyAttributes(src: string): string[] {
+  const attrs: string[] = [];
+  for (let at = src.indexOf('@property('); at >= 0; at = src.indexOf('@property(', at + 1)) {
+    let depth = 0;
+    let end = at + '@property'.length;
+    for (; end < src.length; end++) {
+      if (src[end] === '(') depth++;
+      else if (src[end] === ')' && --depth === 0) break;
+    }
+    const options = src.slice(at + '@property('.length, end);
+    const name = /^\s*(?:override\s+|declare\s+)?(\w+)/.exec(src.slice(end + 1))?.[1];
+    if (!name || /attribute:\s*false/.test(options)) continue;
+    attrs.push(/attribute:\s*'([^']+)'/.exec(options)?.[1] ?? name.toLowerCase());
+  }
+  return attrs;
+}
+
 function elementAttributes(src: string): { tag: string; attrs: string[] } | null {
   const tag = /@customElement\('([^']+)'\)/.exec(src)?.[1];
   if (!tag) return null;
-  const attrs: string[] = [];
-  const re = /@property\((\{[^)]*\})?\)\s*(?:override\s+|declare\s+)?(\w+)/g;
-  for (const m of src.matchAll(re)) {
-    const options = m[1] ?? '';
-    if (/attribute:\s*false/.test(options)) continue;
-    const named = /attribute:\s*'([^']+)'/.exec(options)?.[1];
-    attrs.push(named ?? m[2].toLowerCase());
-  }
-  return { tag, attrs: attrs.sort() };
+  // components 의 클래스를 상속한 요소(`u-side-panel`)는 그 사슬의 속성이 공개 표면이다.
+  const attrs = [src, ...(componentsBaseSources(src, root) ?? [])].flatMap(propertyAttributes);
+  return { tag, attrs: [...new Set(attrs)].sort() };
 }
 
 function declaredKeys(reactSrc: string): Map<string, string[]> {

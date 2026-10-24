@@ -202,7 +202,12 @@ declare module 'react' {
       };
       'u-side-panel': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         open?: boolean;
+        /** 기본이 참인 불리언 속성 — JSX 의 `closable={false}` 는 속성을 빼는 것이라 끄지 못한다(요소의 `.closable` 로). */
+        closable?: boolean;
         placement?: 'left' | 'right' | 'top' | 'bottom';
+        contained?: boolean;
+        mode?: 'modal' | 'non-modal';
+        'close-on'?: string;
       };
       'u-page-header': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         title?: string;
