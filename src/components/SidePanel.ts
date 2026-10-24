@@ -21,6 +21,9 @@ import { UDrawer } from '@iyulab/components/dist/components/drawer/UDrawer.js';
  *
  * X 를 빼려면 속성으로 `closable` 을 거짓으로(`.closable=${false}`) — 불리언 속성의 기본이 참이라 HTML 에서는 끌 수 없다.
  * 폭은 `--drawer-size`(기본 28rem).
+ *
+ * @event show - 열리기 직전 — 취소하면 열리지 않는다(`u-drawer` 의 것).
+ * @event hide - 닫히기 직전(Escape · 닫기 X · 배경) — 취소하면 닫히지 않는다. 저장 안 한 입력을 물을 자리다.
  */
 @customElement('u-side-panel')
 export class SidePanel extends UDrawer {

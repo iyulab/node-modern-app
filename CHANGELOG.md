@@ -9,6 +9,8 @@
   640px it covers the whole screen (the drawer's own behaviour; `@iyulab/components` with the safe-area fix keeps the
   header and footer off a notch). Use it for work you open and close; keep `u-master-detail-layout` for a detail that
   stays beside its list.
+  React: `SidePanel` from `@iyulab/modern-app/react/SidePanel.js`, with `onShow` / `onHide` (cancel `hide` to keep it
+  open, e.g. to ask about unsaved input).
 
 ## [0.60.1] - 2026-10-24
 
