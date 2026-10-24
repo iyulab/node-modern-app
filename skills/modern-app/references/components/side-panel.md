@@ -39,6 +39,8 @@ close, with the page staying behind it, use a side panel.
 | `closable` | `boolean` | `true` | ✓ | Close button at the top right. Being `true` by default, turn it off with the property (`.closable=${false}`) |
 | `placement` | `'left' \| 'right' \| 'top' \| 'bottom'` | `'right'` | ✓ | Edge the panel comes in from |
 
+The overlay attributes of `u-drawer` — `contained`, `mode` (`'modal'` · `'non-modal'`) and `close-on` — work the same way.
+
 ## CSS Parts
 
 | Part | Description |
