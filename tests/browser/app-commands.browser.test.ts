@@ -83,6 +83,15 @@ describe('app.load({ commands })', () => {
     expect(labels(p)).toEqual(['Orders', 'Profile']);
   });
 
+  it('the dialog is named like the Find button that opens it', async () => {
+    await load({});
+    app.showCommands();
+    await settle(80);
+    const p = palette()!;
+    expect(p.getAttribute('aria-label')).toBe('Find');
+    expect(p.shadowRoot!.querySelector('[role="combobox"]')!.getAttribute('aria-label')).toBe('Find');
+  });
+
   it('mod+K opens it — but not from inside an edit field', async () => {
     await load({});
     const field = document.createElement('input');

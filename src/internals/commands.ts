@@ -152,8 +152,6 @@ export class CommandShell {
   async attach(root: Element): Promise<void> {
     await import('@iyulab/components/dist/components/command-palette/UCommandPalette.js');
     const palette = document.createElement('u-command-palette');
-    const strings = getLocaleStrings();
-    palette.placeholder = this.config.placeholder ?? strings.commandPlaceholder;
     palette.addEventListener('command', this.handleCommand);
     palette.addEventListener('show', this.refreshSources);
     root.appendChild(palette);
@@ -181,10 +179,13 @@ export class CommandShell {
     this.palette?.show();
   }
 
-  /** 출처를 지금 상태로 — 열 때마다(언어 · 최근 항목이 바뀌었을 수 있다). */
+  /** 출처 · 글을 지금 상태로 — 열 때마다(언어 · 최근 항목이 바뀌었을 수 있다). */
   private refreshSources = () => {
     if (!this.palette) return;
     const strings = getLocaleStrings();
+    // 대화상자는 그것을 여는 «찾기» 버튼과 같은 이름으로 불린다.
+    this.palette.label = strings.commandFind;
+    this.palette.placeholder = this.config.placeholder ?? strings.commandPlaceholder;
     const sources: CommandSource[] = [];
     if (this.recent) {
       const recent = this.recent;
