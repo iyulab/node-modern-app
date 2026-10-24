@@ -4,6 +4,15 @@
 
 ### Added
 
+- **Find — the shell's command palette (`app.load({ commands })`).** A «Find» button heads the sidebar (an icon when
+  it is collapsed) and Ctrl/⌘ K opens it — not from inside an edit field or during IME composition, so an editor's
+  own Ctrl+K keeps working; `shortcut` changes the key and `false` turns it off. The Screens group is the sidebar's
+  links after `hasPermission`, named with their group or section; the app adds domain `sources` (records, actions).
+  Choosing an item runs its `run` or navigates to its `href` with `app.navigate`. `recent: true` (or a count) keeps
+  recently chosen items at the top of the empty search, in `localStorage` per app. `app.showCommands()` opens it from
+  code. Built on `u-command-palette` from `@iyulab/components` 2.35. New types `CommandsConfig`, `ShellCommandItem`,
+  `ShellCommandSource`; new locale keys `commandFind`, `commandPlaceholder`, `commandScreens`, `commandRecent`.
+
 - **`<u-stage-flow>` — how many records wait at each stage.** For the first row of a screen where work moves through
   fixed stages: each stage's count is drawn as a bar on one scale (the largest stage, or `max`), a flow mark sits
   between stages, a stage can be toned `warning` or `negative` with a `note` that says why, and a stage with `href` is

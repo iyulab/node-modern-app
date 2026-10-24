@@ -3,6 +3,7 @@ import type { RouteConfig, FallbackRouteConfig, RouteContext, RouteLeaveContext 
 import type { ThemeInitOptions } from "@iyulab/components/dist/utilities/Theme.js";
 import type { SidebarLayoutConfig } from "../layouts/SidebarLayout.types";
 import type { AuthGateConfig } from "./AuthConfig";
+import type { CommandsConfig } from "../internals/commands";
 
 /** 
  * i18next의 초기화 옵션과 플러그인 배열을 포함한 다국어 설정 
@@ -155,4 +156,21 @@ export interface AppConfig {
    * ```
    */
   auth?: AuthGateConfig;
+
+  /**
+   * 명령 팔레트(찾기 · Ctrl/⌘ K) — 주면 켜진다. 사이드바 맨 위에 «찾기» 버튼이 서고, 단축키(기본 `mod+k`)로도 연다.
+   * 화면 항목은 사이드바 선언(권한 필터 뒤)에서 나오고, 앱은 도메인 출처만 `sources` 로 넣는다. 고른 항목은 `run` 이 있으면
+   * 그것을, 없으면 `href` 로 `app.navigate` 한다.
+   * @example
+   * ```typescript
+   * app.load({
+   *   layout: { type: 'sidebar', main: [ ... ] },
+   *   commands: {
+   *     recent: true,
+   *     sources: [{ id: 'orders', label: 'Orders', search: (q, { signal }) => findOrders(q, signal) }],
+   *   },
+   * });
+   * ```
+   */
+  commands?: CommandsConfig;
 }

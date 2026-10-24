@@ -93,6 +93,12 @@ interface AppConfig {
    * See the README's "부팅 인증 게이트" section for a worked example.
    */
   auth?: AuthGateConfig;
+
+  /**
+   * Command palette (find · Ctrl/⌘ K): a «Find» button heads the sidebar and the shortcut opens it.
+   * Screens come from the sidebar links; the app adds domain `sources`. See the README's «Find» section.
+   */
+  commands?: CommandsConfig;
 }
 ```
 

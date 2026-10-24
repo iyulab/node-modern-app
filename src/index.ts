@@ -3,6 +3,7 @@ import { app } from './App.js';
 export type * from './types/AppConfigs';
 export type * from './types/AppOptions';
 export type * from './types/AuthConfig';
+export type { CommandsConfig, ShellCommandItem, ShellCommandSource } from './internals/commands.js';
 export type { SidebarPermissionGuard } from './layouts/SidebarPermission';
 
 // 라우팅 표면 — `app.load({ routes, fallback })` 이 받고 내는 것은 `@iyulab/router` 의 타입이다.

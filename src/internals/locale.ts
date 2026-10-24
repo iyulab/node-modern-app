@@ -80,6 +80,12 @@ export interface ModernAppLocaleStrings {
   wizardNext: string;
   /** Wizard — live-region announcement read out on every step change. */
   wizardStepAnnouncement: (index: number, total: number, label: string) => string;
+
+  /** Command palette (`app.load({ commands })`) — the sidebar «Find» button, the field, and its two built-in groups. */
+  commandFind: string;
+  commandPlaceholder: string;
+  commandScreens: string;
+  commandRecent: string;
 }
 
 /**
@@ -114,6 +120,10 @@ const EN_TABLE: Record<ModernAppMessageKey, string> = {
   wizardBack: 'Back',
   wizardNext: 'Next',
   wizardStepAnnouncement: 'Step {index} of {total}: {label}',
+  commandFind: 'Find',
+  commandPlaceholder: 'Find a screen or record…',
+  commandScreens: 'Screens',
+  commandRecent: 'Recent',
 };
 
 /** The `modern-app` chrome-string namespace. Register translations here; pick the language with `Locale.set()`. */
@@ -150,6 +160,10 @@ modernAppLocale.register('ko', {
   wizardBack: '이전',
   wizardNext: '다음',
   wizardStepAnnouncement: '{total}단계 중 {index}단계: {label}',
+  commandFind: '찾기',
+  commandPlaceholder: '화면이나 기록 찾기…',
+  commandScreens: '화면',
+  commandRecent: '최근',
 });
 
 /** One string, resolved for an element's `locale` (empty → the active `Locale`). */
@@ -191,6 +205,10 @@ export function getLocaleStrings(lang?: string): ModernAppLocaleStrings {
     wizardBack: t('wizardBack'),
     wizardNext: t('wizardNext'),
     wizardStepAnnouncement: (index, total, label) => text(lang, 'wizardStepAnnouncement', { index, total, label }),
+    commandFind: t('commandFind'),
+    commandPlaceholder: t('commandPlaceholder'),
+    commandScreens: t('commandScreens'),
+    commandRecent: t('commandRecent'),
   };
 }
 

@@ -60,8 +60,62 @@ interface AppConfig {
    * is built. Omit for full backward compatibility (no gate). See `AuthGateConfig` below.
    */
   auth?: AuthGateConfig;
+
+  /**
+   * Command palette (find · Ctrl/⌘ K). Given → a «Find» button heads the sidebar and the shortcut opens it.
+   * See `CommandsConfig` below.
+   */
+  commands?: CommandsConfig;
 }
 ```
+
+---
+
+## `CommandsConfig`
+
+The shell's command palette — `u-command-palette` from `@iyulab/components` (2.35+), wired to the app.
+
+```typescript
+interface CommandsConfig {
+  /** The app's domain sources (orders, customers …) — grouped after Recent and Screens, in this order. */
+  sources?: ShellCommandSource[];   // { id, label, search(query, { signal }) => items | Promise<items> }
+  /** Opening shortcut. 'mod+k' = ⌘K on macOS, Ctrl+K elsewhere. false = only the Find button. Default 'mod+k' */
+  shortcut?: string | false;
+  /** Recently chosen items (those with href) first for the empty query, kept in localStorage per app. Number = how many. Default false */
+  recent?: boolean | number;
+  /** The Screens group — the sidebar's links after `hasPermission`. Default true */
+  screens?: boolean;
+  /** Field placeholder. Empty → the locale's commandPlaceholder */
+  placeholder?: string;
+}
+
+interface ShellCommandItem extends CommandItem {   // CommandItem: { id, label, description?, icon?, iconLib?, href?, keywords?, data? }
+  /** Runs when chosen — instead of navigating to href. */
+  run?: () => void;
+}
+```
+
+```typescript
+await app.load({
+  layout: { type: 'sidebar', hasPermission, main: [ /* links */ ] },
+  commands: {
+    recent: true,
+    sources: [{
+      id: 'orders', label: 'Orders',
+      search: async (q, { signal }) => q
+        ? (await api.findOrders(q, { signal })).map((o) => ({ id: o.id, label: o.number, description: o.customer, href: `/orders/${o.id}` }))
+        : [],
+    }],
+  },
+});
+```
+
+- **Screens come from the sidebar** — the links that pass `hasPermission`, with their group or section name as the
+  description. There is no second list of screens or permissions to keep.
+- **The shortcut does not fire inside an edit field** (input, textarea, contenteditable) or during IME composition —
+  an editor's own Ctrl+K (insert link) keeps working. Open it from code with `app.showCommands()`.
+- **Choosing** an item with `run` runs it; otherwise `href` goes through `app.navigate`. A new query aborts the
+  previous `search` call (`signal`); a source that fails shows «Couldn't search {label}» without hiding the others.
 
 ---
 
@@ -326,6 +380,7 @@ interface AuthGateUnavailableContext {
 | `load` | `(config: AppConfig) => Promise<void>` | Initialize and mount the application |
 | `unload` | `() => void` | Tear down layout, router, and observers |
 | `navigate` | `(path: string) => void` | Push a new route |
+| `showCommands` | `() => void` | Open the command palette (when `commands` was given) |
 | `notice` | `(msg, opts?) => Promise<void>` | Show a neutral toast |
 | `info` | `(msg, opts?) => Promise<void>` | Show an info toast |
 | `success` | `(msg, opts?) => Promise<void>` | Show a success toast |

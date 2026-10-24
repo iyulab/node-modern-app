@@ -101,6 +101,22 @@ await app.load({ routerMode: 'hash', /* … */ });   // https://example.com/#/us
 
 Links and `app.navigate()` follow the mode, so the rest of the app is written the same way.
 
+### Find (command palette)
+
+```typescript
+await app.load({
+  layout: { type: 'sidebar', main: [ /* … */ ] },
+  commands: {
+    recent: true,
+    sources: [{ id: 'orders', label: 'Orders', search: (q, { signal }) => findOrders(q, signal) }],
+  },
+});
+```
+
+`commands` puts a «Find» button at the top of the sidebar and opens it with Ctrl/⌘ K (not inside edit fields;
+`shortcut: false` turns the key off). The Screens group is the sidebar's own links after the permission filter; your
+sources add records and actions. Choosing an item navigates to its `href` (or runs its `run`).
+
 ### Theme
 
 ```typescript

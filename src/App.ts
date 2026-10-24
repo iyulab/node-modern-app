@@ -13,6 +13,8 @@ import type { AppConfig, LayoutConfig } from './types/AppConfigs';
 import type { NotificationOptions } from './types/AppOptions';
 import type { AuthSession } from './types/AuthConfig';
 import type { SidebarCountTone } from './components/SidebarLink.js';
+import type { CommandShell } from './internals/commands.js';
+import { getLocaleStrings } from './internals/locale.js';
 
 /**
  * `document.body` 를 셸의 뿌리로 쓸 때의 기본 크기 규칙.
@@ -62,6 +64,7 @@ class App {
   private _gateTeardown?: () => void;
   /** i18next 언어 → components `Locale` 동기화 해제(`unload`). */
   private _languageSync?: () => void;
+  private _commands?: CommandShell;
 
   // private 생성자로 외부에서 인스턴스 생성 방지
   private constructor() {}
@@ -156,9 +159,29 @@ class App {
       await config.auth.onAuthenticated?.(session.user);
     }
 
-    // 레이아웃 생성
+    // 레이아웃 생성 — 명령 팔레트를 켰으면 사이드바 맨 위에 «찾기» 버튼(접힌 사이드바에서도 아이콘으로 남는다).
     const root = config.root || document.body;
-    this._layout = await this.createLayout(root, config.layout);
+    const layoutConfig: LayoutConfig = config.commands
+      ? {
+        ...config.layout,
+        main: [
+          { type: 'button', label: getLocaleStrings().commandFind, icon: 'search', lib: 'internal', onClick: () => this.showCommands() },
+          ...(config.layout.main ?? []),
+        ],
+      }
+      : config.layout;
+    this._layout = await this.createLayout(root, layoutConfig);
+    if (config.commands) {
+      const { CommandShell } = await import('./internals/commands.js');
+      const shell = new CommandShell(
+        config.commands,
+        config.layout,
+        (href) => this.navigate(href),
+        `modern-app:commands:recent:${config.basepath ?? '/'}`,
+      );
+      this._commands = shell;
+      await shell.attach(root);
+    }
 
     // 화면 크기 관찰 시작
     this._screen = new ScreenObserver({
@@ -216,6 +239,8 @@ class App {
   }
 
   public unload(): void {
+    this._commands?.detach();
+    this._commands = undefined;
     this._languageSync?.();
     this._languageSync = undefined;
     // 로그인 UI 정리(미인증 상태에서 렌더된 경우)
@@ -247,6 +272,14 @@ class App {
     if (this._config) {
       this._config = undefined;
     }
+  }
+
+  /**
+   * Opens the command palette (Ctrl/⌘ K) — the same as the shortcut and the sidebar «Find» button. Does nothing
+   * unless `app.load()` was given `commands`.
+   */
+  public showCommands(): void {
+    this._commands?.open();
   }
 
   /** 페이지 이동 */
