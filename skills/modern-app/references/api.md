@@ -92,6 +92,10 @@ interface CommandsConfig {
 interface ShellCommandItem extends CommandItem {   // CommandItem: { id, label, description?, icon?, iconLib?, href?, keywords?, data? }
   /** Runs when chosen — instead of navigating to href. */
   run?: () => void;
+  /** 'document' opens href with a browser navigation instead of the router — like a sidebar link's navigate. */
+  navigate?: 'router' | 'document';
+  /** '_blank' opens href in a new tab — like a sidebar link's target. */
+  target?: '_self' | '_blank';
 }
 ```
 
@@ -111,10 +115,13 @@ await app.load({
 ```
 
 - **Screens come from the sidebar** — the links that pass `hasPermission`, with their group or section name as the
-  description. There is no second list of screens or permissions to keep.
+  description, and the way the sidebar opens them: a link with `navigate: 'document'` (a help site on the same origin)
+  leaves the app with a browser navigation, one with `target: '_blank'` opens a tab. There is no second list of screens
+  or permissions to keep.
 - **The shortcut does not fire inside an edit field** (input, textarea, contenteditable) or during IME composition —
   an editor's own Ctrl+K (insert link) keeps working. Open it from code with `app.showCommands()`.
-- **Choosing** an item with `run` runs it; otherwise `href` goes through `app.navigate`. A new query aborts the
+- **Choosing** an item with `run` runs it; otherwise `href` opens as its `target` / `navigate` say, through
+  `app.navigate` by default. Recent items keep that way. A new query aborts the
   previous `search` call (`signal`); a source that fails shows «Couldn't search {label}» without hiding the others.
 
 ---

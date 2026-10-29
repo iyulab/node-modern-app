@@ -3,7 +3,7 @@ import { userEvent } from 'vitest/browser';
 import { app } from '../../src/App.js';
 import type { SidebarLayout } from '../../src/layouts/SidebarLayout.js';
 import type { UCommandPalette } from '@iyulab/components/dist/components/command-palette/UCommandPalette.js';
-import { parseShortcut } from '../../src/internals/commands.js';
+import { parseShortcut, documentNavigation } from '../../src/internals/commands.js';
 
 /**
  * `app.load({ commands })` — the shell's command palette. A «Find» button heads the sidebar; `mod+k` opens it except
@@ -164,6 +164,53 @@ describe('app.load({ commands })', () => {
     app.showCommands();
     await settle(80);
     expect(groupLabels(palette()!)).not.toContain('Recent');
+  });
+});
+
+describe('a screen opens the way its sidebar link does', () => {
+  const original = { ...documentNavigation };
+  afterEach(() => Object.assign(documentNavigation, original));
+
+  async function choose(query: string) {
+    app.showCommands();
+    await settle(80);
+    await userEvent.keyboard(query);
+    await settle(250);
+    await userEvent.keyboard('{Enter}');
+    await settle(80);
+  }
+
+  it('navigate: document leaves the app — the router does not draw «not found»; target _blank opens a tab; recent keeps the way', async () => {
+    const assigned: string[] = [];
+    const opened: string[] = [];
+    documentNavigation.assign = (href) => { assigned.push(href); };
+    documentNavigation.open = (href) => { opened.push(href); };
+    await load({ recent: true }, {
+      layout: {
+        type: 'sidebar',
+        main: [
+          { type: 'link', label: 'Orders', href: '/orders' },
+          { type: 'link', label: 'Help', href: '/help/', navigate: 'document' },
+          { type: 'link', label: 'Status page', href: 'https://status.example.com/', target: '_blank' },
+        ],
+      },
+    });
+    const before = location.hash;
+
+    await choose('help');
+    expect(assigned).toEqual(['/help/']);
+    expect(location.hash).toBe(before);
+
+    await choose('status');
+    expect(opened).toEqual(['https://status.example.com/']);
+
+    // the recent entry opens the same way
+    app.showCommands();
+    await settle(80);
+    await userEvent.keyboard('{ArrowDown}{Enter}');
+    await settle(80);
+    expect(assigned.length + opened.length).toBe(3);
+    expect(location.hash).toBe(before);
   });
 });
 

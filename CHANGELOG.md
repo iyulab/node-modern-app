@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **The command palette opens a screen the way its sidebar link does.** A sidebar link with `navigate: 'document'` (a
+  help site on the same origin) went through `app.navigate` when chosen in the palette, and the router drew «page not
+  found». The screen items now carry the link's `navigate` and `target`: `'document'` leaves the app with a browser
+  navigation, `target: '_blank'` opens a tab, and recent items keep that. `ShellCommandItem` takes the same two
+  fields, so an app source can open an item the same ways.
+
 ## [0.61.0] - 2026-10-25
 
 ### Added

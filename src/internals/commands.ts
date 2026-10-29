@@ -10,10 +10,23 @@ import type { SidebarItem, SidebarLayoutConfig } from '../layouts/SidebarLayout.
 import { filterSidebarItems } from '../layouts/filterSidebarItems';
 import { getLocaleStrings } from './locale';
 
-/** 셸 팔레트의 항목 — `run` 이 있으면 고를 때 호출하고, 없으면 `href` 로 `app.navigate` 한다. */
+/**
+ * 셸 팔레트의 항목 — `run` 이 있으면 고를 때 호출하고, 없으면 `href` 로 간다. 가는 길은 사이드바 링크와 같은 어휘다:
+ * `target: '_blank'` 면 새 탭, `navigate: 'document'` 면 문서 이동(같은 오리진의 다른 사이트), 그 밖은 `app.navigate`.
+ */
 export interface ShellCommandItem extends CommandItem {
   run?: () => void;
+  /** `'document'` 면 라우터가 아니라 브라우저 문서 이동으로 연다(사이드바 링크의 `navigate` 와 같다). */
+  navigate?: 'router' | 'document';
+  /** `'_blank'` 면 새 탭으로 연다(사이드바 링크의 `target` 과 같다). */
+  target?: '_self' | '_blank';
 }
+
+/** 라우터 밖으로 나가는 두 길 — 시험이 페이지를 떠나지 않고 잴 수 있게 한 자리에 둔다. */
+export const documentNavigation = {
+  assign: (href: string): void => window.location.assign(href),
+  open: (href: string): void => { window.open(href, '_blank', 'noopener'); },
+};
 
 /** 셸 팔레트의 출처 — 앱의 도메인 검색(주문 · 거래처 …). */
 export interface ShellCommandSource extends Omit<CommandSource, 'search'> {
@@ -53,8 +66,8 @@ export function labelText(label: string | DirectiveResult | undefined): string {
 }
 
 /** 사이드바 선언에서 화면 항목을 뽑는다 — 권한 필터를 지난 링크만(원천은 하나 — 설계 불변식). 묶음 이름은 설명으로. */
-export function screenItems(layout: SidebarLayoutConfig): CommandItem[] {
-  const items: CommandItem[] = [];
+export function screenItems(layout: SidebarLayoutConfig): ShellCommandItem[] {
+  const items: ShellCommandItem[] = [];
   const seen = new Set<string>();
   const walk = (list: readonly SidebarItem[], parent?: string) => {
     for (const item of list) {
@@ -63,7 +76,12 @@ export function screenItems(layout: SidebarLayoutConfig): CommandItem[] {
         seen.add(item.href);
         const label = labelText(item.label);
         if (!label) continue;
-        items.push({ id: item.href, label, href: item.href, description: parent, icon: item.icon, iconLib: item.lib });
+        // 사이드바가 그 링크를 여는 길(문서 이동 · 새 탭)도 함께 — 화면 목록은 사이드바 하나에서 온다.
+        items.push({
+          id: item.href, label, href: item.href, description: parent, icon: item.icon, iconLib: item.lib,
+          ...(item.navigate && { navigate: item.navigate }),
+          ...(item.target && { target: item.target }),
+        });
       } else if (item.type === 'section' || item.type === 'group') {
         walk(item.items as SidebarItem[], labelText((item as { label?: string | DirectiveResult }).label) || parent);
       }
@@ -105,7 +123,10 @@ export function fromEditable(e: Event): boolean {
   return false;
 }
 
-interface StoredRecent { id: string; label: string; href: string; description?: string; icon?: string; iconLib?: string }
+interface StoredRecent {
+  id: string; label: string; href: string; description?: string; icon?: string; iconLib?: string;
+  navigate?: 'router' | 'document'; target?: '_self' | '_blank';
+}
 
 /** 최근 항목 저장소 — 저장소를 못 쓰면 조용히 비어 있다. */
 class RecentStore {
@@ -121,9 +142,13 @@ class RecentStore {
     }
   }
 
-  add(item: CommandItem) {
+  add(item: ShellCommandItem) {
     if (!item.href) return;
-    const entry: StoredRecent = { id: item.href, label: item.label, href: item.href, description: item.description, icon: item.icon, iconLib: item.iconLib };
+    const entry: StoredRecent = {
+      id: item.href, label: item.label, href: item.href, description: item.description, icon: item.icon, iconLib: item.iconLib,
+      ...(item.navigate && { navigate: item.navigate }),
+      ...(item.target && { target: item.target }),
+    };
     const next = [entry, ...this.read().filter((r) => r.href !== item.href)].slice(0, this.limit);
     try {
       localStorage.setItem(this.key, JSON.stringify(next));
@@ -216,7 +241,9 @@ export class CommandShell {
     }
     if (item.href) {
       this.recent?.add(item);
-      this.navigate(item.href);
+      if (item.target === '_blank') documentNavigation.open(item.href);
+      else if (item.navigate === 'document') documentNavigation.assign(item.href);
+      else this.navigate(item.href);
     }
   };
 }
