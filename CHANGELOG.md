@@ -11,6 +11,7 @@
 
 ### Changed
 
+- Requires `@iyulab/router` 0.25.0 (peer `^0.25.0`): its `u-link` no longer reads as «clickable» either.
 - Requires `@iyulab/components` 2.39.0 or later: the click handlers above use its `delegate` directive.
 
 ## [0.61.1] - 2026-10-30
