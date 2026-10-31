@@ -9,6 +9,10 @@
   back and next buttons were announced as «clickable»: each carried a click listener on its host. The handlers are now
   heard on the shadow root (`delegate` from `@iyulab/components`).
 
+### Changed
+
+- Requires `@iyulab/components` 2.39.0 or later: the click handlers above use its `delegate` directive.
+
 ## [0.61.1] - 2026-10-30
 
 ### Fixed
