@@ -5,6 +5,7 @@ import '@iyulab/components/dist/components/button/UButton.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './Wizard.styles.js';
+import { delegate } from '@iyulab/components/dist/utilities/listenInShadow.js';
 
 type ElementParts = 'host' | 'indicator' | 'step' | 'panel' | 'actions';
 
@@ -184,7 +185,7 @@ export class Wizard extends StyledElement<ElementParts> {
         aria-disabled=${!reachable ? 'true' : nothing}
         tabindex=${isActive ? '0' : '-1'}
         ?disabled=${step.state === 'disabled'}
-        @click=${() => this.goTo(i)}
+        ${delegate('click', () => this.goTo(i))}
         @keydown=${(e: KeyboardEvent) => this.handleTabKeydown(e, i)}
       >
         <span class="marker" aria-hidden="true">${step.state === 'done' ? '✓' : i + 1}</span>
@@ -206,11 +207,11 @@ export class Wizard extends StyledElement<ElementParts> {
         </div>
         <div class="actions" part="actions">
           <slot name="actions">
-            <u-button appearance="plain" ?disabled=${this.active === 0} @click=${() => this.back()}>
+            <u-button appearance="plain" ?disabled=${this.active === 0} ${delegate('click', () => this.back())}>
               ${t.wizardBack}
             </u-button>
             ${isLast ? nothing : html`
-              <u-button color="primary" @click=${() => this.next()}>${t.wizardNext}</u-button>
+              <u-button color="primary" ${delegate('click', () => this.next())}>${t.wizardNext}</u-button>
             `}
           </slot>
         </div>

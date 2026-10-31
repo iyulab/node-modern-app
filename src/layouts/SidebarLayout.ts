@@ -31,6 +31,7 @@ import type { SidebarItem, SidebarLayoutConfig, SidebarMenuConfig, SidebarState,
 import type { SidebarButton, SidebarButtonConfig } from '../components/SidebarButton';
 import { filterSidebarItems } from './filterSidebarItems.js';
 import { styles } from './SidebarLayout.styles.js';
+import { delegate } from '@iyulab/components/dist/utilities/listenInShadow.js';
 
 /** 개발 모드 1회성 경고 — components 의 공유 규약. */
 const devWarn = createDevWarner('@iyulab/modern-app');
@@ -308,7 +309,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         </span>
         <u-button class="toggler" appearance="plain"
           aria-label=${getLocaleStrings(this.locale || undefined).toggleMobileMenu}
-          @click=${this.handleToggleButtonClick}>
+          ${delegate('click', this.handleToggleButtonClick)}>
           <u-icon
             lib=${this.icon('lib')}
             name=${this.state === 'mobile-open' ? this.icon('close') : this.icon('menu')}
@@ -328,7 +329,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           </span>
           <u-button class="toggler" appearance="plain"
             aria-label=${getLocaleStrings(this.locale || undefined).toggleSidebar}
-            @click=${this.handleToggleButtonClick}>
+            ${delegate('click', this.handleToggleButtonClick)}>
             <u-icon
               lib=${this.icon('lib')}
               name=${this.icon('sidebarToggle')}
@@ -372,7 +373,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
         <div class="overlay ${this.hasOverlay ? '' : 'empty'}" part="overlay">
           <u-button class="overlay-close" part="overlay-close" appearance="plain"
             aria-label=${getLocaleStrings(this.locale || undefined).detailClose}
-            @click=${this.handleOverlayClose}>
+            ${delegate('click', this.handleOverlayClose)}>
             <u-icon lib=${this.icon('lib')} name=${this.icon('overlayClose')}></u-icon>
           </u-button>
           <slot name="overlay" @slotchange=${this.handleOverlaySlotChange}></slot>
@@ -468,7 +469,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
           .label="${item.label}"
           .styles="${item.styles}"
           .pressed=${typeof item.pressed === 'function' ? item.pressed() : item.pressed}
-          @click=${(event: Event) => this.handleButtonItemClick(item, event)}
+          ${delegate('click', (event: Event) => this.handleButtonItemClick(item, event))}
         ></u-sidebar-button>
       `;
     } else if(item.type === 'menu') {

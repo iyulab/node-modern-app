@@ -7,6 +7,7 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './MasterDetailLayout.styles.js';
+import { delegate } from '@iyulab/components/dist/utilities/listenInShadow.js';
 
 type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
 
@@ -194,7 +195,7 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
       <div class="detail ${pane}" part="detail">
         <u-button class="detail-close" part="detail-close" appearance="plain"
           aria-label=${getLocaleStrings(this.locale || undefined).detailClose}
-          @click=${this.handleDetailClose}
+          ${delegate('click', this.handleDetailClose)}
         >
           <u-icon lib="internal" name="x"></u-icon>
         </u-button>

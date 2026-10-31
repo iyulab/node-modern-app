@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **Screen readers no longer announce «clickable» on the shell's and screens' buttons.** Measured with NVDA in browse
+  mode, the sidebar toggler and button items, the overlay close button, the master-detail close button and the wizard's
+  back and next buttons were announced as «clickable»: each carried a click listener on its host. The handlers are now
+  heard on the shadow root (`delegate` from `@iyulab/components`).
+
 ## [0.61.1] - 2026-10-30
 
 ### Fixed
