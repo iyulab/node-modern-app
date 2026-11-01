@@ -1,5 +1,16 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **Sidebar item names wrap instead of being cut off.** In the expanded sidebar, the names of links, groups, buttons
+  (and their description line) and section titles were a single line ending in «…», with no tooltip or title, so a
+  name longer than the sidebar — a long translated name, 200% text, or user text-spacing overrides — could not be
+  read in full. They now wrap; a name that fits stays on one line at the same row height, and the collapsed
+  (icon-only) sidebar is unchanged. The app title and subtitle in the sidebar header and the mobile header wrap the same
+  way.
+
 ## [0.62.0] - 2026-10-31
 
 ### Fixed

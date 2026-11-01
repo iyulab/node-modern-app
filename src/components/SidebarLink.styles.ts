@@ -81,9 +81,10 @@ export const styles = css`
     font-size: var(--u-text-label-size, 13px);
     line-height: var(--u-text-label-leading, 1.5);
     font-weight: var(--u-text-label-weight, 600);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* 펼친 사이드바의 이름은 줄바꿈한다 — 말줄임은 전문을 볼 길 없이 글자를 버린다(WCAG 1.4.12 · 200% 확대 · 긴 이름).
+       맞는 이름은 그대로 한 줄이고, 행은 min-height 라 넘치는 이름만 행이 자란다. 접힌 상태의 숨김 규칙은 따로 있다. */
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   /*

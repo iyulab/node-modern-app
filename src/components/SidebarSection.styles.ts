@@ -25,7 +25,7 @@ export const styles = css`
      3단이 없어 팔레트(neutral-700/600)를 직접 읽었고, 그래서 테마가 이 두 줄에 닿지 않았다. */
   /*
    * ★크기·굵기·자간은 스케일의 단으로 옮겼다(용도 배정).
-   * ⚠ overline 에 대문자 변환을 붙이지 않는다 — 이 줄에 ellipsis 가 있어 잘림이 늘고,
+   * ⚠ overline 에 대문자 변환을 붙이지 않는다 — 대문자는 폭을 늘려 줄바꿈이 늘고,
    *   섹션 이름은 소비자가 쓴 글자다(CJK 에는 효과도 없다).
    */
   .title {
@@ -34,9 +34,10 @@ export const styles = css`
     font-weight: var(--u-text-overline-weight, 700);
     line-height: var(--u-text-overline-leading, 1.45);
     letter-spacing: var(--u-text-overline-tracking, 0.06em);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    /* 펼친 사이드바의 이름은 줄바꿈한다 — 말줄임은 전문을 볼 길 없이 글자를 버린다(WCAG 1.4.12 · 200% 확대 · 긴 이름).
+       맞는 이름은 그대로 한 줄이고, 행은 min-height 라 넘치는 이름만 행이 자란다. 접힌 상태의 숨김 규칙은 따로 있다. */
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .subtitle {

@@ -42,6 +42,18 @@ describe('SidebarLayout — 브랜드', () => {
     expect(parseFloat(getComputedStyle(sub).fontSize)).toBeLessThan(parseFloat(getComputedStyle(title).fontSize));
   });
 
+  it('긴 제목 · 부제는 말줄임 대신 줄바꿈한다 — 잘린 꼬리를 볼 길이 없었다', async () => {
+    const long = 'Regional Credit Document Archive and Retention Service';
+    const el = await mount({ title: long, subtitle: long });
+    const title = el.shadowRoot!.querySelector('.sidebar-header .title') as HTMLElement;
+    const sub = title.querySelector('.subtitle') as HTMLElement;
+    for (const box of [title, sub]) {
+      expect(getComputedStyle(box).textOverflow).not.toBe('ellipsis');
+      expect(box.scrollWidth).toBeLessThanOrEqual(box.clientWidth + 1);
+    }
+    expect(sub.getBoundingClientRect().height).toBeGreaterThan(parseFloat(getComputedStyle(sub).lineHeight) * 1.5);
+  });
+
   it('접힌 사이드바에서는 제목과 함께 숨고, 모바일 머리 줄에는 없다', async () => {
     const slim = await mount({ title: 'App', subtitle: 'Sub' }, 'slim');
     expect((slim.shadowRoot!.querySelector('.sidebar-header .subtitle') as HTMLElement).getClientRects().length).toBe(0);
