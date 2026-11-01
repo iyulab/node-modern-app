@@ -47,6 +47,29 @@ export default defineConfig({
           setupFiles: ['./tests/vitest-setup.ts'],
         },
       },
+      {
+        // WebKit 표본 — 셸 · 기록 · 포커스 축. 게시 전 전체 검증에서 `npm run test:webkit` 으로 돈다. 대상 밖:
+        // CDP 시험(인쇄 매체 · 셸 높이 · clickable 잡음) · 본문 바로가기(Safari 는 기본 설정에서 Tab 이 링크에 서지 않는다 — 플랫폼 관례) ·
+        // 타깃 크기(WebKit 은 같은 시트를 나눈 요소들의 1lh 를 처음 그린 요소의 줄 높이로 붙잡는다 — 줄 높이를 바꾼 두 번째 머리가 24px 아래로 잰다).
+        test: {
+          name: 'webkit',
+          fileParallelism: false,
+          include: ['tests/browser/**/*.test.ts'],
+          exclude: [
+            'tests/browser/print-media.browser.test.ts', 'tests/browser/shell-height-model.browser.test.ts',
+            'tests/browser/clickable-noise.browser.test.ts', 'tests/browser/sidebar-layout-skip-link.browser.test.ts',
+            'tests/browser/target-size.browser.test.ts',
+          ],
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            instances: [{ browser: 'webkit', headless: true }],
+          },
+          api: { host: '127.0.0.1', port: 41516 },
+          isolate: true,
+          setupFiles: ['./tests/vitest-setup.ts'],
+        },
+      },
     ],
   },
 });
