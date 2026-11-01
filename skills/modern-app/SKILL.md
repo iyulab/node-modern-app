@@ -248,6 +248,8 @@ readonly unsaved = new UnsavedChangesController(this, () => this.form.dirty);
 // React: const unsaved = useUnsavedChanges(dirty) from '@iyulab/modern-app/react'
 // Saved (or deleted) and leaving in the same tick: unsaved.markClean() before navigate() — until the next render
 // Plain: const release = trackUnsavedChanges(() => dirty);
+//   …after changing what the plain check reads: notifyUnsavedChange()
+// Shell marker (tab dot / title): onUnsavedChange((unsaved) => …) · React: useHasUnsavedChanges()
 // A modal drawer's close is not a navigation — ask from its cancellable `hide` event:
 drawer.addEventListener('hide', async (e) => {
   if (!form.dirty) return;

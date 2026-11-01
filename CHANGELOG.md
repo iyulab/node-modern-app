@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Added
+
+- **`onUnsavedChange(listener)` — know when «unsaved changes» starts or stops.** A shell that shows unsaved work (a dot
+  on a document tab, a mark in the window title) could only call `hasUnsavedChanges()` on a timer, running every
+  screen's check each time. The listener is now called when the answer changes. The registry checks again when a check
+  is registered or removed, when `useUnsavedChanges` gets a different `dirty`, when a `UnsavedChangesController` host
+  updates, and on `markClean()`; a screen with a plain `trackUnsavedChanges` check calls the new `notifyUnsavedChange()`
+  after changing what it reads. One check per tick, none while nobody listens. React: `useHasUnsavedChanges()` from
+  `@iyulab/modern-app/react`.
+
 ### Fixed
 
 - **Sidebar item names wrap instead of being cut off.** In the expanded sidebar, the names of links, groups, buttons

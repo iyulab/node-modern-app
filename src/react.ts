@@ -10,7 +10,7 @@ import type { EmptyStateVariant } from './components/EmptyState.js';
 import type { TimelineItemColor } from './components/TimelineItem.js';
 import type { InfoSectionLayout } from './components/InfoSection.js';
 import type { InfoFieldFormat, InfoFieldSize, InfoFieldTrend, InfoFieldTone, InfoFieldAppearance } from './components/InfoField.js';
-import { trackUnsavedChanges } from './unsaved.js';
+import { trackUnsavedChanges, notifyUnsavedChange, onUnsavedChange, hasUnsavedChanges } from './unsaved.js';
 
 // `SidebarLayout`을 `app.load()` 없이 이 서브패스만으로 단독 마운트하는 소비자를 위한
 // 반응형 구동 수단 — `SidebarLayout`의 large→slim/medium→modal/small→mobile 전환은
@@ -51,7 +51,23 @@ export function useUnsavedChanges(dirty: boolean): UnsavedChangesHandle {
   // 렌더가 커밋될 때마다 `markClean()` 을 걷는다 — 그 뒤의 판정은 새 렌더의 값이다.
   React.useEffect(() => { clean.current = false; });
   React.useEffect(() => trackUnsavedChanges(() => !clean.current && latest.current), []);
-  return React.useMemo(() => ({ markClean: () => { clean.current = true; } }), []);
+  // `dirty` 가 바뀐 커밋 — 셸의 미저장 표지(`onUnsavedChange`)가 다시 잰다.
+  React.useEffect(() => { notifyUnsavedChange(); }, [dirty]);
+  return React.useMemo(() => ({ markClean: () => { clean.current = true; notifyUnsavedChange(); } }), []);
+}
+
+/**
+ * 셸의 미저장 표지용 — 저장 안 한 변경이 있으면 `true`. 답이 바뀌면 다시 그린다(`onUnsavedChange`).
+ *
+ * ```tsx
+ * function DocumentTab({ title }: { title: string }) {
+ *   const unsaved = useHasUnsavedChanges();
+ *   return <span>{unsaved ? '● ' : ''}{title}</span>;
+ * }
+ * ```
+ */
+export function useHasUnsavedChanges(): boolean {
+  return React.useSyncExternalStore(onUnsavedChange, hasUnsavedChanges, () => false);
 }
 
 /**

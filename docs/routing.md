@@ -252,6 +252,22 @@ navigate(...)` — leaves before the next render, so the check still sees the pr
 the check reads the new value again, so a screen that stays and keeps editing still asks. A delete that leaves is the
 same.
 
+**Showing «unsaved» in the shell.** A tab dot or a window-title mark needs to know when the answer changes, not only
+what it is. `onUnsavedChange((unsaved) => …)` calls back when it changes and returns a function that stops it; in React,
+`useHasUnsavedChanges()` (from `@iyulab/modern-app/react`) re-renders with it:
+
+```tsx
+function DocumentTab({ title }: { title: string }) {
+  const unsaved = useHasUnsavedChanges();
+  return <span>{unsaved ? '● ' : ''}{title}</span>;
+}
+```
+
+The registry does not watch your state; it checks again at the moments it knows — a check registered or removed,
+`useUnsavedChanges` getting a different `dirty`, a `UnsavedChangesController` host updating, `markClean()`. A screen that
+registered a plain check with `trackUnsavedChanges` calls `notifyUnsavedChange()` after changing what the check reads.
+Several moments in one tick are one check, and nothing is checked while nobody listens.
+
 **Keep the draft on `input`, not `change`.** A text field's `change` fires only when the field is left (or Enter is
 pressed), so text typed just before Escape or Back would not count as unsaved — the check would say «clean» and
 nothing would be asked. Fields that save on `change` (an inline quantity that is written at once) are not drafts.

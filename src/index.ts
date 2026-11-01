@@ -71,6 +71,8 @@ export type { WizardStep, WizardStepState, WizardStepChangeDetail, WizardEventMa
 export {
   trackUnsavedChanges,
   hasUnsavedChanges,
+  onUnsavedChange,
+  notifyUnsavedChange,
   confirmDiscardChanges,
   unsavedChangesGuard,
   UnsavedChangesController,
