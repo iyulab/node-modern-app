@@ -67,7 +67,8 @@ describe('SidebarLayout content scroll keys yield to the focused control', () =>
     text.tabIndex = -1;
     text.textContent = 'text';
     const { main } = await mount(text);
-    text.focus();
+    // 진짜 클릭으로 포커스를 준다 — `focus()` 만으로는 문서(iframe)가 포커스를 갖지 못한 채 키가 가지 않을 수 있다(WebKit 전체 실행).
+    await userEvent.click(text);
     await userEvent.keyboard('{ArrowDown}');
     const afterArrow = main.scrollTop;
     expect(afterArrow).toBeGreaterThan(0);

@@ -43,13 +43,12 @@ describe('u-info-field — href', () => {
     expect(window.location.hash).toBe('#orders');
   });
 
-  it('🔴the keyboard reaches it and Enter follows it', async () => {
-    document.body.innerHTML = `<button id="before">before</button><u-info-field appearance="tile" label="Open orders" value="12" href="#by-key"></u-info-field>`;
-    const el = document.querySelector('u-info-field') as InfoField;
-    await el.updateComplete;
-    (document.getElementById('before') as HTMLElement).focus();
-    await userEvent.tab();
-    expect(el.shadowRoot!.activeElement, 'Tab 한 번에 칸의 링크에 선다').toBe(base(el));
+  it('🔴the link is in the tab order and Enter on it follows it', async () => {
+    const el = await mount(`<u-info-field appearance="tile" label="Open orders" value="12" href="#by-key"></u-info-field>`);
+    // Tab 으로 링크에 서는가는 엔진 기본 설정이다(Safari 는 기본으로 링크에 서지 않는다) — 순서에 «들어 있는가» 와 포커스 뒤 Enter 를 잰다.
+    expect((base(el) as HTMLAnchorElement).tabIndex, '탭 순서에 든다(−1 이 아니다)').toBe(0);
+    base(el).focus();
+    expect(el.shadowRoot!.activeElement).toBe(base(el));
     await userEvent.keyboard('{Enter}');
     expect(window.location.hash).toBe('#by-key');
   });
@@ -69,8 +68,6 @@ describe('u-info-field — href', () => {
     expect(s.cursor).toBe('pointer');
     expect(s.textDecorationLine).toBe('none');
     expect(s.color, '링크 파랑이 아니라 칸의 글자색').toBe(getComputedStyle(el).color);
-    base(el).focus();
-    await userEvent.tab({ shift: true });
     base(el).focus({ focusVisible: true } as FocusOptions);
     const f = getComputedStyle(base(el));
     expect(parseFloat(f.outlineWidth), '키보드 포커스 링').toBeGreaterThan(0);
