@@ -17,6 +17,27 @@ export const styles = css`
     --_info-field-padding: initial;
   }
 
+  /* 칸 전체 링크 — 칸으로 읽힌다: 글자는 칸의 잉크, 밑줄 없음, 누를 수 있다는 손 모양. 타일은 hover 에 테두리가 한 단 짙어진다
+     (u-card 링크와 같은 말). 포커스 링은 안쪽에 그린다 — 지표 띠 · 격자의 칸 가장자리가 이웃 칸과 맞닿는다. */
+  a.base {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  :host([appearance="tile"]) a.base {
+    transition: border-color var(--u-duration-fast, 140ms) var(--u-ease-standard, cubic-bezier(0.2, 0, 0, 1));
+  }
+  :host([appearance="tile"]) a.base:hover {
+    border-color: var(--u-border-color-strong, #BDBDBD);
+  }
+  a.base:focus-visible {
+    outline-offset: calc(var(--u-space-3xs, 2px) * -1);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :host([appearance="tile"]) a.base { transition: none; }
+  }
+
   .label {
     font-size: var(--u-text-caption-size, 12px);
     font-weight: var(--u-text-caption-weight, 400);

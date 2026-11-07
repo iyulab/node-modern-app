@@ -188,6 +188,11 @@ declare module 'react' {
         appearance?: InfoFieldAppearance;
         'blank-reason'?: string;
         description?: string;
+        /** 칸 전체가 이동하는 링크 URL — 주면 바깥 상자가 `<a>` 가 된다. */
+        href?: string;
+        target?: string;
+        rel?: string;
+        download?: string;
       };
       'u-info-section': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         min?: number | string;

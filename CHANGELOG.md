@@ -4,6 +4,11 @@
 
 ### Added
 
+- **`u-info-field` takes `href` — a figure you can press.** A KPI tile that opens the list behind it had to be built by hand
+  (`role="link"`, `tabindex`, click and Enter/Space handling, focus and hover styles outside the component). With `href` the
+  whole field is a real link (`part="base"` becomes an `<a>`), with the same `target`, `rel` and `download` as `u-card`; a tile
+  darkens its border on hover and keeps its focus ring inside its edge. Without `href` nothing changes.
+
 - **`onUnsavedChange(listener)` — know when «unsaved changes» starts or stops.** A shell that shows unsaved work (a dot
   on a document tab, a mark in the window title) could only call `hasUnsavedChanges()` on a timer, running every
   screen's check each time. The listener is now called when the answer changes. The registry checks again when a check

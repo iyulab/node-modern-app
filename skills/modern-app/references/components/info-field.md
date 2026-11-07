@@ -40,6 +40,10 @@ and those are different states of the business. So the component owns the rule.
 | `size` | `'default'\|'lg'\|'xl'` | `'default'` | ✓ | `'lg'` renders the value at the `title` type-scale step — for dashboard KPI tiles composed inside `u-info-section`. `'xl'` is the figure read at a glance — the `display` step, or `--info-field-xl-size` |
 | `appearance` | `'plain'\|'tile'` | `'plain'` | ✓ | `'tile'` draws a bordered surface (border · radius · padding · surface) for a grid of KPI tiles; with `tone` `warning`/`negative`/`positive` the whole tile takes that tone's soft face and border |
 | `blankReason` | `string` | — | | Attribute `blank-reason`. Why the value is blank — on the line under the value, while the value line keeps `blank` (`—`) at figure size. Hidden once there is a value |
+| `href` | `string` | — | ✓ | The whole field is a link to this URL — "press the figure to open the list behind it". The base box (`part="base"`) becomes a real `<a>`, so focus, Enter, new tab and the context menu come from the browser (the same words as `u-card`). Do not put another button or link inside |
+| `target` | `string` | — | | Link target (with `href`) |
+| `rel` | `string` | — | | Link relation (with `href`) |
+| `download` | `string` | — | | Download file name (with `href`) |
 | `trend` | `'up'\|'down'\|'flat'` | — | | Trend direction; renders a trend indicator when set, alongside `trendLabel`; pair with trendLabel for an accessible name — trend alone conveys direction by color only |
 | `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility |
 | `description` | `string` | — | | A supporting line below the value — its basis, or the same amount in another unit (`"1,764,211 units"`). Trend copy belongs in `trendLabel` |
@@ -87,6 +91,20 @@ line under it — use `blank-reason` instead of a sentence in `blank`:
 <u-info-field appearance="tile" size="xl" label="MTTR" .value=${mttr} unit="h"
   blank-reason="No repairs in this period"></u-info-field>
 ```
+
+### Linking a figure
+
+`href` makes the whole field a link; a tile also darkens its border on hover and draws the focus ring inside its edge:
+
+```html
+<u-info-section min="190px">
+  <u-info-field appearance="tile" size="xl" label="Open orders" .value=${12} unit="items"
+    href="/orders?status=open"></u-info-field>
+</u-info-section>
+```
+
+The link is named by the label and the value it reads. To make the name shorter, put `aria-label` on the field — it is moved to the link.
+To navigate in a client-routed app, give `href` the app URL and let the router handle the click as it does for any `<a>`.
 
 ### Tiles
 

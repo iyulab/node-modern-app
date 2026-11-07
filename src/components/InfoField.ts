@@ -1,5 +1,6 @@
 import { html, type PropertyValues } from 'lit';
 import { property, state, customElement } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { formatNumber, formatCurrency, formatDate } from '@iyulab/components/dist/utilities/format.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
@@ -148,6 +149,19 @@ export class InfoField extends StyledElement<ElementParts> {
    */
   @property({ type: String }) description?: string;
 
+  /**
+   * 칸 전체가 이동하는 링크 URL — «지표를 눌러 그 목록으로 간다». 주면 바깥 상자(`part="base"`)가 진짜 `<a>` 가 되어 포커스 ·
+   * Enter · 새 탭 · 컨텍스트 메뉴를 브라우저가 준다(`u-card` 와 같은 말). 링크 안에는 다른 대화형 요소(버튼 · 링크)를 두지 않는다
+   * (HTML 의 `<a>` 내용 모델). 링크의 이름은 라벨과 값을 읽은 글이고, 짧게 하려면 호스트의 `aria-label` 을 링크로 옮긴다.
+   */
+  @property({ type: String, reflect: true }) href?: string;
+  /** 링크 타겟 (`href` 와 함께) */
+  @property({ type: String }) target?: string;
+  /** 링크 관계 (`href` 와 함께) */
+  @property({ type: String }) rel?: string;
+  /** 다운로드 파일명 (`href` 와 함께) */
+  @property({ type: String }) download?: string;
+
   /** 라벨을 이름으로 준 슬롯 위젯과 그때의 라벨 — 소비자가 바꾼 이름은 우리 것이 아니다. */
   private readonly namedWidgets = new WeakMap<Element, string>();
 
@@ -222,8 +236,7 @@ export class InfoField extends StyledElement<ElementParts> {
     const effectiveTone = this.tone ?? inferTone(this.trend);
     const glyph = this.trend === 'up' ? '▲' : this.trend === 'down' ? '▼' : '';
     const unit = !blank && this.unit ? html`<span class="unit" part="unit">${this.unit}</span>` : '';
-    return html`
-      <div class="base" part="base">
+    const body = html`
         <div class="label" part="label">${this.label}</div>
         <div class="value-row">
           <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} ${reason ? 'reasoned' : ''} tone-${effectiveTone}" part="value">${
@@ -238,8 +251,17 @@ export class InfoField extends StyledElement<ElementParts> {
           </div>
         ` : ''}
         ${reason ?? this.description ? html`<div class="description" part="description">${reason ?? this.description}</div>` : ''}
-      </div>
     `;
+    if (this.href) {
+      const ariaLabel = this.getAttribute('aria-label') ?? undefined;
+      return html`<a class="base" part="base"
+        href=${this.href}
+        aria-label=${ifDefined(ariaLabel)}
+        target=${ifDefined(this.target)}
+        rel=${ifDefined(this.rel)}
+        download=${ifDefined(this.download)}>${body}</a>`;
+    }
+    return html`<div class="base" part="base">${body}</div>`;
   }
 }
 
