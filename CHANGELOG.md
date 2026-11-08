@@ -17,6 +17,16 @@
   after changing what it reads. One check per tick, none while nobody listens. React: `useHasUnsavedChanges()` from
   `@iyulab/modern-app/react`.
 
+### Changed
+
+- **i18next 27.** The `i18next` dependency moves from `^26.3.6` to `^27.0.1`, and the package now asks for Node 22 or later
+  (`engines`), as i18next 27 does. i18next 27 changes some defaults, so check the `i18n` you pass to `app.load()`:
+  `fallbackLng` no longer defaults to `['dev']` (set your source language, as the setup guide does); an empty translation
+  falls back like a missing one (`returnEmptyString: true` restores the old behaviour); a language code without a region
+  is lower-cased (`cleanCode: false` keeps it as written); the default escape no longer rewrites `/`. `t()` is typed more
+  strictly: a string with `{{variables}}` needs its options. The complete list is in the i18next 27 migration guide.
+  The package's own calls (`translate()`, sidebar labels) behave the same.
+
 ### Fixed
 
 - **Sidebar item names wrap instead of being cut off.** In the expanded sidebar, the names of links, groups, buttons

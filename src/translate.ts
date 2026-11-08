@@ -46,7 +46,8 @@ class TranslateDirective extends AsyncDirective {
 
   private translate(): string {
     if (!i18next.isInitialized) return '';
-    const value = i18next.t(this.keys, this.options);
+    // i18next 27 의 `t()` 타입은 `options` 에 `undefined` 를 받지 않는다 — 옵션이 없으면 인자를 생략한다.
+    const value = this.options ? i18next.t(this.keys, this.options) : i18next.t(this.keys);
     // `returnObjects` 결과는 텍스트로 그릴 수 없다.
     return typeof value === 'string' ? value : '';
   }

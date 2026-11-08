@@ -1,5 +1,5 @@
 import type { DirectiveResult } from 'lit/directive.js';
-import i18next from 'i18next';
+import i18next, { type TOptions } from 'i18next';
 import { filterCommands } from '@iyulab/components/dist/components/command-palette/UCommandPalette.js';
 import type {
   CommandItem,
@@ -59,7 +59,10 @@ export function labelText(label: string | DirectiveResult | undefined): string {
   if (typeof label === 'string') return label;
   const values = (label as { values?: unknown[] } | undefined)?.values;
   if (values && i18next.isInitialized) {
-    const value = i18next.t(values[0] as string | string[], values[1] as Record<string, unknown> | undefined);
+    const key = values[0] as string | string[];
+    const options = values[1] as TOptions | undefined;
+    // i18next 27 의 `t()` 타입은 `options` 에 `undefined` 를 받지 않는다 — 옵션이 없으면 인자를 생략한다.
+    const value = options ? i18next.t(key, options) : i18next.t(key);
     return typeof value === 'string' ? value : '';
   }
   return '';
