@@ -47,7 +47,7 @@ export const styles = css`
     font: inherit;
     color: var(--u-txt-color-weak, #616161);
     cursor: pointer;
-    text-align: left;
+    text-align: start;
   }
   .step[disabled] {
     color: var(--u-txt-color-disabled, #BDBDBD);

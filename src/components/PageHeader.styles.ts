@@ -89,7 +89,7 @@ export const styles = css`
   }
   .back::before {
     content: '←';
-    margin-right: var(--u-space-3xs, 2px);
+    margin-inline-end: var(--u-space-3xs, 2px);
   }
   .back:hover {
     text-decoration: underline;

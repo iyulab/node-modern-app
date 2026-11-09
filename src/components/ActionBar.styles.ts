@@ -34,7 +34,7 @@ export const styles = css`
     display: flex;
     align-items: center;
     gap: var(--u-space-sm, 8px);
-    margin-right: auto;
+    margin-inline-end: auto;
   }
   /* 빈 슬롯 래퍼는 접는다 — 슬롯 배정은 slotchange 로 추적한다(internals/slotted.ts).
      ⚠CSS :has() 로는 못 한다: <slot> 자신이 자식이라 :has(*) 가 항상 참이다. */
@@ -58,7 +58,7 @@ export const styles = css`
     display: flex;
     align-items: center;
     gap: var(--u-space-sm, 8px);
-    margin-left: auto;
+    margin-inline-start: auto;
   }
 
   /* 화면 하단에 고정 — 긴 폼에서 저장 버튼을 찾아 스크롤하지 않아도 된다.

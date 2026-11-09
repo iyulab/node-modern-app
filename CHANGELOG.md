@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+### Changed
+
+- **`u-action-bar`, `u-page-header`, `u-timeline-item`, `u-master-detail-layout`, `u-sidebar-group` and `u-wizard` mirror under `dir="rtl"`.**
+  Their margins, borders and text alignment were physical (`margin-left: auto` pushed the main actions to the right whatever the
+  direction; the detail pane's divider and close button, the timeline rail and the sidebar group's indent sat on the left). They are now
+  logical properties, so the danger group stays at the start and the main actions at the end in a right-to-left page.
+  **Left-to-right rendering is unchanged.** Not yet mirrored: the sidebar shell layout (`u-sidebar-layout`).
+
 ### Added
 
 - **`u-info-field` takes `href` — a figure you can press.** A KPI tile that opens the list behind it had to be built by hand

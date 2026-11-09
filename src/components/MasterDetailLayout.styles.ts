@@ -43,7 +43,7 @@ export const styles = css`
   .divider {
     flex: 0 0 auto;
     width: 0;
-    border-left: 1px solid var(--u-border-color-weak, #EEEEEE);
+    border-inline-start: 1px solid var(--u-border-color-weak, #EEEEEE);
   }
   /* detail 이 비어 있으면 나눌 것이 없다 — 슬롯 배정은 slotchange 로 추적한다
      (internals/slotted.ts). ⚠CSS :has() 로는 못 한다: <slot> 자신이 자식이라 :has(*) 가
@@ -105,7 +105,7 @@ export const styles = css`
     display: none;
     position: absolute;
     top: var(--u-space-sm, 8px);
-    right: var(--u-space-sm, 8px);
+    inset-inline-end: var(--u-space-sm, 8px);
     z-index: 2;
   }
   :host([overlay]) .detail-close {

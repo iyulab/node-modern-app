@@ -86,9 +86,9 @@ export const styles = css`
     flex-direction: column;
     gap: 4px;
     margin-top: 4px;
-    margin-left: 32px;
-    border-left: 2px solid var(--u-border-color-weak, #EEEEEE);
-    padding-left: 8px;
+    margin-inline-start: 32px;
+    border-inline-start: 2px solid var(--u-border-color-weak, #EEEEEE);
+    padding-inline-start: 8px;
     overflow: hidden;
     transition: all var(--u-duration-slow, 320ms) ease;
   }

@@ -69,7 +69,7 @@ export const styles = css`
     min-height: var(--u-space-md, 12px);
     margin-top: var(--u-space-2xs, 4px);
     /* The rail is what reads as a timeline — the weak border step (about 1.25:1 on a card) vanished. */
-    border-left: 1px solid var(--u-border-color-strong, #BDBDBD);
+    border-inline-start: 1px solid var(--u-border-color-strong, #BDBDBD);
   }
   /* The last entry has no next marker to reach. */
   :host(:last-child) .line {
