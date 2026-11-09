@@ -11,7 +11,8 @@
   **Left-to-right rendering is unchanged.**
   The sidebar shell `u-sidebar-layout` mirrors too: the sidebar sits at the start edge (the right in a right-to-left page) and its
   separating border faces the page content, the modal drawer slides in from the start edge, the skip-to-content link appears at the
-  start edge, and a sidebar menu opens its popup toward the end side (`left-start` instead of `right-start`).
+  start edge, and a sidebar menu opens its popup toward the end side (`left-start` instead of `right-start`). The horizontal step
+  header of `u-wizard` follows the screen as well: in a right-to-left page the left arrow goes to the next step.
 
 ### Added
 

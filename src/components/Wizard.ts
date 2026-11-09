@@ -157,8 +157,10 @@ export class Wizard extends StyledElement<ElementParts> {
 
   private handleTabKeydown = (e: KeyboardEvent, i: number) => {
     const horizontal = this.orientation === 'horizontal';
-    const nextKey = horizontal ? 'ArrowRight' : 'ArrowDown';
-    const prevKey = horizontal ? 'ArrowLeft' : 'ArrowUp';
+    // 가로 단계 머리는 읽는 방향으로 놓인다 — RTL 은 시작이 오른쪽이라 왼쪽 키가 «다음»(화면 방향: 네이티브 라디오 · APG).
+    const rtl = getComputedStyle(this).direction === 'rtl';
+    const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
+    const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
     let target = -1;
     if (e.key === nextKey) target = this.nextReachable(i, 1);
     else if (e.key === prevKey) target = this.nextReachable(i, -1);
