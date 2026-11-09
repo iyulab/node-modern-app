@@ -60,6 +60,9 @@ export function isBlank(v: unknown): boolean {
 export class InfoField extends StyledElement<ElementParts> {
   static styles = [super.styles, styles];
 
+  /** 링크(`href`)일 때 호스트의 `aria-label` 이 안쪽 `<a>` 에 실린다 — 연결 뒤에 바뀔 이름도 따라가게 한 번 선언한다(`UElement.forwardedAttributes`). */
+  static override forwardedAttributes: readonly string[] = ['aria-label'];
+
   /** 필드 이름. */
   @property({ type: String }) label = '';
   /**

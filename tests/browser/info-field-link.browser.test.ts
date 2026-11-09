@@ -31,6 +31,17 @@ describe('u-info-field — href', () => {
     expect(a.getAttribute('rel')).toBe('noopener');
   });
 
+  it('the host aria-label names the link, and follows a change after the tile is connected', async () => {
+    const el = await mount(`<u-info-field appearance="tile" label="Open orders" value="12" href="#orders" aria-label="Orders, 12 open"></u-info-field>`);
+    expect(base(el).getAttribute('aria-label')).toBe('Orders, 12 open');
+    el.setAttribute('aria-label', 'Orders (updated)');
+    await el.updateComplete;
+    expect(base(el).getAttribute('aria-label')).toBe('Orders (updated)');
+    el.removeAttribute('aria-label');
+    await el.updateComplete;
+    expect(base(el).hasAttribute('aria-label')).toBe(false);
+  });
+
   it('without href nothing changes — the base is a plain box, no link role', async () => {
     const el = await mount(`<u-info-field appearance="tile" label="Open orders" value="12"></u-info-field>`);
     expect(base(el).localName).toBe('div');
