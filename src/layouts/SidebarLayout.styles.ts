@@ -110,7 +110,7 @@ export const styles = css`
   .skip-link {
     position: absolute;
     top: 8px;
-    left: 8px;
+    inset-inline-start: 8px;
     z-index: calc(var(--u-layer-shell, 1000) + 2);
     width: 1px;
     height: 1px;
@@ -155,7 +155,7 @@ export const styles = css`
        사이드바·페이지·카드 삼중 무구분을 만들던 종전 폴백을 대체한다. */
     background: var(--app-sidebar-bg, var(--u-bg-color-raised, #FAFAFA));
     color: var(--app-sidebar-fg, var(--u-txt-color, #212121));
-    border-right: 1px solid var(--u-border-color, #E0E0E0);
+    border-inline-end: 1px solid var(--u-border-color, #E0E0E0);
     transition: all var(--u-duration-slow, 320ms) ease;
   }
   /* Sidebar states */
@@ -175,7 +175,7 @@ export const styles = css`
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
+    inset-inline-start: 0;
   }
   /* 모바일 패널은 모바일 머리 줄 아래에서 시작한다(높이는 셸이 재서 넘긴다). 패널 안의 머리 줄은 모바일 머리 줄과 같은
      것(로고 · 제목 · 토글)이라 그리지 않는다 — 그리면 머리 줄 밑에 깔린 채 포커스를 받는다. */
@@ -187,8 +187,7 @@ export const styles = css`
     position: absolute;
     top: var(--_mobile-header-block-size, 0px);
     bottom: 0;
-    left: 0;
-    right: 0;
+    inset-inline: 0;
     transform: translateY(-100%);
   }
   /* 열린 모바일 패널은 자기 상자 밖이 보이지 않는다 — 위는 머리 줄(.mobile-header)이 더 높은 층에서 덮는다.
@@ -199,8 +198,7 @@ export const styles = css`
     position: absolute;
     top: var(--_mobile-header-block-size, 0px);
     bottom: 0;
-    left: 0;
-    right: 0;
+    inset-inline: 0;
     transform: translateY(0);
     overflow: hidden;
   }
@@ -263,7 +261,7 @@ export const styles = css`
    *   소비자가 같은 배선을 재구현하던 문제였다. 값은 이 라이브러리의 spacing 스케일
    *   상단 근처(3xl)에서 골랐다 — LOB 화면의 표준 여백으로 쓰기에 과하지 않은 최대값.
    * ⚠«패딩 박스» 기준 절대배치는 이 padding 의 영향을 받지 않는다 — 바로 아래
-   *   u-progress-bar 가 top/left/right:0 으로 여전히 테두리에 꽉 차게 붙는 이유다
+   *   u-progress-bar 가 top 과 inline 양끝 0 으로 여전히 테두리에 꽉 차게 붙는 이유다
    *   (CSS 2.1 §10.6.4: 절대배치 자손의 containing block 은 가장 가까운 positioned
    *   조상의 «패딩 박스»이고, 그 경계는 조상 자신의 padding 값에 밀리지 않는다).
    *   풀블리드를 원하는 소비자는 layout.styles.main = { padding: '0' } 로 되돌린다. */
@@ -387,8 +385,7 @@ export const styles = css`
     position: absolute;
     z-index: 100;
     top: 0;
-    left: 0;
-    right: 0;
+    inset-inline: 0;
     opacity: 0;
     transform: translateY(-4px);
     transition: opacity var(--u-duration-slow, 320ms) ease, transform var(--u-duration-slow, 320ms) ease;
@@ -414,7 +411,7 @@ export const styles = css`
   .overlay-close {
     position: absolute;
     top: var(--u-space-sm, 8px);
-    right: var(--u-space-sm, 8px);
+    inset-inline-end: var(--u-space-sm, 8px);
     z-index: 2;
   }
 
@@ -423,8 +420,7 @@ export const styles = css`
     position: absolute;
     z-index: 100;
     top: 0;
-    left: 0;
-    right: 0;
+    inset-inline: 0;
     bottom: 0;
     background: var(--u-overlay-bg-color, rgba(0, 0, 0, 0.5));
   }

@@ -8,7 +8,10 @@
   Their margins, borders and text alignment were physical (`margin-left: auto` pushed the main actions to the right whatever the
   direction; the detail pane's divider and close button, the timeline rail and the sidebar group's indent sat on the left). They are now
   logical properties, so the danger group stays at the start and the main actions at the end in a right-to-left page.
-  **Left-to-right rendering is unchanged.** Not yet mirrored: the sidebar shell layout (`u-sidebar-layout`).
+  **Left-to-right rendering is unchanged.**
+  The sidebar shell `u-sidebar-layout` mirrors too: the sidebar sits at the start edge (the right in a right-to-left page) and its
+  separating border faces the page content, the modal drawer slides in from the start edge, the skip-to-content link appears at the
+  start edge, and a sidebar menu opens its popup toward the end side (`left-start` instead of `right-start`).
 
 ### Added
 

@@ -399,7 +399,9 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
       this.menuIds.set(item, id);
     }
     const menuId = id;
-    const placement = this.state === 'mobile' || this.state === 'mobile-open' ? 'bottom-start' : 'right-start';
+    // 서브메뉴는 사이드바의 «끝 쪽» 으로 열린다 — 사이드바가 오른쪽에 서는 RTL 에서는 왼쪽(floating-ui 의 side 는 물리 방향이다).
+    const rtl = getComputedStyle(this).direction === 'rtl';
+    const placement = this.state === 'mobile' || this.state === 'mobile-open' ? 'bottom-start' : rtl ? 'left-start' : 'right-start';
     return html`
       <u-sidebar-button
         id=${menuId}
