@@ -1,7 +1,7 @@
 {
   "name": "@iyulab/modern-app",
   "description": "Application shell for Lit web apps: layout, sidebar, command palette, routing and app lifecycle",
-  "version": "0.62.0",
+  "version": "0.63.0",
   "keywords": [
     "iyulab",
     "web-framework",
@@ -79,7 +79,7 @@
     }
   },
   "devDependencies": {
-    "@iyulab/components": "^2.39.0",
+    "@iyulab/components": "^3.0.0",
     "@iyulab/router": "^0.25.0",
     "@lit/react": "^1.0.8",
     "@types/node": "^26.1.1",
