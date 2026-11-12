@@ -45,7 +45,7 @@ and those are different states of the business. So the component owns the rule.
 | `rel` | `string` | — | | Link relation (with `href`) |
 | `download` | `string` | — | | Download file name (with `href`) |
 | `trend` | `'up'\|'down'\|'flat'` | — | | Trend direction; renders a trend indicator when set, alongside `trendLabel`; pair with trendLabel for an accessible name — trend alone conveys direction by color only |
-| `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility |
+| `trendLabel` | `string` | — | | Trend copy, e.g. `"+12% vs last month"` — wording is the consumer's responsibility; read in its own direction in a right-to-left page, like the formatted value (the label and description follow the page) |
 | `description` | `string` | — | | A supporting line below the value — its basis, or the same amount in another unit (`"1,764,211 units"`). Trend copy belongs in `trendLabel` |
 | `tone` | `'positive'\|'negative'\|'warning'\|'neutral'` | — | ✓ | Explicit tone override; resolves from `trend` when unset (`up→positive`, `down→negative`, `flat`/unset→`neutral`) but always wins over inference. Colors the value text itself, independent of `trend` — a static figure (e.g. a balance due) can be toned `negative` with no trend arrow. `warning` means "needs attention, not wrong" (a deadline coming up, a rate under target but within limits) and is never inferred |
 
