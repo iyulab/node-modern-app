@@ -243,14 +243,14 @@ export class InfoField extends StyledElement<ElementParts> {
         <div class="label" part="label">${this.label}</div>
         <div class="value-row">
           <div class="value ${numeric ? 'numeric' : ''} ${blank ? 'blank' : ''} ${reason ? 'reasoned' : ''} tone-${effectiveTone}" part="value">${
-            this.hasSlotted ? html`<slot @slotchange=${() => void this.nameSlottedWidgets()}></slot>` : blank ? this.blank : this.formatValue()}${unit}</div>
+            this.hasSlotted ? html`<slot @slotchange=${() => void this.nameSlottedWidgets()}></slot>` : blank ? this.blank : html`<bdi>${this.formatValue()}</bdi>`}${unit}</div>
           <div class="visual" part="visual" ?hidden=${!this.hasVisual}>
             <slot name="visual" @slotchange=${(e: Event) => { this.hasVisual = (e.target as HTMLSlotElement).assignedElements().length > 0; }}></slot>
           </div>
         </div>
         ${showTrend ? html`
           <div class="trend tone-${effectiveTone}" part="trend">
-            <span class="trend-icon" ?hidden=${!this.hasTrendIcon}><slot name="trend-icon" @slotchange=${(e: Event) => { this.hasTrendIcon = (e.target as HTMLSlotElement).assignedElements().length > 0; }}></slot></span>${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ?? ''}
+            <span class="trend-icon" ?hidden=${!this.hasTrendIcon}><slot name="trend-icon" @slotchange=${(e: Event) => { this.hasTrendIcon = (e.target as HTMLSlotElement).assignedElements().length > 0; }}></slot></span>${glyph ? html`<span aria-hidden="true">${glyph}</span> ` : ''}${this.trendLabel ? html`<bdi>${this.trendLabel}</bdi>` : ''}
           </div>
         ` : ''}
         ${reason ?? this.description ? html`<div class="description" part="description">${reason ?? this.description}</div>` : ''}

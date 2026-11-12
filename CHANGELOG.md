@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Fixed
+
+- **`u-info-field`: the value and the trend text keep their own direction in a right-to-left page.** A Latin value took the
+  page's direction as its paragraph direction, so a trailing full stop or a leading sign jumped to the wrong end
+  (`Blue Harbor Co.` read `.Blue Harbor Co`; `+3.2% MoM` lost its sign to the other end). The formatted value and `trendLabel`
+  are now isolated and read in their own order; the box's alignment is unchanged and a left-to-right page renders as before.
+  The label, the description and a slotted value follow the page as before (prose and widgets, not data). This relies on
+  `@iyulab/components` ≥ the release that adds the shared `bdi { unicode-bidi: plaintext }` rule; with an older components
+  the value still renders, isolated by the browser default.
+
 ## [0.63.0] - 2026-11-11
 
 ### Changed
