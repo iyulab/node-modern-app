@@ -39,22 +39,6 @@ const devWarn = createDevWarner('@iyulab/modern-app');
 let instanceSeq = 0;
 
 /**
- * 반응형 사이드바 레이아웃 컴포넌트
- * 
- * 화면 크기에 따른 사이드바 모드 전환:
- * - large: default / slim
- * - medium: slim / modal
- * - small: mobile / mobile-open
- * 
- * 사이드바 모드:
- * - default: 사이드바가 펼침 상태로 표시됨
- * - slim: 아이콘만 표시되는 슬림 모드
- * - modal: 오버레이로 사이드바가 펼침 상태로 표시되는 모달 모드, 백드롭 클릭 시 닫힘
- * - mobile: 모바일에서 헤더만 표시되는 상태, 사이드바는 숨겨짐
- * - mobile-open: 모바일에서 사이드바가 펼침 상태로 표시되는 모드
- */
-
-/**
  * 해당 요소가 키 입력을 소비하는 편집/입력 컨트롤인지 판정한다.
  * true면 메인 영역의 스크롤 단축키(Space·화살표 등)가 그 요소의 입력을 가로채지 않는다.
  */
@@ -116,6 +100,21 @@ function composedContains(container: Element, node: Node): boolean {
   return false;
 }
 
+/**
+ * 반응형 사이드바 레이아웃 컴포넌트
+ * 
+ * 화면 크기에 따른 사이드바 모드 전환:
+ * - large: default / slim
+ * - medium: slim / modal
+ * - small: mobile / mobile-open
+ * 
+ * 사이드바 모드:
+ * - default: 사이드바가 펼침 상태로 표시됨
+ * - slim: 아이콘만 표시되는 슬림 모드
+ * - modal: 오버레이로 사이드바가 펼침 상태로 표시되는 모달 모드, 백드롭 클릭 시 닫힘
+ * - mobile: 모바일에서 헤더만 표시되는 상태, 사이드바는 숨겨짐
+ * - mobile-open: 모바일에서 사이드바가 펼침 상태로 표시되는 모드
+ */
 @customElement('u-sidebar-layout')
 export class SidebarLayout extends StyledElement<SidebarParts> {
   static styles = [ super.styles, styles ];

@@ -302,3 +302,7 @@ re-assembled per screen — that is where a product stops looking like one produ
 ## Full `AppConfig` reference
 
 See [references/api.md](./references/api.md) for all TypeScript interfaces.
+
+## Machine-readable reference
+
+The element surface is also published as a Custom Elements Manifest: the file named by the `customElements` field of this package's `package.json` (`dist/custom-elements.json`). It lists every element's attributes, properties, events (with the type of their `detail`), slots, CSS parts and CSS custom properties, generated from the source at build time. Read it instead of parsing the source when you need the exact surface of an element.

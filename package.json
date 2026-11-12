@@ -23,6 +23,7 @@
   ],
   "type": "module",
   "types": "dist/index.d.ts",
+  "customElements": "./dist/custom-elements.json",
   "engines": {
     "node": ">=22"
   },
@@ -55,7 +56,8 @@
     "test:webkit": "vitest run --project=webkit",
     "test:watch": "vitest",
     "start": "vite",
-    "build": "npm run typecheck && vite build && npm run test:react-types",
+    "analyze": "cem analyze",
+    "build": "npm run typecheck && vite build && npm run analyze && npm run test:react-types",
     "test:browser": "vitest run --project=browser",
     "typecheck": "tsc --noEmit",
     "test:react-types": "tsc -p tsconfig.react-smoke.json"
@@ -79,6 +81,7 @@
     }
   },
   "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.11.0",
     "@iyulab/components": "^3.0.0",
     "@iyulab/router": "^0.25.0",
     "@lit/react": "^1.0.8",
