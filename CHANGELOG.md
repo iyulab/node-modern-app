@@ -24,6 +24,10 @@
   the leave-guard reading a `dirty` that never committed. The guard now reads the value of the last committed render; behaviour
   for committed renders is unchanged.
 
+### Changed
+
+- **Runtime dependency range follows the current minor release** (`i18next` `^27.1.1`). No behaviour change.
+
 ## [0.63.0] - 2026-11-11
 
 ### Changed
