@@ -19,6 +19,10 @@
   The label, the description and a slotted value follow the page as before (prose and widgets, not data). This relies on
   `@iyulab/components` ≥ the release that adds the shared `bdi { unicode-bidi: plaintext }` rule; with an older components
   the value still renders, isolated by the browser default.
+- **`useUnsavedChanges` (`/react`): the latest `dirty` is recorded after the render commits, not during the render.** Writing the
+  ref while rendering is impure: a render that React discards (concurrent rendering, Strict Mode's double render) could leave
+  the leave-guard reading a `dirty` that never committed. The guard now reads the value of the last committed render; behaviour
+  for committed renders is unchanged.
 
 ## [0.63.0] - 2026-11-11
 

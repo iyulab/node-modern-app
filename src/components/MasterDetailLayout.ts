@@ -46,6 +46,7 @@ type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
  * (`ElementInternals.states`) — 속성으로 반사하지 않는다(`u-select:state(open)` 과 같은 관례).
  */
 @customElement('u-master-detail-layout')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export class MasterDetailLayout extends StyledElement<ElementParts> {
   static styles = [super.styles, styles];
 
@@ -229,6 +230,7 @@ export interface MasterDetailLayoutEventMap {
 }
 
 /** Typed listeners for {@link MasterDetailLayoutEventMap} — element-scoped, the DOM's own pattern (`HTMLMediaElementEventMap`). */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export interface MasterDetailLayout {
   addEventListener<K extends keyof MasterDetailLayoutEventMap>(type: K, listener: (this: MasterDetailLayout, ev: MasterDetailLayoutEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: MasterDetailLayout, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

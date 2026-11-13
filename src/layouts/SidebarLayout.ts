@@ -116,6 +116,7 @@ function composedContains(container: Element, node: Node): boolean {
  * - mobile-open: 모바일에서 사이드바가 펼침 상태로 표시되는 모드
  */
 @customElement('u-sidebar-layout')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export class SidebarLayout extends StyledElement<SidebarParts> {
   static styles = [ super.styles, styles ];
 
@@ -452,7 +453,7 @@ export class SidebarLayout extends StyledElement<SidebarParts> {
   }
 
   /** 사이드바 아이템 렌더링 */
-  private renderItem(item: SidebarItem): any {
+  private renderItem(item: SidebarItem): unknown {
     if (!item) return nothing;
 
     if(item.type === 'html') {
@@ -949,6 +950,7 @@ export interface SidebarLayoutEventMap {
 }
 
 /** Typed listeners for {@link SidebarLayoutEventMap} — element-scoped, the DOM's own pattern (`HTMLMediaElementEventMap`). */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export interface SidebarLayout {
   addEventListener<K extends keyof SidebarLayoutEventMap>(type: K, listener: (this: SidebarLayout, ev: SidebarLayoutEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: SidebarLayout, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;

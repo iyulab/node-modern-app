@@ -46,8 +46,10 @@ export interface UnsavedChangesHandle {
  */
 export function useUnsavedChanges(dirty: boolean): UnsavedChangesHandle {
   const latest = React.useRef(dirty);
-  latest.current = dirty;
   const clean = React.useRef(false);
+  // 최신 `dirty` 를 ref 에 싣는 일은 렌더 중이 아니라 커밋 뒤 효과에서 한다(렌더는 순수해야 한다 — 동시 렌더링이 버리는 렌더가 ref 를 오염시키지 않는다).
+  // 아래 효과들보다 먼저 선언한다: 같은 커밋에서 추적기·알림 효과가 읽을 때 이미 새 값이어야 한다.
+  React.useEffect(() => { latest.current = dirty; });
   // 렌더가 커밋될 때마다 `markClean()` 을 걷는다 — 그 뒤의 판정은 새 렌더의 값이다.
   React.useEffect(() => { clean.current = false; });
   React.useEffect(() => trackUnsavedChanges(() => !clean.current && latest.current), []);
@@ -149,6 +151,7 @@ export type { WizardStep, WizardStepState, WizardStepChangeDetail } from './comp
 // 그 import 를 «미사용» 으로 지워 증강이 소비자에게 닿지 않는다(0.18.9 → 0.18.10 실측).
 // 원시 태그만 쓰는 소비자는 프로그램 어딘가에서 한 번 `import type {} from '@iyulab/modern-app/react'`.
 declare module 'react' {
+  // eslint-disable-next-line @typescript-eslint/no-namespace -- `react` 의 JSX 네임스페이스를 증강하는 유일한 방법이다(모듈 증강은 네임스페이스 병합으로만 닿는다)
   namespace JSX {
     interface IntrinsicElements {
       'u-action-bar': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {

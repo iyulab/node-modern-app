@@ -64,7 +64,7 @@ export class StyledElement<T extends string> extends UElement {
 
       // el.style에 직접 할당, 실패시 kebab-case 변환 후 할당 시도
       try {
-        (el.style as any)[key] = strValue;
+        (el.style as unknown as Record<string, string>)[key] = strValue;
       } catch {
         // fallback: camelCase -> kebab-case 변환 후 setProperty
         const kebab = key.replace(/[A-Z]/g, m => '-' + m.toLowerCase())

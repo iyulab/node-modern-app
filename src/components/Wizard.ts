@@ -63,6 +63,7 @@ export interface WizardStepChangeDetail {
  * 오버라이드: `part`(host·indicator·step·panel·actions) + `actions` slot 완전 치환.
  */
 @customElement('u-wizard')
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export class Wizard extends StyledElement<ElementParts> {
   static styles = [super.styles, styles];
 
@@ -161,7 +162,7 @@ export class Wizard extends StyledElement<ElementParts> {
     const rtl = getComputedStyle(this).direction === 'rtl';
     const nextKey = horizontal ? (rtl ? 'ArrowLeft' : 'ArrowRight') : 'ArrowDown';
     const prevKey = horizontal ? (rtl ? 'ArrowRight' : 'ArrowLeft') : 'ArrowUp';
-    let target = -1;
+    let target: number;
     if (e.key === nextKey) target = this.nextReachable(i, 1);
     else if (e.key === prevKey) target = this.nextReachable(i, -1);
     else if (e.key === 'Home') target = this.nextReachable(-1, 1);
@@ -230,6 +231,7 @@ export interface WizardEventMap {
 }
 
 /** Typed listeners for {@link WizardEventMap} — element-scoped, the DOM's own pattern (`HTMLMediaElementEventMap`). */
+// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export interface Wizard {
   addEventListener<K extends keyof WizardEventMap>(type: K, listener: (this: Wizard, ev: WizardEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
   addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: Wizard, ev: HTMLElementEventMap[K]) => unknown, options?: boolean | AddEventListenerOptions): void;
