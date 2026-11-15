@@ -5,6 +5,7 @@ import { formatNumber, formatCurrency, formatDate } from '@iyulab/components/dis
 
 import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoField.styles.js';
+import { enumeratedValues } from "@iyulab/components/dist/utilities/enumerated.js";
 
 type ElementParts = 'host' | 'label' | 'value' | 'unit' | 'trend';
 export type InfoFieldFormat = 'number' | 'currency' | 'date';
@@ -58,6 +59,16 @@ export function isBlank(v: unknown): boolean {
  */
 @customElement('u-info-field')
 export class InfoField extends StyledElement<ElementParts> {
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    format: enumeratedValues<InfoFieldFormat>()(['number', 'currency', 'date']),
+    size: enumeratedValues<InfoFieldSize>()(['default', 'lg', 'xl']),
+    trend: enumeratedValues<InfoFieldTrend>()(['up', 'down', 'flat']),
+    tone: enumeratedValues<InfoFieldTone>()(['positive', 'negative', 'warning', 'neutral']),
+    appearance: enumeratedValues<InfoFieldAppearance>()(['plain', 'tile']),
+  };
+
   static styles = [super.styles, styles];
 
   /** 링크(`href`)일 때 호스트의 `aria-label` 이 안쪽 `<a>` 에 실린다 — 연결 뒤에 바뀔 이름도 따라가게 한 번 선언한다(`UElement.forwardedAttributes`). */

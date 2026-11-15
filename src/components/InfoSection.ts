@@ -3,6 +3,7 @@ import { property, customElement } from 'lit/decorators.js';
 
 import { StyledElement } from '../internals/StyledElement.js';
 import { styles } from './InfoSection.styles.js';
+import { enumeratedValues } from "@iyulab/components/dist/utilities/enumerated.js";
 
 type ElementParts = 'host' | 'grid';
 
@@ -33,6 +34,12 @@ export type InfoSectionLayout = 'grid' | 'strip';
  */
 @customElement('u-info-section')
 export class InfoSection extends StyledElement<ElementParts> {
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    layout: enumeratedValues<InfoSectionLayout>()(['grid', 'strip']),
+  };
+
   static styles = [super.styles, styles];
 
   /** 한 칸의 최소 폭(px). 이 값보다 좁아지면 열 수가 줄어든다. */

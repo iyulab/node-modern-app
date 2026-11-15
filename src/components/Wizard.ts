@@ -6,6 +6,7 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './Wizard.styles.js';
 import { delegate } from '@iyulab/components/dist/utilities/listenInShadow.js';
+import { enumeratedValues } from "@iyulab/components/dist/utilities/enumerated.js";
 
 type ElementParts = 'host' | 'indicator' | 'step' | 'panel' | 'actions';
 
@@ -65,6 +66,12 @@ export interface WizardStepChangeDetail {
 @customElement('u-wizard')
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export class Wizard extends StyledElement<ElementParts> {
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    orientation: enumeratedValues<'horizontal' | 'vertical'>()(['horizontal', 'vertical']),
+  };
+
   static styles = [super.styles, styles];
 
   /** 스텝 정의 배열. 문서 순서로 기본 슬롯의 자식과 매칭된다. */

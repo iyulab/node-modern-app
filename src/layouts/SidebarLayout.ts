@@ -32,6 +32,7 @@ import type { SidebarButton, SidebarButtonConfig } from '../components/SidebarBu
 import { filterSidebarItems } from './filterSidebarItems.js';
 import { styles } from './SidebarLayout.styles.js';
 import { delegate } from '@iyulab/components/dist/utilities/listenInShadow.js';
+import { enumeratedValues } from "@iyulab/components/dist/utilities/enumerated.js";
 
 /** 개발 모드 1회성 경고 — components 의 공유 규약. */
 const devWarn = createDevWarner('@iyulab/modern-app');
@@ -118,6 +119,12 @@ function composedContains(container: Element, node: Node): boolean {
 @customElement('u-sidebar-layout')
 // eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- typed event listeners (the DOM's own `HTMLMediaElementEventMap` pattern): the merged addEventListener/removeEventListener overloads are implemented by EventTarget
 export class SidebarLayout extends StyledElement<SidebarParts> {
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    state: enumeratedValues<SidebarState>()(['default', 'slim', 'modal', 'mobile', 'mobile-open']),
+  };
+
   static styles = [ super.styles, styles ];
 
   /** 사이드바 상태 */

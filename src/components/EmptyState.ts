@@ -5,6 +5,7 @@ import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './EmptyState.styles.js';
+import { enumeratedValues } from "@iyulab/components/dist/utilities/enumerated.js";
 
 type ElementParts = 'host' | 'icon' | 'message' | 'title' | 'description' | 'actions';
 
@@ -51,6 +52,12 @@ export type EmptyStateVariant = 'no-data' | 'no-results' | 'error' | 'no-access'
  */
 @customElement('u-empty-state')
 export class EmptyState extends StyledElement<ElementParts> {
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    variant: enumeratedValues<EmptyStateVariant>()(['no-data', 'no-results', 'error', 'no-access', 'not-found']),
+  };
+
   static styles = [super.styles, styles];
 
   /**

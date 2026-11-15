@@ -4,6 +4,11 @@
 
 ### Added
 
+- **Development-mode warning for an unknown value of an enumerated attribute** (`variant`, `format`, `size`, `trend`, `tone`, `appearance`, `layout`, `navigate`, `target`, `color`, `orientation`, `state`). A template attribute string is not
+  type-checked, and a value outside the list matches no style rule, so the element silently rendered as if the attribute were
+  unset — nothing in the console. It now logs one `console.warn` per element, attribute and value in development builds,
+  naming the values that are accepted; rendering is unchanged and production builds do nothing. Built on `UElement.enumerated`
+  of `@iyulab/components`.
 - **`custom-elements.json` — a Custom Elements Manifest for every element.** The package ships `dist/custom-elements.json`
   (`@iyulab/modern-app/dist/custom-elements.json`, declared in the `customElements` field of `package.json`) so editors,
   documentation tools and AI agents can read each element's attributes, properties, events, slots and CSS parts without
@@ -31,6 +36,8 @@
 
 ### Changed
 
+- **Requires `@iyulab/components` ≥ 3.2.0** (the peer range was `>=2.39.0`). The enumerated-attribute lists above use
+  `enumeratedValues` from that release; with an older components the module fails to load.
 - **Runtime dependency range follows the current minor release** (`i18next` `^27.1.1`). No behaviour change.
 
 ## [0.63.0] - 2026-11-11

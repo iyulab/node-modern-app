@@ -6,6 +6,7 @@ import { formatDate } from '@iyulab/components/dist/utilities/format.js';
 import { StyledElement } from '../internals/StyledElement.js';
 import { slotHasContent } from '../internals/slotted.js';
 import { styles } from './TimelineItem.styles.js';
+import { enumeratedValues } from "@iyulab/components/dist/utilities/enumerated.js";
 
 type TimelineItemParts = 'host' | 'rail' | 'marker' | 'line' | 'content' | 'header' | 'heading' | 'time' | 'body';
 
@@ -24,6 +25,12 @@ export type TimelineItemColor = 'neutral' | 'primary' | 'info' | 'success' | 'wa
  */
 @customElement('u-timeline-item')
 export class TimelineItem extends StyledElement<TimelineItemParts> {
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    color: enumeratedValues<TimelineItemColor>()(['neutral', 'primary', 'info', 'success', 'warning', 'danger']),
+  };
+
   static styles = [super.styles, styles];
 
   /** What happened. */

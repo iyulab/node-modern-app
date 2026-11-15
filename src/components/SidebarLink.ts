@@ -10,6 +10,7 @@ import { getLocaleStrings } from '../internals/locale.js';
 import { StyledElement, StyleMap } from '../internals/StyledElement.js';
 import type { SidebarPermissionGuard } from '../layouts/SidebarPermission.js';
 import { styles } from './SidebarLink.styles.js';
+import { enumeratedValues } from "@iyulab/components/dist/utilities/enumerated.js";
 
 type ElementParts = 'host' | 'base' | 'icon' | 'label' | 'count';
 
@@ -70,6 +71,14 @@ export type SidebarCountTone = 'neutral' | 'warning' | 'negative';
  */
 @customElement('u-sidebar-link')
 export class SidebarLink extends StyledElement<ElementParts> {
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    navigate: enumeratedValues<'router' | 'document'>()(['router', 'document']),
+    target: enumeratedValues<'_self' | '_blank'>()(['_self', '_blank']),
+    countTone: enumeratedValues<SidebarCountTone>()(['neutral', 'warning', 'negative']),
+  };
+
   static styles = [ super.styles, styles ];
 
   /** selected 상태. `true`면 내부 `<u-link>`에 `aria-current="page"`도 함께 세팅한다. */
