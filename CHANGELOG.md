@@ -12,6 +12,11 @@
 
 ### Fixed
 
+- **`u-page-header`: a long subtitle no longer pushes the actions below it.** The heading's flex basis was `auto`, which is the
+  subtitle's one-line width; once that exceeded the page body the row wrapped instead of the heading shrinking, so the primary
+  action sat under the subtitle on the left on some screens and at the top right on others at the same width. The heading now
+  takes the remaining width and shrinks (`flex: 1 1 0`), and the actions drop to their own line only below the existing 640px
+  own-width threshold. A header with a short subtitle renders as before.
 - **`u-info-field`: the value and the trend text keep their own direction in a right-to-left page.** A Latin value took the
   page's direction as its paragraph direction, so a trailing full stop or a leading sign jumped to the wrong end
   (`Blue Harbor Co.` read `.Blue Harbor Co`; `+3.2% MoM` lost its sign to the other end). The formatted value and `trendLabel`

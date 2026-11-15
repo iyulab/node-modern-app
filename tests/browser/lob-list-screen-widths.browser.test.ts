@@ -22,11 +22,11 @@ import '../../src/components/GroupBox.js';
 const WIDTHS = [320, 768, 1280];
 
 /** 화면 조립 — 샘플의 목록 화면과 같은 형태(제목+상태+액션 / 카드 제목+툴바+본문). */
-const mount = async (width: number) => {
+const mount = async (width: number, subtitle = '5 records') => {
   const frame = document.createElement('div');
   frame.style.width = `${width}px`;
   frame.innerHTML = `
-    <u-page-header title="Items" subtitle="5 records">
+    <u-page-header title="Items" subtitle="${subtitle}">
       <span slot="status"><span>Sample</span></span>
       <span slot="actions">
         <button>Export</button><button>New item</button>
@@ -89,5 +89,42 @@ describe('목록 화면 — 폭별 레이아웃', () => {
     const heading = header.shadowRoot!.querySelector('[part="heading"]')!.getBoundingClientRect();
     const actions = header.shadowRoot!.querySelector('[part="actions"]')!.getBoundingClientRect();
     expect(actions.top).toBeLessThan(heading.bottom);
+  });
+
+  /**
+   * 🔴**부제가 길어도 액션은 «자기 폭 640px 이상» 이면 제목 줄 오른쪽에 선다.**
+   * 제목의 flex-basis 가 `auto` 이면 부제의 한 줄 최대 폭(max-content)이 기준 폭이 되어 컨테이너를 넘고,
+   * 줄이 «축소가 아니라 줄바꿈» 으로 먼저 풀려 액션이 부제 아래 왼쪽으로 떨어진다(소비자 보고 `#2664`).
+   * 부제 길이만 다르고 폭은 같은 두 화면에서 단추 자리가 갈리던 것이 증상이다.
+   */
+  describe('긴 부제', () => {
+    const LONG =
+      'This list shows every record the account can see, including the ones archived last quarter, and it keeps '
+      + 'going on for well over a hundred characters so that its one-line width is wider than the page body, '
+      + 'and then it continues with a second clause about filters, saved views and the export that is shared with the team.';
+
+    for (const width of [800, 1280]) {
+      it(`${width}px — 부제가 한 줄 폭을 넘어도 액션은 제목 줄 오른쪽 위에 선다`, async () => {
+        expect(LONG.length).toBeGreaterThan(160);
+        const frame = await mount(width, LONG);
+        const box = frame.getBoundingClientRect();
+        const header = frame.querySelector('u-page-header')!;
+        const heading = header.shadowRoot!.querySelector('[part="heading"]')!.getBoundingClientRect();
+        const actions = header.shadowRoot!.querySelector('[part="actions"]')!.getBoundingClientRect();
+        // 같은 줄: 액션의 위가 제목 상자 안에서 시작한다.
+        expect(actions.top, `actions.top ${actions.top} < heading.bottom ${heading.bottom}`).toBeLessThan(heading.bottom);
+        // 오른쪽: 액션이 제목 상자의 오른쪽에 있고 컨테이너 오른쪽 끝에 닿는다.
+        expect(actions.left).toBeGreaterThanOrEqual(heading.right - 1);
+        expect(box.right - actions.right).toBeLessThan(2);
+      });
+    }
+
+    it('320px — 좁은 화면 규칙은 긴 부제에서도 그대로다 (액션은 아래 줄로)', async () => {
+      const frame = await mount(320, LONG);
+      const header = frame.querySelector('u-page-header')!;
+      const heading = header.shadowRoot!.querySelector('[part="heading"]')!.getBoundingClientRect();
+      const actions = header.shadowRoot!.querySelector('[part="actions"]')!.getBoundingClientRect();
+      expect(actions.top).toBeGreaterThanOrEqual(heading.bottom - 1);
+    });
   });
 });
