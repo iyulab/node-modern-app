@@ -17,6 +17,7 @@
 
 ### Fixed
 
+- **`u-action-bar` fills its width when its host is made a flex container.** `u-side-panel` (and `u-drawer`) set `display: flex; justify-content: flex-end` on the element in their `footer` slot, and a rule from the outer tree beats the bar's own `:host { display: block }` — so the bar's box became a flex item that shrank to its content and sat at the end, and the `summary` wrapped above the buttons instead of taking the free width. The bar's box now grows to the width its host gives it; in a block host nothing changes. The side-panel reference notes that the panel draws the footer's padding and divider, so a plain bar (not `sticky`) belongs there.
 - **`u-page-header`: a long subtitle no longer pushes the actions below it.** The heading's flex basis was `auto`, which is the
   subtitle's one-line width; once that exceeded the page body the row wrapped instead of the heading shrinking, so the primary
   action sat under the subtitle on the left on some screens and at the top right on others at the same width. The heading now

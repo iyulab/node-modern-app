@@ -8,6 +8,10 @@ export const styles = css`
   }
 
   .base {
+    /* 호스트가 flex 컨테이너가 되는 자리(드로어 바닥이 footer 슬롯 요소에 flex 를 준다)에서도 동작 줄은 그 폭을 채운다 —
+       호스트가 block 이면 이 선언은 효과가 없다. 내용 폭으로 줄어 끝에 붙으면 summary 가 단추 위로 줄바꿈된다. */
+    flex: 1 1 auto;
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: var(--u-space-sm, 8px);

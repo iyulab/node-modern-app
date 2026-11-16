@@ -31,6 +31,8 @@ close, with the page staying behind it, use a side panel.
 | `header` | Title, at the start of the header row; the close button sits at its end |
 | `footer` | Actions — `u-action-bar` |
 
+The panel draws the footer's padding and its top divider itself (`::part(footer)`). Put a plain `u-action-bar` there — without `sticky`, which would add a second divider and its own vertical padding. The bar fills the footer's width; below 420px of its own width the summary and the actions each take a line (the narrow layout of `u-action-bar`).
+
 ## Properties
 
 | Property | Type | Default | Reflect | Description |
