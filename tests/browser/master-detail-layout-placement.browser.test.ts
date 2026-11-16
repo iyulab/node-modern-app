@@ -1,6 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import '@iyulab/components/styles/tokens.css';
 import '../../src/components/MasterDetailLayout.js';
+import '../../src/components/ActionBar.js';
 import type { MasterDetailLayout } from '../../src/components/MasterDetailLayout.js';
 
 /**
@@ -64,5 +65,30 @@ describe('u-master-detail-layout detail-placement', () => {
   it('NEGATIVE — with no detail the master takes the full width', async () => {
     const { master } = await mount('detail-placement="start"', { detail: false });
     expect(master.width).toBeGreaterThanOrEqual(899);
+  });
+});
+
+describe('a docked detail keeps its action bar in view', () => {
+  it('a sticky u-action-bar at the end of a long form stays at the bottom of the detail pane', async () => {
+    document.body.innerHTML = `
+      <div style="width:900px; height:300px">
+        <u-master-detail-layout detail-placement="start" master-size="300px">
+          <div style="height:100px">list</div>
+          <div slot="detail">
+            <div style="height:900px">long form</div>
+            <u-action-bar sticky><u-button>Save</u-button></u-action-bar>
+          </div>
+        </u-master-detail-layout>
+      </div>`;
+    const el = document.querySelector('u-master-detail-layout') as MasterDetailLayout;
+    await el.updateComplete;
+    for (let i = 0; i < 3; i++) await new Promise((r) => requestAnimationFrame(() => r(null)));
+    await new Promise((r) => setTimeout(r, 80));
+    const pane = el.shadowRoot!.querySelector('[part="detail"]') as HTMLElement;
+    const bar = document.querySelector('u-action-bar') as HTMLElement;
+    const p = pane.getBoundingClientRect();
+    const b = bar.getBoundingClientRect();
+    expect(b.bottom, `bar bottom ${b.bottom} · pane bottom ${p.bottom}`).toBeLessThanOrEqual(p.bottom + 1);
+    expect(b.top, `bar top ${b.top} · pane top ${p.top}`).toBeGreaterThanOrEqual(p.top - 1);
   });
 });
