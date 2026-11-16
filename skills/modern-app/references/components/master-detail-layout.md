@@ -38,6 +38,17 @@ width and the master fills the rest. With the detail empty the table takes every
 </u-master-detail-layout>
 ```
 
+## An edit or registration panel docked before the list
+
+With the app sidebar on the left, a form that opens from the list belongs beside the sidebar while the list's identifying columns stay in view. Set `detail-placement="start"` (default `end`): the detail pane stands before the list, appears when it is filled and goes away when it is emptied. The value is logical — a right-to-left page mirrors it. This is the layout for a form that stays beside the list; for a form you open, work in and close with the page behind it, use `u-side-panel`, which overlays.
+
+```html
+<u-master-detail-layout detail-placement="start" detail-size="34rem">
+  <u-rich-table …></u-rich-table>
+  <form slot="detail">…edit fields…</form>
+</u-master-detail-layout>
+```
+
 On a narrow container (self width, not viewport — see below) the detail pane switches to a
 full overlay above the master pane, with a small close button that fires `detail-close`.
 Clearing the detail slot yourself (in response to the event) is what actually dismisses it —
@@ -113,6 +124,7 @@ own margin; that is inherent to printing two columns.
 |----------|------|---------|---------|-------------|
 | `masterSize` | `string` | `'22rem'` | | Fixed width of the master pane, a CSS length (`master-size`) |
 | `detailSize` | `string \| undefined` | `undefined` | ✓ | Fixed width of the detail pane (`detail-size`) — the master then fills the rest and `masterSize` is not used |
+| `detailPlacement` | `'start' \| 'end'` | `'end'` | ✓ | Side the detail pane stands on (`detail-placement`) — `start` docks it before the list; logical, so a right-to-left page mirrors it. The narrow-width overlay covers the list from either side |
 | `overlayBreakpoint` | `number` | `760` | | Below this self width in px, detail becomes a full overlay (`overlay-breakpoint`) |
 | `locale` | `string` | `''` | | Language tag for the close button's accessible label |
 

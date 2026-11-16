@@ -45,6 +45,15 @@ export const styles = css`
     width: 0;
     border-inline-start: 1px solid var(--u-border-color-weak, #EEEEEE);
   }
+
+  /* detail-placement="start": detail 이 목록 앞에 선다 — flex 의 order 는 논리(시작 쪽)라 RTL 에서 거울이 된다.
+     오버레이(좁은 화면)는 어느 쪽이든 master 전체를 덮으므로 순서를 바꾸지 않는다. */
+  :host([detail-placement='start']:not([overlay])) .detail {
+    order: -2;
+  }
+  :host([detail-placement='start']:not([overlay])) .divider {
+    order: -1;
+  }
   /* detail 이 비어 있으면 나눌 것이 없다 — 슬롯 배정은 slotchange 로 추적한다
      (internals/slotted.ts). ⚠CSS :has() 로는 못 한다: <slot> 자신이 자식이라 :has(*) 가
      항상 참이다. */

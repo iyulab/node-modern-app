@@ -8,8 +8,12 @@ import { slotHasContent } from '../internals/slotted.js';
 import { getLocaleStrings } from '../internals/locale.js';
 import { styles } from './MasterDetailLayout.styles.js';
 import { delegate } from '@iyulab/components/dist/utilities/listenInShadow.js';
+import { enumeratedValues } from '@iyulab/components/dist/utilities/enumerated.js';
 
 type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
+
+/** detail 이 서는 쪽(논리값). */
+export type MasterDetailPlacement = 'start' | 'end';
 
 /**
  * master›detail 반응형 split-pane 셸.
@@ -50,6 +54,12 @@ type ElementParts = 'host' | 'master' | 'divider' | 'detail' | 'detail-close';
 export class MasterDetailLayout extends StyledElement<ElementParts> {
   static styles = [super.styles, styles];
 
+  /** 목록 밖의 값은 어떤 규칙에도 안 걸려 조용히 기본 모양이 된다 — 개발 모드에서 한 번 알린다(`UElement.enumerated`). */
+  static override enumerated = {
+    ...super.enumerated,
+    detailPlacement: enumeratedValues<MasterDetailPlacement>()(['start', 'end']),
+  };
+
   /** master 영역의 고정 폭(CSS 길이). detail 은 나머지 공간을 채운다. detail 이 비면 master 가 전부 쓴다. */
   @property({ type: String, attribute: 'master-size' }) masterSize = '22rem';
 
@@ -58,6 +68,13 @@ export class MasterDetailLayout extends StyledElement<ElementParts> {
    * 넓은 목록 곁에 레코드 요약을 붙이는 «곁 패널» 배치. 비우면 종전대로 master 가 고정 폭이다.
    */
   @property({ type: String, attribute: 'detail-size', reflect: true }) detailSize?: string;
+
+  /**
+   * detail 영역이 서는 쪽 — `end`(기본 · 목록 뒤)나 `start`(목록 앞, 사이드바 곁에 도킹하는 편집·등록 패널).
+   * 논리값이라 오른쪽에서 왼쪽으로 쓰는 페이지(RTL)에서는 거울이 된다. 좁은 화면(`overlayBreakpoint` 미만)의
+   * 오버레이는 어느 쪽이든 master 전체를 덮는다.
+   */
+  @property({ type: String, attribute: 'detail-placement', reflect: true }) detailPlacement: MasterDetailPlacement = 'end';
 
   /**
    * 이 값(px, 자기 폭 기준) 미만이면 detail 이 전체 오버레이로 전환된다.

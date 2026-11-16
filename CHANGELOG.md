@@ -4,6 +4,7 @@
 
 ### Added
 
+- **`u-master-detail-layout` `detail-placement="start"`** — the detail pane can stand before the list (`start`) instead of after it (`end`, the default). A screen with the app sidebar on the left can dock its edit or registration form beside the sidebar while the list's identifying columns stay in view; the pane still appears when filled and goes away when emptied. The value is logical, so a right-to-left page mirrors it, and below the overlay breakpoint the detail covers the list from either side. Existing screens are unchanged.
 - **Development-mode warning for an unknown value of an enumerated attribute** (`variant`, `format`, `size`, `trend`, `tone`, `appearance`, `layout`, `navigate`, `target`, `color`, `orientation`, `state`). A template attribute string is not
   type-checked, and a value outside the list matches no style rule, so the element silently rendered as if the attribute were
   unset — nothing in the console. It now logs one `console.warn` per element, attribute and value in development builds,
