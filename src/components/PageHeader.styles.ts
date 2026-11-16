@@ -80,15 +80,16 @@ export const styles = css`
     font-weight: var(--u-text-label-weight, 600);
     color: var(--u-link-txt-color, #1565C0);
     text-decoration: none;
-    /* 타깃 크기(WCAG 2.2 SC 2.5.8) — 줄 상자(1lh)에서 모자란 만큼만 패딩으로 채워 누를 면을 24px 로 만들고,
-       같은 크기의 음수 여백으로 그 공간을 돌려준다 — 배치는 움직이지 않는다.
-       ⚠고정 패딩(4px)이면 안 된다: line-height: normal 의 높이는 글꼴 메트릭이 정해서 글꼴에 따라 17px(→25)도
-       15px(→23)도 된다. 줄 상자가 이미 24px 이상이면 패딩은 0 이다. */
-    display: inline-block;
+    /* 타깃 크기(WCAG 2.2 SC 2.5.8) — 누를 면의 하한은 **선언된 최소 높이**다. 글자는 그 상자 안에서 세로 가운데에 선다.
+       🔴줄 높이(1lh)에서 모자란 만큼을 계산해 패딩으로 채우면 안 된다: WebKit(Safari)은 같은 시트를 나눈 요소들의 1lh 를
+       «처음 그린 요소의 줄 높이» 로 붙잡아, 줄 높이가 큰 머리가 먼저 그려진 뒤의 좁은 머리는 패딩 0 으로 남는다 — «뒤로» 가
+       줄 상자 높이(15.6px)로 줄어 24px 하한을 어긴다(실제 Safari 27 에서 확인). 고정 패딩(4px)도 안 된다: line-height:
+       normal 의 높이는 글꼴 메트릭이 정해 17px(→25)도 15px(→23)도 된다. 줄 높이와 무관한 최소 높이만 둘 다 피한다.
+       배치는 움직이지 않는다 — «뒤로» 는 .base 의 가운데 정렬된 flex 항목이고 줄 높이는 제목 줄(.title)이 정한다. */
+    display: inline-flex;
+    align-items: center;
     /* 호스트 하한(--u-target-size)이 있으면 24px 대신 그 값까지 — 폭도 그 값 이상. */
-    --_back-pad: max(0px, calc((max(24px, var(--u-target-size, 0px)) - 1lh) / 2));
-    padding-block: var(--_back-pad);
-    margin-block: calc(-1 * var(--_back-pad));
+    min-block-size: max(24px, var(--u-target-size, 0px));
     min-width: var(--u-target-size, 0px);
   }
   .back::before {

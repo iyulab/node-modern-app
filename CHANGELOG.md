@@ -22,6 +22,11 @@
   action sat under the subtitle on the left on some screens and at the top right on others at the same width. The heading now
   takes the remaining width and shrinks (`flex: 1 1 0`), and the actions drop to their own line only below the existing 640px
   own-width threshold. A header with a short subtitle renders as before.
+- **`u-page-header`: the back link keeps its 24px touch target in Safari.** The target size was topped up with padding computed
+  from the line height (`1lh`), and Safari resolves `1lh` once for elements sharing a stylesheet — a header drawn after one with
+  a taller line height kept the first header's value, so its back link could shrink to the 15.6px line box and miss WCAG 2.2
+  SC 2.5.8. The 24px floor (or `--u-target-size`) is now a declared minimum block size with the text centred in it. Layout is
+  unchanged: the link is a centred flex item of the header row, whose height the title decides.
 - **`u-info-field`: the value and the trend text keep their own direction in a right-to-left page.** A Latin value took the
   page's direction as its paragraph direction, so a trailing full stop or a leading sign jumped to the wrong end
   (`Blue Harbor Co.` read `.Blue Harbor Co`; `+3.2% MoM` lost its sign to the other end). The formatted value and `trendLabel`
