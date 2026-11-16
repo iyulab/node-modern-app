@@ -43,7 +43,7 @@
 
 - **Requires `@iyulab/components` ≥ 3.2.0** (the peer range was `>=2.39.0`). The enumerated-attribute lists above use
   `enumeratedValues` from that release; with an older components the module fails to load.
-- **Runtime dependency range follows the current minor release** (`i18next` `^27.1.1`). No behaviour change.
+- **Runtime dependency range follows the current minor release** (`i18next` `^27.1.3`). No behaviour change.
 
 ## [0.63.0] - 2026-11-11
 
