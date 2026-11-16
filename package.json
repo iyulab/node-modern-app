@@ -85,7 +85,7 @@
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.11.0",
     "@eslint/js": "^10.0.1",
-    "@iyulab/components": "^3.0.0",
+    "@iyulab/components": "^3.2.0",
     "@iyulab/router": "^0.25.0",
     "@lit/react": "^1.0.8",
     "@types/node": "^26.6.6",
