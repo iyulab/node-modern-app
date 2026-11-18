@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- **Requires `@iyulab/router` 0.26.0** (peer `^0.26.0`, it was `^0.25.0`). 0.26.0 types `RouteError.original` as `unknown` and releases the React root of a nested `u-outlet` when it is detached. No change to this package's own behaviour.
+
 ## [0.64.0] - 2026-11-16
 
 ### Added
